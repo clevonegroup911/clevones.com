@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+/* ─── Clevones institutional design tokens ─────────────────────────────────── */
+
+@theme {
+  /* Typography */
+  --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-heading: var(--font-libre-franklin), var(--font-source-sans),
+    ui-sans-serif, system-ui, sans-serif;
+
+  /* Core palette */
+  --color-navy: #1a2b48;
+  --color-navy-hover: #243a5e;
+  --color-navy-light: #2e4566;
+  --color-navy-muted: #6b7d96;
+  --color-navy-subtle: #1e2a3d;
+
+  --color-gold: #d4a017;
+  --color-gold-hover: #e0b832;
+  --color-gold-muted: #c9a84c;
+  --color-gold-subtle: #2a2418;
+
+  --color-charcoal: #0a0d12;
+  --color-soft-white: #f1f5f9;
+  --color-gray-muted: #94a3b8;
+  --color-border: #1e2836;
+  --color-border-subtle: #2a3548;
+
+  --color-white: #ffffff;
+
+  /* Semantic surfaces — premium dark institutional */
+  --color-background: var(--color-charcoal);
+  --color-foreground: var(--color-soft-white);
+  --color-muted: var(--color-gray-muted);
+  --color-surface: #0e1219;
+  --color-surface-elevated: #121820;
+  --color-surface-muted: #161c27;
+  --color-surface-inverse: var(--color-navy);
+
+  /* Typography scale */
+  --text-display: 2.25rem;
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 600;
+
+  --text-title: 1.875rem;
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.02em;
+  --text-title--font-weight: 600;
+
+  --text-subtitle: 1.25rem;
+  --text-subtitle--line-height: 1.3;
+  --text-subtitle--letter-spacing: -0.01em;
+  --text-subtitle--font-weight: 600;
+
+  /* Spacing rhythm */
+  --spacing-section-y: 4rem;
+  --spacing-section-y-sm: 5rem;
+  --spacing-section-y-lg: 7rem;
+
+  /* Radius — restrained, institutional */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-gold-subtle text-soft-white;
+  }
+
+  select option {
+    background-color: var(--color-surface);
+    color: var(--color-soft-white);
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .touch-target {
+    min-height: 2.75rem;
+  }
+}
