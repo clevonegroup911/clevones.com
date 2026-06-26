@@ -34,17 +34,24 @@ type ContactInitiativeFormProps = {
   intent?: ContactIntent;
 };
 
+function createInitialForm(intent: ContactIntent): InitiativeSubmission {
+  return {
+    ...emptyInitiativeSubmission(),
+    initiativeStage:
+      intent === "initiative" ? "documented-initiative" : "",
+  };
+}
+
 export function ContactInitiativeForm({
   intent = "collaboration",
 }: ContactInitiativeFormProps) {
   const intentContent = contactPageIntents[intent];
-  const [form, setForm] = useState<InitiativeSubmission>(() => ({
-    ...emptyInitiativeSubmission(),
-    initiativeStage:
-      intent === "initiative" ? "documented-initiative" : "",
-  }));
+  const [form, setForm] = useState<InitiativeSubmission>(() =>
+    createInitialForm(intent),
+  );
   const [errors, setErrors] = useState<InitiativeSubmissionErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -85,9 +92,10 @@ export function ContactInitiativeForm({
     setSubmitError(null);
 
     try {
-      await submitInitiativeSubmission(form);
+      const result = await submitInitiativeSubmission(form);
+      setSuccessMessage(result.message);
       setSubmitted(true);
-      setForm(emptyInitiativeSubmission());
+      setForm(createInitialForm(intent));
     } catch (error) {
       const submissionError = error as Error & {
         formErrors?: InitiativeSubmissionErrors;
@@ -127,16 +135,20 @@ export function ContactInitiativeForm({
           Submission received for institutional review
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-muted">
-          Your structured initiative has been recorded. The Clevones governance
-          team will assess eligibility against documented criteria and respond
-          through official channels. Clevones does not conduct informal
-          brokerage or operational intermediation.
+          {successMessage ??
+            "Your structured initiative has been recorded for institutional review."}{" "}
+          The Clevones governance team will assess eligibility against
+          documented criteria and respond through official channels. Clevones
+          does not conduct informal brokerage or operational intermediation.
         </p>
         <Button
           type="button"
           variant="outline"
           className="mt-8"
-          onClick={() => setSubmitted(false)}
+          onClick={() => {
+            setSubmitted(false);
+            setSuccessMessage(null);
+          }}
         >
           Submit another initiative
         </Button>

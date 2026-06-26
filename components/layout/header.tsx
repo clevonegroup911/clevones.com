@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { BrandLogo } from "@/components/layout/brand-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -17,24 +18,6 @@ function isActivePath(pathname: string, href: string) {
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-function Wordmark() {
-  return (
-    <Link
-      href="/"
-      className="group relative inline-flex min-w-0 flex-col"
-      aria-label={`${siteConfig.name} — home`}
-    >
-      <span className="font-heading text-xl font-semibold tracking-tight text-white sm:text-2xl">
-        {siteConfig.name}
-      </span>
-      <span
-        className="mt-1.5 h-px w-10 bg-gradient-to-r from-gold via-gold/50 to-transparent transition-all duration-300 group-hover:w-14"
-        aria-hidden
-      />
-    </Link>
-  );
 }
 
 export function Header() {
@@ -75,7 +58,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border-subtle/50 bg-surface-elevated/80 backdrop-blur-xl">
       <Container className="flex h-16 items-center justify-between gap-3 sm:h-[4.5rem] sm:gap-4">
-        <Wordmark />
+        <BrandLogo variant="header" />
 
         <nav
           className="hidden items-center gap-x-4 lg:gap-x-5 xl:gap-x-6 lg:flex"

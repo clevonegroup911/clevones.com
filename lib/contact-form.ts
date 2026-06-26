@@ -1,3 +1,8 @@
+import {
+  formatInitiativeSubmissionErrors,
+  initiativeSubmissionSchema,
+} from "@/lib/validation/initiative-submission";
+
 export const actorTypes = [
   { value: "institution", label: "Institution" },
   { value: "investor", label: "Investor" },
@@ -44,64 +49,29 @@ export type InitiativeSubmissionErrors = Partial<
   Record<InitiativeSubmissionField, string>
 >;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export function toInitiativeSubmissionPayload(data: InitiativeSubmission) {
+  const { governanceAcknowledgment, ...rest } = data;
+
+  return {
+    ...rest,
+    complianceConfirmation: governanceAcknowledgment,
+  };
+}
 
 export function validateInitiativeSubmission(
   data: InitiativeSubmission,
 ): InitiativeSubmissionErrors {
-  const errors: InitiativeSubmissionErrors = {};
+  const parsed = initiativeSubmissionSchema.safeParse(
+    toInitiativeSubmissionPayload(data),
+  );
 
-  if (!data.organizationName.trim()) {
-    errors.organizationName = "Organization name is required.";
-  }
-  if (!data.legalStatus.trim()) {
-    errors.legalStatus = "Legal status is required.";
-  }
-  if (!data.country.trim()) {
-    errors.country = "Country is required.";
-  }
-  if (!data.contactPerson.trim()) {
-    errors.contactPerson = "Contact person is required.";
-  }
-  if (!data.professionalEmail.trim()) {
-    errors.professionalEmail = "Professional email is required.";
-  } else if (!EMAIL_PATTERN.test(data.professionalEmail.trim())) {
-    errors.professionalEmail = "Enter a valid email address.";
-  }
-  if (!data.actorType) {
-    errors.actorType = "Select an actor type.";
-  }
-  if (data.actorType === "other" && !data.actorTypeOther.trim()) {
-    errors.actorTypeOther = "Specify the actor type.";
-  }
-  if (!data.initiativeTitle.trim()) {
-    errors.initiativeTitle = "Initiative title is required.";
-  }
-  if (!data.initiativeStage) {
-    errors.initiativeStage = "Select an initiative stage.";
-  }
-  if (!data.shortDescription.trim()) {
-    errors.shortDescription = "Short description is required.";
-  } else if (data.shortDescription.trim().length < 40) {
-    errors.shortDescription =
-      "Provide at least 40 characters describing the initiative.";
-  }
-  if (!data.territoryConcerned.trim()) {
-    errors.territoryConcerned = "Territory concerned is required.";
-  }
-  if (!data.complianceStatus.trim()) {
-    errors.complianceStatus = "Compliance status is required.";
-  }
-  if (!data.expectedCollaborationType.trim()) {
-    errors.expectedCollaborationType =
-      "Expected collaboration type is required.";
-  }
-  if (!data.governanceAcknowledgment) {
-    errors.governanceAcknowledgment =
-      "You must confirm the governance acknowledgment.";
+  if (parsed.success) {
+    return {};
   }
 
-  return errors;
+  return mapApiErrorsToFormErrors(
+    formatInitiativeSubmissionErrors(parsed.error),
+  );
 }
 
 export const emptyInitiativeSubmission = (): InitiativeSubmission => ({
@@ -143,15 +113,6 @@ export type InitiativeSubmissionApiResponse =
   | InitiativeSubmissionApiSuccess
   | InitiativeSubmissionApiValidationFailure
   | InitiativeSubmissionApiServerFailure;
-
-function toInitiativeSubmissionPayload(data: InitiativeSubmission) {
-  const { governanceAcknowledgment, ...rest } = data;
-
-  return {
-    ...rest,
-    complianceConfirmation: governanceAcknowledgment,
-  };
-}
 
 function mapApiErrorsToFormErrors(
   errors: Record<string, string>,

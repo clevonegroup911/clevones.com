@@ -10,12 +10,14 @@ import {
   heroGridOverlay,
   heroGridOverlayStyle,
 } from "@/lib/ui-classes";
+import { PAGE_HERO_ID } from "@/lib/constants/mobile-cta";
 import { homeCta } from "@/lib/home";
 import { siteConfig } from "@/lib/site";
 
 export function HeroSection() {
   return (
     <Section
+      id={PAGE_HERO_ID}
       tone="navy"
       spacing="lg"
       bordered="bottom"

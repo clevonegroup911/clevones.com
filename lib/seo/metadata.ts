@@ -27,11 +27,11 @@ export const defaultSiteTitle =
   "Clevones — Governance Architecture for Territorial Economic Flows";
 
 export const siteOgImage = {
-  url: "/og-image.svg",
+  url: "/og-image.png",
   width: 1200,
   height: 630,
   alt: defaultSiteTitle,
-  type: "image/svg+xml",
+  type: "image/png",
 } as const;
 
 type PageMetadataOptions = {

@@ -7,6 +7,7 @@ export function OrganizationJsonLd() {
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.url,
+    logo: `${siteConfig.url}/brand/clevones-mark.png`,
     description: siteConfig.description,
     email: siteConfig.contact.email,
     areaServed: siteConfig.region,

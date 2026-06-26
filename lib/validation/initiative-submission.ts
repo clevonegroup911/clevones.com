@@ -12,54 +12,39 @@ const initiativeStageValues = initiativeStages.map((stage) => stage.value) as [
   ...(typeof initiativeStages)[number]["value"][],
 ];
 
+function requiredString(message: string) {
+  return z.string({ error: message }).trim().min(1, message);
+}
+
 export const initiativeSubmissionSchema = z
   .object({
-    organizationName: z
-      .string()
-      .trim()
-      .min(1, "Organization name is required."),
-    legalStatus: z.string().trim().min(1, "Legal status is required."),
-    country: z.string().trim().min(1, "Country is required."),
+    organizationName: requiredString("Organization name is required."),
+    legalStatus: requiredString("Legal status is required."),
+    country: requiredString("Country is required."),
     website: z.string().trim().optional().default(""),
-    contactPerson: z.string().trim().min(1, "Contact person is required."),
-    professionalEmail: z
-      .string()
-      .trim()
-      .min(1, "Professional email is required.")
-      .email("Enter a valid email address."),
+    contactPerson: requiredString("Contact person is required."),
+    professionalEmail: requiredString("Professional email is required.").email(
+      "Enter a valid email address.",
+    ),
     phone: z.string().trim().optional().default(""),
     actorType: z.enum(actorTypeValues, {
       message: "Select an actor type.",
     }),
     actorTypeOther: z.string().trim().optional().default(""),
-    initiativeTitle: z
-      .string()
-      .trim()
-      .min(1, "Initiative title is required."),
+    initiativeTitle: requiredString("Initiative title is required."),
     initiativeStage: z.enum(initiativeStageValues, {
       message: "Select an initiative stage.",
     }),
-    shortDescription: z
-      .string()
-      .trim()
-      .min(1, "Short description is required.")
-      .min(
-        40,
-        "Provide at least 40 characters describing the initiative.",
-      ),
-    territoryConcerned: z
-      .string()
-      .trim()
-      .min(1, "Territory concerned is required."),
+    shortDescription: requiredString("Short description is required.").min(
+      40,
+      "Provide at least 40 characters describing the initiative.",
+    ),
+    territoryConcerned: requiredString("Territory concerned is required."),
     availableDocumentation: z.string().trim().optional().default(""),
-    complianceStatus: z
-      .string()
-      .trim()
-      .min(1, "Compliance status is required."),
-    expectedCollaborationType: z
-      .string()
-      .trim()
-      .min(1, "Expected collaboration type is required."),
+    complianceStatus: requiredString("Compliance status is required."),
+    expectedCollaborationType: requiredString(
+      "Expected collaboration type is required.",
+    ),
     complianceConfirmation: z.literal(true, {
       message: "You must confirm the governance acknowledgment.",
     }),

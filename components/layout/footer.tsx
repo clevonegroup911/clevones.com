@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { BrandLogo } from "@/components/layout/brand-logo";
 import { Container } from "@/components/ui/container";
 import { ecosystemSatelliteEntities } from "@/lib/ecosystem-page";
 import { getContent, getLocaleFromPath } from "@/lib/i18n";
@@ -33,12 +34,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
       <Container className="py-10 sm:py-14 lg:py-20">
         <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="min-w-0 lg:col-span-4">
-            <p className="font-heading text-xl font-semibold text-white sm:text-2xl">
-              {siteConfig.name}
-            </p>
-            <p className="mt-1 text-xs font-medium tracking-[0.12em] text-gold-muted uppercase sm:tracking-[0.15em]">
-              {siteConfig.tagline}
-            </p>
+            <BrandLogo variant="footer" />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty text-gray-muted">
               {siteConfig.description}
             </p>

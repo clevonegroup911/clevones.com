@@ -8,9 +8,9 @@ export const formControlResponsive =
 /** Break long URLs and email addresses without horizontal overflow. */
 export const breakUrl = "break-all sm:break-normal";
 
-/** Bottom clearance for the fixed mobile CTA bar. */
+/** Bottom clearance for the fixed mobile CTA bar when visible. */
 export const mobileCtaPadding =
-  "pb-[calc(4.75rem+env(safe-area-inset-bottom))] lg:pb-0";
+  "pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] lg:pb-0";
 
 /** Decorative grid overlay for navy hero sections. */
 export const heroGridOverlayStyle = {

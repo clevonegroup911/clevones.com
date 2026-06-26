@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Divider } from "@/components/ui/divider";
 import { Eyebrow, Heading } from "@/components/ui/heading";
 import { Section } from "@/components/ui/section";
+import { PAGE_HERO_ID } from "@/lib/constants/mobile-cta";
 import {
   heroGoldOrb,
   heroGridOverlay,
@@ -31,6 +32,7 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <Section
+      id={PAGE_HERO_ID}
       tone="navy"
       spacing="lg"
       bordered="bottom"
