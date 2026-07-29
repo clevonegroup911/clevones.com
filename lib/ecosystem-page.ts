@@ -4,7 +4,7 @@ export const ecosystemPageHero = {
   eyebrow: "Ecosystem",
   title: "The Clevones Ecosystem",
   subtitle:
-    "The Clevones ecosystem brings together specialized platforms in governance, economic intelligence, secure infrastructure, scientific knowledge, certified education, and responsible territorial development — with Clevones as the neutral coordination hub.",
+    "Specialized platforms extend Clevones' corporate fields of intervention — technology, media, knowledge, education, and responsible territorial development — with Clevones as the neutral coordination hub and architect of territorial economic flows.",
 } as const;
 
 export type EcosystemEntity = {
@@ -24,7 +24,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://clevones.com",
     role: "Governance of territorial economic flows",
     description:
-      "Clevones is the neutral institutional platform for governance, coordination, compliance, and strategic reporting.",
+      "Clevones is the neutral institutional platform for governance, coordination, compliance, and strategic reporting — architect of flows and integrator of the ecosystem.",
     operational: false,
     central: true,
   },
@@ -34,7 +34,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://clevones.media",
     role: "Media + AI economic intelligence",
     description:
-      "Clevodia produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows.",
+      "Clevodia produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows — extending the media and creative industries domain.",
     operational: false,
   },
   {
@@ -43,7 +43,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://extranet.clevones.com",
     role: "Extranet + secure infrastructure",
     description:
-      "Clevonet provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination.",
+      "Clevonet provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination — the technology and digital infrastructure layer of the ecosystem.",
     operational: false,
   },
   {
@@ -52,7 +52,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://bicuni.online",
     role: "Scientific digital library",
     description:
-      "Bicuni is a digital archive for theses, dissertations, academic publications, and scientific knowledge.",
+      "Bicuni is a digital archive for theses, dissertations, academic publications, and scientific knowledge — supporting education and capacity-building infrastructures.",
     operational: false,
   },
   {
@@ -61,7 +61,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://btlearn.org",
     role: "Certified education",
     description:
-      "Btlearn Inc. provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills.",
+      "Btlearn Inc. provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills — strengthening human and institutional capacity.",
     operational: false,
   },
   {
@@ -70,7 +70,7 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     href: "https://mining.clevones.com",
     role: "Operational mining unit — extraction and transformation",
     description:
-      "Clevone Mining is a distinct operational unit for responsible extraction, local transformation, and compliance. All field operations are conducted under Clevone Mining only — never under the Clevones governance platform.",
+      "Clevone Mining is a distinct operational unit for responsible extraction, local transformation, and compliance within the productive industries domain. All field operations are conducted under Clevone Mining only — never under the Clevones governance platform.",
     operational: true,
   },
 ];

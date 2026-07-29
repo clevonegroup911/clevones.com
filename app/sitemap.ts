@@ -5,14 +5,17 @@ import { siteConfig } from "@/lib/site";
 
 const publicRoutes = [
   { path: "/", priority: 1 },
+  { path: "/about", priority: 0.95 },
   { path: "/positioning", priority: 0.9 },
+  { path: "/solutions", priority: 0.9 },
   { path: "/methodology", priority: 0.9 },
   { path: "/ecosystem", priority: 0.85 },
   { path: "/governance", priority: 0.85 },
   { path: "/insights", priority: 0.8 },
+  { path: "/faq", priority: 0.75 },
   { path: "/contact", priority: 0.8 },
-  { path: "/mission", priority: 0.6 },
-  { path: "/positionnement", priority: 0.6 },
+  { path: "/mission", priority: 0.7 },
+  { path: "/positionnement", priority: 0.65 },
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -7,7 +7,7 @@ export const siteConfig = {
   name: "Clevones",
   tagline: "Governance Architecture for Territorial Economic Flows",
   description:
-    "Clevones is a neutral, compliant governance architecture platform for territorial economic-flow coordination, institutional reporting, and strategic alignment in the Democratic Republic of Congo and Africa.",
+    "Clevones designs, structures, and coordinates architectures of territorial economic flows — a neutral governance platform transforming territorial potential into durable economic assets across technology, logistics, industry, energy, media, education, and institutional coordination in the Democratic Republic of Congo and Africa.",
   url: "https://clevones.com",
   defaultLocale,
   locale: getOgLocale(defaultLocale),

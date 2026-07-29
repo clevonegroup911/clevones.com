@@ -12,7 +12,7 @@ export function PositioningSection() {
         <SectionHeading
           eyebrow="Positioning"
           title="What Clevones is — and is not"
-          description="Clevones exercises a role of architecture, structuring, and coordination for territorial economic flows. The platform never intervenes as a direct operator."
+          description="Clevones exercises a role of architecture, structuring, and coordination for territorial economic flows — as platform of coordination and ecosystem integrator. The governance platform never intervenes as a direct operator."
         />
         <div className="mt-10 grid gap-5 sm:mt-12 sm:gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
           <Card variant="default" padding="md">

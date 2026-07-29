@@ -2,6 +2,7 @@ import {
   clevonesIsLabels,
   clevonesIsNotLabels,
 } from "@/lib/constants/brand-positioning";
+import { interventionDomains } from "@/lib/constants/corporate-purpose";
 import { ecosystemSatelliteEntities } from "@/lib/ecosystem-page";
 import { insightArticles as allInsightArticles } from "@/lib/insights-page";
 
@@ -16,9 +17,74 @@ export const homeCta = {
   },
 } as const;
 
+export const homeHero = {
+  eyebrow: "Digital economic platform",
+  badge: "DRC & Africa",
+  title: "Turn complex initiatives into coordinated economic systems",
+  subtitle:
+    "CLEVONES helps territories, enterprises, institutions, and investors structure multi-actor initiatives into governed, investable systems — with shared digital infrastructure and neutral coordination.",
+  valueProposition:
+    "Better coordination. Less fragmentation. Clearer path to investment.",
+  primaryCta: {
+    label: "Start a strategic conversation",
+    href: "/contact",
+  },
+  secondaryCta: {
+    label: "Discover the ecosystem",
+    href: "/ecosystem",
+  },
+  benefits: [
+    {
+      title: "Actor coordination",
+      description:
+        "Align territories, enterprises, institutions, and investors around shared structures.",
+    },
+    {
+      title: "Less fragmentation",
+      description:
+        "Reduce scattered efforts with one coordination layer and clearer information flow.",
+    },
+    {
+      title: "Investment readiness",
+      description:
+        "Prepare initiatives so they become governed, transparent, and investable.",
+    },
+    {
+      title: "Shared digital infrastructure",
+      description:
+        "Operate on a common technological layer built for multi-actor coordination.",
+    },
+  ],
+  proofs: {
+    label: "Across the CLEVONES ecosystem",
+    items: [
+      { name: "Clevonet", detail: "Digital infrastructure" },
+      { name: "Clevodia", detail: "Economic intelligence" },
+      { name: "Bicuni", detail: "Scientific knowledge" },
+      { name: "Btlearn", detail: "Certified education" },
+      {
+        name: "Clevone Mining",
+        detail: "Distinct operational entity",
+        operational: true,
+      },
+    ],
+  },
+  trustLine: "Neutral coordination. Non-operational by design.",
+} as const;
+
 export const homePositioning = {
   is: clevonesIsLabels,
   isNot: clevonesIsNotLabels,
+} as const;
+
+export const homeDomainsPreview = {
+  eyebrow: "Fields of intervention",
+  title: "Territorial architectures across strategic domains",
+  description:
+    "Clevones' corporate purpose defines where architectures of economic flows may be designed and coordinated — through the governance platform, specialized ecosystem entities, and subsidiaries when required. Domains expand capacity; they do not redefine Clevones as a multi-service operator.",
+  domains: interventionDomains.slice(0, 6),
+  href: "/solutions",
+  linkLabel: "View all domains of intervention",
 } as const;
 
 export const methodologySteps = [

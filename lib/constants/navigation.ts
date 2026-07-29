@@ -1,15 +1,18 @@
 import type { NavItem } from "@/types";
 
 export const mainNavigation: readonly NavItem[] = [
+  { label: "About", href: "/about" },
   { label: "Positioning", href: "/positioning" },
+  { label: "Solutions", href: "/solutions" },
   { label: "Methodology", href: "/methodology" },
   { label: "Ecosystem", href: "/ecosystem" },
   { label: "Insights", href: "/insights" },
   { label: "Governance", href: "/governance" },
-  { label: "Contact", href: "/contact" },
 ] as const;
 
 export const legalNavigation: readonly NavItem[] = [
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
   { label: "Legal notice", href: "/mentions-legales" },
   { label: "Privacy", href: "/confidentialite" },
 ] as const;

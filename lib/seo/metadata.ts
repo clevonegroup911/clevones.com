@@ -21,6 +21,12 @@ export const siteKeywords = [
   "investment readiness DRC",
   "compliance governance Africa",
   "strategic reporting Africa",
+  "digital transformation DRC",
+  "supply chain governance Africa",
+  "economic intelligence Africa",
+  "capacity building DRC",
+  "territorial architecture Congo",
+  "Clevones",
 ] as const;
 
 export const defaultSiteTitle =

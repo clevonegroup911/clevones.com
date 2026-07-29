@@ -2,7 +2,7 @@ export const governancePageHero = {
   eyebrow: "Governance",
   title: "Governance, Compliance, and Controlled Collaboration",
   subtitle:
-    "Clevones functions under a governed doctrine that prioritizes structure, documentation, accountability, and neutral coordination — with compliance embedded at every stage of institutional engagement.",
+    "Clevones functions under a governed doctrine that prioritizes structure, documentation, accountability, and neutral coordination — with compliance embedded at every stage of institutional engagement across its fields of territorial intervention.",
 } as const;
 
 export const governancePageDoctrine = {

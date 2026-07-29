@@ -7,12 +7,14 @@ import { defaultLocale } from "@/lib/i18n/locales";
  */
 export type PageKey =
   | "home"
-  | "mission"
+  | "about"
   | "positioning"
+  | "solutions"
   | "methodology"
   | "ecosystem"
   | "insights"
   | "governance"
+  | "faq"
   | "contact"
   | "legal"
   | "privacy";
@@ -30,15 +32,17 @@ export type LocalizedPage = {
  */
 export const localizedPages: readonly LocalizedPage[] = [
   { key: "home", paths: { en: "/" } },
-  { key: "mission", paths: { fr: "/mission" } },
+  { key: "about", paths: { en: "/about", fr: "/mission" } },
   {
     key: "positioning",
     paths: { en: "/positioning", fr: "/positionnement" },
   },
+  { key: "solutions", paths: { en: "/solutions" } },
   { key: "methodology", paths: { en: "/methodology" } },
   { key: "ecosystem", paths: { en: "/ecosystem" } },
   { key: "insights", paths: { en: "/insights" } },
   { key: "governance", paths: { en: "/governance" } },
+  { key: "faq", paths: { en: "/faq" } },
   { key: "contact", paths: { en: "/contact" } },
   { key: "legal", paths: { fr: "/mentions-legales" } },
   { key: "privacy", paths: { fr: "/confidentialite" } },

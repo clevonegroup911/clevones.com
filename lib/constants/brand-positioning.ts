@@ -1,7 +1,10 @@
 /**
  * Canonical brand positioning language for Clevones.
- * Clevones: architect of flows, territorial structurer, coordination platform.
- * Never: operator, trader, resource exploiter, direct intermediary.
+ * Clevones: architect of flows, territorial structurer, coordination platform,
+ * ecosystem integrator — within a broad corporate purpose that expands fields
+ * of intervention without replacing this governance posture.
+ * Never (as governance platform): operator, trader, resource exploiter,
+ * direct intermediary, informal broker.
  */
 
 export const clevonesIsLabels = [
@@ -9,6 +12,7 @@ export const clevonesIsLabels = [
   "Territorial structurer",
   "Coordination platform",
   "Neutral governance layer",
+  "Ecosystem integrator",
   "Strategic reporting interface",
 ] as const;
 
@@ -18,6 +22,7 @@ export const clevonesIsNotLabels = [
   "Resource exploiter",
   "Direct intermediary",
   "Informal broker",
+  "Generic services vendor",
 ] as const;
 
 export const clevonesNeutralityDisclaimer =
@@ -36,4 +41,4 @@ export const governanceAcknowledgmentText =
   "I understand that Clevones is a neutral governance and coordination platform, not an operator, trader, resource exploiter, or direct intermediary." as const;
 
 export const siteLegalDisclaimer =
-  `${clevonesNeutralityDisclaimer} Clevone Mining operates as a structurally separated operational unit.` as const;
+  `${clevonesNeutralityDisclaimer} Its corporate purpose expands fields of territorial intervention through the ecosystem and subsidiaries without redefining the governance platform as an operator. Clevone Mining operates as a structurally separated operational unit.` as const;

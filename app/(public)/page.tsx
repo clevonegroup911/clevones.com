@@ -1,6 +1,7 @@
 import { createHomeMetadata } from "@/lib/metadata";
 
 import { ClientFilteringSection } from "@/components/sections/client-filtering";
+import { DomainsPreviewSection } from "@/components/sections/domains-preview";
 import { EcosystemPreviewSection } from "@/components/sections/ecosystem-preview";
 import { FinalCtaSection } from "@/components/sections/final-cta";
 import { HeroSection } from "@/components/sections/hero";
@@ -18,6 +19,7 @@ export default function HomePage() {
       <HeroSection />
       <PositioningSection />
       <StructuralProblemSection />
+      <DomainsPreviewSection />
       <MethodologyPreviewSection />
       <StrategicPillarsSection />
       <EcosystemPreviewSection />

@@ -11,6 +11,7 @@ import { StickyAsideSection } from "@/components/ui/sticky-aside-section";
 import { proseStack } from "@/lib/ui-classes";
 import { homeCta } from "@/lib/home";
 import {
+  positioningPageCorporatePurpose,
   positioningPageDefinition,
   positioningPageDistinction,
   positioningPageHero,
@@ -93,6 +94,14 @@ export function PositioningPageContent() {
         </div>
       </StickyAsideSection>
 
+      <ProseSection
+        eyebrow={positioningPageCorporatePurpose.eyebrow}
+        title={positioningPageCorporatePurpose.title}
+        paragraphs={positioningPageCorporatePurpose.paragraphs}
+        tone="elevated"
+        bordered="bottom"
+      />
+
       <PageCtaSection
         title="For institutions and partners who require governed territorial coordination."
         actions={[
@@ -100,6 +109,13 @@ export function PositioningPageContent() {
             href: homeCta.collaboration.href,
             label: homeCta.collaboration.label,
             className: "w-full max-w-md sm:w-auto",
+          },
+          {
+            href: "/solutions",
+            label: "View domains of intervention",
+            variant: "outline",
+            className:
+              "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
           },
         ]}
       />
