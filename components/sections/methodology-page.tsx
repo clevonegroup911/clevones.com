@@ -5,42 +5,36 @@ import { PageHero } from "@/components/ui/page-hero";
 import { ProseSection } from "@/components/ui/prose-section";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { homeCta } from "@/lib/home";
-import {
-  methodologyPageCta,
-  methodologyPageHero,
-  methodologyPageIntroduction,
-  methodologyPagePrinciples,
-  methodologyPageSteps,
-} from "@/lib/methodology-page";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
 import { MethodologySteps } from "./methodology-steps";
 
-export function MethodologyPageContent() {
+export async function MethodologyPageContent() {
+  const { pages } = await getLocaleContent();
+  const methodology = pages.methodology;
   return (
     <>
       <PageHero
-        eyebrow={methodologyPageHero.eyebrow}
-        title={methodologyPageHero.title}
-        subtitle={methodologyPageHero.subtitle}
-        tagline="Five phases. One governed sequence."
+        eyebrow={methodology.hero.eyebrow}
+        title={methodology.hero.title}
+        subtitle={methodology.hero.subtitle}
+        tagline={methodology.hero.tagline}
       />
 
       <ProseSection
-        eyebrow={methodologyPageIntroduction.eyebrow}
-        title={methodologyPageIntroduction.title}
-        paragraphs={methodologyPageIntroduction.paragraphs}
+        eyebrow={methodology.introduction.eyebrow}
+        title={methodology.introduction.title}
+        paragraphs={methodology.introduction.paragraphs}
       />
 
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="The five steps"
-            title="Sequential phases of territorial governance"
-            description="Each phase builds on the previous — producing documented outputs that inform the next stage of structural design."
+            eyebrow={methodology.hero.eyebrow}
+            title={methodology.hero.title}
           />
           <div className="mt-14">
-            <MethodologySteps steps={methodologyPageSteps} />
+            <MethodologySteps steps={methodology.steps} />
           </div>
         </Container>
       </Section>
@@ -48,12 +42,11 @@ export function MethodologyPageContent() {
       <Section tone="muted" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="Methodology principles"
-            title="Foundations that govern every engagement"
-            description="These principles are not aspirational values — they are structural requirements embedded in every phase of the framework."
+            eyebrow={methodology.hero.eyebrow}
+            title={methodology.hero.title}
           />
           <FeatureCardGrid>
-            {methodologyPagePrinciples.map((principle) => (
+            {methodology.principles.map((principle) => (
               <FeatureCard
                 key={principle.title}
                 title={principle.title}
@@ -65,14 +58,9 @@ export function MethodologyPageContent() {
       </Section>
 
       <PageCtaSection
-        title={methodologyPageCta.title}
-        description={methodologyPageCta.description}
-        actions={[
-          {
-            href: homeCta.initiative.href,
-            label: homeCta.initiative.label,
-          },
-        ]}
+        title={methodology.cta.title}
+        description={methodology.cta.description}
+        actions={[...methodology.cta.actions]}
       />
     </>
   );

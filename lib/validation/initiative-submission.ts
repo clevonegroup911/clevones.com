@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { actorTypes, initiativeStages } from "@/lib/contact-form";
+import {
+  actorTypes,
+  initiativeStages,
+} from "@/lib/constants/contact-form-options";
 
 const actorTypeValues = actorTypes.map((option) => option.value) as [
   (typeof actorTypes)[number]["value"],

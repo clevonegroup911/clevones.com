@@ -3,26 +3,27 @@ import { PageCtaSection } from "@/components/ui/page-cta-section";
 import { PageHero } from "@/components/ui/page-hero";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { homeCta } from "@/lib/home";
-import { faqPageCta, faqPageHero, faqPageItems } from "@/lib/faq-page";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function FaqPageContent() {
+export async function FaqPageContent() {
+  const { pages } = await getLocaleContent();
+  const faq = pages.faq;
   return (
     <>
       <PageHero
-        eyebrow={faqPageHero.eyebrow}
-        title={faqPageHero.title}
-        subtitle={faqPageHero.subtitle}
+        eyebrow={faq.hero.eyebrow}
+        title={faq.hero.title}
+        subtitle={faq.hero.subtitle}
       />
 
       <Section tone="elevated" spacing="md" bordered="bottom">
         <Container size="prose">
           <SectionHeading
-            eyebrow="Answers"
-            title="What institutions most often need to clarify"
+            eyebrow={faq.hero.eyebrow}
+            title={faq.hero.title}
           />
           <div className="mt-10 space-y-6 sm:mt-12">
-            {faqPageItems.map((item) => (
+            {faq.items.map((item) => (
               <details
                 key={item.question}
                 className="group rounded-sm border border-border-subtle bg-surface px-5 py-4 open:border-gold/20 sm:px-6"
@@ -48,21 +49,17 @@ export function FaqPageContent() {
       </Section>
 
       <PageCtaSection
-        title={faqPageCta.title}
-        description={faqPageCta.description}
-        actions={[
-          {
-            href: homeCta.collaboration.href,
-            label: homeCta.collaboration.label,
-          },
-          {
-            href: "/contact?intent=eligibility",
-            label: "Check initiative eligibility",
-            variant: "outline",
-            className:
-              "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
-          },
-        ]}
+        title={faq.cta.title}
+        description={faq.cta.description}
+        actions={faq.cta.actions.map((action) =>
+          action.variant === "outline"
+            ? {
+                ...action,
+                className:
+                  "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
+              }
+            : action,
+        )}
       />
     </>
   );

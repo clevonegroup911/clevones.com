@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { cardAccentLine } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
-import type { MethodologyStep } from "@/lib/methodology-page";
+import type { MethodologyStepContent } from "@/lib/i18n/content/pages";
 
 type MethodologyStepsProps = {
-  steps: readonly MethodologyStep[];
+  steps: readonly MethodologyStepContent[];
 };
 
 function ChevronIcon({ open }: { open: boolean }) {
@@ -47,7 +47,7 @@ function StepHighlights({ highlights }: { highlights: readonly string[] }) {
   );
 }
 
-function StepBody({ step }: { step: MethodologyStep }) {
+function StepBody({ step }: { step: MethodologyStepContent }) {
   return (
     <>
       <p className="text-sm leading-relaxed text-muted sm:text-base">

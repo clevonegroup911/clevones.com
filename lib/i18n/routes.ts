@@ -7,11 +7,14 @@ import { defaultLocale } from "@/lib/i18n/locales";
  */
 export type PageKey =
   | "home"
+  | "challenge"
+  | "whyNow"
   | "about"
   | "positioning"
   | "solutions"
   | "methodology"
   | "ecosystem"
+  | "evidence"
   | "insights"
   | "governance"
   | "faq"
@@ -31,21 +34,27 @@ export type LocalizedPage = {
  * Paths must stay in sync with `app/(public)` route files.
  */
 export const localizedPages: readonly LocalizedPage[] = [
-  { key: "home", paths: { en: "/" } },
+  { key: "home", paths: { en: "/", fr: "/accueil" } },
+  { key: "challenge", paths: { en: "/challenge", fr: "/defi" } },
+  {
+    key: "whyNow",
+    paths: { en: "/why-now", fr: "/pourquoi-maintenant" },
+  },
   { key: "about", paths: { en: "/about", fr: "/mission" } },
   {
     key: "positioning",
     paths: { en: "/positioning", fr: "/positionnement" },
   },
-  { key: "solutions", paths: { en: "/solutions" } },
-  { key: "methodology", paths: { en: "/methodology" } },
-  { key: "ecosystem", paths: { en: "/ecosystem" } },
-  { key: "insights", paths: { en: "/insights" } },
-  { key: "governance", paths: { en: "/governance" } },
-  { key: "faq", paths: { en: "/faq" } },
-  { key: "contact", paths: { en: "/contact" } },
-  { key: "legal", paths: { fr: "/mentions-legales" } },
-  { key: "privacy", paths: { fr: "/confidentialite" } },
+  { key: "solutions", paths: { en: "/solutions", fr: "/domaines" } },
+  { key: "methodology", paths: { en: "/methodology", fr: "/methodologie" } },
+  { key: "ecosystem", paths: { en: "/ecosystem", fr: "/ecosysteme" } },
+  { key: "evidence", paths: { en: "/evidence", fr: "/preuves" } },
+  { key: "insights", paths: { en: "/insights", fr: "/analyses" } },
+  { key: "governance", paths: { en: "/governance", fr: "/gouvernance" } },
+  { key: "faq", paths: { en: "/faq", fr: "/questions-frequentes" } },
+  { key: "contact", paths: { en: "/contact", fr: "/collaboration" } },
+  { key: "legal", paths: { en: "/legal-notice", fr: "/mentions-legales" } },
+  { key: "privacy", paths: { en: "/privacy", fr: "/confidentialite" } },
 ] as const;
 
 const pathToPageKey = new Map<string, PageKey>(
@@ -64,9 +73,14 @@ export const frenchPaths = new Set<string>(
   ),
 );
 
+/**
+ * Entry points when no page-level alternate exists.
+ * Reserved for site entry (e.g. home). Must NOT be used by the language switcher
+ * to fake a translation of the current page.
+ */
 export const localeFallbackPath: Record<Locale, string> = {
   en: "/",
-  fr: "/mission",
+  fr: "/accueil",
 };
 
 function normalizePath(path: string): string {
@@ -92,23 +106,47 @@ export function getPathForPage(
   return findLocalizedPage(key)?.paths[locale];
 }
 
+/**
+ * Prefer the requested locale path; fall back to the other locale when a page
+ * exists in only one language (e.g. legal FR-only, solutions EN-only).
+ */
+export function resolvePagePath(
+  key: PageKey,
+  locale: Locale,
+): string | undefined {
+  return (
+    getPathForPage(key, locale) ??
+    getPathForPage(key, locale === "fr" ? "en" : "fr")
+  );
+}
+
 export function getLocaleFromPath(pathname: string): Locale {
   return frenchPaths.has(normalizePath(pathname)) ? "fr" : defaultLocale;
 }
 
 /**
- * Resolves the best URL for the target locale.
- * Uses explicit alternates when defined; otherwise falls back to each locale's entry point.
+ * True when the current page has an explicit URL for `targetLocale`.
  */
-export function getAlternatePath(pathname: string, targetLocale: Locale): string {
+export function hasAlternatePath(
+  pathname: string,
+  targetLocale: Locale,
+): boolean {
+  return getAlternatePath(pathname, targetLocale) !== undefined;
+}
+
+/**
+ * Resolves the translated URL for the same logical page.
+ * Returns `undefined` when no alternate exists — never invents a different page.
+ */
+export function getAlternatePath(
+  pathname: string,
+  targetLocale: Locale,
+): string | undefined {
   const pageKey = findPageKeyByPath(pathname);
 
-  if (pageKey) {
-    const directAlternate = getPathForPage(pageKey, targetLocale);
-    if (directAlternate) {
-      return directAlternate;
-    }
+  if (!pageKey) {
+    return undefined;
   }
 
-  return localeFallbackPath[targetLocale];
+  return getPathForPage(pageKey, targetLocale);
 }

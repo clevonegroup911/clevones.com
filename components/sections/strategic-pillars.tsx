@@ -2,19 +2,21 @@ import { Container } from "@/components/ui/container";
 import { FeatureCard, FeatureCardGrid } from "@/components/ui/feature-card";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { strategicPillars } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function StrategicPillarsSection() {
+export async function StrategicPillarsSection() {
+  const { pages } = await getLocaleContent();
+  const pillars = pages.home.pillars;
   return (
     <Section tone="default" spacing="md" bordered="top">
       <Container>
         <SectionHeading
-          eyebrow="Strategic pillars"
-          title="Foundations of institutional intervention"
-          description="Six principles govern every dimension of Clevones' territorial governance architecture."
+          eyebrow={pillars.eyebrow}
+          title={pillars.title}
+          description={pillars.description}
         />
         <FeatureCardGrid>
-          {strategicPillars.map((pillar) => (
+          {pillars.items.map((pillar) => (
             <FeatureCard
               key={pillar.title}
               title={pillar.title}

@@ -1,12 +1,13 @@
+import { EcosystemPageContent } from "@/components/sections/ecosystem-page";
+import { getContent } from "@/lib/i18n";
 import { createPageMetadata } from "@/lib/metadata";
 
-import { EcosystemPageContent } from "@/components/sections/ecosystem-page";
-
 export const metadata = createPageMetadata({
-  title: "Ecosystem",
-  description:
-    "The Clevones ecosystem extends corporate fields of intervention — Clevodia, Clevonet, Bicuni, Btlearn Inc., and operationally separated Clevone Mining — with Clevones as the neutral coordination hub.",
+  ...getContent("en").pages.ecosystem.meta,
   path: "/ecosystem",
+  locale: "en",
+  pageKey: "ecosystem",
+  hrefLang: true,
 });
 
 export default function EcosystemPage() {

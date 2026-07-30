@@ -7,39 +7,37 @@ import { ProseSection } from "@/components/ui/prose-section";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cardGrid3 } from "@/lib/ui-classes";
-import { homeCta } from "@/lib/home";
-import {
-  insightArticles,
-  insightCategories,
-  insightsPageHero,
-  insightsPageIntroduction,
-} from "@/lib/insights-page";
+import { getPathForPage } from "@/lib/i18n";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function InsightsPageContent() {
+export async function InsightsPageContent() {
+  const { locale, pages } = await getLocaleContent();
+  const insights = pages.insights;
+  const insightsPath = getPathForPage("insights", locale);
   return (
     <>
       <PageHero
-        eyebrow={insightsPageHero.eyebrow}
-        title={insightsPageHero.title}
-        subtitle={insightsPageHero.subtitle}
-        tagline={insightsPageHero.tagline}
+        eyebrow={insights.hero.eyebrow}
+        title={insights.hero.title}
+        subtitle={insights.hero.subtitle}
+        tagline={insights.hero.tagline}
       />
 
       <ProseSection
-        eyebrow={insightsPageIntroduction.eyebrow}
-        title={insightsPageIntroduction.title}
-        paragraphs={insightsPageIntroduction.paragraphs}
+        eyebrow={insights.introduction.eyebrow}
+        title={insights.introduction.title}
+        paragraphs={insights.introduction.paragraphs}
       />
 
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="Categories"
-            title="Areas of strategic analysis"
-            description="Clevones Insights organizes analysis across the governance domains that shape territorial economic outcomes."
+            eyebrow={insights.categories.eyebrow}
+            title={insights.categories.title}
+            description={insights.categories.description}
           />
           <div className="mt-10 flex flex-wrap gap-3">
-            {insightCategories.map((category) => (
+            {insights.categories.items.map((category) => (
               <Badge key={category} variant="outline">
                 {category}
               </Badge>
@@ -51,15 +49,16 @@ export function InsightsPageContent() {
       <Section tone="elevated" spacing="lg">
         <Container>
           <SectionHeading
-            eyebrow="Latest notes"
-            title="Strategic perspectives"
-            description="Institutional analysis on governance, coordination, and investment-readiness across African territorial economic systems."
+            eyebrow={insights.listing.eyebrow}
+            title={insights.listing.title}
+            description={insights.listing.description}
           />
           <div className={cardGrid3}>
-            {insightArticles.map((article) => (
+            {insights.articles.map((article) => (
               <InsightCard
                 key={article.slug}
                 article={article}
+                href={`${insightsPath}/${article.slug}`}
                 showBadge
               />
             ))}
@@ -68,20 +67,17 @@ export function InsightsPageContent() {
       </Section>
 
       <PageCtaSection
-        title="Turn governance insight into structured territorial action."
-        description="Institutions, investors, and strategic partners can submit documented initiatives for governed assessment under the Clevones framework."
-        actions={[
-          {
-            href: homeCta.initiative.href,
-            label: homeCta.initiative.label,
-          },
-          {
-            href: homeCta.collaboration.href,
-            label: homeCta.collaboration.label,
-            variant: "outline",
-            className: "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
-          },
-        ]}
+        title={insights.cta.title}
+        description={insights.cta.description}
+        actions={insights.cta.actions.map((action) =>
+          action.variant === "outline"
+            ? {
+                ...action,
+                className:
+                  "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
+              }
+            : action,
+        )}
       />
     </>
   );

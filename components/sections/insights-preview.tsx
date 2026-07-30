@@ -4,23 +4,31 @@ import { Section } from "@/components/ui/section";
 import { SectionHeaderRow } from "@/components/ui/section-header-row";
 import { TextLink } from "@/components/ui/text-link";
 import { cardGrid3 } from "@/lib/ui-classes";
-import { insightArticles } from "@/lib/home";
+import { getPathForPage } from "@/lib/i18n";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function InsightsPreviewSection() {
+export async function InsightsPreviewSection() {
+  const { locale, pages } = await getLocaleContent();
+  const insights = pages.home.insights;
+  const insightsPath = getPathForPage("insights", locale) ?? "/insights";
   return (
     <Section tone="default" spacing="md">
       <Container>
         <SectionHeaderRow
-          eyebrow="Insights"
-          title="Perspectives on territorial governance"
-          description="Analysis on the structural conditions required for durable territorial economic value."
+          eyebrow={insights.eyebrow}
+          title={insights.title}
+          description={insights.description}
           action={
-            <TextLink href="/insights">View all insights →</TextLink>
+            <TextLink href={insights.href}>{insights.linkLabel}</TextLink>
           }
         />
         <div className={cardGrid3}>
-          {insightArticles.map((article) => (
-            <InsightCard key={article.slug} article={article} />
+          {insights.articles.map((article) => (
+            <InsightCard
+              key={article.slug}
+              article={article}
+              href={`${insightsPath}/${article.slug}`}
+            />
           ))}
         </div>
       </Container>

@@ -9,42 +9,35 @@ import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { StickyAsideSection } from "@/components/ui/sticky-aside-section";
 import { proseStack } from "@/lib/ui-classes";
-import { clientFilters } from "@/lib/home";
-import {
-  governancePageCompliancePrinciples,
-  governancePageCta,
-  governancePageDataHandling,
-  governancePageDoctrine,
-  governancePageFiltering,
-  governancePageHero,
-  governancePageNotEligible,
-} from "@/lib/governance-page";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function GovernancePageContent() {
+export async function GovernancePageContent() {
+  const { pages } = await getLocaleContent();
+  const governance = pages.governance;
   return (
     <>
       <PageHero
-        eyebrow={governancePageHero.eyebrow}
-        title={governancePageHero.title}
-        subtitle={governancePageHero.subtitle}
-        tagline="Governed. Documented. Compliant."
+        eyebrow={governance.hero.eyebrow}
+        title={governance.hero.title}
+        subtitle={governance.hero.subtitle}
+        tagline={governance.hero.tagline}
       />
 
       <ProseSection
-        eyebrow={governancePageDoctrine.eyebrow}
-        title={governancePageDoctrine.title}
-        paragraphs={governancePageDoctrine.paragraphs}
+        eyebrow={governance.doctrine.eyebrow}
+        title={governance.doctrine.title}
+        paragraphs={governance.doctrine.paragraphs}
       />
 
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="Compliance principles"
-            title="Structural requirements for every engagement"
-            description="These principles are embedded in governance architecture — not applied selectively or after the fact."
+            eyebrow={governance.compliance.eyebrow}
+            title={governance.compliance.title}
+            description={governance.compliance.description}
           />
           <FeatureCardGrid>
-            {governancePageCompliancePrinciples.map((principle) => (
+            {governance.compliance.items.map((principle) => (
               <FeatureCard
                 key={principle.title}
                 title={principle.title}
@@ -56,35 +49,35 @@ export function GovernancePageContent() {
       </Section>
 
       <ProseSection
-        eyebrow={governancePageDataHandling.eyebrow}
-        title={governancePageDataHandling.title}
-        paragraphs={governancePageDataHandling.paragraphs}
+        eyebrow={governance.dataHandling.eyebrow}
+        title={governance.dataHandling.title}
+        paragraphs={governance.dataHandling.paragraphs}
       />
 
       <Section tone="charcoal" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow={governancePageFiltering.eyebrow}
-            title={governancePageFiltering.title}
-            description={governancePageFiltering.description}
+            eyebrow={governance.filtering.eyebrow}
+            title={governance.filtering.title}
+            description={governance.filtering.description}
             tone="inverse"
           />
-          <ClientFilterCardGrid filters={clientFilters} />
+          <ClientFilterCardGrid filters={governance.filtering.filters} />
         </Container>
       </Section>
 
       <StickyAsideSection
-        eyebrow={governancePageNotEligible.eyebrow}
-        title={governancePageNotEligible.title}
+        eyebrow={governance.notEligible.eyebrow}
+        title={governance.notEligible.title}
       >
         <div>
           <div className={proseStack}>
-            {governancePageNotEligible.paragraphs.map((paragraph) => (
+            {governance.notEligible.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
           <ul className="mt-10 space-y-4">
-            {governancePageNotEligible.exclusions.map((exclusion) => (
+            {governance.notEligible.exclusions.map((exclusion) => (
               <li
                 key={exclusion}
                 className="flex gap-4 text-sm leading-relaxed text-muted"
@@ -93,7 +86,7 @@ export function GovernancePageContent() {
                   variant="outline"
                   className="mt-0.5 shrink-0 border-border-subtle text-gray-muted"
                 >
-                  Excluded
+                  {governance.notEligible.excludedLabel}
                 </Badge>
                 <span>{exclusion}</span>
               </li>
@@ -103,14 +96,9 @@ export function GovernancePageContent() {
       </StickyAsideSection>
 
       <PageCtaSection
-        title={governancePageCta.title}
-        description={governancePageCta.description}
-        actions={[
-          {
-            href: governancePageCta.href,
-            label: governancePageCta.label,
-          },
-        ]}
+        title={governance.cta.title}
+        description={governance.cta.description}
+        actions={[...governance.cta.actions]}
       />
     </>
   );

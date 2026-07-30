@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import {
   getAlternatePath,
+  getContent,
   getLocaleFromPath,
   localeConfig,
   locales,
@@ -20,6 +21,7 @@ type LanguageSwitcherProps = {
 export function LanguageSwitcher({ label, className }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const { shell } = getContent(currentLocale);
 
   return (
     <div
@@ -36,6 +38,7 @@ export function LanguageSwitcher({ label, className }: LanguageSwitcherProps) {
           locale={locale}
           isActive={locale === currentLocale}
           href={getAlternatePath(pathname, locale)}
+          unavailableLabel={shell.languageUnavailable}
         />
       ))}
     </div>
@@ -45,10 +48,16 @@ export function LanguageSwitcher({ label, className }: LanguageSwitcherProps) {
 type LanguageOptionProps = {
   locale: Locale;
   isActive: boolean;
-  href: string;
+  href: string | undefined;
+  unavailableLabel: string;
 };
 
-function LanguageOption({ locale, isActive, href }: LanguageOptionProps) {
+function LanguageOption({
+  locale,
+  isActive,
+  href,
+  unavailableLabel,
+}: LanguageOptionProps) {
   const { htmlLang, label: localeLabel } = localeConfig[locale];
 
   if (isActive) {
@@ -57,6 +66,19 @@ function LanguageOption({ locale, isActive, href }: LanguageOptionProps) {
         aria-current="true"
         lang={htmlLang}
         className="inline-flex min-h-8 min-w-9 items-center justify-center rounded-sm bg-white/10 px-2.5 text-xs font-semibold tracking-wide text-white"
+      >
+        {localeLabel}
+      </span>
+    );
+  }
+
+  if (!href) {
+    return (
+      <span
+        aria-disabled="true"
+        lang={htmlLang}
+        title={unavailableLabel}
+        className="inline-flex min-h-8 min-w-9 cursor-not-allowed items-center justify-center rounded-sm px-2.5 text-xs font-medium tracking-wide text-gray-muted/50"
       >
         {localeLabel}
       </span>

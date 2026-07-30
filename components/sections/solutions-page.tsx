@@ -5,29 +5,24 @@ import { PageHero } from "@/components/ui/page-hero";
 import { ProseSection } from "@/components/ui/prose-section";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { homeCta } from "@/lib/home";
-import {
-  solutionsPageCta,
-  solutionsPageDomains,
-  solutionsPageHero,
-  solutionsPageHow,
-  solutionsPageIntroduction,
-} from "@/lib/solutions-page";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function SolutionsPageContent() {
+export async function SolutionsPageContent() {
+  const { pages } = await getLocaleContent();
+  const solutions = pages.solutions;
   return (
     <>
       <PageHero
-        eyebrow={solutionsPageHero.eyebrow}
-        title={solutionsPageHero.title}
-        subtitle={solutionsPageHero.subtitle}
-        tagline={solutionsPageHero.tagline}
+        eyebrow={solutions.hero.eyebrow}
+        title={solutions.hero.title}
+        subtitle={solutions.hero.subtitle}
+        tagline={solutions.hero.tagline}
       />
 
       <ProseSection
-        eyebrow={solutionsPageIntroduction.eyebrow}
-        title={solutionsPageIntroduction.title}
-        paragraphs={solutionsPageIntroduction.paragraphs}
+        eyebrow={solutions.introduction.eyebrow}
+        title={solutions.introduction.title}
+        paragraphs={solutions.introduction.paragraphs}
         tone="elevated"
         bordered="bottom"
       />
@@ -35,19 +30,19 @@ export function SolutionsPageContent() {
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="Domains"
-            title="Nine fields. One architectural mandate."
-            description="Each domain is a lawful field of intervention. Engagement remains architectural: structure, coordinate, report — without substituting operational actors."
+            eyebrow={solutions.domains.eyebrow}
+            title={solutions.domains.title}
+            description={solutions.domains.description}
           />
           <FeatureCardGrid className="mt-10 sm:mt-12">
-            {solutionsPageDomains.map((domain) => (
+            {solutions.domains.items.map((domain) => (
               <FeatureCard
-                key={domain.id}
+                key={domain.title}
                 title={domain.title}
                 description={
                   domain.ecosystemLink
-                    ? `${domain.architectureRole} Related ecosystem: ${domain.ecosystemLink}.`
-                    : domain.architectureRole
+                    ? `${domain.description} ${domain.ecosystemLink}.`
+                    : domain.description
                 }
               />
             ))}
@@ -58,11 +53,11 @@ export function SolutionsPageContent() {
       <Section tone="elevated" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow={solutionsPageHow.eyebrow}
-            title={solutionsPageHow.title}
+            eyebrow={solutions.howEngagementWorks.eyebrow}
+            title={solutions.howEngagementWorks.title}
           />
           <div className="mt-10 grid gap-5 sm:mt-12 sm:grid-cols-3 sm:gap-6">
-            {solutionsPageHow.steps.map((step, index) => (
+            {solutions.howEngagementWorks.steps.map((step, index) => (
               <FeatureCard
                 key={step.title}
                 title={`${String(index + 1).padStart(2, "0")} — ${step.title}`}
@@ -74,21 +69,17 @@ export function SolutionsPageContent() {
       </Section>
 
       <PageCtaSection
-        title={solutionsPageCta.title}
-        description={solutionsPageCta.description}
-        actions={[
-          {
-            href: homeCta.initiative.href,
-            label: homeCta.initiative.label,
-          },
-          {
-            href: "/methodology",
-            label: "View methodology",
-            variant: "outline",
-            className:
-              "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
-          },
-        ]}
+        title={solutions.cta.title}
+        description={solutions.cta.description}
+        actions={solutions.cta.actions.map((action) =>
+          action.variant === "outline"
+            ? {
+                ...action,
+                className:
+                  "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
+              }
+            : action,
+        )}
       />
     </>
   );

@@ -9,41 +9,39 @@ import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { StickyAsideSection } from "@/components/ui/sticky-aside-section";
 import { proseStack } from "@/lib/ui-classes";
-import { homeCta } from "@/lib/home";
-import {
-  positioningPageCorporatePurpose,
-  positioningPageDefinition,
-  positioningPageDistinction,
-  positioningPageHero,
-  positioningPageIs,
-  positioningPageIsNot,
-} from "@/lib/positioning-page";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function PositioningPageContent() {
+/**
+ * Unified Positioning page (EN/FR) — content from `pages.positioning`.
+ */
+export async function PositioningPageContent() {
+  const { pages } = await getLocaleContent();
+  const positioning = pages.positioning;
+
   return (
     <>
       <PageHero
-        eyebrow={positioningPageHero.eyebrow}
-        title={positioningPageHero.title}
-        subtitle={positioningPageHero.subtitle}
-        tagline="Neutral. Compliant. Non-operational."
+        eyebrow={positioning.hero.eyebrow}
+        title={positioning.hero.title}
+        subtitle={positioning.hero.subtitle}
+        tagline={positioning.hero.tagline}
       />
 
       <ProseSection
-        eyebrow={positioningPageDefinition.eyebrow}
-        title={positioningPageDefinition.title}
-        paragraphs={positioningPageDefinition.paragraphs}
+        eyebrow={positioning.definition.eyebrow}
+        title={positioning.definition.title}
+        paragraphs={positioning.definition.paragraphs}
       />
 
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="What Clevones is"
-            title="Roles of architecture, structure, and coordination"
-            description="Clevones exercises a defined set of governance functions — each distinct from operational or commercial activity."
+            eyebrow={positioning.isSection.eyebrow}
+            title={positioning.isSection.title}
+            description={positioning.isSection.description}
           />
           <FeatureCardGrid>
-            {positioningPageIs.map((item) => (
+            {positioning.isSection.items.map((item) => (
               <FeatureCard
                 key={item.title}
                 title={item.title}
@@ -57,12 +55,12 @@ export function PositioningPageContent() {
       <Section tone="muted" spacing="md" bordered="bottom">
         <Container>
           <SectionHeading
-            eyebrow="What Clevones is not"
-            title="Boundaries that preserve institutional neutrality"
-            description="These exclusions are not limitations — they are structural guarantees that protect the integrity of every coordination engagement."
+            eyebrow={positioning.isNotSection.eyebrow}
+            title={positioning.isNotSection.title}
+            description={positioning.isNotSection.description}
           />
           <FeatureCardGrid>
-            {positioningPageIsNot.map((item) => (
+            {positioning.isNotSection.items.map((item) => (
               <Card
                 key={item.title}
                 variant="muted"
@@ -73,7 +71,7 @@ export function PositioningPageContent() {
                   variant="outline"
                   className="mb-4 border-border-subtle text-gray-muted"
                 >
-                  Excluded role
+                  {positioning.isNotSection.excludedLabel}
                 </Badge>
                 <CardTitle className="text-gray-muted">{item.title}</CardTitle>
                 <CardDescription>{item.description}</CardDescription>
@@ -84,40 +82,44 @@ export function PositioningPageContent() {
       </Section>
 
       <StickyAsideSection
-        eyebrow={positioningPageDistinction.eyebrow}
-        title={positioningPageDistinction.title}
+        eyebrow={positioning.distinction.eyebrow}
+        title={positioning.distinction.title}
       >
         <div className={proseStack}>
-          {positioningPageDistinction.paragraphs.map((paragraph) => (
+          {positioning.distinction.paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
       </StickyAsideSection>
 
       <ProseSection
-        eyebrow={positioningPageCorporatePurpose.eyebrow}
-        title={positioningPageCorporatePurpose.title}
-        paragraphs={positioningPageCorporatePurpose.paragraphs}
+        eyebrow={positioning.corporatePurpose.eyebrow}
+        title={positioning.corporatePurpose.title}
+        paragraphs={positioning.corporatePurpose.paragraphs}
         tone="elevated"
         bordered="bottom"
       />
 
+      <Section tone="default" spacing="sm" bordered="bottom">
+        <Container size="prose">
+          <p className="text-sm leading-relaxed text-muted">
+            {positioning.miningDisclaimer}
+          </p>
+        </Container>
+      </Section>
+
       <PageCtaSection
-        title="For institutions and partners who require governed territorial coordination."
-        actions={[
-          {
-            href: homeCta.collaboration.href,
-            label: homeCta.collaboration.label,
-            className: "w-full max-w-md sm:w-auto",
-          },
-          {
-            href: "/solutions",
-            label: "View domains of intervention",
-            variant: "outline",
-            className:
-              "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
-          },
-        ]}
+        title={positioning.cta.title}
+        description={positioning.cta.description}
+        actions={positioning.cta.actions.map((action) => ({
+          href: action.href,
+          label: action.label,
+          variant: action.variant === "outline" ? "outline" : "secondary",
+          className:
+            action.variant === "outline"
+              ? "border-border text-white hover:bg-navy-hover w-full sm:w-auto"
+              : "w-full max-w-md sm:w-auto",
+        }))}
       />
     </>
   );

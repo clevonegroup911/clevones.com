@@ -1,29 +1,36 @@
-import type { NavItem } from "@/types";
+/**
+ * Structural navigation keys. Locale-aware labels and hrefs are built by
+ * `getNavigation(locale)` in `lib/i18n/navigation.ts`.
+ *
+ * @deprecated Prefer `getNavigation(locale)` for UI chrome.
+ * Kept for English default href lists used by non-locale consumers.
+ */
+import { getNavigation } from "@/lib/i18n/navigation";
+import { defaultLocale } from "@/lib/i18n/locales";
 
-export const mainNavigation: readonly NavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Positioning", href: "/positioning" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Methodology", href: "/methodology" },
-  { label: "Ecosystem", href: "/ecosystem" },
-  { label: "Insights", href: "/insights" },
-  { label: "Governance", href: "/governance" },
-] as const;
+const defaultNavigation = getNavigation(defaultLocale);
 
-export const legalNavigation: readonly NavItem[] = [
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
-  { label: "Legal notice", href: "/mentions-legales" },
-  { label: "Privacy", href: "/confidentialite" },
-] as const;
-
-export const platformNavigation: readonly NavItem[] = [
-  { label: "Sign in", href: "/sign-in" },
-  { label: "Client portal", href: "/portal" },
-] as const;
+export const mainNavigation = defaultNavigation.main;
+export const secondaryNavigation = defaultNavigation.secondary;
+export const legalNavigation = defaultNavigation.legal;
+export const accessNavigation = defaultNavigation.access;
+/** @deprecated Use `accessNavigation` — "platform" meant SaaS access, not CEOS Platform. */
+export const platformNavigation = accessNavigation;
 
 export const navigation = {
   main: mainNavigation,
+  secondary: secondaryNavigation,
   legal: legalNavigation,
-  platform: platformNavigation,
+  access: accessNavigation,
+  /** @deprecated Use `access`. */
+  platform: accessNavigation,
 } as const;
+
+export {
+  getNavigation,
+  legalNavigationKeys,
+  mainNavigationKeys,
+  secondaryNavigationKeys,
+  type LocalizedNavItem,
+  type LocalizedNavigation,
+} from "@/lib/i18n/navigation";

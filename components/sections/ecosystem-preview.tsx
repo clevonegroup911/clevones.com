@@ -5,24 +5,25 @@ import { ExternalLink } from "@/components/ui/external-link";
 import { Section } from "@/components/ui/section";
 import { SectionHeaderRow } from "@/components/ui/section-header-row";
 import { TextLink } from "@/components/ui/text-link";
-import { clevoneMiningSeparationDisclaimer } from "@/lib/constants/brand-positioning";
 import { cardGrid3 } from "@/lib/ui-classes";
-import { ecosystemEntities } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function EcosystemPreviewSection() {
+export async function EcosystemPreviewSection() {
+  const { pages } = await getLocaleContent();
+  const ecosystem = pages.home.ecosystem;
   return (
     <Section tone="elevated" spacing="md">
       <Container>
         <SectionHeaderRow
-          eyebrow="Ecosystem"
-          title="A structured institutional ecosystem"
-          description="Clevones sits within a broader architecture of complementary entities — each with a defined role, none substituting the neutral governance function."
+          eyebrow={ecosystem.eyebrow}
+          title={ecosystem.title}
+          description={ecosystem.description}
           action={
-            <TextLink href="/ecosystem">Explore ecosystem →</TextLink>
+            <TextLink href={ecosystem.href}>{ecosystem.linkLabel}</TextLink>
           }
         />
         <div className={cardGrid3}>
-          {ecosystemEntities.map((entity) => (
+          {ecosystem.entities.map((entity) => (
             <Card
               key={entity.name}
               variant={entity.operational ? "outlined" : "default"}
@@ -40,7 +41,7 @@ export function EcosystemPreviewSection() {
                     variant="outline"
                     className="border-gold/30 text-gold-muted"
                   >
-                    Operational unit
+                    {ecosystem.operationalBadge}
                   </Badge>
                 ) : null}
               </div>
@@ -56,7 +57,7 @@ export function EcosystemPreviewSection() {
         </div>
         <div className="mt-10 rounded-sm border border-border-subtle/60 bg-surface-muted px-5 py-5 sm:px-6">
           <p className="text-sm leading-relaxed text-muted">
-            {clevoneMiningSeparationDisclaimer}
+            {ecosystem.miningDisclaimer}
           </p>
         </div>
       </Container>

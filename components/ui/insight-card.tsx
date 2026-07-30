@@ -14,18 +14,20 @@ export type InsightCardData = {
 
 type InsightCardProps = {
   article: InsightCardData;
+  href?: string;
   className?: string;
   showBadge?: boolean;
 };
 
 export function InsightCard({
   article,
+  href = `/insights/${article.slug}`,
   className,
   showBadge = false,
 }: InsightCardProps) {
   return (
     <Link
-      href={`/insights/${article.slug}`}
+      href={href}
       className={cn(
         "group min-w-0 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
         className,

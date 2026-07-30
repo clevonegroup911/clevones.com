@@ -1,11 +1,9 @@
+import { PositioningPageContent } from "@/components/sections/positioning-page";
+import { getContent } from "@/lib/i18n";
 import { createPageMetadata } from "@/lib/metadata";
 
-import { PositionnementSection } from "@/components/sections/positionnement";
-
 export const metadata = createPageMetadata({
-  title: "Positionnement",
-  description:
-    "Clevones est architecte des flux, structureur territorial, plateforme de coordination et intégrateur d'écosystèmes — ni opérateur, ni négociant, ni prestataire de services génériques. L'objet social élargit les champs d'intervention sans remplacer cette vision.",
+  ...getContent("fr").pages.positioning.meta,
   path: "/positionnement",
   locale: "fr",
   pageKey: "positioning",
@@ -13,5 +11,5 @@ export const metadata = createPageMetadata({
 });
 
 export default function PositionnementPage() {
-  return <PositionnementSection />;
+  return <PositioningPageContent />;
 }

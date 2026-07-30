@@ -13,10 +13,12 @@ import {
   heroGridOverlayStyle,
 } from "@/lib/ui-classes";
 import { PAGE_HERO_ID } from "@/lib/constants/mobile-cta";
-import { homeHero } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+export async function HeroSection() {
+  const { pages } = await getLocaleContent();
+  const homeHero = pages.home.hero;
   return (
     <Section
       id={PAGE_HERO_ID}
@@ -94,29 +96,6 @@ export function HeroSection() {
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-gray-muted">
                   {benefit.description}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-10 border-t border-white/10 pt-8 sm:mt-12 sm:pt-10">
-          <p className="text-xs font-semibold tracking-[0.2em] text-gold-muted uppercase">
-            {homeHero.proofs.label}
-          </p>
-          <ul className="mt-5 flex flex-col gap-4 sm:mt-6 sm:flex-row sm:flex-wrap sm:items-start sm:gap-x-8 sm:gap-y-4">
-            {homeHero.proofs.items.map((item) => (
-              <li key={item.name} className="min-w-0">
-                <p className="text-sm font-medium text-white">{item.name}</p>
-                <p
-                  className={cn(
-                    "mt-0.5 text-xs leading-relaxed",
-                    "operational" in item && item.operational
-                      ? "text-gold-muted/90"
-                      : "text-gray-muted",
-                  )}
-                >
-                  {item.detail}
                 </p>
               </li>
             ))}

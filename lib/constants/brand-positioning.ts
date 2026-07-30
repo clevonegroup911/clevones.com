@@ -28,6 +28,9 @@ export const clevonesIsNotLabels = [
 export const clevonesNeutralityDisclaimer =
   "Clevones is a neutral governance and coordination platform. It is not an operator, trader, resource exploiter, or direct intermediary." as const;
 
+export const clevonesNeutralityDisclaimerFr =
+  "Clevones est une plateforme neutre de gouvernance et de coordination. Elle n'est pas un opérateur, un négociant, un exploitant de ressources, ni un intermédiaire direct." as const;
+
 export const clevoneMiningSeparationDisclaimer =
   "Clevone Mining is an operational unit that conducts field activities. It is structurally and functionally separated from the neutral governance role exercised by Clevones. No operational activity is conducted under the Clevones governance platform." as const;
 

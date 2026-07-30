@@ -2,13 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ExternalLink } from "@/components/ui/external-link";
 import { cardAccentLine } from "@/lib/ui-classes";
-import type { EcosystemEntity } from "@/lib/ecosystem-page";
+import type { EcosystemEntityContent } from "@/lib/i18n/content/pages";
 import { cn } from "@/lib/utils";
 
 type EcosystemMapProps = {
-  central: EcosystemEntity;
-  neutral: EcosystemEntity[];
-  operational: EcosystemEntity;
+  central: EcosystemEntityContent;
+  neutral: readonly EcosystemEntityContent[];
+  operational: EcosystemEntityContent;
 };
 
 function EntityCard({
@@ -16,7 +16,7 @@ function EntityCard({
   variant = "neutral",
   className,
 }: {
-  entity: EcosystemEntity;
+  entity: EcosystemEntityContent;
   variant?: "central" | "neutral" | "operational";
   className?: string;
 }) {

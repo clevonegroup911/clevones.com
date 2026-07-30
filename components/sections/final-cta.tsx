@@ -1,18 +1,20 @@
 import { PageCtaSection } from "@/components/ui/page-cta-section";
-import { homeCta } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function FinalCtaSection() {
+export async function FinalCtaSection() {
+  const { pages } = await getLocaleContent();
+  const finalCta = pages.home.finalCta;
   return (
     <PageCtaSection
-      title="For serious initiatives requiring structure, governance, and institutional discipline."
+      title={finalCta.title}
       actions={[
         {
-          href: homeCta.collaboration.href,
-          label: homeCta.collaboration.label,
+          href: finalCta.collaboration.href,
+          label: finalCta.collaboration.label,
         },
         {
-          href: homeCta.initiative.href,
-          label: homeCta.initiative.label,
+          href: finalCta.initiative.href,
+          label: finalCta.initiative.label,
           variant: "outline",
           className: "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
         },

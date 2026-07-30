@@ -5,17 +5,32 @@ import { siteConfig } from "@/lib/site";
 
 const publicRoutes = [
   { path: "/", priority: 1 },
-  { path: "/about", priority: 0.95 },
-  { path: "/positioning", priority: 0.9 },
+  { path: "/accueil", priority: 1 },
+  { path: "/challenge", priority: 0.96 },
+  { path: "/defi", priority: 0.96 },
+  { path: "/why-now", priority: 0.95 },
+  { path: "/pourquoi-maintenant", priority: 0.95 },
+  { path: "/positioning", priority: 0.94 },
+  { path: "/positionnement", priority: 0.94 },
+  { path: "/about", priority: 0.9 },
+  { path: "/mission", priority: 0.9 },
   { path: "/solutions", priority: 0.9 },
+  { path: "/domaines", priority: 0.9 },
   { path: "/methodology", priority: 0.9 },
-  { path: "/ecosystem", priority: 0.85 },
-  { path: "/governance", priority: 0.85 },
-  { path: "/insights", priority: 0.8 },
-  { path: "/faq", priority: 0.75 },
-  { path: "/contact", priority: 0.8 },
-  { path: "/mission", priority: 0.7 },
-  { path: "/positionnement", priority: 0.65 },
+  { path: "/methodologie", priority: 0.9 },
+  { path: "/governance", priority: 0.88 },
+  { path: "/gouvernance", priority: 0.88 },
+  { path: "/ecosystem", priority: 0.92 },
+  { path: "/ecosysteme", priority: 0.92 },
+  { path: "/evidence", priority: 0.91 },
+  { path: "/preuves", priority: 0.91 },
+  { path: "/faq", priority: 0.8 },
+  { path: "/questions-frequentes", priority: 0.8 },
+  { path: "/contact", priority: 0.85 },
+  { path: "/collaboration", priority: 0.85 },
+  /** Secondary editorial path — not primary CEOS journey. */
+  { path: "/insights", priority: 0.65 },
+  { path: "/analyses", priority: 0.65 },
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -28,12 +43,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }));
 
-  const insightEntries = insightArticles.map((article) => ({
-    url: new URL(`/insights/${article.slug}`, siteConfig.url).toString(),
-    lastModified,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  const insightEntries = insightArticles.flatMap((article) =>
+    (["/insights", "/analyses"] as const).map((base) => ({
+      url: new URL(`${base}/${article.slug}`, siteConfig.url).toString(),
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  );
 
   return [...staticEntries, ...insightEntries];
 }

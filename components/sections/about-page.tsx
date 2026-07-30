@@ -14,9 +14,11 @@ import {
   aboutPageMission,
   aboutPageVision,
 } from "@/lib/about-page";
-import { homeCta } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function AboutPageContent() {
+export async function AboutPageContent() {
+  const { pages } = await getLocaleContent();
+  const homeCta = pages.home.finalCta;
   return (
     <>
       <PageHero

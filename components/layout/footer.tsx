@@ -5,9 +5,13 @@ import { usePathname } from "next/navigation";
 
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { Container } from "@/components/ui/container";
-import { ecosystemSatelliteEntities } from "@/lib/ecosystem-page";
-import { getContent, getLocaleFromPath } from "@/lib/i18n";
-import { navigation, siteConfig } from "@/lib/site";
+import {
+  getContent,
+  getLocaleFromPath,
+  getNavigation,
+  resolvePagePath,
+} from "@/lib/i18n";
+import { siteConfig } from "@/lib/site";
 import { breakUrl, mobileCtaPadding } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +21,9 @@ type FooterProps = {
 
 export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
   const pathname = usePathname();
-  const { shell } = getContent(getLocaleFromPath(pathname));
+  const locale = getLocaleFromPath(pathname);
+  const { shell, pages } = getContent(locale);
+  const navigation = getNavigation(locale);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -34,9 +40,12 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
       <Container className="py-10 sm:py-14 lg:py-20">
         <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="min-w-0 lg:col-span-4">
-            <BrandLogo variant="footer" />
+            <BrandLogo
+              variant="footer"
+              href={resolvePagePath("home", locale) ?? "/"}
+            />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty text-gray-muted">
-              {siteConfig.description}
+              {shell.description}
             </p>
           </div>
 
@@ -46,7 +55,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             </p>
             <ul className="mt-4 space-y-2.5">
               {navigation.main.map((item) => (
-                <li key={item.href}>
+                <li key={item.pageKey ?? item.href}>
                   <Link
                     href={item.href}
                     className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
@@ -63,7 +72,9 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
               {shell.footerEcosystem}
             </p>
             <ul className="mt-4 space-y-2.5">
-              {ecosystemSatelliteEntities.map((item) => (
+              {pages.ecosystem.modules.entities
+                .filter((item) => !item.central)
+                .map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
@@ -75,7 +86,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                       {item.name}
                       {item.operational ? (
                         <span className="ml-1.5 text-[10px] font-semibold tracking-wide text-gold-muted uppercase">
-                          (Operational)
+                          ({shell.operationalBadge})
                         </span>
                       ) : null}
                     </span>
@@ -95,10 +106,10 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
 
           <div className="min-w-0 lg:col-span-2">
             <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
-              {shell.footerPlatform}
+              {shell.footerAccess}
             </p>
             <ul className="mt-4 space-y-2.5">
-              {navigation.platform.map((item) => (
+              {navigation.access.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -109,6 +120,25 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                 </li>
               ))}
             </ul>
+            {navigation.secondary.length > 0 ? (
+              <div className="mt-8">
+                <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+                  {shell.footerSecondary}
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {navigation.secondary.map((item) => (
+                    <li key={item.pageKey ?? item.href}>
+                      <Link
+                        href={item.href}
+                        className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
 
           <div className="min-w-0 lg:col-span-2">
@@ -126,7 +156,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
 
         <div className="mt-10 rounded-sm border border-border-subtle/40 bg-white/[0.02] px-4 py-4 sm:mt-12 sm:px-5">
           <p className="text-sm leading-relaxed text-pretty text-gray-muted">
-            {siteConfig.legalDisclaimer}
+            {shell.legalDisclaimer}
           </p>
         </div>
 
@@ -137,7 +167,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {navigation.legal.map((item) => (
               <Link
-                key={item.href}
+                key={item.pageKey ?? item.href}
                 href={item.href}
                 className="inline-flex min-h-9 items-center transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
               >

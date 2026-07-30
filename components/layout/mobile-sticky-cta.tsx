@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 
 import { useMobileCta } from "@/components/layout/mobile-cta-provider";
 import { MOBILE_CTA_HIDDEN_PATHS } from "@/lib/constants/mobile-cta";
-import { siteConfig } from "@/lib/site";
+import { getContent, getLocaleFromPath } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function MobileStickyCta() {
   const pathname = usePathname();
   const { isVisible } = useMobileCta();
+  const { shell } = getContent(getLocaleFromPath(pathname));
 
   if (MOBILE_CTA_HIDDEN_PATHS.has(pathname)) {
     return null;
@@ -36,12 +37,12 @@ export function MobileStickyCta() {
         )}
       >
         <Link
-          href={siteConfig.cta.href}
+          href={shell.cta.href}
           tabIndex={isVisible ? undefined : -1}
           className="flex h-11 w-full items-center justify-center rounded-sm bg-gold px-6 text-center text-sm font-medium tracking-wide text-charcoal transition-colors hover:bg-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
         >
-          <span className="sm:hidden">{siteConfig.cta.shortLabel}</span>
-          <span className="hidden sm:inline">{siteConfig.cta.label}</span>
+          <span className="sm:hidden">{shell.cta.shortLabel}</span>
+          <span className="hidden sm:inline">{shell.cta.label}</span>
         </Link>
       </div>
     </div>

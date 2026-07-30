@@ -12,9 +12,14 @@ const brandLinkClassName =
 type BrandLogoProps = {
   variant?: "header" | "footer";
   className?: string;
+  href?: string;
 };
 
-export function BrandLogo({ variant = "header", className }: BrandLogoProps) {
+export function BrandLogo({
+  variant = "header",
+  className,
+  href = "/",
+}: BrandLogoProps) {
   const isHeader = variant === "header";
 
   const iconFrameClass = isHeader
@@ -76,7 +81,7 @@ export function BrandLogo({ variant = "header", className }: BrandLogoProps) {
 
   return (
     <Link
-      href="/"
+      href={href}
       className={brandLinkClassName}
       aria-label={`${siteConfig.name} — home`}
     >

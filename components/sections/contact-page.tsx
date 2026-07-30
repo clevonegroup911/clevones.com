@@ -2,20 +2,20 @@ import { ContactInitiativeForm } from "@/components/sections/contact-initiative-
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { Section } from "@/components/ui/section";
-import {
-  contactPageGuidance,
-  contactPageIntents,
-  type ContactIntent,
-} from "@/lib/contact-page";
+import { getContent, getLocaleFromHeaders } from "@/lib/i18n";
+import { type ContactIntent } from "@/lib/i18n/content/pages";
+import { headers } from "next/headers";
 
 type ContactPageContentProps = {
   intent?: ContactIntent;
 };
 
-export function ContactPageContent({
+export async function ContactPageContent({
   intent = "collaboration",
 }: ContactPageContentProps) {
-  const content = contactPageIntents[intent];
+  const locale = getLocaleFromHeaders(await headers());
+  const page = getContent(locale).pages.contact;
+  const content = page.intents[intent];
 
   return (
     <>
@@ -23,20 +23,20 @@ export function ContactPageContent({
         eyebrow={content.eyebrow}
         title={content.title}
         subtitle={content.subtitle}
-        tagline="Neutral governance. Structured review. No informal brokerage."
+        tagline={page.hero.tagline}
       />
 
       <Section tone="elevated" spacing="sm" bordered="bottom">
         <Container size="prose">
           <div className="rounded-sm border border-border-subtle/60 bg-surface-muted px-5 py-6 sm:px-7 sm:py-7">
             <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
-              {contactPageGuidance.title}
+              {page.guidance.title}
             </p>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              {contactPageGuidance.description}
+              {page.guidance.description}
             </p>
             <ol className="mt-5 space-y-3">
-              {contactPageGuidance.steps.map((step, index) => (
+              {page.guidance.steps.map((step, index) => (
                 <li
                   key={step}
                   className="flex gap-4 text-sm leading-relaxed text-soft-white"

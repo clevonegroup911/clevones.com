@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,20 +16,15 @@ import {
 import { buttonFullMobile } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
 import {
-  actorTypes,
   emptyInitiativeSubmission,
-  initiativeStages,
   type InitiativeSubmission,
   type InitiativeSubmissionErrors,
   type InitiativeSubmissionField,
   submitInitiativeSubmission,
   validateInitiativeSubmission,
 } from "@/lib/contact-form";
-import {
-  contactPageForm,
-  contactPageIntents,
-  type ContactIntent,
-} from "@/lib/contact-page";
+import { getContent, getLocaleFromPath } from "@/lib/i18n";
+import type { ContactIntent } from "@/lib/i18n/content/pages/contact";
 
 type ContactInitiativeFormProps = {
   intent?: ContactIntent;
@@ -45,7 +41,10 @@ function createInitialForm(intent: ContactIntent): InitiativeSubmission {
 export function ContactInitiativeForm({
   intent = "collaboration",
 }: ContactInitiativeFormProps) {
-  const intentContent = contactPageIntents[intent];
+  const locale = getLocaleFromPath(usePathname());
+  const page = getContent(locale).pages.contact;
+  const intentContent = page.intents[intent];
+  const { form: formContent } = page;
   const [form, setForm] = useState<InitiativeSubmission>(() =>
     createInitialForm(intent),
   );
@@ -129,17 +128,14 @@ export function ContactInitiativeForm({
         aria-live="polite"
       >
         <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
-          Submission received
+          {formContent.success.eyebrow}
         </p>
         <h2 className="mt-3 font-heading text-2xl font-semibold text-white">
-          Submission received for institutional review
+          {formContent.success.title}
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-muted">
-          {successMessage ??
-            "Your structured initiative has been recorded for institutional review."}{" "}
-          The Clevones governance team will assess eligibility against
-          documented criteria and respond through official channels. Clevones
-          does not conduct informal brokerage or operational intermediation.
+          {successMessage ?? formContent.success.fallbackMessage}{" "}
+          {formContent.success.continuation}
         </p>
         <Button
           type="button"
@@ -150,7 +146,7 @@ export function ContactInitiativeForm({
             setSuccessMessage(null);
           }}
         >
-          Submit another initiative
+          {formContent.success.submitAnother}
         </Button>
       </Card>
     );
@@ -164,15 +160,15 @@ export function ContactInitiativeForm({
         noValidate
         onSubmit={handleSubmit}
         className="space-y-10 sm:space-y-12"
-        aria-label="Structured initiative submission"
+        aria-label={formContent.formAriaLabel}
         aria-busy={isSubmitting}
       >
         <section className="space-y-6">
-          <FormSectionHeading title={contactPageForm.sections.organization} />
+          <FormSectionHeading title={formContent.sections.organization} />
           <div className="grid gap-6 sm:grid-cols-2">
             <FormField
               id="organizationName"
-              label="Organization name"
+              label={formContent.fields.organizationName.label}
               required
               error={errors.organizationName}
             >
@@ -190,10 +186,10 @@ export function ContactInitiativeForm({
 
             <FormField
               id="legalStatus"
-              label="Legal status"
+              label={formContent.fields.legalStatus.label}
               required
               error={errors.legalStatus}
-              hint="e.g. public institution, registered company, fund"
+              hint={formContent.fields.legalStatus.hint}
             >
               <Input
                 id="legalStatus"
@@ -208,7 +204,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="country"
-              label="Country"
+              label={formContent.fields.country.label}
               required
               error={errors.country}
             >
@@ -224,7 +220,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="website"
-              label="Website"
+              label={formContent.fields.website.label}
               error={errors.website}
             >
               <Input
@@ -241,7 +237,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="contactPerson"
-              label="Contact person"
+              label={formContent.fields.contactPerson.label}
               required
               error={errors.contactPerson}
             >
@@ -259,7 +255,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="professionalEmail"
-              label="Professional email"
+              label={formContent.fields.professionalEmail.label}
               required
               error={errors.professionalEmail}
             >
@@ -279,7 +275,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="phone"
-              label="Phone / WhatsApp"
+              label={formContent.fields.phone.label}
               error={errors.phone}
               className="sm:col-span-2"
             >
@@ -297,15 +293,15 @@ export function ContactInitiativeForm({
         </section>
 
         <section className="space-y-6">
-          <FormSectionHeading title={contactPageForm.sections.actorType} />
+          <FormSectionHeading title={formContent.sections.actorType} />
           <FormFieldset
             id="actorType"
-            legend="Actor type"
+            legend={formContent.actorTypeLegend}
             required
             error={errors.actorType}
           >
             <div className="grid gap-3 sm:grid-cols-2">
-              {actorTypes.map((option) => {
+              {formContent.actorTypes.map((option) => {
                 const inputId = `actorType-${option.value}`;
                 const isSelected = form.actorType === option.value;
 
@@ -327,7 +323,12 @@ export function ContactInitiativeForm({
                       type="radio"
                       value={option.value}
                       checked={isSelected}
-                      onChange={() => updateField("actorType", option.value)}
+                      onChange={() =>
+                        updateField(
+                          "actorType",
+                          option.value as InitiativeSubmission["actorType"],
+                        )
+                      }
                       className="mt-0.5 h-4 w-4 shrink-0 accent-gold"
                     />
                     <span className="text-sm text-soft-white">{option.label}</span>
@@ -340,7 +341,7 @@ export function ContactInitiativeForm({
           {showActorOther ? (
             <FormField
               id="actorTypeOther"
-              label="Specify actor type"
+              label={formContent.fields.actorTypeOther.label}
               required
               error={errors.actorTypeOther}
             >
@@ -358,11 +359,11 @@ export function ContactInitiativeForm({
         </section>
 
         <section className="space-y-6">
-          <FormSectionHeading title={contactPageForm.sections.initiative} />
+          <FormSectionHeading title={formContent.sections.initiative} />
           <div className="grid gap-6 sm:grid-cols-2">
             <FormField
               id="initiativeTitle"
-              label="Initiative title"
+              label={formContent.fields.initiativeTitle.label}
               required
               error={errors.initiativeTitle}
               className="sm:col-span-2"
@@ -380,7 +381,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="initiativeStage"
-              label="Initiative stage"
+              label={formContent.fields.initiativeStage.label}
               required
               error={errors.initiativeStage}
               className="sm:col-span-2"
@@ -398,9 +399,9 @@ export function ContactInitiativeForm({
                 hasError={Boolean(errors.initiativeStage)}
               >
                 <option value="" disabled>
-                  Select a stage
+                  {formContent.selectStage}
                 </option>
-                {initiativeStages.map((stage) => (
+                {formContent.initiativeStages.map((stage) => (
                   <option key={stage.value} value={stage.value}>
                     {stage.label}
                   </option>
@@ -410,10 +411,10 @@ export function ContactInitiativeForm({
 
             <FormField
               id="shortDescription"
-              label="Short description"
+              label={formContent.fields.shortDescription.label}
               required
               error={errors.shortDescription}
-              hint="Summarize scope, objectives, and governance needs."
+              hint={formContent.fields.shortDescription.hint}
               className="sm:col-span-2"
             >
               <Textarea
@@ -430,7 +431,7 @@ export function ContactInitiativeForm({
 
             <FormField
               id="territoryConcerned"
-              label="Territory concerned"
+              label={formContent.fields.territoryConcerned.label}
               required
               error={errors.territoryConcerned}
             >
@@ -447,9 +448,9 @@ export function ContactInitiativeForm({
 
             <FormField
               id="availableDocumentation"
-              label="Available documentation"
+              label={formContent.fields.availableDocumentation.label}
               error={errors.availableDocumentation}
-              hint="Studies, frameworks, agreements, or audit references."
+              hint={formContent.fields.availableDocumentation.hint}
             >
               <Input
                 id="availableDocumentation"
@@ -464,10 +465,10 @@ export function ContactInitiativeForm({
 
             <FormField
               id="complianceStatus"
-              label="Compliance status"
+              label={formContent.fields.complianceStatus.label}
               required
               error={errors.complianceStatus}
-              hint="Regulatory, ESG, or institutional compliance position."
+              hint={formContent.fields.complianceStatus.hint}
             >
               <Textarea
                 id="complianceStatus"
@@ -483,10 +484,10 @@ export function ContactInitiativeForm({
 
             <FormField
               id="expectedCollaborationType"
-              label="Expected collaboration type"
+              label={formContent.fields.expectedCollaborationType.label}
               required
               error={errors.expectedCollaborationType}
-              hint="Governance design, coordination, reporting, or advisory scope."
+              hint={formContent.fields.expectedCollaborationType.hint}
             >
               <Textarea
                 id="expectedCollaborationType"
@@ -503,7 +504,7 @@ export function ContactInitiativeForm({
         </section>
 
         <section className="space-y-6">
-          <FormSectionHeading title={contactPageForm.sections.confirmation} />
+          <FormSectionHeading title={formContent.sections.confirmation} />
           <div
             className={cn(
               "rounded-sm border px-4 py-4",
@@ -532,7 +533,7 @@ export function ContactInitiativeForm({
                 }
               />
               <span className="text-sm leading-relaxed text-soft-white">
-                {contactPageForm.governanceAcknowledgment}
+                {formContent.governanceAcknowledgment}
               </span>
             </label>
             {errors.governanceAcknowledgment ? (
@@ -554,7 +555,7 @@ export function ContactInitiativeForm({
             aria-live="assertive"
           >
             <p className="text-sm font-medium text-red-300">
-              Submission not recorded
+              {formContent.errorTitle}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-red-200/90">
               {submitError}
@@ -564,9 +565,9 @@ export function ContactInitiativeForm({
 
         <div className="flex flex-col-reverse gap-4 border-t border-border-subtle pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-relaxed text-pretty text-muted">
-            Required fields are marked with{" "}
+            {formContent.requiredNotice.split("*")[0]}
             <span className="text-gold-muted">*</span>. Submissions are
-            reviewed on a structured, institutional basis.
+            {formContent.requiredNotice.split("*")[1]}
           </p>
           <Button
             type="submit"
@@ -574,7 +575,7 @@ export function ContactInitiativeForm({
             disabled={isSubmitting}
             className={buttonFullMobile}
           >
-            {isSubmitting ? "Submitting…" : intentContent.submitLabel}
+            {isSubmitting ? formContent.submitting : intentContent.submitLabel}
           </Button>
         </div>
       </form>

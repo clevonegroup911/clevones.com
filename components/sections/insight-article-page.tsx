@@ -10,15 +10,21 @@ import {
   heroGridOverlay,
   heroGridOverlayStyle,
 } from "@/lib/ui-classes";
+import type { Locale } from "@/lib/i18n";
 import type { InsightArticle } from "@/lib/insights-page";
+import { getContent, getPathForPage } from "@/lib/i18n";
 
 type InsightArticlePageContentProps = {
   article: InsightArticle;
+  locale: Locale;
 };
 
 export function InsightArticlePageContent({
   article,
+  locale,
 }: InsightArticlePageContentProps) {
+  const chrome = getContent(locale).pages.insights.articleChrome;
+  const insightsPath = getPathForPage("insights", locale) ?? "/insights";
   return (
     <>
       <Section
@@ -34,11 +40,11 @@ export function InsightArticlePageContent({
         />
         <Container className="relative">
           <div className="max-w-3xl">
-            <TextLink href="/insights" className="min-h-0">
-              ← All insights
+            <TextLink href={insightsPath} className="min-h-0">
+              {chrome.backLabel}
             </TextLink>
             <Eyebrow tone="inverse" className="mt-8">
-              Clevones Insights
+              {chrome.eyebrow}
             </Eyebrow>
             <Divider variant="gold" accent className="mt-6" />
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -60,22 +66,19 @@ export function InsightArticlePageContent({
       <Section tone="elevated" spacing="md">
         <Container size="prose">
           <p className="text-base leading-relaxed text-muted">
-            Full analysis for this insight is forthcoming. Clevones Insights
-            publishes strategic notes on territorial economic governance,
-            institutional coordination, and investment-readiness across Africa.
+            {chrome.body[0]}
           </p>
           <p className="mt-6 text-base leading-relaxed text-muted">
-            For institutional inquiries related to this topic, initiate a
-            structured collaboration through Clevones.
+            {chrome.body[1]}
           </p>
           <div className="mt-8 sm:mt-10">
             <ButtonLink
-              href="/contact"
+              href={chrome.cta.actions[0].href}
               variant="secondary"
               size="lg"
               className={buttonFullMobile}
             >
-              Initiate a strategic collaboration
+              {chrome.cta.actions[0].label}
             </ButtonLink>
           </div>
         </Container>

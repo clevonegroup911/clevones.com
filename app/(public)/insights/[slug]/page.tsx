@@ -6,22 +6,24 @@ import { createPageMetadata } from "@/lib/metadata";
 import { InsightArticlePageContent } from "@/components/sections/insight-article-page";
 import {
   getInsightArticle,
-  insightArticles,
 } from "@/lib/insights-page";
+import { getContent } from "@/lib/i18n";
 
 type InsightArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
-  return insightArticles.map((article) => ({ slug: article.slug }));
+  return getContent("en").pages.insights.articles.map((article) => ({
+    slug: article.slug,
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: InsightArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getInsightArticle(slug);
+  const article = getInsightArticle(slug, "en");
 
   if (!article) {
     return { title: "Insight not found" };
@@ -38,11 +40,11 @@ export default async function InsightArticlePage({
   params,
 }: InsightArticlePageProps) {
   const { slug } = await params;
-  const article = getInsightArticle(slug);
+  const article = getInsightArticle(slug, "en");
 
   if (!article) {
     notFound();
   }
 
-  return <InsightArticlePageContent article={article} />;
+  return <InsightArticlePageContent article={article} locale="en" />;
 }

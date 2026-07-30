@@ -4,24 +4,26 @@ import { Heading } from "@/components/ui/heading";
 import { Section } from "@/components/ui/section";
 import { SectionHeaderRow } from "@/components/ui/section-header-row";
 import { TextLink } from "@/components/ui/text-link";
-import { methodologySteps } from "@/lib/home";
+import { getLocaleContent } from "@/lib/i18n/get-locale-content";
 
-export function MethodologyPreviewSection() {
+export async function MethodologyPreviewSection() {
+  const { pages } = await getLocaleContent();
+  const methodology = pages.home.methodology;
   return (
     <Section tone="muted" spacing="md">
       <Container>
         <SectionHeaderRow
-          eyebrow="Methodology"
-          title="A disciplined approach to territorial governance"
-          description="Five sequential phases structure every engagement — from territorial reading to strategic reporting."
+          eyebrow={methodology.eyebrow}
+          title={methodology.title}
+          description={methodology.description}
           action={
-            <TextLink href="/methodology">View full methodology →</TextLink>
+            <TextLink href={methodology.href}>{methodology.linkLabel}</TextLink>
           }
         />
         <ol className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 lg:mt-14 lg:grid-cols-5 lg:gap-5">
-          {methodologySteps.map((step, index) => (
+          {methodology.steps.map((step, index) => (
             <li key={step.number} className="relative">
-              {index < methodologySteps.length - 1 ? (
+              {index < methodology.steps.length - 1 ? (
                 <span
                   className="pointer-events-none absolute top-8 right-0 hidden h-px w-5 translate-x-full bg-border-subtle lg:block"
                   aria-hidden
