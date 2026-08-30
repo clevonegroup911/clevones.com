@@ -23,7 +23,9 @@ export async function EcosystemPreviewSection() {
           }
         />
         <div className={cardGrid3}>
-          {ecosystem.entities.map((entity) => (
+          {ecosystem.entities
+            .filter((entity) => !entity.hidden)
+            .map((entity) => (
             <Card
               key={entity.name}
               variant={entity.operational ? "outlined" : "default"}

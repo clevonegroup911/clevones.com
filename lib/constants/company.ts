@@ -42,6 +42,13 @@ export const company = {
   strategicVisionFr: "Architecture de gouvernance des flux économiques territoriaux",
 } as const;
 
+/** Primary public definition of the company — not a single-activity slogan. */
+export const companyDefinitionFr =
+  "CLEVONE SARL est une entreprise congolaise multisectorielle qui développe des solutions technologiques, numériques, commerciales, logistiques, institutionnelles, médiatiques, éducatives et de conseil." as const;
+
+export const companyDefinitionEn =
+  "CLEVONE SARL is a Congolese multi-sector company that develops technological, digital, commercial, logistics, institutional, media, educational and advisory solutions." as const;
+
 export const companyAddressLinesFr = [
   company.address.street,
   company.address.commune,

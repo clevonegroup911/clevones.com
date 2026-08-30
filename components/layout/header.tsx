@@ -191,12 +191,6 @@ export function Header() {
 
         <div className="hidden shrink-0 items-center gap-3 lg:flex">
           <LanguageSwitcher label={shell.languageSwitcherLabel} />
-          <Link
-            href="/sign-in"
-            className="text-sm font-medium text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-          >
-            {shell.signIn}
-          </Link>
           <ButtonLink
             href={shell.cta.href}
             size="md"
@@ -314,13 +308,6 @@ export function Header() {
             <div className="flex justify-center px-3 py-2">
               <LanguageSwitcher label={shell.languageSwitcherLabel} />
             </div>
-            <Link
-              href="/sign-in"
-              className="touch-target flex items-center justify-center rounded-sm px-3 py-3 text-center text-base font-medium text-gray-muted transition-colors hover:bg-white/5 hover:text-white"
-              onClick={closeMenu}
-            >
-              {shell.signIn}
-            </Link>
             <ButtonLink
               href={shell.cta.href}
               size="lg"

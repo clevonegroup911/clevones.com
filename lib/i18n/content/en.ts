@@ -1,5 +1,5 @@
 import { siteLegalDisclaimer } from "@/lib/constants/brand-positioning";
-import { company } from "@/lib/constants/company";
+import { company, companyDefinitionEn } from "@/lib/constants/company";
 import {
   aboutPageContent,
   challengePageContent,
@@ -30,6 +30,7 @@ export const enContent = {
     footerNavigation: "Navigation",
     footerEcosystem: "Ecosystem",
     footerAccess: "Access",
+    accessComingSoon: "Coming soon",
     footerSecondary: "More",
     footerContact: "Contact",
     primaryNavigationLabel: "Primary navigation",
@@ -38,8 +39,7 @@ export const enContent = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     operationalBadge: "Operational",
-    description:
-      "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.",
+    description: companyDefinitionEn,
     legalDisclaimer: siteLegalDisclaimer,
     footerLocation: company.address.shortEn,
     phoneLabel: "Tel",

@@ -65,6 +65,8 @@ export type ShellContent = {
   footerEcosystem: string;
   /** Footer column for Sign-in / Portal (D1: Access, not Platform). */
   footerAccess: string;
+  /** Shown when no live authentication or client portal is available. */
+  accessComingSoon: string;
   footerSecondary: string;
   footerContact: string;
   primaryNavigationLabel: string;

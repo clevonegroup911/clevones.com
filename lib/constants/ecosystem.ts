@@ -3,7 +3,7 @@ import type { EcosystemLink } from "@/types/ecosystem";
 /**
  * Public ecosystem surfaces. No separate legal registration is claimed
  * here except for CLEVONE SARL (see lib/constants/company.ts).
- * Clevone Mining copy is retained as previously published until validated.
+ * Clevone Mining is withheld from public lists pending legal validation.
  */
 export const ecosystemLinks: readonly EcosystemLink[] = [
   { name: "CLEVONE Technologies", href: "/solutions", internal: true },
@@ -12,5 +12,4 @@ export const ecosystemLinks: readonly EcosystemLink[] = [
   { name: "CLEVONET", href: "https://extranet.clevones.com" },
   { name: "BICUNI", href: "https://bicuni.online" },
   { name: "Btlearn", href: "https://btlearn.org" },
-  { name: "Clevone Mining", href: "https://mining.clevones.com" },
 ] as const;

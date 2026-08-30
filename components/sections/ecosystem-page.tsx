@@ -22,11 +22,14 @@ export async function EcosystemPageContent() {
   const homePath = resolvePagePath("home", locale) ?? "/";
   const platformPath = resolvePagePath("ecosystem", locale) ?? "/ecosystem";
 
-  const centralEntity = platform.modules.entities.find((entity) => entity.central)!;
-  const neutralEntities = platform.modules.entities.filter(
+  const visibleEntities = platform.modules.entities.filter(
+    (entity) => !entity.hidden,
+  );
+  const centralEntity = visibleEntities.find((entity) => entity.central)!;
+  const neutralEntities = visibleEntities.filter(
     (entity) => !entity.central && !entity.operational,
   );
-  const operationalEntity = platform.modules.entities.find(
+  const operationalEntity = visibleEntities.find(
     (entity) => entity.operational,
   );
 

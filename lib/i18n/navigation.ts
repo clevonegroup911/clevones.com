@@ -49,14 +49,6 @@ export const legalNavigationKeys = [
   "privacy",
 ] as const satisfies ReadonlyArray<keyof ShellContent["nav"]["legal"]>;
 
-const accessItems = [
-  { key: "signIn", href: "/sign-in" },
-  { key: "portal", href: "/portal" },
-] as const satisfies ReadonlyArray<{
-  key: keyof ShellContent["nav"]["access"];
-  href: string;
-}>;
-
 function buildPageNavItem(
   pageKey: PageKey,
   label: string,
@@ -70,6 +62,10 @@ function buildPageNavItem(
   return { pageKey, label, href };
 }
 
+/**
+ * Sign-in and client portal are withheld from public navigation until a real
+ * authentication system exists. Do not add hrefs here without a live destination.
+ */
 export function getNavigation(locale: Locale): LocalizedNavigation {
   const { shell } = getContent(locale);
 
@@ -85,10 +81,7 @@ export function getNavigation(locale: Locale): LocalizedNavigation {
     .map((key) => buildPageNavItem(key, shell.nav.legal[key], locale))
     .filter((item): item is LocalizedNavItem => item !== null);
 
-  const access: LocalizedNavItem[] = accessItems.map((item) => ({
-    label: shell.nav.access[item.key],
-    href: item.href,
-  }));
+  const access: LocalizedNavItem[] = [];
 
   return { main, secondary, legal, access };
 }

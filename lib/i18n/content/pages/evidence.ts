@@ -92,7 +92,7 @@ export const evidencePageContent = {
       title: "A published coordination model",
       description: "Platform architecture explains how territory, actors, flows, modules, and execution relate.",
       paragraphs: [
-        "The hub-and-perimeter model, entity mandates, and Clevone Mining separation are documented on the Platform page.",
+        "The hub-and-perimeter model and entity mandates are documented on the Platform page.",
         "No invented partners or metrics are needed to evaluate the model. The architecture is readable as structure.",
       ],
       link: { href: "/ecosystem", label: "Explore the Platform" },
@@ -144,8 +144,8 @@ export const evidencePageContent = {
           description: "Articles may mark full analysis as forthcoming rather than fill space with unverifiable claims.",
         },
         {
-          title: "Operational separation disclosed",
-          description: "Clevone Mining is identified as operationally distinct from the governance platform.",
+          title: "No unverified operational claims",
+          description: "Clevone Mining is not presented as an operational mining unit. No separate legal registration is claimed except for CLEVONE SARL.",
         },
       ],
     },
@@ -214,8 +214,8 @@ export const evidencePageContent = {
           description: "Evidence is system credibility. Insights remain the editorial notes library.",
         },
         {
-          title: "Access distinct from Platform",
-          description: "Sign-in and client portal are labeled Access — never confused with the Platform page.",
+          title: "Access forthcoming",
+          description: "Sign-in and client portal are marked Coming soon — they are not live authentication destinations.",
         },
       ],
     },
@@ -258,7 +258,7 @@ export const evidencePageContent = {
       title: "Un modèle de coordination publié",
       description: "L'architecture de plateforme explique comment territoire, acteurs, flux, modules et exécution se relient.",
       paragraphs: [
-        "Le modèle hub et périphérie, les mandats des entités et la séparation de Clevone Mining sont documentés sur la page Plateforme.",
+        "Le modèle hub et périphérie et les mandats des entités sont documentés sur la page Plateforme.",
         "Aucun partenaire inventé ni métrique n'est nécessaire pour évaluer le modèle. L'architecture se lit comme une structure.",
       ],
       link: { href: "/ecosysteme", label: "Explorer la Plateforme" },
@@ -310,8 +310,8 @@ export const evidencePageContent = {
           description: "Les articles peuvent marquer l'analyse complète comme à venir plutôt que de combler l'espace par des affirmations non vérifiables.",
         },
         {
-          title: "Séparation opérationnelle divulguée",
-          description: "Clevone Mining est identifiée comme opérationnellement distincte de la plateforme de gouvernance.",
+          title: "Pas d'affirmations opérationnelles non validées",
+          description: "Clevone Mining n'est pas présentée comme une unité minière opérationnelle. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
         },
       ],
     },
@@ -380,8 +380,8 @@ export const evidencePageContent = {
           description: "Preuves = crédibilité du système. Analyses = bibliothèque de notes éditoriales.",
         },
         {
-          title: "Accès distinct de la Plateforme",
-          description: "Connexion et portail client sont libellés Accès — jamais confondus avec la page Plateforme.",
+          title: "Accès à venir",
+          description: "Connexion et portail client sont indiqués Bientôt disponible — ce ne sont pas des destinations d'authentification en ligne.",
         },
       ],
     },

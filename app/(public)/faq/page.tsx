@@ -5,7 +5,7 @@ import { FaqPageContent } from "@/components/sections/faq-page";
 export const metadata = createPageMetadata({
   title: "FAQ",
   description:
-    "Frequently asked institutional questions about Clevones: governance role, corporate purpose, ecosystem, Clevone Mining separation, and how structured collaboration begins.",
+    "Frequently asked institutional questions about Clevones: corporate role, corporate purpose, ecosystem, and how structured collaboration begins.",
   path: "/faq",
 });
 

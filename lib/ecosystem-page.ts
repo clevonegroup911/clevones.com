@@ -18,6 +18,7 @@ export type EcosystemEntity = {
   role: string;
   description: string;
   operational: boolean;
+  hidden?: boolean;
   central?: boolean;
   internal?: boolean;
 };
@@ -93,10 +94,11 @@ export const ecosystemPageEntities: EcosystemEntity[] = [
     name: "Clevone Mining",
     domain: "mining.clevones.com",
     href: "https://mining.clevones.com",
-    role: "Operational mining unit — extraction and transformation",
+    role: "Ecosystem project / entity with distinct status",
     description:
-      "Clevone Mining is a distinct operational unit for responsible extraction, local transformation, and compliance within the productive industries domain. All field operations are conducted under Clevone Mining only — never under the Clevones governance platform.",
-    operational: true,
+      "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
+    operational: false,
+    hidden: true,
   },
 ];
 
@@ -106,18 +108,20 @@ export const ecosystemPageMap = {
   eyebrow: "Architecture",
   title: "CLEVONE SARL at the center, specialization at the perimeter",
   description:
-    "Technology, software, media, knowledge, and education connect through the company hub. Operational field activity is structurally identified.",
+    "Technology, software, media, knowledge, and education connect through the company hub.",
 } as const;
 
 export const ecosystemSatelliteEntities = ecosystemPageEntities.filter(
-  (entity) => !entity.central,
+  (entity) => !entity.central && !entity.hidden,
 );
 
 export function getEcosystemEntityGroups() {
   const central = ecosystemPageEntities.find((entity) => entity.central);
-  const operational = ecosystemPageEntities.find((entity) => entity.operational);
+  const operational = ecosystemPageEntities.find(
+    (entity) => entity.operational && !entity.hidden,
+  );
   const neutral = ecosystemPageEntities.filter(
-    (entity) => !entity.central && !entity.operational,
+    (entity) => !entity.central && !entity.operational && !entity.hidden,
   );
 
   if (!central) {

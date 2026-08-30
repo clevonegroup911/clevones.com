@@ -96,6 +96,7 @@ export type HomePageContent = {
       description: string;
       href: string;
       operational: boolean;
+      hidden?: boolean;
       internal?: boolean;
     }[];
     miningDisclaimer: string;
@@ -219,11 +220,12 @@ const enEcosystemEntities = [
   },
   {
     name: "Clevone Mining",
-    role: "Operational mining unit — extraction and transformation",
+    role: "Ecosystem project / entity with distinct status",
     description:
-      "Clevone Mining is a distinct operational unit for responsible extraction, local transformation, and compliance within the productive industries domain. All field operations are conducted under Clevone Mining only — never under the Clevones governance platform.",
+      "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
     href: "https://mining.clevones.com",
-    operational: true,
+    operational: false,
+    hidden: true,
   },
 ] as const;
 
@@ -280,11 +282,12 @@ const frEcosystemEntities = [
   },
   {
     name: "Clevone Mining",
-    role: "Unité minière opérationnelle — extraction et transformation",
+    role: "Projet / entité de l'écosystème à statut distinct",
     description:
-      "Clevone Mining est une unité opérationnelle distincte dédiée à l'extraction responsable, à la transformation locale et à la conformité dans le domaine des industries productives. Toutes les opérations de terrain sont conduites exclusivement sous Clevone Mining, jamais sous la plateforme de gouvernance Clevones.",
+      "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
     href: "https://mining.clevones.com",
-    operational: true,
+    operational: false,
+    hidden: true,
   },
 ] as const;
 
@@ -333,11 +336,6 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
           { name: "CLEVODIA", detail: "Economic intelligence" },
           { name: "BICUNI", detail: "Scientific knowledge" },
           { name: "Btlearn", detail: "Certified education" },
-          {
-            name: "Clevone Mining",
-            detail: "Distinct operational entity",
-            operational: true,
-          },
         ],
       },
       trustLine: "Kisangani · Democratic Republic of the Congo",
@@ -597,7 +595,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     meta: {
       title: "CLEVONES | Technology, Business & Digital Infrastructure",
       description:
-        "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.",
+        "CLEVONE SARL is a Congolese multi-sector company that develops technological, digital, commercial, logistics, institutional, media, educational and advisory solutions.",
     },
   },
   fr: {
@@ -648,11 +646,6 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
           { name: "CLEVODIA", detail: "Intelligence économique" },
           { name: "BICUNI", detail: "Savoir scientifique" },
           { name: "Btlearn", detail: "Formation certifiante" },
-          {
-            name: "Clevone Mining",
-            detail: "Entité opérationnelle distincte",
-            operational: true,
-          },
         ],
       },
       trustLine: "Kisangani · République Démocratique du Congo",
@@ -927,7 +920,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     meta: {
       title: "CLEVONES | Technologie, Business & Infrastructure Numérique",
       description:
-        "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.",
+        "CLEVONE SARL est une entreprise congolaise multisectorielle qui développe des solutions technologiques, numériques, commerciales, logistiques, institutionnelles, médiatiques, éducatives et de conseil.",
     },
   },
 };

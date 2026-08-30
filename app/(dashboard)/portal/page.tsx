@@ -6,7 +6,6 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CtaButtonGroup } from "@/components/ui/cta-button-group";
-import { authRoutes } from "@/lib/auth";
 import { buttonFullMobile } from "@/lib/ui-classes";
 
 export const metadata = createPageMetadata({
@@ -31,7 +30,7 @@ export default function PortalPage() {
         <SectionHeading
           eyebrow="Extranet"
           title="Client portal — coming soon"
-          description="This area is prepared for your future SaaS and extranet layer. The modular architecture supports authentication, role-based access, and multi-tenant spaces."
+          description="This area is reserved for a future client portal. No authentication system is live on this website."
           align="center"
         />
 
@@ -43,7 +42,7 @@ export default function PortalPage() {
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-subtle text-xs text-gold"
                   aria-hidden
                 >
-                  ✓
+                  ·
                 </span>
                 <span className="text-sm text-soft-white">{feature}</span>
               </Card>
@@ -52,11 +51,11 @@ export default function PortalPage() {
         </ul>
 
         <CtaButtonGroup align="center" className="mx-auto mt-8 sm:mt-10">
-          <ButtonLink href={authRoutes.signIn} size="lg" className={buttonFullMobile}>
-            Sign in
-          </ButtonLink>
-          <ButtonLink href="/contact" variant="outline" size="lg" className={buttonFullMobile}>
+          <ButtonLink href="/contact" size="lg" className={buttonFullMobile}>
             Request access
+          </ButtonLink>
+          <ButtonLink href="/" variant="outline" size="lg" className={buttonFullMobile}>
+            Back to site
           </ButtonLink>
         </CtaButtonGroup>
       </Container>

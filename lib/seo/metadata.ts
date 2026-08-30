@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 
 import {
+  companyDefinitionEn,
+  companyDefinitionFr,
+} from "@/lib/constants/company";
+import {
   buildHrefLangAlternates,
   buildHrefLangAlternatesForPage,
   getOgLocale,
@@ -29,14 +33,12 @@ export const siteKeywords = [
 export const defaultSiteTitle =
   "CLEVONES | Technologie, Business & Infrastructure Numérique";
 
-export const defaultSiteDescription =
-  "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.";
+export const defaultSiteDescription = companyDefinitionFr;
 
 export const enSiteTitle =
   "CLEVONES | Technology, Business & Digital Infrastructure";
 
-export const enSiteDescription =
-  "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.";
+export const enSiteDescription = companyDefinitionEn;
 
 export const siteOgImage = {
   url: "/og-image.png",

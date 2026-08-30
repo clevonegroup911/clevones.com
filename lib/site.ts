@@ -1,5 +1,5 @@
 import { siteLegalDisclaimer } from "@/lib/constants/brand-positioning";
-import { company } from "@/lib/constants/company";
+import { company, companyDefinitionFr } from "@/lib/constants/company";
 import { ecosystemLinks } from "@/lib/constants/ecosystem";
 import { navigation } from "@/lib/constants/navigation";
 import { defaultLocale, getOgLocale } from "@/lib/i18n";
@@ -8,8 +8,7 @@ export const siteConfig = {
   name: company.brandName,
   legalName: company.legalName,
   tagline: company.strategicVision,
-  description:
-    "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.",
+  description: companyDefinitionFr,
   url: company.website,
   defaultLocale,
   locale: getOgLocale(defaultLocale),

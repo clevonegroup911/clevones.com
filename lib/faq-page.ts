@@ -31,12 +31,12 @@ export const faqPageItems: readonly FaqItem[] = [
   {
     question: "How does the ecosystem relate to the corporate purpose?",
     answer:
-      "Specialized entities extend domain capacity under a shared architectural mandate: Clevodia (media and economic intelligence), Clevonet (secure digital infrastructure), Bicuni (scientific knowledge), Btlearn Inc. (certified education), and Clevone Mining (operational extraction and transformation, structurally separated). Clevones remains the neutral coordination hub.",
+      "Specialized entities extend domain capacity under a shared architectural mandate: Clevodia (media and economic intelligence), Clevonet (secure digital infrastructure), Bicuni (scientific knowledge), and Btlearn Inc. (certified education). Clevone Mining is presented as an ecosystem project / entity with distinct status. Clevones remains the company hub. No separate legal registration is claimed except for CLEVONE SARL.",
   },
   {
     question: "Is Clevone Mining part of the governance platform?",
     answer:
-      "No. Clevone Mining is an operational unit that conducts field activities. It is structurally and functionally separated from the neutral governance role exercised by Clevones. No operational activity is conducted under the Clevones governance platform.",
+      "Clevone Mining is presented as an ecosystem project / entity with distinct status. It is not described on this site as an operational mining unit. No separate legal registration is claimed except for CLEVONE SARL.",
   },
   {
     question: "Who can engage with Clevones?",

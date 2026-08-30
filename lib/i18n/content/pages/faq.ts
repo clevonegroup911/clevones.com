@@ -30,11 +30,11 @@ export const faqPageContent = {
       },
       {
         question: "How does the ecosystem relate to the corporate purpose?",
-        answer: "The public ecosystem is organized around CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI, and Btlearn. Clevone Mining is presented as a distinct operational unit. No separate legal registration is claimed on this site except for CLEVONE SARL.",
+        answer: "The public ecosystem is organized around CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI, and Btlearn. Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
       },
       {
         question: "Is Clevone Mining part of the governance platform?",
-        answer: "No. Clevone Mining conducts field operations. It is structurally separated from the neutral governance role of Clevones. No operational activity runs under the Clevones governance platform.",
+        answer: "Clevone Mining is presented as an ecosystem project / entity with distinct status. It is not described on this site as an operational mining unit. No separate legal registration is claimed except for CLEVONE SARL.",
       },
       {
         question: "What is CLEVONE DMS?",
@@ -81,11 +81,11 @@ export const faqPageContent = {
       },
       {
         question: "Quel est le lien entre l'écosystème et l'objet social ?",
-        answer: "L'écosystème public s'organise autour de CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI et Btlearn. Clevone Mining est présentée comme une unité opérationnelle distincte. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
+        answer: "L'écosystème public s'organise autour de CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI et Btlearn. Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
       },
       {
         question: "Clevone Mining fait-elle partie de la plateforme de gouvernance ?",
-        answer: "Non. Clevone Mining conduit les opérations de terrain. Elle est structurellement séparée du rôle de gouvernance neutre de Clevones. Aucune activité opérationnelle ne s'exerce sous la plateforme de gouvernance Clevones.",
+        answer: "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Elle n'est pas décrite sur ce site comme une unité minière opérationnelle. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
       },
       {
         question: "Qu'est-ce que CLEVONE DMS ?",

@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Container } from "@/components/ui/container";
-import { authRoutes } from "@/lib/auth";
 import { siteConfig } from "@/lib/site";
 
 export default function DashboardLayout({
@@ -21,14 +20,8 @@ export default function DashboardLayout({
           </Link>
           <div className="flex items-center gap-4">
             <span className="hidden rounded-sm border border-border-subtle px-2.5 py-1 text-xs font-medium text-gold-muted sm:inline">
-              Client portal
+              Coming soon
             </span>
-            <Link
-              href={authRoutes.signIn}
-              className="text-xs font-medium text-gray-muted transition-colors hover:text-white"
-            >
-              Sign in
-            </Link>
           </div>
         </Container>
       </header>

@@ -1,8 +1,5 @@
-import {
-  clevoneMiningSeparationDisclaimerFr,
-  clevonesNeutralityDisclaimerFr,
-} from "@/lib/constants/brand-positioning";
-import { company } from "@/lib/constants/company";
+import { siteLegalDisclaimerFr } from "@/lib/constants/brand-positioning";
+import { company, companyDefinitionFr } from "@/lib/constants/company";
 import {
   aboutPageContent,
   challengePageContent,
@@ -23,9 +20,6 @@ import {
 } from "@/lib/i18n/content/pages";
 import type { LocaleContent } from "@/lib/i18n/content/types";
 
-const siteLegalDisclaimerFr =
-  `${clevonesNeutralityDisclaimerFr} Son objet social élargit les champs d'intervention territoriale via l'écosystème et les filiales sans redéfinir la plateforme de gouvernance comme opérateur. ${clevoneMiningSeparationDisclaimerFr}` as const;
-
 export const frContent = {
   shell: {
     skipToContent: "Aller au contenu principal",
@@ -36,6 +30,7 @@ export const frContent = {
     footerNavigation: "Navigation",
     footerEcosystem: "Écosystème",
     footerAccess: "Accès",
+    accessComingSoon: "Bientôt disponible",
     footerSecondary: "Plus",
     footerContact: "Contact",
     primaryNavigationLabel: "Navigation principale",
@@ -44,8 +39,7 @@ export const frContent = {
     openMenu: "Ouvrir le menu",
     closeMenu: "Fermer le menu",
     operationalBadge: "Opérationnel",
-    description:
-      "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.",
+    description: companyDefinitionFr,
     legalDisclaimer: siteLegalDisclaimerFr,
     footerLocation: company.address.shortFr,
     phoneLabel: "Tél.",

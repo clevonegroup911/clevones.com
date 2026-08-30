@@ -56,12 +56,30 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                 {company.legalName}
               </p>
               <p>
-                {company.rccmLabel}: {company.rccm}
+                {company.rccmLabel} : {company.rccm}
               </p>
               <p>
-                {company.nationalIdLabel}: {company.nationalId}
+                {company.nationalIdLabel} : {company.nationalId}
               </p>
               <p>{shell.footerLocation}</p>
+              <p>
+                {shell.phoneLabel} :{" "}
+                <a
+                  href={company.phone.href}
+                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                >
+                  {company.phone.display}
+                </a>
+              </p>
+              <p>
+                {shell.emailLabel} :{" "}
+                <a
+                  href={company.email.href}
+                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                >
+                  {company.email.display}
+                </a>
+              </p>
             </div>
           </div>
 
@@ -89,7 +107,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             </p>
             <ul className="mt-4 space-y-2.5">
               {pages.ecosystem.modules.entities
-                .filter((item) => !item.central)
+                .filter((item) => !item.central && !item.hidden)
                 .map((item) => (
                 <li key={item.href}>
                   <CompanyEntityLink
@@ -124,18 +142,24 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
               {shell.footerAccess}
             </p>
-            <ul className="mt-4 space-y-2.5">
-              {navigation.access.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {navigation.access.length > 0 ? (
+              <ul className="mt-4 space-y-2.5">
+                {navigation.access.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm text-gray-muted">
+                {shell.accessComingSoon}
+              </p>
+            )}
             {navigation.secondary.length > 0 ? (
               <div className="mt-8">
                 <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">

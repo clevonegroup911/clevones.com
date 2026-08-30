@@ -14,6 +14,8 @@ export type EcosystemEntityContent = {
   role: string;
   description: string;
   operational: boolean;
+  /** Temporarily withheld from public lists pending legal validation. */
+  hidden?: boolean;
   central?: boolean;
   internal?: boolean;
 };
@@ -63,7 +65,8 @@ export type EcosystemPageContent = {
 /**
  * Platform page (PageKey `ecosystem`, URLs /ecosystem · /ecosysteme).
  * Explains how CLEVONES functions — model before technology.
- * Entity roster and mining separation: existing repository truth only.
+ * Entity roster: existing repository truth only. Clevone Mining is withheld
+ * from public lists pending legal validation.
  */
 export const ecosystemPageContent = {
   en: {
@@ -175,9 +178,9 @@ export const ecosystemPageContent = {
     modules: {
       eyebrow: "Modules",
       title: "Specialized entities connect through the hub",
-      description: "Each entity has a defined mandate. Coordination passes through CLEVONES. Field operations stay separated.",
+      description: "Each entity has a defined mandate. Coordination passes through CLEVONES.",
       communication:
-        "Modules extend domain capacity — technology, business software, media and economic analysis, secure digital coordination, scientific knowledge, certified education, and (where applicable) separated operations — around CLEVONE SARL.",
+        "Modules extend domain capacity — technology, business software, media and economic analysis, secure digital coordination, scientific knowledge, and certified education — around CLEVONE SARL.",
       rosterEyebrow: "Entity roster",
       rosterTitle: "Each entity, a defined mandate",
       rosterDescription: "Specialized platforms serve distinct functions — coordinated through governance, never substituting it.",
@@ -253,21 +256,22 @@ export const ecosystemPageContent = {
           name: "Clevone Mining",
           domain: "mining.clevones.com",
           href: "https://mining.clevones.com",
-          role: "Operational mining unit — extraction and transformation",
+          role: "Ecosystem project / entity with distinct status",
           description:
-            "A distinct operational unit for responsible extraction, local transformation, and compliance. All field operations are conducted under Clevone Mining only — never under the Clevones governance platform.",
-          operational: true,
+            "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
+          operational: false,
+          hidden: true,
         },
       ],
     },
     map: {
       eyebrow: "Hub topology",
       title: "CLEVONE SARL at the center, specialization at the perimeter",
-      description: "Technology, software, media, knowledge, and education connect through the company hub. Field operations, where published, remain structurally identified.",
+      description: "Technology, software, media, knowledge, and education connect through the company hub.",
       separationLabel: "Operational separation",
     },
-    disclaimerEyebrow: "Critical distinction",
-    disclaimer: "Clevone Mining is operationally distinct from Clevones. Clevones remains a neutral governance and coordination platform.",
+    disclaimerEyebrow: "Clarification",
+    disclaimer: "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
     decisionFlow: {
       eyebrow: "Governance of decisions",
       title: "How decisions circulate",
@@ -410,9 +414,9 @@ export const ecosystemPageContent = {
     modules: {
       eyebrow: "Modules",
       title: "Les entités spécialisées se connectent via le hub",
-      description: "Chaque entité a un mandat défini. La coordination passe par CLEVONES. Les opérations de terrain restent séparées.",
+      description: "Chaque entité a un mandat défini. La coordination passe par CLEVONES.",
       communication:
-        "Les lignes d'activité étendent les capacités — technologies, progiciel, médias, infrastructure numérique, savoir scientifique, éducation certifiante et (le cas échéant) opérations séparées — autour de CLEVONE SARL.",
+        "Les lignes d'activité étendent les capacités — technologies, progiciel, médias, infrastructure numérique, savoir scientifique et éducation certifiante — autour de CLEVONE SARL.",
       rosterEyebrow: "Registre des entités",
       rosterTitle: "Chaque ligne, un mandat défini",
       rosterDescription: "Des surfaces spécialisées servent des fonctions distinctes — sans affirmation juridique séparée, hormis CLEVONE SARL.",
@@ -488,21 +492,22 @@ export const ecosystemPageContent = {
           name: "Clevone Mining",
           domain: "mining.clevones.com",
           href: "https://mining.clevones.com",
-          role: "Unité minière opérationnelle — extraction et transformation",
+          role: "Projet / entité de l'écosystème à statut distinct",
           description:
-            "Une unité opérationnelle distincte consacrée à l'extraction responsable, à la transformation locale et à la conformité. Toutes les opérations de terrain sont conduites exclusivement par Clevone Mining — jamais par la plateforme de gouvernance Clevones.",
-          operational: true,
+            "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
+          operational: false,
+          hidden: true,
         },
       ],
     },
     map: {
       eyebrow: "Topologie du hub",
       title: "CLEVONE SARL au centre, la spécialisation en périphérie",
-      description: "Technologies, progiciels, médias, savoir et éducation se relient au hub sociétaire. Les opérations de terrain, lorsqu'elles sont publiées, restent clairement identifiées.",
+      description: "Technologies, progiciels, médias, savoir et éducation se relient au hub sociétaire.",
       separationLabel: "Séparation opérationnelle",
     },
-    disclaimerEyebrow: "Distinction critique",
-    disclaimer: "Clevone Mining est opérationnellement distincte de Clevones. Clevones demeure une plateforme neutre de gouvernance et de coordination.",
+    disclaimerEyebrow: "Précision",
+    disclaimer: "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
     decisionFlow: {
       eyebrow: "Gouvernance des décisions",
       title: "Comment circulent les décisions",
