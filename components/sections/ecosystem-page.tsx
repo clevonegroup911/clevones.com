@@ -1,9 +1,9 @@
+import { CompanyEntityLink } from "@/components/layout/company-contact";
 import { BreadcrumbListJsonLd, WebPageJsonLd } from "@/components/seo/webpage-json-ld";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { ExternalLink } from "@/components/ui/external-link";
 import { FeatureCard, FeatureCardGrid } from "@/components/ui/feature-card";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { PageCtaSection } from "@/components/ui/page-cta-section";
@@ -28,7 +28,7 @@ export async function EcosystemPageContent() {
   );
   const operationalEntity = platform.modules.entities.find(
     (entity) => entity.operational,
-  )!;
+  );
 
   return (
     <>
@@ -168,6 +168,9 @@ export async function EcosystemPageContent() {
               central={centralEntity}
               neutral={neutralEntities}
               operational={operationalEntity}
+              centralBadge={platform.modules.centralBadge}
+              operationalBadge={content.shell.operationalBadge}
+              separationLabel={platform.map.separationLabel}
             />
           </div>
 
@@ -199,9 +202,14 @@ export async function EcosystemPageContent() {
                 <CardDescription className="mt-3">
                   {centralEntity.description}
                 </CardDescription>
-                <ExternalLink href={centralEntity.href} className="mt-5">
+                <CompanyEntityLink
+                  href={centralEntity.href}
+                  name={centralEntity.name}
+                  internal={centralEntity.internal}
+                  className="mt-5 inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-gold-muted"
+                >
                   {centralEntity.domain}
-                </ExternalLink>
+                </CompanyEntityLink>
               </Card>
 
               <div className="grid gap-5 sm:grid-cols-2">
@@ -219,13 +227,19 @@ export async function EcosystemPageContent() {
                     <CardDescription className="mt-3">
                       {entity.description}
                     </CardDescription>
-                    <ExternalLink href={entity.href} className="mt-5">
+                    <CompanyEntityLink
+                      href={entity.href}
+                      name={entity.name}
+                      internal={entity.internal}
+                      className="mt-5 inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-gold-muted"
+                    >
                       {entity.domain}
-                    </ExternalLink>
+                    </CompanyEntityLink>
                   </Card>
                 ))}
               </div>
 
+              {operationalEntity ? (
               <Card
                 variant="outlined"
                 padding="md"
@@ -246,10 +260,16 @@ export async function EcosystemPageContent() {
                 <CardDescription className="mt-3">
                   {operationalEntity.description}
                 </CardDescription>
-                <ExternalLink href={operationalEntity.href} className="mt-5">
+                <CompanyEntityLink
+                  href={operationalEntity.href}
+                  name={operationalEntity.name}
+                  internal={operationalEntity.internal}
+                  className="mt-5 inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-gold-muted"
+                >
                   {operationalEntity.domain}
-                </ExternalLink>
+                </CompanyEntityLink>
               </Card>
+              ) : null}
             </div>
           </div>
         </Container>

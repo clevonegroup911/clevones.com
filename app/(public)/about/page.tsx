@@ -1,11 +1,12 @@
+import { AboutPageContent } from "@/components/sections/about-page";
+import { getContent } from "@/lib/i18n";
 import { createPageMetadata } from "@/lib/metadata";
 
-import { AboutPageContent } from "@/components/sections/about-page";
+const about = getContent("en").pages.about;
 
 export const metadata = createPageMetadata({
-  title: "About",
-  description:
-    "Clevones designs, structures, and coordinates architectures of territorial economic flows — transforming territorial potential into durable economic assets across technology, logistics, industry, energy, media, education, and institutional governance in the DRC and Africa.",
+  title: about.meta.title,
+  description: about.meta.description,
   path: "/about",
   pageKey: "about",
   hrefLang: true,

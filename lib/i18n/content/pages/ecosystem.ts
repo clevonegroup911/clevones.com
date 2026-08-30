@@ -15,6 +15,7 @@ export type EcosystemEntityContent = {
   description: string;
   operational: boolean;
   central?: boolean;
+  internal?: boolean;
 };
 
 export type PlatformFlowStep = {
@@ -46,7 +47,9 @@ export type EcosystemPageContent = {
     rosterDescription: string;
     centralBadge: string;
   };
-  map: SectionHeadingContent;
+  map: SectionHeadingContent & {
+    separationLabel: string;
+  };
   disclaimer: string;
   disclaimerEyebrow: string;
   decisionFlow: SectionHeadingContent & {
@@ -174,24 +177,44 @@ export const ecosystemPageContent = {
       title: "Specialized entities connect through the hub",
       description: "Each entity has a defined mandate. Coordination passes through CLEVONES. Field operations stay separated.",
       communication:
-        "Modules extend domain capacity — media and economic analysis, secure digital coordination, scientific knowledge, certified education, and (where applicable) separated operations — while governance stays central.",
+        "Modules extend domain capacity — technology, business software, media and economic analysis, secure digital coordination, scientific knowledge, certified education, and (where applicable) separated operations — around CLEVONE SARL.",
       rosterEyebrow: "Entity roster",
       rosterTitle: "Each entity, a defined mandate",
       rosterDescription: "Specialized platforms serve distinct functions — coordinated through governance, never substituting it.",
-      centralBadge: "Governance platform",
+      centralBadge: "Company hub",
       entities: [
         {
-          name: "Clevones",
+          name: "CLEVONE SARL",
           domain: "clevones.com",
           href: "https://clevones.com",
-          role: "Governance of territorial economic flows",
+          role: "Congolese technology and business company",
           description:
-            "The neutral platform for governance, coordination, compliance, and strategic reporting — architect of flows and integrator of the ecosystem.",
+            "The legal entity and institutional hub — digital platforms, commercial software, logistics, industry, energy, media, education, and advisory, with a strategic vision of Governance Architecture for Territorial Economic Flows.",
           operational: false,
           central: true,
         },
         {
-          name: "Clevodia",
+          name: "CLEVONE Technologies",
+          domain: "clevones.com",
+          href: "/solutions",
+          role: "Technology and digital transformation",
+          description:
+            "The technology line of the CLEVONE SARL ecosystem — software, digital platforms, and IT services. No separate legal registration is claimed on this site.",
+          operational: false,
+          internal: true,
+        },
+        {
+          name: "CLEVONE DMS",
+          domain: "clevones.com/solutions/clevone-dms",
+          href: "/solutions/clevone-dms",
+          role: "Digital Management System",
+          description:
+            "Commercial software for modern businesses: sales, customers, inventory, invoices, dashboards, reports, and governed access. Capabilities follow the product roadmap.",
+          operational: false,
+          internal: true,
+        },
+        {
+          name: "CLEVODIA",
           domain: "clevones.media",
           href: "https://clevones.media",
           role: "Media and economic intelligence",
@@ -200,7 +223,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Clevonet",
+          name: "CLEVONET",
           domain: "extranet.clevones.com",
           href: "https://extranet.clevones.com",
           role: "Extranet and secure infrastructure",
@@ -209,7 +232,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Bicuni",
+          name: "BICUNI",
           domain: "bicuni.online",
           href: "https://bicuni.online",
           role: "Scientific digital library",
@@ -218,7 +241,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Btlearn Inc.",
+          name: "Btlearn",
           domain: "btlearn.org",
           href: "https://btlearn.org",
           role: "Certified education",
@@ -239,8 +262,9 @@ export const ecosystemPageContent = {
     },
     map: {
       eyebrow: "Hub topology",
-      title: "Governance at the center, specialization at the perimeter",
-      description: "Neutral platforms coordinate through Clevones. Field operations are structurally separated and clearly identified.",
+      title: "CLEVONE SARL at the center, specialization at the perimeter",
+      description: "Technology, software, media, knowledge, and education connect through the company hub. Field operations, where published, remain structurally identified.",
+      separationLabel: "Operational separation",
     },
     disclaimerEyebrow: "Critical distinction",
     disclaimer: "Clevone Mining is operationally distinct from Clevones. Clevones remains a neutral governance and coordination platform.",
@@ -388,24 +412,44 @@ export const ecosystemPageContent = {
       title: "Les entités spécialisées se connectent via le hub",
       description: "Chaque entité a un mandat défini. La coordination passe par CLEVONES. Les opérations de terrain restent séparées.",
       communication:
-        "Les modules étendent les capacités de domaine — médias et analyse économique, coordination numérique sécurisée, savoir scientifique, éducation certifiante et (le cas échéant) opérations séparées — tandis que la gouvernance reste centrale.",
+        "Les lignes d'activité étendent les capacités — technologies, progiciel, médias, infrastructure numérique, savoir scientifique, éducation certifiante et (le cas échéant) opérations séparées — autour de CLEVONE SARL.",
       rosterEyebrow: "Registre des entités",
-      rosterTitle: "Chaque entité, un mandat défini",
-      rosterDescription: "Des plateformes spécialisées servent des fonctions distinctes — coordonnées par la gouvernance, jamais en la substituant.",
-      centralBadge: "Plateforme de gouvernance",
+      rosterTitle: "Chaque ligne, un mandat défini",
+      rosterDescription: "Des surfaces spécialisées servent des fonctions distinctes — sans affirmation juridique séparée, hormis CLEVONE SARL.",
+      centralBadge: "Hub sociétaire",
       entities: [
         {
-          name: "Clevones",
+          name: "CLEVONE SARL",
           domain: "clevones.com",
           href: "https://clevones.com",
-          role: "Gouvernance des flux économiques territoriaux",
+          role: "Société congolaise de technologies et d'affaires",
           description:
-            "La plateforme neutre de gouvernance, coordination, conformité et reporting stratégique — architecte des flux et intégrateur de l'écosystème.",
+            "La personne morale et le hub institutionnel — plateformes numériques, progiciels, logistique, industrie, énergie, médias, éducation et conseil, avec la vision stratégique Architecture de gouvernance des flux économiques territoriaux.",
           operational: false,
           central: true,
         },
         {
-          name: "Clevodia",
+          name: "CLEVONE Technologies",
+          domain: "clevones.com",
+          href: "/domaines",
+          role: "Technologies et transformation numérique",
+          description:
+            "La ligne technologique de l'écosystème CLEVONE SARL — logiciels, plateformes numériques et services informatiques. Aucune immatriculation juridique distincte n'est affirmée sur ce site.",
+          operational: false,
+          internal: true,
+        },
+        {
+          name: "CLEVONE DMS",
+          domain: "clevones.com/domaines/clevone-dms",
+          href: "/domaines/clevone-dms",
+          role: "Progiciel de gestion numérique",
+          description:
+            "Progiciel commercial pour les entreprises modernes : ventes, clients, stocks, factures, tableaux de bord, rapports et accès gouvernés. Les capacités suivent la feuille de route produit.",
+          operational: false,
+          internal: true,
+        },
+        {
+          name: "CLEVODIA",
           domain: "clevones.media",
           href: "https://clevones.media",
           role: "Médias et intelligence économique",
@@ -414,7 +458,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Clevonet",
+          name: "CLEVONET",
           domain: "extranet.clevones.com",
           href: "https://extranet.clevones.com",
           role: "Extranet et infrastructure sécurisée",
@@ -423,7 +467,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Bicuni",
+          name: "BICUNI",
           domain: "bicuni.online",
           href: "https://bicuni.online",
           role: "Bibliothèque numérique scientifique",
@@ -432,7 +476,7 @@ export const ecosystemPageContent = {
           operational: false,
         },
         {
-          name: "Btlearn Inc.",
+          name: "Btlearn",
           domain: "btlearn.org",
           href: "https://btlearn.org",
           role: "Formation certifiante",
@@ -453,8 +497,9 @@ export const ecosystemPageContent = {
     },
     map: {
       eyebrow: "Topologie du hub",
-      title: "La gouvernance au centre, la spécialisation en périphérie",
-      description: "Les plateformes neutres se coordonnent par Clevones. Les opérations de terrain sont structurellement séparées et clairement identifiées.",
+      title: "CLEVONE SARL au centre, la spécialisation en périphérie",
+      description: "Technologies, progiciels, médias, savoir et éducation se relient au hub sociétaire. Les opérations de terrain, lorsqu'elles sont publiées, restent clairement identifiées.",
+      separationLabel: "Séparation opérationnelle",
     },
     disclaimerEyebrow: "Distinction critique",
     disclaimer: "Clevone Mining est opérationnellement distincte de Clevones. Clevones demeure une plateforme neutre de gouvernance et de coordination.",

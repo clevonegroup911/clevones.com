@@ -1,41 +1,40 @@
 /**
- * Canonical corporate vision and legal purpose (objet social) for Clevones.
+ * Canonical corporate vision and legal purpose (objet social) for CLEVONE SARL.
  *
- * Vision defines brand identity and operating posture.
- * Objet social defines legal fields of intervention.
- * They must reinforce each other: domains expand capacity; they never replace
- * the role of architect of territorial economic flows.
+ * Vision is a strategic orientation — not the company's unique legal activity.
+ * Objet social defines the lawful fields in which the company may intervene.
  */
 
 export const corporateVision = {
   title: "Transform territorial potential into durable economic assets",
   statement:
-    "Clevones designs, structures, and coordinates architectures of territorial economic flows. Through technology, logistics, digital infrastructure, economic intelligence, and coordination platforms, it converts complex territorial potential into governed, durable economic value.",
+    "CLEVONE SARL designs, structures, and coordinates digital, commercial, and institutional systems. Through technology, business software, logistics, industry, energy, media, education, and advisory, it converts complex territorial potential into durable economic value.",
   statementFr:
-    "Clevones conçoit, structure et coordonne des architectures de flux économiques territoriaux. Grâce aux technologies, à la logistique, aux infrastructures numériques, à l'intelligence économique et aux plateformes de coordination, elle transforme le potentiel territorial en actifs économiques durables.",
+    "CLEVONE SARL conçoit, structure et coordonne des systèmes numériques, commerciaux et institutionnels. Grâce aux technologies, aux progiciels, à la logistique, à l'industrie, à l'énergie, aux médias, à l'éducation et au conseil, elle transforme le potentiel territorial en valeur économique durable.",
 } as const;
 
 export const corporateMission = {
-  title: "Architect, structure, and coordinate territorial economic systems",
+  title: "Build digital, commercial and institutional infrastructure for Africa",
   statement:
-    "Clevones acts as a neutral governance and coordination layer for territorial economic initiatives in the Democratic Republic of Congo and across Africa — structuring frameworks, aligning legitimate actors, and disciplining strategic reporting without substituting operational actors.",
+    "CLEVONE SARL is a Congolese multi-sector company based in Kisangani. It develops software and digital platforms, supports logistics and productive systems, and provides media, education, and advisory capabilities — for institutions, enterprises, and partners in the Democratic Republic of Congo and across Africa.",
   statementFr:
-    "Clevones agit comme couche neutre de gouvernance et de coordination des initiatives économiques territoriales en République Démocratique du Congo et en Afrique — en structurant les cadres, en alignant les acteurs légitimes et en disciplinant le reporting stratégique, sans se substituer aux acteurs opérationnels.",
+    "CLEVONE SARL est une société congolaise multisectorielle basée à Kisangani. Elle développe des logiciels et des plateformes numériques, appuie la logistique et les systèmes productifs, et fournit des capacités médias, éducatives et de conseil — pour les institutions, les entreprises et les partenaires en République Démocratique du Congo et en Afrique.",
 } as const;
 
 /**
- * Strategic framing: objet social domains are fields of territorial architecture,
- * not a catalogue of commercial services offered by the governance platform.
+ * Strategic framing: objet social domains are lawful fields of a multi-sector
+ * company. The strategic vision orients how those fields are structured; it
+ * does not replace them as the unique legal activity.
  */
 export const domainsFraming = {
   eyebrow: "Fields of intervention",
   eyebrowFr: "Champs d'intervention",
-  title: "Legal capacity in service of territorial architecture",
-  titleFr: "Une capacité juridique au service de l'architecture territoriale",
+  title: "Lawful multi-sector capacity",
+  titleFr: "Une capacité juridique multisectorielle",
   description:
-    "Clevones' corporate purpose defines the domains within which the company may design, structure, and coordinate territorial economic architectures — directly, through its ecosystem, or via subsidiaries and partnerships. These fields expand institutional capacity; they do not redefine Clevones as a multi-service operator.",
+    "CLEVONE SARL's corporate purpose defines the domains in which the company may operate — directly, through its ecosystem, or via subsidiaries and partnerships. The strategic vision — Governance Architecture for Territorial Economic Flows — orients how digital, commercial, and institutional systems are structured. It is not the company's unique legal activity.",
   descriptionFr:
-    "L'objet social de Clevones définit les domaines dans lesquels la société peut concevoir, structurer et coordonner des architectures économiques territoriales — directement, via son écosystème, ou par filiales et partenariats. Ces champs élargissent la capacité institutionnelle ; ils ne redéfinissent pas Clevones comme une société de services.",
+    "L'objet social de CLEVONE SARL définit les domaines dans lesquels la société peut intervenir — directement, via son écosystème, ou par filiales et partenariats. La vision stratégique — Architecture de gouvernance des flux économiques territoriaux — oriente la structuration des systèmes numériques, commerciaux et institutionnels. Elle n'est pas l'unique activité juridique de la société.",
 } as const;
 
 export type InterventionDomain = {
@@ -55,10 +54,10 @@ export const interventionDomains: readonly InterventionDomain[] = [
     title: "Technology & digital transformation",
     titleFr: "Technologies et transformation numérique",
     architectureRole:
-      "Software, digital solutions, and technology services that make territorial coordination legible, auditable, and scalable.",
+      "Software, digital platforms, business systems, and technology services that make organizations and territories legible, auditable, and scalable.",
     architectureRoleFr:
-      "Logiciels, solutions numériques et services technologiques qui rendent la coordination territoriale lisible, auditable et scalable.",
-    ecosystemLink: "Clevonet",
+      "Logiciels, plateformes numériques, systèmes d'entreprise et services technologiques qui rendent les organisations et les territoires lisibles, auditables et scalables.",
+    ecosystemLink: "CLEVONET · CLEVONE DMS",
   },
   {
     id: "logistics",
@@ -96,7 +95,7 @@ export const interventionDomains: readonly InterventionDomain[] = [
       "Economic intelligence, strategic communication, and content architectures that inform institutional decision-making.",
     architectureRoleFr:
       "Intelligence économique, communication stratégique et architectures de contenus qui éclairent la décision institutionnelle.",
-    ecosystemLink: "Clevodia",
+    ecosystemLink: "CLEVODIA",
   },
   {
     id: "education",
@@ -106,7 +105,7 @@ export const interventionDomains: readonly InterventionDomain[] = [
       "Skills, knowledge infrastructures, and certified learning that strengthen the human and institutional capacity of territorial systems.",
     architectureRoleFr:
       "Compétences, infrastructures de savoir et formations certifiantes qui renforcent la capacité humaine et institutionnelle des systèmes territoriaux.",
-    ecosystemLink: "Btlearn Inc. / Bicuni",
+    ecosystemLink: "Btlearn / BICUNI",
   },
   {
     id: "advisory",
@@ -140,9 +139,9 @@ export const interventionDomains: readonly InterventionDomain[] = [
 export const corporateDevelopmentClause = {
   title: "Subsidiaries, partnerships, and related operations",
   statement:
-    "Clevones may create subsidiaries, take equity participations, conclude partnerships, and undertake commercial, financial, movable, or immovable operations that relate directly or indirectly to its corporate purpose, or that may favour its development, in accordance with applicable law.",
+    "CLEVONE SARL may create subsidiaries, take equity participations, conclude partnerships, and undertake commercial, financial, movable, or immovable operations that relate directly or indirectly to its corporate purpose, or that may favour its development, in accordance with applicable law.",
   statementFr:
-    "Clevones peut créer des filiales, prendre des participations, conclure des partenariats et réaliser toutes opérations commerciales, financières, mobilières ou immobilières se rattachant directement ou indirectement à son objet social, ou susceptibles d'en favoriser le développement, dans le respect de la législation applicable.",
+    "CLEVONE SARL peut créer des filiales, prendre des participations, conclure des partenariats et réaliser toutes opérations commerciales, financières, mobilières ou immobilières se rattachant directement ou indirectement à son objet social, ou susceptibles d'en favoriser le développement, dans le respect de la législation applicable.",
 } as const;
 
 /** Full legal objet social text for mentions légales (verbatim structure, institutional register). */
@@ -150,16 +149,16 @@ export const objetSocialLegalFr = {
   intro:
     "La société a pour objet, en République Démocratique du Congo et à l'étranger :",
   items: [
-    "les technologies, la transformation numérique, le développement de logiciels, de solutions numériques et de services technologiques ;",
+    "les technologies, la transformation numérique, la conception et le développement de logiciels, de progiciels, de plateformes numériques et de services informatiques ;",
     "le transport, la logistique et les services de gestion des chaînes d'approvisionnement ;",
-    "l'industrie, la production, l'innovation et le développement de solutions destinées aux secteurs productifs ;",
+    "l'industrie, la production, l'ingénierie, l'innovation et le développement de solutions destinées aux secteurs productifs ;",
     "l'énergie et le développement de solutions, services et innovations dans le domaine énergétique ;",
     "les médias, la communication, l'audiovisuel, l'édition, la création de contenus et les industries créatives ;",
     "l'éducation, la formation, le développement des compétences et le renforcement des capacités ;",
-    "le conseil stratégique, organisationnel, administratif et financier, dans le respect de la réglementation en vigueur ;",
+    "le conseil stratégique, l'organisation, la gestion et les services professionnels, dans le respect de la réglementation en vigueur ;",
     "l'accompagnement des entreprises, des organisations et des institutions dans leurs démarches administratives, réglementaires, de conformité et de gouvernance ;",
     "les sports, la culture, l'organisation, la production et la promotion d'événements sportifs, culturels, artistiques et professionnels ;",
-    "le commerce, la distribution, la vente, l'achat, l'importation, l'exportation et la commercialisation de biens, produits et services autorisés par la loi.",
+    "le commerce, la distribution, le e-commerce, la vente, l'achat, l'importation, l'exportation et la commercialisation de biens, produits et services autorisés par la loi.",
   ],
   closing:
     "La société peut également créer des filiales, prendre des participations dans d'autres sociétés, conclure des partenariats et réaliser toutes opérations commerciales, financières, mobilières ou immobilières se rattachant directement ou indirectement à son objet social ou susceptibles d'en favoriser le développement dans le respect de la législation applicable.",
@@ -170,6 +169,6 @@ export const objetSocialLegalFr = {
  * Used wherever breadth of objet social could be misread as operational substitution.
  */
 export const capacityVsPlatformClarification = {
-  en: "Clevones' corporate purpose defines the legal fields in which the company and its ecosystem may intervene. The Clevones governance platform itself remains a neutral architecture, structuring, and coordination layer — not an operator, trader, resource exploiter, or informal broker.",
-  fr: "L'objet social de Clevones définit les champs juridiques dans lesquels la société et son écosystème peuvent intervenir. La plateforme de gouvernance Clevones demeure une couche neutre d'architecture, de structuration et de coordination — et non un opérateur, un négociant, un exploitant de ressources ou un facilitateur informel.",
+  en: "CLEVONE SARL's corporate purpose defines the legal fields in which the company and its ecosystem may intervene. Strategic vision orients that work; it does not reduce the company to a single activity.",
+  fr: "L'objet social de CLEVONE SARL définit les champs juridiques dans lesquels la société et son écosystème peuvent intervenir. La vision stratégique oriente ce travail ; elle ne réduit pas la société à une activité unique.",
 } as const;

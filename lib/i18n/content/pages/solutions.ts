@@ -18,6 +18,18 @@ export type SolutionsPageContent = {
     steps: readonly TitledDescription[];
   };
   cta: CtaContent;
+  featuredProduct: {
+    eyebrow: string;
+    name: string;
+    type: string;
+    positioning: string;
+    description: string;
+    capabilitiesLabel: string;
+    functions: readonly string[];
+    note: string;
+    href: string;
+    cta: string;
+  };
 };
 
 /**
@@ -57,7 +69,7 @@ export const solutionsPageContent = {
           title: "Technology & digital transformation",
           description:
             "Digital systems that make coordination readable and auditable.",
-          ecosystemLink: "Clevonet",
+          ecosystemLink: "CLEVONET · CLEVONE DMS",
         },
         {
           title: "Transport, logistics & supply chains",
@@ -79,13 +91,13 @@ export const solutionsPageContent = {
           title: "Media & creative industries",
           description:
             "Economic intelligence and communication that support institutional decisions.",
-          ecosystemLink: "Clevodia",
+          ecosystemLink: "CLEVODIA",
         },
         {
           title: "Education & capacity building",
           description:
             "Skills and knowledge infrastructures that strengthen institutions.",
-          ecosystemLink: "Btlearn Inc. / Bicuni",
+          ecosystemLink: "Btlearn / BICUNI",
         },
         {
           title: "Strategic advisory, compliance & governance",
@@ -130,6 +142,32 @@ export const solutionsPageContent = {
         { href: "/methodology", label: "See the methodology" },
       ],
     },
+    featuredProduct: {
+      eyebrow: "Business software",
+      name: "CLEVONE DMS",
+      type: "Commercial software / Digital Management System",
+      positioning: "Digital Management System for modern businesses",
+      description:
+        "A Digital Management System covering sales, customers, inventory, suppliers, expenses, revenue, invoices, documents, dashboards, reports, users & permissions, and cloud synchronization.",
+      capabilitiesLabel: "Capabilities",
+      functions: [
+        "Sales",
+        "Customers",
+        "Inventory",
+        "Suppliers",
+        "Expenses",
+        "Revenue",
+        "Invoices",
+        "Documents",
+        "Dashboards",
+        "Reports",
+        "Users & Permissions",
+        "Cloud Synchronization",
+      ],
+      note: "Capabilities describe the product architecture and roadmap.",
+      href: "/solutions/clevone-dms",
+      cta: "Explore CLEVONE DMS",
+    },
   },
   fr: {
     meta: {
@@ -163,7 +201,7 @@ export const solutionsPageContent = {
           title: "Technologies et transformation numérique",
           description:
             "Des systèmes numériques qui rendent la coordination lisible et auditable.",
-          ecosystemLink: "Clevonet",
+          ecosystemLink: "CLEVONET · CLEVONE DMS",
         },
         {
           title: "Transport, logistique et chaînes d'approvisionnement",
@@ -185,13 +223,13 @@ export const solutionsPageContent = {
           title: "Médias et industries créatives",
           description:
             "Intelligence économique et communication au service de la décision institutionnelle.",
-          ecosystemLink: "Clevodia",
+          ecosystemLink: "CLEVODIA",
         },
         {
           title: "Éducation et renforcement des capacités",
           description:
             "Compétences et infrastructures de savoir qui renforcent les institutions.",
-          ecosystemLink: "Btlearn Inc. / Bicuni",
+          ecosystemLink: "Btlearn / BICUNI",
         },
         {
           title: "Conseil stratégique, conformité et gouvernance",
@@ -238,6 +276,32 @@ export const solutionsPageContent = {
       actions: [
         { href: "/methodologie", label: "Voir la méthodologie" },
       ],
+    },
+    featuredProduct: {
+      eyebrow: "Progiciel",
+      name: "CLEVONE DMS",
+      type: "Progiciel de gestion numérique",
+      positioning: "Progiciel de gestion numérique pour les entreprises modernes",
+      description:
+        "Un progiciel de gestion numérique couvrant ventes, clients, stocks, fournisseurs, dépenses, recettes, factures, documents, tableaux de bord, rapports, utilisateurs et permissions, et synchronisation cloud.",
+      capabilitiesLabel: "Capacités",
+      functions: [
+        "Ventes",
+        "Clients",
+        "Stocks",
+        "Fournisseurs",
+        "Dépenses",
+        "Recettes",
+        "Factures",
+        "Documents",
+        "Tableaux de bord",
+        "Rapports",
+        "Utilisateurs et permissions",
+        "Synchronisation cloud",
+      ],
+      note: "Les capacités décrivent l'architecture produit et la feuille de route.",
+      href: "/domaines/clevone-dms",
+      cta: "Découvrir CLEVONE DMS",
     },
   },
 } as const satisfies LocalizedPageContent<SolutionsPageContent>;

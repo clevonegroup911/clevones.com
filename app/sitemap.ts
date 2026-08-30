@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/site";
 
 const publicRoutes = [
   { path: "/", priority: 1 },
-  { path: "/accueil", priority: 1 },
+  { path: "/en", priority: 0.98 },
   { path: "/challenge", priority: 0.96 },
   { path: "/defi", priority: 0.96 },
   { path: "/why-now", priority: 0.95 },
@@ -16,6 +16,8 @@ const publicRoutes = [
   { path: "/mission", priority: 0.9 },
   { path: "/solutions", priority: 0.9 },
   { path: "/domaines", priority: 0.9 },
+  { path: "/solutions/clevone-dms", priority: 0.88 },
+  { path: "/domaines/clevone-dms", priority: 0.88 },
   { path: "/methodology", priority: 0.9 },
   { path: "/methodologie", priority: 0.9 },
   { path: "/governance", priority: 0.88 },

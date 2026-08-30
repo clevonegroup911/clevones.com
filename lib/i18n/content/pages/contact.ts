@@ -4,6 +4,12 @@ export type ContactIntent = "initiative" | "eligibility" | "collaboration";
 export type ContactPageContent = {
   meta: PageMeta;
   hero: HeroContent;
+  directory: {
+    title: string;
+    location: string;
+    phoneLabel: string;
+    emailLabel: string;
+  };
   intents: Record<ContactIntent, HeroContent & { submitLabel: string; href: string }>;
   form: {
     governanceAcknowledgment: string; submitLabel: string;
@@ -22,11 +28,17 @@ const stageValues = ["concept", "documented-initiative", "institutional-discussi
 
 export const contactPageContent = {
   en: {
-    meta: { title: "Contact", description: "Submit a structured initiative or initiate a strategic collaboration with Clevones." },
+    meta: { title: "Contact", description: "Contact CLEVONE SARL in Kisangani. Submit a structured initiative or start a strategic conversation." },
     hero: {
       eyebrow: "Contact",
       title: "Start a strategic conversation",
-      subtitle: "Clevones reviews structured, documented initiatives only.",
+      subtitle: "CLEVONE SARL reviews structured, documented initiatives only.",
+    },
+    directory: {
+      title: "Official contact",
+      location: "Kisangani, Democratic Republic of the Congo",
+      phoneLabel: "Tel",
+      emailLabel: "Email",
     },
     intents: {
       collaboration: {
@@ -112,11 +124,17 @@ export const contactPageContent = {
     },
   },
   fr: {
-    meta: { title: "Collaboration", description: "Soumettez une initiative structurée ou initiez une collaboration stratégique avec Clevones." },
+    meta: { title: "Collaboration", description: "Contactez CLEVONE SARL à Kisangani. Soumettez une initiative structurée ou initiez une collaboration stratégique." },
     hero: {
       eyebrow: "Contact",
       title: "Commencer une conversation stratégique",
-      subtitle: "Clevones examine uniquement les initiatives structurées et documentées.",
+      subtitle: "CLEVONE SARL examine uniquement les initiatives structurées et documentées.",
+    },
+    directory: {
+      title: "Contact officiel",
+      location: "Kisangani, République Démocratique du Congo",
+      phoneLabel: "Tél.",
+      emailLabel: "Email",
     },
     intents: {
       collaboration: {

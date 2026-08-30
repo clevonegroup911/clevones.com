@@ -1,6 +1,9 @@
 import { siteLegalDisclaimer } from "@/lib/constants/brand-positioning";
+import { company } from "@/lib/constants/company";
 import {
+  aboutPageContent,
   challengePageContent,
+  clevoneDmsPageContent,
   contactPageContent,
   ecosystemPageContent,
   evidencePageContent,
@@ -36,8 +39,11 @@ export const enContent = {
     closeMenu: "Close menu",
     operationalBadge: "Operational",
     description:
-      "Clevones designs, structures, and coordinates architectures of territorial economic flows — a neutral governance platform transforming territorial potential into durable economic assets across technology, logistics, industry, energy, media, education, and institutional coordination in the Democratic Republic of Congo and Africa.",
+      "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.",
     legalDisclaimer: siteLegalDisclaimer,
+    footerLocation: company.address.shortEn,
+    phoneLabel: "Tel",
+    emailLabel: "Email",
     cta: {
       label: "Start a strategic conversation",
       shortLabel: "Start conversation",
@@ -85,5 +91,7 @@ export const enContent = {
     insights: insightsPageContent.en,
     legal: legalPageContent.en,
     privacy: privacyPageContent.en,
+    about: aboutPageContent.en,
+    clevoneDms: clevoneDmsPageContent.en,
   },
 } as const satisfies LocaleContent;

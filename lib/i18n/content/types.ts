@@ -18,6 +18,8 @@ import type {
   PrivacyPageContent,
   SolutionsPageContent,
   WhyNowPageContent,
+  AboutPageContent,
+  ClevoneDmsPageContent,
 } from "@/lib/i18n/content/pages";
 
 export type ShellNavLabels = {
@@ -73,6 +75,9 @@ export type ShellContent = {
   operationalBadge: string;
   description: string;
   legalDisclaimer: string;
+  footerLocation: string;
+  phoneLabel: string;
+  emailLabel: string;
   cta: ShellCta;
   nav: ShellNavLabels;
 };
@@ -94,5 +99,7 @@ export type LocaleContent = {
     insights: InsightsPageContent;
     legal: LegalPageContent;
     privacy: PrivacyPageContent;
+    about: AboutPageContent;
+    clevoneDms: ClevoneDmsPageContent;
   };
 };

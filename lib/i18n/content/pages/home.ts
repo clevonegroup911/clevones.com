@@ -96,8 +96,21 @@ export type HomePageContent = {
       description: string;
       href: string;
       operational: boolean;
+      internal?: boolean;
     }[];
     miningDisclaimer: string;
+  };
+  featuredSolution: {
+    eyebrow: string;
+    name: string;
+    type: string;
+    positioning: string;
+    description: string;
+    capabilitiesLabel: string;
+    functions: readonly string[];
+    note: string;
+    href: string;
+    cta: string;
   };
   filters: {
     eyebrow: string;
@@ -155,34 +168,52 @@ const frDomains = interventionDomains.slice(0, 6).map(
 
 const enEcosystemEntities = [
   {
-    name: "Clevodia",
+    name: "CLEVONE Technologies",
+    role: "Technology and digital transformation",
+    description:
+      "The technology line of the CLEVONE SARL ecosystem — software, digital platforms, and IT services that support business and institutional systems.",
+    href: "/solutions",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVONE DMS",
+    role: "Digital Management System",
+    description:
+      "Commercial software for modern businesses: sales, customers, inventory, invoices, dashboards, reports, and governed access. Capabilities follow the product roadmap.",
+    href: "/solutions/clevone-dms",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVODIA",
     role: "Media + AI economic intelligence",
     description:
-      "Clevodia produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows — extending the media and creative industries domain.",
+      "CLEVODIA produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows — extending the media and creative industries domain.",
     href: "https://clevones.media",
     operational: false,
   },
   {
-    name: "Clevonet",
+    name: "CLEVONET",
     role: "Extranet + secure infrastructure",
     description:
-      "Clevonet provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination — the technology and digital infrastructure layer of the ecosystem.",
+      "CLEVONET provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination — the technology and digital infrastructure layer of the ecosystem.",
     href: "https://extranet.clevones.com",
     operational: false,
   },
   {
-    name: "Bicuni",
+    name: "BICUNI",
     role: "Scientific digital library",
     description:
-      "Bicuni is a digital archive for theses, dissertations, academic publications, and scientific knowledge — supporting education and capacity-building infrastructures.",
+      "BICUNI is a digital archive for theses, dissertations, academic publications, and scientific knowledge — supporting education and capacity-building infrastructures.",
     href: "https://bicuni.online",
     operational: false,
   },
   {
-    name: "Btlearn Inc.",
+    name: "Btlearn",
     role: "Certified education",
     description:
-      "Btlearn Inc. provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills — strengthening human and institutional capacity.",
+      "Btlearn provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills — strengthening human and institutional capacity.",
     href: "https://btlearn.org",
     operational: false,
   },
@@ -198,34 +229,52 @@ const enEcosystemEntities = [
 
 const frEcosystemEntities = [
   {
-    name: "Clevodia",
+    name: "CLEVONE Technologies",
+    role: "Technologies et transformation numérique",
+    description:
+      "La ligne technologique de l'écosystème CLEVONE SARL — logiciels, plateformes numériques et services informatiques au service des systèmes d'entreprise et institutionnels.",
+    href: "/domaines",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVONE DMS",
+    role: "Progiciel de gestion numérique",
+    description:
+      "Progiciel commercial pour les entreprises modernes : ventes, clients, stocks, factures, tableaux de bord, rapports et accès gouvernés. Les capacités suivent la feuille de route produit.",
+    href: "/domaines/clevone-dms",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVODIA",
     role: "Médias et intelligence économique augmentée par l'IA",
     description:
-      "Clevodia produit de l'intelligence économique, des analyses stratégiques et des éclairages assistés par l'IA sur les institutions, les territoires et les flux, prolongeant le champ des médias et des industries créatives.",
+      "CLEVODIA produit de l'intelligence économique, des analyses stratégiques et des éclairages assistés par l'IA sur les institutions, les territoires et les flux, prolongeant le champ des médias et des industries créatives.",
     href: "https://clevones.media",
     operational: false,
   },
   {
-    name: "Clevonet",
+    name: "CLEVONET",
     role: "Extranet et infrastructure sécurisée",
     description:
-      "Clevonet fournit des accès sécurisés, des flux de collaboration, du reporting, de la gestion documentaire et une coordination numérique souveraine : la couche technologique et d'infrastructure numérique de l'écosystème.",
+      "CLEVONET fournit des accès sécurisés, des flux de collaboration, du reporting, de la gestion documentaire et une coordination numérique souveraine : la couche technologique et d'infrastructure numérique de l'écosystème.",
     href: "https://extranet.clevones.com",
     operational: false,
   },
   {
-    name: "Bicuni",
+    name: "BICUNI",
     role: "Bibliothèque numérique scientifique",
     description:
-      "Bicuni est une archive numérique de thèses, mémoires, publications académiques et savoirs scientifiques, au service des infrastructures d'éducation et de renforcement des capacités.",
+      "BICUNI est une archive numérique de thèses, mémoires, publications académiques et savoirs scientifiques, au service des infrastructures d'éducation et de renforcement des capacités.",
     href: "https://bicuni.online",
     operational: false,
   },
   {
-    name: "Btlearn Inc.",
+    name: "Btlearn",
     role: "Formation certifiante",
     description:
-      "Btlearn Inc. propose des formations certifiantes en langues, informatique, affaires, leadership, cloud, IA et compétences professionnelles, renforçant les capacités humaines et institutionnelles.",
+      "Btlearn propose des formations certifiantes en langues, informatique, affaires, leadership, cloud, IA et compétences professionnelles, renforçant les capacités humaines et institutionnelles.",
     href: "https://btlearn.org",
     operational: false,
   },
@@ -242,46 +291,47 @@ const frEcosystemEntities = [
 export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
   en: {
     hero: {
-      eyebrow: "Territorial coordination",
+      eyebrow: "CLEVONE SARL",
       badge: "DRC & Africa",
-      title: "CLEVONES structures territorial initiatives so they can be governed.",
+      title: "Building digital, commercial and institutional infrastructure for Africa.",
       subtitle:
-        "We help institutions, investors, and partners align multi-actor projects — without operating in their place.",
+        "Technology • Business Software • Logistics • Industry • Energy • Media • Education • Advisory",
       valueProposition:
-        "What: coordination. Why: fragmentation blocks value. How: structure before capital.",
-      primaryCta: { label: "Start a strategic conversation", href: "/contact" },
+        "Strategic vision: Governance Architecture for Territorial Economic Flows.",
+      primaryCta: { label: "Explore CLEVONE", href: "/about" },
       secondaryCta: {
-        label: "Explore the challenge",
-        href: "/challenge",
+        label: "Our Solutions",
+        href: "/solutions",
       },
       benefits: [
         {
-          title: "Align actors",
+          title: "Digital platforms",
           description:
-            "Give institutions, enterprises, and partners one shared coordination frame.",
+            "Software and digital systems that make businesses and institutions operable.",
         },
         {
-          title: "Reduce fragmentation",
+          title: "Commercial infrastructure",
           description:
-            "Replace parallel informal efforts with documented roles and rules.",
+            "Business software, trade, logistics, and distribution capacity.",
         },
         {
-          title: "Prepare for review",
+          title: "Institutional architecture",
           description:
-            "Make initiatives readable for institutions and capital evaluators.",
+            "Frameworks that make territorial economic flows readable and durable.",
         },
         {
-          title: "Stay non-operational",
+          title: "Built in Africa",
           description:
-            "We design governance. Field execution stays with legitimate operators.",
+            "A Congolese company, based in Kisangani, serving the DRC and Africa.",
         },
       ],
       proofs: {
         label: "Across the CLEVONES ecosystem",
         items: [
-          { name: "Clevonet", detail: "Digital infrastructure" },
-          { name: "Clevodia", detail: "Economic intelligence" },
-          { name: "Bicuni", detail: "Scientific knowledge" },
+          { name: "CLEVONE DMS", detail: "Business software" },
+          { name: "CLEVONET", detail: "Digital infrastructure" },
+          { name: "CLEVODIA", detail: "Economic intelligence" },
+          { name: "BICUNI", detail: "Scientific knowledge" },
           { name: "Btlearn", detail: "Certified education" },
           {
             name: "Clevone Mining",
@@ -290,7 +340,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
           },
         ],
       },
-      trustLine: "Neutral. Documented. Non-operational.",
+      trustLine: "Kisangani · Democratic Republic of the Congo",
     },
     positioning: {
       eyebrow: "Positioning",
@@ -426,12 +476,38 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       eyebrow: "Ecosystem",
       title: "A structured institutional ecosystem",
       description:
-        "Clevones sits within a broader architecture of complementary entities — each with a defined role, none substituting the neutral governance function.",
+        "CLEVONE SARL sits within a broader architecture of complementary lines — technology, software, media, knowledge, and education — each with a defined role.",
       href: "/ecosystem",
       linkLabel: "Explore ecosystem →",
       operationalBadge: "Operational unit",
       entities: enEcosystemEntities,
       miningDisclaimer: clevoneMiningSeparationDisclaimer,
+    },
+    featuredSolution: {
+      eyebrow: "Business software",
+      name: "CLEVONE DMS",
+      type: "Commercial software / Digital Management System",
+      positioning: "Digital Management System for modern businesses",
+      description:
+        "A Digital Management System for sales, customers, inventory, suppliers, expenses, revenue, invoices, documents, dashboards, reports, users & permissions, and cloud synchronization.",
+      capabilitiesLabel: "Capabilities",
+      functions: [
+        "Sales",
+        "Customers",
+        "Inventory",
+        "Suppliers",
+        "Expenses",
+        "Revenue",
+        "Invoices",
+        "Documents",
+        "Dashboards",
+        "Reports",
+        "Users & Permissions",
+        "Cloud Synchronization",
+      ],
+      note: "Capabilities describe the product architecture and roadmap. This website does not expose a live application backend.",
+      href: "/solutions/clevone-dms",
+      cta: "Explore CLEVONE DMS",
     },
     filters: {
       eyebrow: "Engagement criteria",
@@ -519,57 +595,58 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       },
     },
     meta: {
-      title: "CLEVONES | Territorial Economic Governance",
+      title: "CLEVONES | Technology, Business & Digital Infrastructure",
       description:
-        "CLEVONES structures and coordinates territorial economic initiatives into governed, investable systems across the DRC and Africa.",
+        "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.",
     },
   },
   fr: {
     hero: {
-      eyebrow: "Coordination territoriale",
+      eyebrow: "CLEVONE SARL",
       badge: "RDC et Afrique",
       title:
-        "CLEVONES structure les initiatives territoriales pour qu'elles puissent être gouvernées.",
+        "Construire les infrastructures numériques, commerciales et institutionnelles de l'Afrique.",
       subtitle:
-        "Nous aidons institutions, investisseurs et partenaires à aligner des projets multi-acteurs — sans opérer à leur place.",
+        "Technologie • Logiciels de gestion • Logistique • Industrie • Énergie • Médias • Éducation • Conseil",
       valueProposition:
-        "Quoi : la coordination. Pourquoi : la fragmentation bloque la valeur. Comment : la structure avant le capital.",
+        "Vision : Architecture de gouvernance des flux économiques territoriaux.",
       primaryCta: {
-        label: "Commencer une conversation stratégique",
-        href: "/collaboration",
+        label: "Découvrir CLEVONE",
+        href: "/mission",
       },
       secondaryCta: {
-        label: "Comprendre le défi",
-        href: "/defi",
+        label: "Nos solutions",
+        href: "/domaines",
       },
       benefits: [
         {
-          title: "Aligner les acteurs",
+          title: "Plateformes numériques",
           description:
-            "Donner aux institutions, entreprises et partenaires un cadre de coordination partagé.",
+            "Logiciels et systèmes numériques qui rendent entreprises et institutions opérables.",
         },
         {
-          title: "Réduire la fragmentation",
+          title: "Infrastructure commerciale",
           description:
-            "Remplacer les efforts informels parallèles par des rôles et des règles documentés.",
+            "Progiciels, commerce, logistique et capacité de distribution.",
         },
         {
-          title: "Préparer l'examen",
+          title: "Architecture institutionnelle",
           description:
-            "Rendre les initiatives lisibles pour les institutions et les évaluateurs de capital.",
+            "Des cadres qui rendent les flux économiques territoriaux lisibles et durables.",
         },
         {
-          title: "Rester non opérationnel",
+          title: "Ancrée en Afrique",
           description:
-            "Nous concevons la gouvernance. L'exécution de terrain reste aux opérateurs légitimes.",
+            "Une société congolaise, basée à Kisangani, au service de la RDC et de l'Afrique.",
         },
       ],
       proofs: {
         label: "Au sein de l'écosystème CLEVONES",
         items: [
-          { name: "Clevonet", detail: "Infrastructure numérique" },
-          { name: "Clevodia", detail: "Intelligence économique" },
-          { name: "Bicuni", detail: "Savoir scientifique" },
+          { name: "CLEVONE DMS", detail: "Progiciel" },
+          { name: "CLEVONET", detail: "Infrastructure numérique" },
+          { name: "CLEVODIA", detail: "Intelligence économique" },
+          { name: "BICUNI", detail: "Savoir scientifique" },
           { name: "Btlearn", detail: "Formation certifiante" },
           {
             name: "Clevone Mining",
@@ -578,7 +655,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
           },
         ],
       },
-      trustLine: "Neutre. Documenté. Non opérationnel.",
+      trustLine: "Kisangani · République Démocratique du Congo",
     },
     positioning: {
       eyebrow: "Positionnement",
@@ -701,12 +778,38 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       eyebrow: "Écosystème",
       title: "Un écosystème institutionnel structuré",
       description:
-        "Clevones s'inscrit dans une architecture plus large d'entités complémentaires, chacune dotée d'un rôle défini, sans jamais se substituer à la fonction de gouvernance neutre.",
+        "CLEVONE SARL s'inscrit dans une architecture plus large de lignes complémentaires — technologies, progiciels, médias, savoir et éducation — chacune dotée d'un rôle défini.",
       href: "/ecosysteme",
       linkLabel: "Explorer l'écosystème →",
       operationalBadge: "Unité opérationnelle",
       entities: frEcosystemEntities,
       miningDisclaimer: clevoneMiningSeparationDisclaimerFr,
+    },
+    featuredSolution: {
+      eyebrow: "Progiciel",
+      name: "CLEVONE DMS",
+      type: "Progiciel de gestion numérique",
+      positioning: "Progiciel de gestion numérique pour les entreprises modernes",
+      description:
+        "Un progiciel de gestion numérique pour les ventes, les clients, les stocks, les fournisseurs, les dépenses, les recettes, les factures, les documents, les tableaux de bord, les rapports, les utilisateurs et permissions, et la synchronisation cloud.",
+      capabilitiesLabel: "Capacités",
+      functions: [
+        "Ventes",
+        "Clients",
+        "Stocks",
+        "Fournisseurs",
+        "Dépenses",
+        "Recettes",
+        "Factures",
+        "Documents",
+        "Tableaux de bord",
+        "Rapports",
+        "Utilisateurs et permissions",
+        "Synchronisation cloud",
+      ],
+      note: "Les capacités décrivent l'architecture produit et la feuille de route. Ce site n'expose aucun backend applicatif en ligne.",
+      href: "/domaines/clevone-dms",
+      cta: "Découvrir CLEVONE DMS",
     },
     filters: {
       eyebrow: "Critères d'engagement",
@@ -822,9 +925,9 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       },
     },
     meta: {
-      title: "CLEVONES | Gouvernance économique territoriale",
+      title: "CLEVONES | Technologie, Business & Infrastructure Numérique",
       description:
-        "CLEVONES structure et coordonne des initiatives économiques territoriales en systèmes gouvernés et finançables en RDC et en Afrique.",
+        "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.",
     },
   },
 };

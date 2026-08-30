@@ -1,5 +1,9 @@
 import { siteLegalDisclaimer } from "@/lib/constants/brand-positioning";
 import {
+  company,
+  companyStreetAddress,
+} from "@/lib/constants/company";
+import {
   corporateMission,
   corporateVision,
   interventionDomains,
@@ -10,11 +14,32 @@ export function OrganizationJsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: siteConfig.name,
-    url: siteConfig.url,
+    name: company.brandName,
+    legalName: company.legalName,
+    url: company.website,
     logo: `${siteConfig.url}/brand/clevones-mark.png`,
     description: siteConfig.description,
-    email: siteConfig.contact.email,
+    email: company.email.display,
+    telephone: company.phone.href.replace("tel:", ""),
+    foundingDate: company.incorporationDateIso,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: companyStreetAddress,
+      addressLocality: company.address.city,
+      addressCountry: company.address.countryCode,
+    },
+    identifier: [
+      {
+        "@type": "PropertyValue",
+        name: company.rccmLabel,
+        value: company.rccm,
+      },
+      {
+        "@type": "PropertyValue",
+        name: company.nationalIdLabel,
+        value: company.nationalId,
+      },
+    ],
     areaServed: [
       {
         "@type": "Country",
@@ -22,12 +47,13 @@ export function OrganizationJsonLd() {
       },
       "Africa",
     ],
-    slogan: siteConfig.tagline,
+    slogan: company.strategicVision,
     knowsAbout: [
-      "territorial economic governance",
-      "flow structuring",
+      "digital infrastructure",
+      "business software",
+      "commercial software",
+      "logistics",
       "institutional coordination",
-      "compliance governance",
       corporateVision.title,
       corporateMission.title,
       ...interventionDomains.map((domain) => domain.title),

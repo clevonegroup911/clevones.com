@@ -17,8 +17,8 @@ export const faqPageContent = {
     },
     items: [
       {
-        question: "What is Clevones?",
-        answer: "Clevones is a neutral governance platform. It designs, structures, and coordinates territorial economic flows in the DRC and across Africa — through documented methodology, not informal brokerage.",
+        question: "What is CLEVONES / CLEVONE SARL?",
+        answer: "CLEVONES is the public brand of CLEVONE SARL, a Congolese multi-sector company based in Kisangani. It builds digital, commercial, and institutional infrastructure — including software, logistics, media, education, and advisory — with a strategic vision of Governance Architecture for Territorial Economic Flows.",
       },
       {
         question: "What is Clevones' corporate purpose (objet social)?",
@@ -30,11 +30,15 @@ export const faqPageContent = {
       },
       {
         question: "How does the ecosystem relate to the corporate purpose?",
-        answer: "Specialized entities extend domain capacity: Clevodia (media and economic analysis), Clevonet (secure digital infrastructure), Bicuni (scientific knowledge), Btlearn Inc. (certified education), and Clevone Mining (operational extraction, structurally separated). Clevones remains the neutral hub.",
+        answer: "The public ecosystem is organized around CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI, and Btlearn. Clevone Mining is presented as a distinct operational unit. No separate legal registration is claimed on this site except for CLEVONE SARL.",
       },
       {
         question: "Is Clevone Mining part of the governance platform?",
         answer: "No. Clevone Mining conducts field operations. It is structurally separated from the neutral governance role of Clevones. No operational activity runs under the Clevones governance platform.",
+      },
+      {
+        question: "What is CLEVONE DMS?",
+        answer: "CLEVONE DMS is a Digital Management System for modern businesses — sales, customers, inventory, suppliers, expenses, revenue, invoices, documents, dashboards, reports, users & permissions, and cloud synchronization. Functions are presented as product capabilities and roadmap, not as a live backend on this website.",
       },
       {
         question: "Who can engage with Clevones?",
@@ -64,8 +68,8 @@ export const faqPageContent = {
     },
     items: [
       {
-        question: "Qu'est-ce que Clevones ?",
-        answer: "Clevones est une plateforme neutre de gouvernance. Elle conçoit, structure et coordonne des flux économiques territoriaux en RDC et en Afrique — par une méthodologie documentée, non par du courtage informel.",
+        question: "Qu'est-ce que CLEVONES / CLEVONE SARL ?",
+        answer: "CLEVONES est la marque publique de CLEVONE SARL, société congolaise multisectorielle basée à Kisangani. Elle construit des infrastructures numériques, commerciales et institutionnelles — logiciels, logistique, médias, éducation et conseil — avec la vision stratégique Architecture de gouvernance des flux économiques territoriaux.",
       },
       {
         question: "Quel est l'objet social de Clevones ?",
@@ -77,11 +81,15 @@ export const faqPageContent = {
       },
       {
         question: "Quel est le lien entre l'écosystème et l'objet social ?",
-        answer: "Des entités spécialisées étendent les capacités des domaines : Clevodia (médias et analyse économique), Clevonet (infrastructure numérique sécurisée), Bicuni (savoir scientifique), Btlearn Inc. (formation certifiante) et Clevone Mining (extraction opérationnelle, structurellement séparée). Clevones demeure le hub neutre.",
+        answer: "L'écosystème public s'organise autour de CLEVONE SARL, CLEVONE Technologies, CLEVONE DMS, CLEVONET, CLEVODIA, BICUNI et Btlearn. Clevone Mining est présentée comme une unité opérationnelle distincte. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
       },
       {
         question: "Clevone Mining fait-elle partie de la plateforme de gouvernance ?",
         answer: "Non. Clevone Mining conduit les opérations de terrain. Elle est structurellement séparée du rôle de gouvernance neutre de Clevones. Aucune activité opérationnelle ne s'exerce sous la plateforme de gouvernance Clevones.",
+      },
+      {
+        question: "Qu'est-ce que CLEVONE DMS ?",
+        answer: "CLEVONE DMS est un progiciel de gestion numérique pour les entreprises modernes — ventes, clients, stocks, fournisseurs, dépenses, recettes, factures, documents, tableaux de bord, rapports, utilisateurs et permissions, et synchronisation cloud. Les fonctions sont présentées comme capacités et feuille de route produit, non comme un backend en ligne sur ce site.",
       },
       {
         question: "Qui peut s'engager avec Clevones ?",

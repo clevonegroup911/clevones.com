@@ -20,7 +20,18 @@ import { cn } from "@/lib/utils";
 
 function isActiveNavItem(pathname: string, item: LocalizedNavItem) {
   if (item.pageKey) {
-    return findPageKeyByPath(pathname) === item.pageKey;
+    if (findPageKeyByPath(pathname) === item.pageKey) {
+      return true;
+    }
+
+    if (
+      item.pageKey === "solutions" &&
+      (pathname === item.href || pathname.startsWith(`${item.href}/`))
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   if (item.href === "/") {

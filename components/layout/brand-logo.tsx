@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-const LOGO_ALT = "Clevones logo";
+const LOGO_ALT = "CLEVONES logo";
 const MARK_SRC = "/brand/clevones-mark.svg";
 
 const brandLinkClassName =

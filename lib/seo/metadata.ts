@@ -8,29 +8,35 @@ import {
   type PageKey,
 } from "@/lib/i18n";
 import { defaultLocale } from "@/lib/i18n/locales";
+import { getLocaleFromPath } from "@/lib/i18n/routes";
 import { siteConfig } from "@/lib/site";
 
 export const siteKeywords = [
-  "economic governance Africa",
-  "territorial logistics DRC",
-  "flow structuring Africa",
-  "territorial economic governance",
-  "institutional coordination DRC",
-  "neutral governance platform",
-  "logistics governance Africa",
-  "investment readiness DRC",
-  "compliance governance Africa",
-  "strategic reporting Africa",
-  "digital transformation DRC",
-  "supply chain governance Africa",
-  "economic intelligence Africa",
-  "capacity building DRC",
-  "territorial architecture Congo",
-  "Clevones",
+  "CLEVONES",
+  "CLEVONE SARL",
+  "entreprise congolaise",
+  "infrastructure numérique Afrique",
+  "logiciels de gestion RDC",
+  "CLEVONE DMS",
+  "Kisangani",
+  "transformation numérique RDC",
+  "Congolese technology company",
+  "digital infrastructure Africa",
+  "business software DRC",
+  "Architecture de gouvernance des flux économiques territoriaux",
 ] as const;
 
 export const defaultSiteTitle =
-  "Clevones — Governance Architecture for Territorial Economic Flows";
+  "CLEVONES | Technologie, Business & Infrastructure Numérique";
+
+export const defaultSiteDescription =
+  "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.";
+
+export const enSiteTitle =
+  "CLEVONES | Technology, Business & Digital Infrastructure";
+
+export const enSiteDescription =
+  "CLEVONE SARL is a Congolese technology and business company building digital platforms, commercial software, logistics, media, education and institutional solutions.";
 
 export const siteOgImage = {
   url: "/og-image.png",
@@ -54,11 +60,13 @@ export function createPageMetadata({
   title,
   description,
   path,
-  locale = defaultLocale,
+  locale,
   pageKey,
   hrefLang = false,
   robots,
 }: PageMetadataOptions): Metadata {
+  const resolvedLocale =
+    locale ?? (path ? getLocaleFromPath(path) : defaultLocale);
   const url = path ? new URL(path, siteConfig.url).toString() : undefined;
   const languages = hrefLang
     ? pageKey
@@ -85,7 +93,7 @@ export function createPageMetadata({
       description,
       siteName: siteConfig.name,
       type: "website",
-      locale: getOgLocale(locale),
+      locale: getOgLocale(resolvedLocale),
       images: [siteOgImage],
       ...(url ? { url } : {}),
     },
@@ -102,8 +110,11 @@ export function createHomeMetadata(): Metadata {
   return {
     ...createPageMetadata({
       title: defaultSiteTitle,
-      description: siteConfig.description,
+      description: defaultSiteDescription,
       path: "/",
+      locale: defaultLocale,
+      pageKey: "home",
+      hrefLang: true,
     }),
     title: {
       absolute: defaultSiteTitle,
@@ -117,13 +128,18 @@ export const rootMetadata: Metadata = {
     default: defaultSiteTitle,
     template: `%s | ${siteConfig.name}`,
   },
-  description: siteConfig.description,
+  description: defaultSiteDescription,
   keywords: [...siteKeywords],
-  authors: [{ name: siteConfig.name, url: siteConfig.url }],
-  creator: siteConfig.name,
-  publisher: siteConfig.name,
+  authors: [{ name: siteConfig.legalName, url: siteConfig.url }],
+  creator: siteConfig.legalName,
+  publisher: siteConfig.legalName,
   alternates: {
     canonical: siteConfig.url,
+    languages: {
+      fr: siteConfig.url,
+      en: new URL("/en", siteConfig.url).toString(),
+      "x-default": siteConfig.url,
+    },
   },
   openGraph: {
     type: "website",
@@ -131,13 +147,13 @@ export const rootMetadata: Metadata = {
     url: siteConfig.url,
     siteName: siteConfig.name,
     title: defaultSiteTitle,
-    description: siteConfig.description,
+    description: defaultSiteDescription,
     images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
     title: defaultSiteTitle,
-    description: siteConfig.description,
+    description: defaultSiteDescription,
     images: [siteOgImage.url],
   },
   robots: {

@@ -29,10 +29,12 @@ function buildLanguagesFromPaths(paths: LocalizedPaths): HrefLangMap | undefined
     return undefined;
   }
 
-  if (languages.en) {
-    languages["x-default"] = languages.en;
-  } else if (languages[defaultLocale]) {
+  if (languages[defaultLocale]) {
     languages["x-default"] = languages[defaultLocale];
+  } else if (languages.fr) {
+    languages["x-default"] = languages.fr;
+  } else if (languages.en) {
+    languages["x-default"] = languages.en;
   }
 
   return Object.keys(languages).length > 1 ? languages : undefined;

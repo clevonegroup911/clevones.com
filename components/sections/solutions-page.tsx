@@ -1,3 +1,4 @@
+import { FeaturedDmsSection } from "@/components/sections/featured-dms";
 import { Container } from "@/components/ui/container";
 import { FeatureCard, FeatureCardGrid } from "@/components/ui/feature-card";
 import { PageCtaSection } from "@/components/ui/page-cta-section";
@@ -26,6 +27,8 @@ export async function SolutionsPageContent() {
         tone="elevated"
         bordered="bottom"
       />
+
+      <FeaturedDmsSection content={solutions.featuredProduct} tone="elevated" />
 
       <Section tone="default" spacing="md" bordered="bottom">
         <Container>

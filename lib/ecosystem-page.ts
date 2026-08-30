@@ -1,10 +1,14 @@
 import { clevoneMiningEcosystemDisclaimer } from "@/lib/constants/brand-positioning";
 
+/**
+ * @deprecated Prefer `ecosystemPageContent` in `lib/i18n/content/pages/ecosystem.ts`.
+ * Kept in sync for any remaining non-i18n consumers.
+ */
 export const ecosystemPageHero = {
   eyebrow: "Ecosystem",
-  title: "The Clevones Ecosystem",
+  title: "The CLEVONES Ecosystem",
   subtitle:
-    "Specialized platforms extend Clevones' corporate fields of intervention — technology, media, knowledge, education, and responsible territorial development — with Clevones as the neutral coordination hub and architect of territorial economic flows.",
+    "Specialized lines around CLEVONE SARL — technology, business software, media, knowledge, and education — with CLEVONE SARL as the institutional hub.",
 } as const;
 
 export type EcosystemEntity = {
@@ -15,53 +19,74 @@ export type EcosystemEntity = {
   description: string;
   operational: boolean;
   central?: boolean;
+  internal?: boolean;
 };
 
 export const ecosystemPageEntities: EcosystemEntity[] = [
   {
-    name: "Clevones",
+    name: "CLEVONE SARL",
     domain: "clevones.com",
     href: "https://clevones.com",
-    role: "Governance of territorial economic flows",
+    role: "Congolese technology and business company",
     description:
-      "Clevones is the neutral institutional platform for governance, coordination, compliance, and strategic reporting — architect of flows and integrator of the ecosystem.",
+      "The legal entity and institutional hub — digital platforms, commercial software, logistics, industry, energy, media, education, and advisory.",
     operational: false,
     central: true,
   },
   {
-    name: "Clevodia",
+    name: "CLEVONE Technologies",
+    domain: "clevones.com",
+    href: "/solutions",
+    role: "Technology and digital transformation",
+    description:
+      "The technology line of the CLEVONE SARL ecosystem — software, digital platforms, and IT services.",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVONE DMS",
+    domain: "clevones.com/solutions/clevone-dms",
+    href: "/solutions/clevone-dms",
+    role: "Digital Management System",
+    description:
+      "Commercial software for modern businesses. Capabilities follow the product roadmap.",
+    operational: false,
+    internal: true,
+  },
+  {
+    name: "CLEVODIA",
     domain: "clevones.media",
     href: "https://clevones.media",
     role: "Media + AI economic intelligence",
     description:
-      "Clevodia produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows — extending the media and creative industries domain.",
+      "CLEVODIA produces economic intelligence, strategic analysis, and AI-assisted insights on institutions, territories, and flows.",
     operational: false,
   },
   {
-    name: "Clevonet",
+    name: "CLEVONET",
     domain: "extranet.clevones.com",
     href: "https://extranet.clevones.com",
     role: "Extranet + secure infrastructure",
     description:
-      "Clevonet provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination — the technology and digital infrastructure layer of the ecosystem.",
+      "CLEVONET provides secure access, collaboration workflows, reporting, document management, and sovereign digital coordination.",
     operational: false,
   },
   {
-    name: "Bicuni",
+    name: "BICUNI",
     domain: "bicuni.online",
     href: "https://bicuni.online",
     role: "Scientific digital library",
     description:
-      "Bicuni is a digital archive for theses, dissertations, academic publications, and scientific knowledge — supporting education and capacity-building infrastructures.",
+      "BICUNI is a digital archive for theses, dissertations, academic publications, and scientific knowledge.",
     operational: false,
   },
   {
-    name: "Btlearn Inc.",
+    name: "Btlearn",
     domain: "btlearn.org",
     href: "https://btlearn.org",
     role: "Certified education",
     description:
-      "Btlearn Inc. provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills — strengthening human and institutional capacity.",
+      "Btlearn provides certified training in languages, IT, business, leadership, cloud, AI, and professional skills.",
     operational: false,
   },
   {
@@ -79,12 +104,11 @@ export const ecosystemPageDisclaimer = clevoneMiningEcosystemDisclaimer;
 
 export const ecosystemPageMap = {
   eyebrow: "Architecture",
-  title: "Governance at the center, specialization at the perimeter",
+  title: "CLEVONE SARL at the center, specialization at the perimeter",
   description:
-    "Neutral platforms coordinate through Clevones. Operational field activity is structurally separated and clearly identified.",
+    "Technology, software, media, knowledge, and education connect through the company hub. Operational field activity is structurally identified.",
 } as const;
 
-/** Satellite entities shown on the home page and footer (excludes central Clevones). */
 export const ecosystemSatelliteEntities = ecosystemPageEntities.filter(
   (entity) => !entity.central,
 );
@@ -96,7 +120,7 @@ export function getEcosystemEntityGroups() {
     (entity) => !entity.central && !entity.operational,
   );
 
-  if (!central || !operational) {
+  if (!central) {
     throw new Error("Ecosystem entity configuration is invalid.");
   }
 

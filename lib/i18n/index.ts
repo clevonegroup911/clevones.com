@@ -11,6 +11,7 @@ export {
 export {
   findLocalizedPage,
   findPageKeyByPath,
+  englishPaths,
   frenchPaths,
   getAlternatePath,
   getLocaleFromPath,
@@ -52,6 +53,8 @@ export type {
   ShellNavLabels,
 } from "@/lib/i18n/content/types";
 export type {
+  AboutPageContent,
+  ClevoneDmsPageContent,
   ChallengePageContent,
   ContactPageContent,
   EcosystemPageContent,

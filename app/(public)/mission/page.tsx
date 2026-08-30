@@ -1,11 +1,12 @@
+import { MissionPageContent } from "@/components/sections/mission-page";
+import { getContent } from "@/lib/i18n";
 import { createPageMetadata } from "@/lib/metadata";
 
-import { MissionPageContent } from "@/components/sections/mission-page";
+const about = getContent("fr").pages.about;
 
 export const metadata = createPageMetadata({
-  title: "Mission",
-  description:
-    "Vision et mission de Clevones : concevoir, structurer et coordonner des architectures de flux économiques territoriaux — champs d'intervention et objet social au service de cette architecture, en RDC et en Afrique.",
+  title: about.meta.title,
+  description: about.meta.description,
   path: "/mission",
   locale: "fr",
   pageKey: "about",

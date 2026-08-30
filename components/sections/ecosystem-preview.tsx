@@ -1,7 +1,7 @@
+import { CompanyEntityLink } from "@/components/layout/company-contact";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { ExternalLink } from "@/components/ui/external-link";
 import { Section } from "@/components/ui/section";
 import { SectionHeaderRow } from "@/components/ui/section-header-row";
 import { TextLink } from "@/components/ui/text-link";
@@ -49,9 +49,14 @@ export async function EcosystemPreviewSection() {
                 {entity.role}
               </p>
               <CardDescription className="mt-3">{entity.description}</CardDescription>
-              <ExternalLink href={entity.href} className="mt-5">
+              <CompanyEntityLink
+                href={entity.href}
+                name={entity.name}
+                internal={entity.internal}
+                className="mt-5 inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-gold-muted"
+              >
                 {entity.href.replace(/^https?:\/\//, "")}
-              </ExternalLink>
+              </CompanyEntityLink>
             </Card>
           ))}
         </div>

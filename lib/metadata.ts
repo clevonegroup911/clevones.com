@@ -1,7 +1,10 @@
 export {
   createHomeMetadata,
   createPageMetadata,
+  defaultSiteDescription,
   defaultSiteTitle,
+  enSiteDescription,
+  enSiteTitle,
   rootMetadata,
   siteKeywords,
   siteOgImage,

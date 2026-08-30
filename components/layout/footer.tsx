@@ -4,14 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { BrandLogo } from "@/components/layout/brand-logo";
+import {
+  CompanyContact,
+  CompanyEntityLink,
+} from "@/components/layout/company-contact";
 import { Container } from "@/components/ui/container";
+import { company } from "@/lib/constants/company";
 import {
   getContent,
   getLocaleFromPath,
   getNavigation,
   resolvePagePath,
 } from "@/lib/i18n";
-import { siteConfig } from "@/lib/site";
 import { breakUrl, mobileCtaPadding } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +51,18 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty text-gray-muted">
               {shell.description}
             </p>
+            <div className="mt-6 space-y-1 text-xs leading-relaxed text-navy-muted">
+              <p className="font-heading text-sm font-semibold tracking-tight text-white">
+                {company.legalName}
+              </p>
+              <p>
+                {company.rccmLabel}: {company.rccm}
+              </p>
+              <p>
+                {company.nationalIdLabel}: {company.nationalId}
+              </p>
+              <p>{shell.footerLocation}</p>
+            </div>
           </div>
 
           <div className="min-w-0 lg:col-span-2 lg:col-start-6">
@@ -76,10 +92,10 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                 .filter((item) => !item.central)
                 .map((item) => (
                 <li key={item.href}>
-                  <a
+                  <CompanyEntityLink
                     href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    name={item.name}
+                    internal={item.internal}
                     className="group inline-flex max-w-full flex-col text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                   >
                     <span className="text-gray-muted transition-colors group-hover:text-white">
@@ -98,7 +114,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                     >
                       {item.domain}
                     </span>
-                  </a>
+                  </CompanyEntityLink>
                 </li>
               ))}
             </ul>
@@ -145,12 +161,12 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
               {shell.footerContact}
             </p>
-            <a
-              href={`mailto:${siteConfig.contact.email}`}
-              className={`mt-4 inline-block text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 ${breakUrl}`}
-            >
-              {siteConfig.contact.email}
-            </a>
+            <CompanyContact
+              location={shell.footerLocation}
+              phoneLabel={shell.phoneLabel}
+              emailLabel={shell.emailLabel}
+              className="mt-4"
+            />
           </div>
         </div>
 
@@ -162,7 +178,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
 
         <div className="mt-6 flex flex-col gap-4 border-t border-border-subtle/40 pt-6 text-sm text-gray-muted sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
           <p className="text-pretty">
-            © {currentYear} {siteConfig.name}. {shell.allRightsReserved}
+            © {currentYear} {company.legalName}. {shell.allRightsReserved}
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {navigation.legal.map((item) => (

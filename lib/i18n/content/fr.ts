@@ -2,8 +2,11 @@ import {
   clevoneMiningSeparationDisclaimerFr,
   clevonesNeutralityDisclaimerFr,
 } from "@/lib/constants/brand-positioning";
+import { company } from "@/lib/constants/company";
 import {
+  aboutPageContent,
   challengePageContent,
+  clevoneDmsPageContent,
   contactPageContent,
   ecosystemPageContent,
   evidencePageContent,
@@ -42,8 +45,11 @@ export const frContent = {
     closeMenu: "Fermer le menu",
     operationalBadge: "Opérationnel",
     description:
-      "Clevones conçoit, structure et coordonne des architectures de flux économiques territoriaux — une plateforme de gouvernance neutre qui transforme le potentiel territorial en actifs économiques durables, à travers les technologies, la logistique, l'industrie, l'énergie, les médias, l'éducation et la coordination institutionnelle en République Démocratique du Congo et en Afrique.",
+      "CLEVONE SARL est une entreprise congolaise développant des plateformes numériques, des logiciels de gestion, des solutions logistiques, médiatiques, éducatives et institutionnelles.",
     legalDisclaimer: siteLegalDisclaimerFr,
+    footerLocation: company.address.shortFr,
+    phoneLabel: "Tél.",
+    emailLabel: "Email",
     cta: {
       label: "Commencer une conversation stratégique",
       shortLabel: "Conversation stratégique",
@@ -91,5 +97,7 @@ export const frContent = {
     insights: insightsPageContent.fr,
     legal: legalPageContent.fr,
     privacy: privacyPageContent.fr,
+    about: aboutPageContent.fr,
+    clevoneDms: clevoneDmsPageContent.fr,
   },
 } as const satisfies LocaleContent;

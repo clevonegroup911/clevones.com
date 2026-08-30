@@ -1,21 +1,21 @@
-export const locales = ["en", "fr"] as const;
+export const locales = ["fr", "en"] as const;
 
 export type Locale = (typeof locales)[number];
 
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "fr";
 
 export const localeConfig = {
-  en: {
-    htmlLang: "en",
-    ogLocale: "en_US",
-    label: "EN",
-    name: "English",
-  },
   fr: {
     htmlLang: "fr",
     ogLocale: "fr_FR",
     label: "FR",
     name: "Français",
+  },
+  en: {
+    htmlLang: "en",
+    ogLocale: "en_US",
+    label: "EN",
+    name: "English",
   },
 } as const satisfies Record<
   Locale,

@@ -16,7 +16,7 @@ export const privacyPageContent = {
     eyebrow: "Légal",
     title: "Politique de confidentialité",
     paragraphs: [
-      "Clevones s'engage à protéger la confidentialité des données personnelles collectées via ce site institutionnel.",
+      "CLEVONE SARL s'engage à protéger la confidentialité des données personnelles collectées via ce site institutionnel.",
       "Les données transmises par courriel ou via les formulaires de contact sont utilisées exclusivement pour répondre aux demandes institutionnelles reçues. Elles ne sont ni vendues, ni cédées à des tiers à des fins commerciales.",
       "Conformément à la réglementation applicable, vous disposez d'un droit d'accès, de rectification et de suppression de vos données.",
     ],
@@ -27,7 +27,7 @@ export const privacyPageContent = {
     eyebrow: "Legal",
     title: "Privacy policy",
     paragraphs: [
-      "Clevones is committed to protecting the confidentiality of personal data collected through this institutional website.",
+      "CLEVONE SARL is committed to protecting the confidentiality of personal data collected through this institutional website.",
       "Data sent by email or through contact forms are used exclusively to respond to institutional requests received. They are neither sold nor transferred to third parties for commercial purposes.",
       "In accordance with applicable regulations, you have the right to access, rectify, and delete your data.",
     ],
