@@ -21,9 +21,9 @@ import {
   verifyPassword,
   verifyPasswordAgainstDummy,
 } from "@/lib/auth/password";
+import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import {
   clearAdminSessionCookie,
-  readAdminSessionClaims,
   setAdminSessionCookie,
 } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
@@ -169,20 +169,23 @@ export async function loginAdmin(
 }
 
 export async function logoutAdmin() {
-  const claims = await readAdminSessionClaims();
+  const actor = await getOptionalAdminActor();
+  if (!actor) {
+    await clearAdminSessionCookie();
+    redirect(adminRoutes.login);
+  }
+
   const { ipAddress, userAgent } = await getRequestAuditContext();
 
-  if (claims) {
-    await writeAuditLog({
-      actorId: claims.sub,
-      action: auditActions.AUTH_LOGOUT,
-      entityType: "User",
-      entityId: claims.sub,
-      metadata: { email: claims.email },
-      ipAddress,
-      userAgent,
-    });
-  }
+  await writeAuditLog({
+    actorId: actor.id,
+    action: auditActions.ADMIN_LOGOUT,
+    entityType: "User",
+    entityId: actor.id,
+    metadata: { email: actor.email, role: actor.role },
+    ipAddress,
+    userAgent,
+  });
 
   await clearAdminSessionCookie();
   redirect(adminRoutes.login);

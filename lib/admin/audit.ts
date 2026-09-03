@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 export const auditActions = {
   AUTH_LOGIN_SUCCESS: "AUTH_LOGIN_SUCCESS",
   AUTH_LOGIN_FAILURE: "AUTH_LOGIN_FAILURE",
-  AUTH_LOGOUT: "AUTH_LOGOUT",
+  ADMIN_LOGOUT: "ADMIN_LOGOUT",
   USER_CREATED: "USER_CREATED",
 } as const;
 
