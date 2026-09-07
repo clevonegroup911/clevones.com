@@ -76,6 +76,8 @@ La migration est **additive** : tables `UserMfaSecret`, `MfaChallenge`, `MfaRate
 
 Cette migration n'a pas été déployée. Elle peut encore être corrigée en place avant le premier `migrate deploy`.
 
+T005 (2026-09-07) : tentative d'application **stoppée**. Le runtime de production n'expose pas une `MFA_ENCRYPTION_KEY` valide (fail-closed). Aucune migration, aucun redémarrage, aucun enrôlement. Reprendre T005 seulement après installation hors Git d'une clé Base64 canonique de 32 octets (voir ci-dessus) et une nouvelle décision si la tâche reste `BLOQUÉE`.
+
 ## Sauvegarde obligatoire avant migration
 
 Avant toute application sur un environnement partagé :

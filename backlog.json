@@ -195,11 +195,16 @@
       "tests": [
         "contrôle post-migration hors bande"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "BLOQUÉE",
+      "evidence": [
+        "[X100-OWNER-AUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5564291899",
+        "production HEAD 10dbe9714fc749b3dd6006c6b44a0f5a22772e72 unchanged; PM2 pid 1109352 online",
+        "T004 dump 20260907T020712Z still present; sha256sum -c ok; pg_restore --list ok",
+        "MFA_ENCRYPTION_KEY absent from production runtime dotenv (fail-closed); migrate and restart skipped"
+      ],
       "estimatedCost": 4,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": true,
       "updatedAt": "2026-09-07"
     },
@@ -587,6 +592,24 @@
       "status": "TERMINÉE",
       "commit": "8052b4780c7d4094831babcbe5bb2c879138860d",
       "note": "PR #1 — X100 CI run 34075526202 successful; [X100-CI] comment published; T005 remains À_FAIRE"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "PRÊTE",
+      "note": "[X100-OWNER-AUTH] owner authorized T005 only; comment 5564291899; T004 and T008 TERMINÉE; T006 not authorized"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next after owner auth; production access is an explicit owner exception per AGENTS.md instruction priority"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "BLOQUÉE",
+      "note": "MFA_ENCRYPTION_KEY missing on production runtime; no migrate, no PM2 restart, no T006; T004 backup preserved"
     }
   ]
 }
