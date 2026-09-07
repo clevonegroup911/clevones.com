@@ -8,7 +8,7 @@ T005
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -16,7 +16,7 @@ Déployer la migration MFA seulement après sauvegarde et CI verte.
 
 ## Résultat
 
-T005 reprise après `[X100-OWNER-REAUTH]`. Quality gate indépendant vert (`MFA_ENCRYPTION_KEY` présente et valide dans le dotenv, backup T004 intact, CI `1c33a65` verte, production encore sur `10dbe97`). Dump pré-T005 `20260907T134843Z` créé et vérifié. Migration `20260904191500_add_admin_mfa` appliquée par `prisma migrate deploy`. Application servie sur `1c33a65`, PM2 `clevones-com` online. Aucun enrôlement SUPER_ADMIN. T006 non commencée. Accès production : exception propriétaire (priorité des instructions d'`AGENTS.md`).
+GitHub Actions `X100 CI` run #8 a validé le SHA `50130152d286827b35e082a6cea29ee708702996`. `[X100-CONTROL]` autorise la clôture. T005 est `TERMINÉE`. Migration MFA appliquée, application déployée, PM2 online, Nginx OK, contrôles admin OK. Aucun secret exposé. Rollback non requis. SUPER_ADMIN non enrôlé. T006 reste `À_FAIRE`. Aucun merge vers `main`.
 
 ## Fichiers créés
 
@@ -35,23 +35,15 @@ T005 reprise après `[X100-OWNER-REAUTH]`. Quality gate indépendant vert (`MFA_
 - `npm run x100:next -- --json`
 - `git status` / `git branch --show-current` / `git rev-parse HEAD`
 - `gh pr view 1` / `gh run list --branch admin-mfa`
-- inspection VM `clevones-serveur` (gcloud ssh) : git, backups, `_prisma_migrations`, tables publiques, PM2, `nginx -t`, HTTP/HTTPS locaux
-- test non révélateur de `MFA_ENCRYPTION_KEY` (sortie yes/no uniquement)
-- `scripts/backup-postgres.sh` puis `scripts/verify-backup.sh --restore-test`
-- `npx prisma migrate deploy`
-- `npm ci` / `npm run build` / `pm2 restart clevones-com --update-env`
 
 ## Tests réussis
 
-- T004 et T008 `TERMINÉE` ; `[X100-OWNER-REAUTH]` comment 5571436409
-- X100 CI run 34077551897 succès sur `1c33a65aa552637afbe5f20b056730fed4e0e3e3`
-- `MFA_KEY_PRESENT=yes` / `MFA_KEY_VALID=yes` / `MFA_KEY_INSTALLED=yes` (dotenv `.env` ; PM2 n'injecte pas la clé)
-- dump T004 `20260907T020712Z` toujours présent ; `sha256sum -c` OK ; `pg_restore --list` OK
-- dump pré-T005 `20260907T134843Z` (7464 octets, mode 600) ; checksum `dd40e50204582f69a0bbf9a2717f5ec305b345df3bc33206fc55262459f55d19` ; restore test puis `dropdb` de `clevones_t005_restore_20260907t134843z` seulement
-- Prisma : `20260903151500_init_admin` + `20260904191500_add_admin_mfa`
-- tables MFA présentes ; `UserMfaSecret` = 0 lignes ; `mfaEnabled` = 0/1
-- HTTPS `/` 200 ; `/admin` 307 vers login ; `/admin/login` 200
-- PM2 `clevones-com` online PID `1212469` ; `nginx -t` OK ; PostgreSQL 15.19 inchangé
+- GitHub Actions X100 CI run 34130261414 : succès (tests X100, lint, build, backlog, rapport)
+- SHA contrôlé `50130152d286827b35e082a6cea29ee708702996`
+- `[X100-CI]` republie le succès sur la PR draft #1
+- `[X100-CONTROL]` comment 5571865380 : clôture `TERMINÉE` autorisée
+- migration `20260904191500_add_admin_mfa` appliquée
+- SUPER_ADMIN non enrôlé
 
 ## Tests échoués
 
@@ -59,42 +51,40 @@ T005 reprise après `[X100-OWNER-REAUTH]`. Quality gate indépendant vert (`MFA_
 
 ## Lint
 
-- succès en CI GitHub (run 34077551897) ; `next build` production a relinté et compilé
+- succès en CI GitHub (run 34130261414)
 
 ## Type-check
 
-- inclus dans `next build` production (succès)
+- succès en CI GitHub (inclus au build)
 
 ## Build
 
-- `npm ci` puis `npm run build` sur la VM (Next.js 15.5.25) ; routes `/admin/login/mfa` et `/admin/security/mfa` présentes
+- succès en CI GitHub (run 34130261414) ; aucun nouveau déploiement
 
 ## Sécurité
 
 - aucun secret affiché ni commité
-- `.env` non affiché ; `DATABASE_URL`, `AUTH_SECRET`, `MFA_ENCRYPTION_KEY` non lus vers la sortie
-- aucune écriture dans `.env`
-- aucun `migrate reset`, aucun `db push`, aucun `DROP DATABASE`
-- dump T004 conservé ; dump T005 ajouté sans suppression d'archive
-- T006 non commencée ; SUPER_ADMIN non enrôlé ; `mfaEnabled` reste false
-- Nginx et PostgreSQL non redémarrés
+- T006 non commencée ; SUPER_ADMIN non enrôlé
+- aucun merge vers `main`
+- aucun nouveau déploiement production pour cette clôture
 
 ## Commit
 
-- clôture `EN_CONTRÔLE` sur `admin-mfa` uniquement ; en attente `[X100-CI]`
+- SHA contrôlé `50130152d286827b35e082a6cea29ee708702996`
+- clôture administrative X100 sur `admin-mfa` uniquement
 
 ## Pull Request
 
-- PR draft #1, `[X100-OWNER-REAUTH]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571436409
-- pas de merge vers `main`
+- PR draft #1, push de `admin-mfa` uniquement, sans merge ni `main`
 
 ## Preuves
 
-- `[X100-OWNER-REAUTH]` comment 5571436409
-- X100 CI run 34077551897 success sur `1c33a65aa552637afbe5f20b056730fed4e0e3e3` (pré-clôture)
-- backups `/home/clevones/backups/clevones.com/20260907T020712Z` et `20260907T134843Z`
-- production HEAD `1c33a65aa552637afbe5f20b056730fed4e0e3e3` ; PM2 pid `1212469`
-- `MFA_KEY_PRESENT=yes` / `MFA_KEY_VALID=yes`
+- `[X100-CONTROL]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571865380
+- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
+- GitHub Actions X100 CI run 34130261414 : success
+- commit `50130152d286827b35e082a6cea29ee708702996`
+- PR #1 : https://github.com/clevonegroup911/clevones.com/pull/1
+- `[X100-OWNER-REAUTH]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571436409
 
 ## Risques
 
@@ -103,8 +93,8 @@ T005 reprise après `[X100-OWNER-REAUTH]`. Quality gate indépendant vert (`MFA_
 
 ## Blocage
 
-- aucun. Contrôle externe : attendre `[X100-CI]` sur la PR draft.
+- aucun
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T005 `EN_CONTRÔLE`, T006 reste `À_FAIRE`)
+- NO_READY_TASK (T006 reste `À_FAIRE` et humaine)

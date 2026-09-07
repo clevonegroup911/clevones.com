@@ -195,10 +195,13 @@
       "tests": [
         "contrôle post-migration hors bande"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "[X100-OWNER-AUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5564291899",
         "[X100-OWNER-REAUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571436409",
+        "[X100-CONTROL] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571865380",
+        "[X100-CI] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
+        "GitHub Actions X100 CI run 34130261414 success on 50130152d286827b35e082a6cea29ee708702996",
         "MFA_KEY_PRESENT=yes MFA_KEY_VALID=yes MFA_KEY_INSTALLED=yes (dotenv .env; independent gate)",
         "pre-T005 dump 20260907T134843Z sha256 dd40e50204582f69a0bbf9a2717f5ec305b345df3bc33206fc55262459f55d19; T004 20260907T020712Z preserved",
         "prisma migrate deploy applied 20260904191500_add_admin_mfa; tables UserMfaSecret MfaChallenge MfaRateLimit MfaRecoveryCode present",
@@ -630,6 +633,13 @@
       "taskId": "T005",
       "status": "EN_CONTRÔLE",
       "note": "MFA migration applied; app deployed at 1c33a65; waiting for GitHub Actions [X100-CI]; T006 not started"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "TERMINÉE",
+      "commit": "50130152d286827b35e082a6cea29ee708702996",
+      "note": "PR #1 — X100 CI run 34130261414 successful; [X100-CONTROL] comment 5571865380; T006 remains À_FAIRE"
     }
   ]
 }
