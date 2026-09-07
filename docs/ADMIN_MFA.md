@@ -74,9 +74,7 @@ Fichier : `prisma/migrations/20260904191500_add_admin_mfa/migration.sql`.
 
 La migration est **additive** : tables `UserMfaSecret`, `MfaChallenge`, `MfaRateLimit`, `MfaRecoveryCode`, index, uniques et cascades. Elle ne supprime ni ne réinitialise les utilisateurs existants. `User.mfaEnabled` reste `false` par défaut.
 
-Cette migration n'a pas été déployée. Elle peut encore être corrigée en place avant le premier `migrate deploy`.
-
-T005 (2026-09-07) : tentative d'application **stoppée**. Le runtime de production n'expose pas une `MFA_ENCRYPTION_KEY` valide (fail-closed). Aucune migration, aucun redémarrage, aucun enrôlement. Reprendre T005 seulement après installation hors Git d'une clé Base64 canonique de 32 octets (voir ci-dessus) et une nouvelle décision si la tâche reste `BLOQUÉE`.
+T005 (2026-09-07) : migration `20260904191500_add_admin_mfa` appliquée en production par `prisma migrate deploy` après `[X100-OWNER-REAUTH]`. Tables MFA présentes. Aucun compte n'a été enrôlé ; `User.mfaEnabled` reste `false`. T006 n'est pas commencée.
 
 ## Sauvegarde obligatoire avant migration
 

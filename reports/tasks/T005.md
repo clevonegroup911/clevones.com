@@ -8,7 +8,7 @@ T005
 
 ## Statut
 
-BLOQUÉE
+EN_CONTRÔLE
 
 ## Objectif
 
@@ -16,7 +16,7 @@ Déployer la migration MFA seulement après sauvegarde et CI verte.
 
 ## Résultat
 
-Quality gate arrêté avant toute mutation applicative : le runtime de production n'a pas de `MFA_ENCRYPTION_KEY` valide. Le nouveau code est fail-closed. Conformément à T005, STOP : aucune migration Prisma, aucun redémarrage PM2/Nginx/PostgreSQL, aucun enrôlement SUPER_ADMIN. L'accès production a été une exception explicitement autorisée par le propriétaire (`[X100-OWNER-AUTH]`, priorité des instructions d'`AGENTS.md`) et limité à l'inspection et à la revérification du backup T004.
+T005 reprise après `[X100-OWNER-REAUTH]`. Quality gate indépendant vert (`MFA_ENCRYPTION_KEY` présente et valide dans le dotenv, backup T004 intact, CI `1c33a65` verte, production encore sur `10dbe97`). Dump pré-T005 `20260907T134843Z` créé et vérifié. Migration `20260904191500_add_admin_mfa` appliquée par `prisma migrate deploy`. Application servie sur `1c33a65`, PM2 `clevones-com` online. Aucun enrôlement SUPER_ADMIN. T006 non commencée. Accès production : exception propriétaire (priorité des instructions d'`AGENTS.md`).
 
 ## Fichiers créés
 
@@ -27,80 +27,84 @@ Quality gate arrêté avant toute mutation applicative : le runtime de productio
 - `backlog.json`
 - `TASK_REPORT.md`
 - `docs/ADMIN_MFA.md`
+- `DEPLOYMENT.md`
 
 ## Commandes
 
 - `npm run x100:validate`
 - `npm run x100:next -- --json`
 - `git status` / `git branch --show-current` / `git rev-parse HEAD`
-- inspection VM `clevones-serveur` (gcloud ssh) : git, backup T004, `_prisma_migrations`, tables publiques, PM2 status, `nginx -t`
-- test non révélateur de présence/validité de `MFA_ENCRYPTION_KEY` (sortie OK/MISSING uniquement)
+- `gh pr view 1` / `gh run list --branch admin-mfa`
+- inspection VM `clevones-serveur` (gcloud ssh) : git, backups, `_prisma_migrations`, tables publiques, PM2, `nginx -t`, HTTP/HTTPS locaux
+- test non révélateur de `MFA_ENCRYPTION_KEY` (sortie yes/no uniquement)
+- `scripts/backup-postgres.sh` puis `scripts/verify-backup.sh --restore-test`
+- `npx prisma migrate deploy`
+- `npm ci` / `npm run build` / `pm2 restart clevones-com --update-env`
 
 ## Tests réussis
 
-- branche locale `admin-mfa`, HEAD `90eb1357529ea7a83df2c28819b2d182ebc63fd7`
-- X100 CI run 34076512644 succès
-- dump T004 `20260907T020712Z` toujours présent (7464 octets, mode 600)
-- `sha256sum -c` OK
-- `pg_restore --list` OK (archive 2026-09-07 02:07:12 UTC, 20 TOC)
-- `clevones_prod` présente
-- Prisma appliqué : uniquement `20260903151500_init_admin`
-- tables MFA absentes (attendu avant migration)
-- PM2 `clevones-com` online, PID `1109352`
-- `nginx -t` OK
+- T004 et T008 `TERMINÉE` ; `[X100-OWNER-REAUTH]` comment 5571436409
+- X100 CI run 34077551897 succès sur `1c33a65aa552637afbe5f20b056730fed4e0e3e3`
+- `MFA_KEY_PRESENT=yes` / `MFA_KEY_VALID=yes` / `MFA_KEY_INSTALLED=yes` (dotenv `.env` ; PM2 n'injecte pas la clé)
+- dump T004 `20260907T020712Z` toujours présent ; `sha256sum -c` OK ; `pg_restore --list` OK
+- dump pré-T005 `20260907T134843Z` (7464 octets, mode 600) ; checksum `dd40e50204582f69a0bbf9a2717f5ec305b345df3bc33206fc55262459f55d19` ; restore test puis `dropdb` de `clevones_t005_restore_20260907t134843z` seulement
+- Prisma : `20260903151500_init_admin` + `20260904191500_add_admin_mfa`
+- tables MFA présentes ; `UserMfaSecret` = 0 lignes ; `mfaEnabled` = 0/1
+- HTTPS `/` 200 ; `/admin` 307 vers login ; `/admin/login` 200
+- PM2 `clevones-com` online PID `1212469` ; `nginx -t` OK ; PostgreSQL 15.19 inchangé
 
 ## Tests échoués
 
-- `MFA_ENCRYPTION_KEY` absente du dotenv runtime (raison `missing`) — prérequis fail-closed non satisfait
+- aucun
 
 ## Lint
 
-- succès en CI GitHub (run 34076512644) ; non rejoué après arrêt
+- succès en CI GitHub (run 34077551897) ; `next build` production a relinté et compilé
 
 ## Type-check
 
-- non modifié
+- inclus dans `next build` production (succès)
 
 ## Build
 
-- non déployé
+- `npm ci` puis `npm run build` sur la VM (Next.js 15.5.25) ; routes `/admin/login/mfa` et `/admin/security/mfa` présentes
 
 ## Sécurité
 
 - aucun secret affiché ni commité
 - `.env` non affiché ; `DATABASE_URL`, `AUTH_SECRET`, `MFA_ENCRYPTION_KEY` non lus vers la sortie
 - aucune écriture dans `.env`
-- aucune migration, aucun `migrate reset`, aucun `db push`, aucun `DROP DATABASE`
-- T006 non commencée ; SUPER_ADMIN non enrôlé
-- HEAD production `10dbe97` inchangé
+- aucun `migrate reset`, aucun `db push`, aucun `DROP DATABASE`
+- dump T004 conservé ; dump T005 ajouté sans suppression d'archive
+- T006 non commencée ; SUPER_ADMIN non enrôlé ; `mfaEnabled` reste false
+- Nginx et PostgreSQL non redémarrés
 
 ## Commit
 
-- clôture `BLOQUÉE` sur `admin-mfa` uniquement
+- clôture `EN_CONTRÔLE` sur `admin-mfa` uniquement ; en attente `[X100-CI]`
 
 ## Pull Request
 
-- PR draft #1, `[X100-OWNER-AUTH]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5564291899
+- PR draft #1, `[X100-OWNER-REAUTH]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571436409
 - pas de merge vers `main`
 
 ## Preuves
 
-- `[X100-OWNER-AUTH]` comment 5564291899
-- X100 CI run 34076512644 success sur `90eb1357529ea7a83df2c28819b2d182ebc63fd7`
-- backup T004 `/home/clevones/backups/clevones.com/20260907T020712Z/clevones_prod.dump`
-- `MFA_KEY_PRESENT=no` / `MFA_KEY_VALID=no` / `MFA_KEY_REASON=missing`
-- PM2 pid 1109352 inchangé
-- `docs/ADMIN_MFA.md` : génération hors dépôt `openssl rand -base64 32`
+- `[X100-OWNER-REAUTH]` comment 5571436409
+- X100 CI run 34077551897 success sur `1c33a65aa552637afbe5f20b056730fed4e0e3e3` (pré-clôture)
+- backups `/home/clevones/backups/clevones.com/20260907T020712Z` et `20260907T134843Z`
+- production HEAD `1c33a65aa552637afbe5f20b056730fed4e0e3e3` ; PM2 pid `1212469`
+- `MFA_KEY_PRESENT=yes` / `MFA_KEY_VALID=yes`
 
 ## Risques
 
-- redémarrer le nouveau code sans clé ferait échouer le process Node
 - restauration sur `clevones_prod` toujours hors runbook automatique
+- T006 (enrôlement SUPER_ADMIN) reste une décision humaine séparée
 
 ## Blocage
 
-- `MFA_ENCRYPTION_KEY` absente du runtime de production. Action humaine hors Git : installer une clé Base64 canonique 32 octets, sans la coller dans Git ni dans un ticket, puis ré-autoriser T005.
+- aucun. Contrôle externe : attendre `[X100-CI]` sur la PR draft.
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T005 `BLOQUÉE`, T006 reste `À_FAIRE`)
+- NO_READY_TASK (T005 `EN_CONTRÔLE`, T006 reste `À_FAIRE`)

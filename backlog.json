@@ -195,16 +195,18 @@
       "tests": [
         "contrôle post-migration hors bande"
       ],
-      "status": "BLOQUÉE",
+      "status": "EN_CONTRÔLE",
       "evidence": [
         "[X100-OWNER-AUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5564291899",
-        "production HEAD 10dbe9714fc749b3dd6006c6b44a0f5a22772e72 unchanged; PM2 pid 1109352 online",
-        "T004 dump 20260907T020712Z still present; sha256sum -c ok; pg_restore --list ok",
-        "MFA_ENCRYPTION_KEY absent from production runtime dotenv (fail-closed); migrate and restart skipped"
+        "[X100-OWNER-REAUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5571436409",
+        "MFA_KEY_PRESENT=yes MFA_KEY_VALID=yes MFA_KEY_INSTALLED=yes (dotenv .env; independent gate)",
+        "pre-T005 dump 20260907T134843Z sha256 dd40e50204582f69a0bbf9a2717f5ec305b345df3bc33206fc55262459f55d19; T004 20260907T020712Z preserved",
+        "prisma migrate deploy applied 20260904191500_add_admin_mfa; tables UserMfaSecret MfaChallenge MfaRateLimit MfaRecoveryCode present",
+        "production HEAD 1c33a65aa552637afbe5f20b056730fed4e0e3e3; PM2 clevones-com online pid 1212469; SUPER_ADMIN not enrolled; mfaEnabled 0/1"
       ],
       "estimatedCost": 4,
       "risk": "high",
-      "attempts": 1,
+      "attempts": 2,
       "requiresHuman": true,
       "updatedAt": "2026-09-07"
     },
@@ -610,6 +612,24 @@
       "taskId": "T005",
       "status": "BLOQUÉE",
       "note": "MFA_ENCRYPTION_KEY missing on production runtime; no migrate, no PM2 restart, no T006; T004 backup preserved"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "PRÊTE",
+      "note": "[X100-OWNER-REAUTH] comment 5571436409; T004 and T008 TERMINÉE; independent pre-deploy gate required; T006 not authorized"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next after owner reauth; production access is an explicit owner exception per AGENTS.md instruction priority; T006 not started"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T005",
+      "status": "EN_CONTRÔLE",
+      "note": "MFA migration applied; app deployed at 1c33a65; waiting for GitHub Actions [X100-CI]; T006 not started"
     }
   ]
 }

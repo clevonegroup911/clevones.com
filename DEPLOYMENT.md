@@ -58,15 +58,13 @@ bash scripts/verify-backup.sh \
 
 Le dump est lu par le propriétaire du fichier et envoyé à `pg_restore` sur l’entrée standard, afin de conserver le mode `600`.
 
-## Rollback avant toute migration MFA
+## T005 — état après déploiement contrôlé
 
-La migration MFA **n’est pas déployée**. Le rollback immédiat consiste à :
+Le 2026-09-07, T005 a appliqué `20260904191500_add_admin_mfa` puis a servi le commit `1c33a65` via PM2 `clevones-com`. Dump pré-T005 : `20260907T134843Z` (mode `600`, checksum vérifié, restauration temporaire hors `clevones_prod`). Le dump T004 `20260907T020712Z` est conservé. Aucun enrôlement SUPER_ADMIN.
 
-1. ne pas exécuter `prisma migrate deploy` ;
-2. conserver le dump `20260907T020712Z` ;
-3. laisser PM2 sur le commit `10dbe97`.
+## Rollback après migration MFA
 
-Si une migration future devait être annulée, la restauration **sur `clevones_prod`** n’est **pas** une commande de ce dépôt. Elle exigerait :
+La restauration **sur `clevones_prod`** n’est **pas** une commande de ce dépôt. Elle exigerait :
 
 - une décision humaine explicite ;
 - une nouvelle sauvegarde post-incident ;
@@ -76,8 +74,8 @@ Ne pas coller de `DROP DATABASE clevones_prod`, de `pg_restore` vers `clevones_p
 
 ## Interdit
 
-- `prisma migrate deploy` sur la production dans le cadre de T004 / T005 sans T004 terminée et sans décision humaine
-- redémarrage PM2 / Nginx / PostgreSQL pour « valider » une sauvegarde
+- `prisma migrate reset`, `prisma db push` destructif, `DROP DATABASE`
+- redémarrage PostgreSQL ou Nginx pour « valider » une sauvegarde
 - affichage de `.env` ou de l’environnement PM2
 - suppression d’anciennes sauvegardes
 - push vers `main`, merge ou déploiement automatique
