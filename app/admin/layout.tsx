@@ -18,14 +18,30 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             {siteConfig.name}
           </Link>
           {actor ? (
-            <form action={logoutAdmin}>
-              <button
-                type="submit"
-                className="rounded-sm border border-border-subtle px-2.5 py-1 text-xs font-medium text-gold-muted transition-colors hover:border-gold/30 hover:text-gold"
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/dashboard"
+                className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
               >
-                Déconnexion
-              </button>
-            </form>
+                Dashboard
+              </Link>
+              {actor.role === "SUPER_ADMIN" ? (
+                <Link
+                  href="/admin/security/mfa"
+                  className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
+                >
+                  Sécurité / MFA
+                </Link>
+              ) : null}
+              <form action={logoutAdmin}>
+                <button
+                  type="submit"
+                  className="rounded-sm border border-border-subtle px-2.5 py-1 text-xs font-medium text-gold-muted transition-colors hover:border-gold/30 hover:text-gold"
+                >
+                  Déconnexion
+                </button>
+              </form>
+            </div>
           ) : (
             <Link
               href="/admin/login"

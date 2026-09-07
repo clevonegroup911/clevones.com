@@ -12,7 +12,9 @@ export const platformRoutes = {
 export const adminRoutes = {
   root: "/admin",
   login: "/admin/login",
+  mfaVerify: "/admin/login/mfa",
   dashboard: "/admin/dashboard",
+  securityMfa: "/admin/security/mfa",
 } as const;
 
 /** Paths that will require a session once auth is integrated. */

@@ -20,18 +20,76 @@ enum UserStatus {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
-  passwordHash String
-  firstName    String
-  lastName     String
-  role         UserRole   @default(USER)
-  status       UserStatus @default(PENDING)
-  mfaEnabled   Boolean    @default(false)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
-  lastLoginAt  DateTime?
-  auditLogs    AuditLog[]
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          UserRole       @default(USER)
+  status        UserStatus     @default(PENDING)
+  mfaEnabled    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  lastLoginAt   DateTime?
+  auditLogs     AuditLog[]
+  mfaSecret     UserMfaSecret?
+  mfaChallenges MfaChallenge[]
+}
+
+model UserMfaSecret {
+  id               String            @id @default(cuid())
+  userId           String            @unique
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ciphertext       Bytes
+  iv               Bytes
+  authTag          Bytes
+  keyVersion       Int               @default(1)
+  pending          Boolean           @default(true)
+  pendingExpiresAt DateTime?
+  lastUsedStep     Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+  recoveryCodes    MfaRecoveryCode[]
+}
+
+model MfaChallenge {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  callbackUrl  String
+  failureCount Int       @default(0)
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([userId, consumedAt])
+}
+
+model MfaRateLimit {
+  id           String   @id @default(cuid())
+  subjectType  String
+  subjectHash  String
+  failureCount Int      @default(0)
+  windowEndsAt DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([subjectType, subjectHash])
+  @@index([windowEndsAt])
+}
+
+model MfaRecoveryCode {
+  id        String        @id @default(cuid())
+  secretId  String
+  secret    UserMfaSecret @relation(fields: [secretId], references: [id], onDelete: Cascade)
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([secretId, usedAt])
 }
 
 model AuditLog {
