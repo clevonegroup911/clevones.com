@@ -8,7 +8,7 @@ T007
 
 ## Statut
 
-EN_COURS
+TERMINÉE
 
 ## Objectif
 
@@ -16,7 +16,7 @@ Installer dans clevones.com le backlog automatisé, les règles Cursor, le rappo
 
 ## Résultat
 
-Implémentation locale réussie : backlog, rapport, sélecteur, règles Cursor et CI GitHub sont en place. Aucun secret, aucun appel d'API IA, aucun merge ni déploiement automatique.
+Système X100 installé localement et consigné. Commit `4009fe0`. T008 passée en `EN_CONTRÔLE` en attendant le premier commentaire `[X100-CI]`. Aucun merge, aucun déploiement.
 
 ## Fichiers créés
 
@@ -90,25 +90,26 @@ Implémentation locale réussie : backlog, rapport, sélecteur, règles Cursor e
 - CI limitée à des valeurs fictives localhost
 - Commentaire `[X100-CI]` en lecture seule sur les forks
 - Allowlist npm audit : `GHSA-ggr8-5vv4-36mx` (documentée)
+- `git diff --check` : succès
 
 ## Commit
 
-- en attente
+- `4009fe0` `automation(x100): add GitHub task orchestration`
 
 ## Pull Request
 
-- en attente (draft vers `main`, sans fusion)
+- draft vers `main` en cours d'ouverture, sans fusion
 
 ## Preuves
 
-- Branche `admin-mfa` conservée
-- HEAD de départ `b64d503` préservé dans l'historique
-- T001–T003 et T016 déjà `TERMINÉE`
+- commit `4009fe0`
+- branche `admin-mfa` (HEAD de départ `b64d503` préservé)
+- T001–T003, T016 `TERMINÉE` ; T007 `TERMINÉE` ; T008 `EN_CONTRÔLE`
 
 ## Risques
 
 - `gh` local peut être non authentifié : la création de PR resterait alors bloquée après le push
-- T008 reste non terminée tant que GitHub Actions n'a pas commenté
+- T008 reste `EN_CONTRÔLE` tant que GitHub Actions n'a pas commenté `[X100-CI]`
 - Aucune sauvegarde PostgreSQL (T004) : aucun déploiement
 
 ## Blocage
@@ -117,4 +118,4 @@ Implémentation locale réussie : backlog, rapport, sélecteur, règles Cursor e
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T008 passera `EN_CONTRÔLE` après T007 ; rien d'autre n'est `PRÊTE`)
+- NO_READY_TASK

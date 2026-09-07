@@ -12,17 +12,37 @@
     "ÉCHOUÉE",
     "TERMINÉE"
   ],
-  "allowedPriorities": ["P0", "P1", "P2", "P3"],
+  "allowedPriorities": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
   "wipLimits": {
     "maxActiveP0": 1,
     "maxActiveTasks": 3,
-    "activeStatuses": ["EN_COURS"],
-    "neverParallelize": ["migration", "authentication"]
+    "activeStatuses": [
+      "EN_COURS"
+    ],
+    "neverParallelize": [
+      "migration",
+      "authentication"
+    ]
   },
   "selectionPolicy": {
     "readyStatus": "PRÊTE",
-    "excludeStatuses": ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE"],
-    "order": ["priority", "unblockCount", "riskAsc", "costAsc", "idAsc"]
+    "excludeStatuses": [
+      "BLOQUÉE",
+      "ÉCHOUÉE",
+      "EN_CONTRÔLE"
+    ],
+    "order": [
+      "priority",
+      "unblockCount",
+      "riskAsc",
+      "costAsc",
+      "idAsc"
+    ]
   },
   "nextTaskId": null,
   "tasks": [
@@ -33,14 +53,22 @@
       "priority": "P0",
       "owner": "cursor",
       "dependencies": [],
-      "scope": ["lib/auth", "app/admin", "prisma/migrations"],
+      "scope": [
+        "lib/auth",
+        "app/admin",
+        "prisma/migrations"
+      ],
       "acceptanceCriteria": [
         "Challenge MFA sans session avant le second facteur",
         "Consommation atomique TOTP et recovery"
       ],
-      "tests": ["npm test"],
+      "tests": [
+        "npm test"
+      ],
       "status": "TERMINÉE",
-      "evidence": ["commit 630193b"],
+      "evidence": [
+        "commit 630193b"
+      ],
       "estimatedCost": 3,
       "risk": "high",
       "attempts": 1,
@@ -53,12 +81,22 @@
       "objective": "Prouver les courses TOTP et recovery contre PostgreSQL réel.",
       "priority": "P0",
       "owner": "cursor",
-      "dependencies": ["T001"],
-      "scope": ["lib/auth/integration"],
-      "acceptanceCriteria": ["8/8 tests PostgreSQL réussis"],
-      "tests": ["npm run test:mfa:postgres"],
+      "dependencies": [
+        "T001"
+      ],
+      "scope": [
+        "lib/auth/integration"
+      ],
+      "acceptanceCriteria": [
+        "8/8 tests PostgreSQL réussis"
+      ],
+      "tests": [
+        "npm run test:mfa:postgres"
+      ],
       "status": "TERMINÉE",
-      "evidence": ["commit 630193b — tests transactionnels PostgreSQL 8/8"],
+      "evidence": [
+        "commit 630193b — tests transactionnels PostgreSQL 8/8"
+      ],
       "estimatedCost": 2,
       "risk": "medium",
       "attempts": 1,
@@ -71,12 +109,23 @@
       "objective": "Documenter l'architecture MFA, les risques résiduels et l'exploitation.",
       "priority": "P0",
       "owner": "cursor",
-      "dependencies": ["T001", "T002"],
-      "scope": ["docs/ADMIN_MFA.md"],
-      "acceptanceCriteria": ["Revue consignée sans secret dans le dépôt"],
-      "tests": ["npm test"],
+      "dependencies": [
+        "T001",
+        "T002"
+      ],
+      "scope": [
+        "docs/ADMIN_MFA.md"
+      ],
+      "acceptanceCriteria": [
+        "Revue consignée sans secret dans le dépôt"
+      ],
+      "tests": [
+        "npm test"
+      ],
       "status": "TERMINÉE",
-      "evidence": ["commit 630193b"],
+      "evidence": [
+        "commit 630193b"
+      ],
       "estimatedCost": 1,
       "risk": "low",
       "attempts": 1,
@@ -89,13 +138,20 @@
       "objective": "Préparer une sauvegarde vérifiée et un rollback avant toute migration MFA.",
       "priority": "P0",
       "owner": "human",
-      "dependencies": ["T008"],
-      "scope": ["docs/ADMIN_MFA.md", "prisma/migrations"],
+      "dependencies": [
+        "T008"
+      ],
+      "scope": [
+        "docs/ADMIN_MFA.md",
+        "prisma/migrations"
+      ],
       "acceptanceCriteria": [
         "Sauvegarde PostgreSQL vérifiée",
         "Procédure de rollback testée hors production"
       ],
-      "tests": ["restauration à blanc documentée"],
+      "tests": [
+        "restauration à blanc documentée"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -110,13 +166,21 @@
       "objective": "Déployer la migration MFA seulement après sauvegarde et CI verte.",
       "priority": "P0",
       "owner": "human",
-      "dependencies": ["T004", "T008"],
-      "scope": ["prisma/migrations", "docs/ADMIN_MFA.md"],
+      "dependencies": [
+        "T004",
+        "T008"
+      ],
+      "scope": [
+        "prisma/migrations",
+        "docs/ADMIN_MFA.md"
+      ],
       "acceptanceCriteria": [
         "Aucun déploiement avant T004",
         "migrate deploy uniquement après décision humaine"
       ],
-      "tests": ["contrôle post-migration hors bande"],
+      "tests": [
+        "contrôle post-migration hors bande"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 4,
@@ -131,13 +195,19 @@
       "objective": "Activer TOTP sur le compte SUPER_ADMIN après déploiement.",
       "priority": "P0",
       "owner": "human",
-      "dependencies": ["T005"],
-      "scope": ["app/admin/security/mfa"],
+      "dependencies": [
+        "T005"
+      ],
+      "scope": [
+        "app/admin/security/mfa"
+      ],
       "acceptanceCriteria": [
         "Enrôlement par le titulaire du compte",
         "Codes de récupération stockés hors dépôt"
       ],
-      "tests": ["connexion TOTP réelle par le SUPER_ADMIN"],
+      "tests": [
+        "connexion TOTP réelle par le SUPER_ADMIN"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 1,
@@ -152,7 +222,10 @@
       "objective": "Installer le backlog automatisé, les règles Cursor, le rapport, le sélecteur et la CI GitHub.",
       "priority": "P0",
       "owner": "cursor",
-      "dependencies": ["T003", "T016"],
+      "dependencies": [
+        "T003",
+        "T016"
+      ],
       "scope": [
         "AGENTS.md",
         "backlog.json",
@@ -172,8 +245,10 @@
         "npm run x100:test",
         "npm run x100:next -- --json"
       ],
-      "status": "EN_COURS",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "commit 4009fe0"
+      ],
       "estimatedCost": 2,
       "risk": "low",
       "attempts": 1,
@@ -186,15 +261,24 @@
       "objective": "Attendre le premier résultat GitHub Actions et le commentaire [X100-CI].",
       "priority": "P0",
       "owner": "github-actions",
-      "dependencies": ["T007"],
-      "scope": [".github/workflows/ci.yml", "TASK_REPORT.md"],
+      "dependencies": [
+        "T007"
+      ],
+      "scope": [
+        ".github/workflows/ci.yml",
+        "TASK_REPORT.md"
+      ],
       "acceptanceCriteria": [
         "Commentaire [X100-CI] publié sur la PR",
         "Aucun autre travail commencé avant ce résultat"
       ],
-      "tests": ["workflow pull_request"],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "tests": [
+        "workflow pull_request"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "draft PR from admin-mfa to main pending first [X100-CI] result"
+      ],
       "estimatedCost": 1,
       "risk": "low",
       "attempts": 0,
@@ -207,10 +291,19 @@
       "objective": "Ajouter des preuves de parcours admin après la première CI verte.",
       "priority": "P1",
       "owner": "cursor",
-      "dependencies": ["T008"],
-      "scope": ["tests", "app/admin"],
-      "acceptanceCriteria": ["Parcours login MFA capturé sans secret"],
-      "tests": ["playwright"],
+      "dependencies": [
+        "T008"
+      ],
+      "scope": [
+        "tests",
+        "app/admin"
+      ],
+      "acceptanceCriteria": [
+        "Parcours login MFA capturé sans secret"
+      ],
+      "tests": [
+        "playwright"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -225,13 +318,20 @@
       "objective": "Inventorier et centraliser les secrets hors Git.",
       "priority": "P1",
       "owner": "human",
-      "dependencies": ["T008"],
-      "scope": [".env.example", "docs"],
+      "dependencies": [
+        "T008"
+      ],
+      "scope": [
+        ".env.example",
+        "docs"
+      ],
       "acceptanceCriteria": [
         "Aucun secret réel dans Git",
         "Emplacements d'exploitation documentés hors dépôt"
       ],
-      "tests": ["scan secrets du dépôt"],
+      "tests": [
+        "scan secrets du dépôt"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 2,
@@ -246,10 +346,18 @@
       "objective": "Automatiser les sauvegardes PostgreSQL après la procédure manuelle T004.",
       "priority": "P1",
       "owner": "human",
-      "dependencies": ["T004"],
-      "scope": ["docs"],
-      "acceptanceCriteria": ["Plan de sauvegarde périodique hors production d'abord"],
-      "tests": ["restauration planifiée"],
+      "dependencies": [
+        "T004"
+      ],
+      "scope": [
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Plan de sauvegarde périodique hors production d'abord"
+      ],
+      "tests": [
+        "restauration planifiée"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -264,10 +372,19 @@
       "objective": "Définir le monitoring d'authentification admin après la première CI.",
       "priority": "P2",
       "owner": "cursor",
-      "dependencies": ["T008"],
-      "scope": ["lib/admin/audit.ts", "docs"],
-      "acceptanceCriteria": ["Signaux d'échec MFA et login sans secrets"],
-      "tests": ["revue des journaux d'audit"],
+      "dependencies": [
+        "T008"
+      ],
+      "scope": [
+        "lib/admin/audit.ts",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Signaux d'échec MFA et login sans secrets"
+      ],
+      "tests": [
+        "revue des journaux d'audit"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -282,10 +399,19 @@
       "objective": "Auditer les rôles admin après validation de la CI.",
       "priority": "P1",
       "owner": "cursor",
-      "dependencies": ["T008"],
-      "scope": ["lib/auth", "app/admin"],
-      "acceptanceCriteria": ["Matrice des rôles documentée"],
-      "tests": ["npm test"],
+      "dependencies": [
+        "T008"
+      ],
+      "scope": [
+        "lib/auth",
+        "app/admin"
+      ],
+      "acceptanceCriteria": [
+        "Matrice des rôles documentée"
+      ],
+      "tests": [
+        "npm test"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 2,
@@ -300,10 +426,19 @@
       "objective": "Auditer le CMS et les documents après la matrice des rôles.",
       "priority": "P2",
       "owner": "cursor",
-      "dependencies": ["T013"],
-      "scope": ["app", "docs"],
-      "acceptanceCriteria": ["Inventaire CMS sans accès production"],
-      "tests": ["revue documentaire"],
+      "dependencies": [
+        "T013"
+      ],
+      "scope": [
+        "app",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Inventaire CMS sans accès production"
+      ],
+      "tests": [
+        "revue documentaire"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -318,10 +453,19 @@
       "objective": "Auditer analytics et paiements après la matrice des rôles.",
       "priority": "P2",
       "owner": "cursor",
-      "dependencies": ["T013"],
-      "scope": ["app", "docs"],
-      "acceptanceCriteria": ["Aucune clé de paiement dans Git"],
-      "tests": ["scan secrets"],
+      "dependencies": [
+        "T013"
+      ],
+      "scope": [
+        "app",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Aucune clé de paiement dans Git"
+      ],
+      "tests": [
+        "scan secrets"
+      ],
       "status": "À_FAIRE",
       "evidence": [],
       "estimatedCost": 3,
@@ -337,14 +481,22 @@
       "priority": "P0",
       "owner": "cursor",
       "dependencies": [],
-      "scope": ["package.json", "package-lock.json", "docs/ADMIN_MFA.md"],
+      "scope": [
+        "package.json",
+        "package-lock.json",
+        "docs/ADMIN_MFA.md"
+      ],
       "acceptanceCriteria": [
         "Next.js et overrides patchés",
         "GHSA-ggr8-5vv4-36mx documenté en allowlist"
       ],
-      "tests": ["npm audit --omit=dev"],
+      "tests": [
+        "npm audit --omit=dev"
+      ],
       "status": "TERMINÉE",
-      "evidence": ["commit b64d503"],
+      "evidence": [
+        "commit b64d503"
+      ],
       "estimatedCost": 1,
       "risk": "medium",
       "attempts": 1,
@@ -382,6 +534,18 @@
       "taskId": "T007",
       "status": "EN_COURS",
       "note": "Installation X100"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T007",
+      "status": "TERMINÉE",
+      "commit": "4009fe0"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T008",
+      "status": "EN_CONTRÔLE",
+      "note": "Waiting for first GitHub Actions [X100-CI] comment"
     }
   ]
 }
