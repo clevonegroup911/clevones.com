@@ -44,7 +44,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T004",
   "tasks": [
     {
       "id": "T001",
@@ -152,8 +152,10 @@
       "tests": [
         "restauration à blanc documentée"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "PRÊTE",
+      "evidence": [
+        "dependency T008 verified by GitHub Actions run 34074052339"
+      ],
       "estimatedCost": 3,
       "risk": "high",
       "attempts": 0,
@@ -275,16 +277,16 @@
       "tests": [
         "workflow pull_request"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
-        "branch admin-mfa pushed to origin",
-        "draft PR creation blocked: gh token invalid",
-        "open https://github.com/clevonegroup911/clevones.com/compare/main...admin-mfa?expand=1"
+        "PR #1: https://github.com/clevonegroup911/clevones.com/pull/1",
+        "GitHub Actions X100 CI run 34074052339: success",
+        "[X100-CI] comment: https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670"
       ],
       "estimatedCost": 1,
       "risk": "low",
-      "attempts": 0,
-      "requiresHuman": true,
+      "attempts": 1,
+      "requiresHuman": false,
       "updatedAt": "2026-09-07"
     },
     {
@@ -548,6 +550,18 @@
       "taskId": "T008",
       "status": "EN_CONTRÔLE",
       "note": "Waiting for first GitHub Actions [X100-CI] comment"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T008",
+      "status": "TERMINÉE",
+      "note": "PR #1 — X100 CI run 34074052339 successful; [X100-CI] comment published"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T004",
+      "status": "PRÊTE",
+      "note": "Unblocked after verified T008"
     }
   ]
 }
