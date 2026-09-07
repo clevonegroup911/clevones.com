@@ -47,3 +47,7 @@ node_modules/
 
 # X100 local CI output
 ci-artifact/
+
+# PostgreSQL dumps must never enter Git
+*.dump
+*.dump.partial

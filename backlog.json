@@ -44,7 +44,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T004",
+  "nextTaskId": null,
   "tasks": [
     {
       "id": "T001",
@@ -137,28 +137,36 @@
       "title": "Sauvegarde PostgreSQL et rollback",
       "objective": "Préparer une sauvegarde vérifiée et un rollback avant toute migration MFA.",
       "priority": "P0",
-      "owner": "human",
+      "owner": "cursor",
       "dependencies": [
         "T008"
       ],
       "scope": [
-        "docs/ADMIN_MFA.md",
-        "prisma/migrations"
+        "scripts/backup-postgres.sh",
+        "scripts/verify-backup.sh",
+        "DEPLOYMENT.md",
+        "docs/ADMIN_MFA.md"
       ],
       "acceptanceCriteria": [
         "Sauvegarde PostgreSQL vérifiée",
         "Procédure de rollback testée hors production"
       ],
       "tests": [
-        "restauration à blanc documentée"
+        "sha256sum -c",
+        "pg_restore --list",
+        "temporary restore test",
+        "npm run x100:test"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [
-        "dependency T008 verified by GitHub Actions run 34074052339"
+        "backup 20260907T020712Z on VM clevones-serveur",
+        "sha256 01e056d12e7a5e8b21805de973acdd9c58d589ef7403753bfea528c371e099e1",
+        "pg_restore --list OK; temp restore then dropdb of clevones_t004_restore_20260907t020712z only",
+        "production HEAD 10dbe97 unchanged; PM2 pid 1109352 unchanged"
       ],
       "estimatedCost": 3,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": true,
       "updatedAt": "2026-09-07"
     },
@@ -562,6 +570,12 @@
       "taskId": "T004",
       "status": "PRÊTE",
       "note": "Unblocked after verified T008"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T004",
+      "status": "EN_CONTRÔLE",
+      "note": "Atomic dump 20260907T020712Z verified; waiting for [X100-CI]"
     }
   ]
 }

@@ -80,10 +80,12 @@ Cette migration n'a pas été déployée. Elle peut encore être corrigée en pl
 
 Avant toute application sur un environnement partagé :
 
-1. Prendre une sauvegarde PostgreSQL complète (dump logique ou snapshot disque selon le runbook d'exploitation).
-2. Vérifier que la restauration a été testée récemment.
-3. Appliquer la migration uniquement après cette sauvegarde.
-4. Ne pas exécuter la migration depuis ce dépôt vers la production dans le cadre de cette tâche.
+1. Prendre une sauvegarde PostgreSQL complète (dump logique custom, voir `DEPLOYMENT.md`).
+2. Vérifier que la restauration a été testée récemment **hors** `clevones_prod`.
+3. Appliquer la migration uniquement après cette sauvegarde et une décision humaine (T005).
+4. Ne pas exécuter la migration depuis ce dépôt vers la production dans le cadre de T004.
+
+Preuve T004 : dump `20260907T020712Z`, checksum SHA-256 consigné dans `DEPLOYMENT.md`, restauration temporaire puis suppression de la seule base temporaire. `clevones_prod` n'a pas été écrasée.
 
 ## Tests
 
