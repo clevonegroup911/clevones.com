@@ -95,10 +95,14 @@ Système X100 installé localement et consigné. Commit `4009fe0`. T008 passée 
 ## Commit
 
 - `4009fe0` `automation(x100): add GitHub task orchestration`
+- `e2999e2` `docs(x100): record orchestration bootstrap`
 
 ## Pull Request
 
-- draft vers `main` en cours d'ouverture, sans fusion
+- Branche `admin-mfa` poussée vers `origin`
+- Création de PR **bloquée** : `gh` n'est pas authentifié (jeton GitHub invalide, aucun login lancé)
+- Ouvrir un draft : https://github.com/clevonegroup911/clevones.com/compare/main...admin-mfa?expand=1
+- Aucune fusion
 
 ## Preuves
 
@@ -114,7 +118,7 @@ Système X100 installé localement et consigné. Commit `4009fe0`. T008 passée 
 
 ## Blocage
 
-- aucun pour l'implémentation locale
+- Création de la Pull Request draft uniquement (`gh auth` invalide). Push de `admin-mfa` réussi.
 
 ## Prochaine tâche prête
 

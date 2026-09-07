@@ -277,12 +277,14 @@
       ],
       "status": "EN_CONTRÔLE",
       "evidence": [
-        "draft PR from admin-mfa to main pending first [X100-CI] result"
+        "branch admin-mfa pushed to origin",
+        "draft PR creation blocked: gh token invalid",
+        "open https://github.com/clevonegroup911/clevones.com/compare/main...admin-mfa?expand=1"
       ],
       "estimatedCost": 1,
       "risk": "low",
       "attempts": 0,
-      "requiresHuman": false,
+      "requiresHuman": true,
       "updatedAt": "2026-09-07"
     },
     {
