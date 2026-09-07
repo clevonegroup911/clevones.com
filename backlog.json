@@ -232,11 +232,16 @@
       "tests": [
         "connexion TOTP réelle par le SUPER_ADMIN"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_COURS",
+      "evidence": [
+        "[X100-OWNER-AUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572410876",
+        "T005 TERMINÉE; production HTTPS / 200; /admin/login 200; /admin/security/mfa 307 to login",
+        "SUPER_ADMIN active 1; mfaEnabled 0; UserMfaSecret 0; MfaRecoveryCode 0; MfaChallenge 0",
+        "enrollment reserved to account holder in browser; agent did not generate QR, TOTP, password, or recovery codes"
+      ],
       "estimatedCost": 1,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": true,
       "updatedAt": "2026-09-07"
     },
@@ -640,6 +645,18 @@
       "status": "TERMINÉE",
       "commit": "50130152d286827b35e082a6cea29ee708702996",
       "note": "PR #1 — X100 CI run 34130261414 successful; [X100-CONTROL] comment 5571865380; T006 remains À_FAIRE"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T006",
+      "status": "PRÊTE",
+      "note": "[X100-OWNER-AUTH] comment 5572410876; T005 TERMINÉE; enrollment remains account-holder only; no secrets generated"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T006",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next after owner auth; production access is inspection-only; enrollment must be performed by SUPER_ADMIN holder in browser"
     }
   ]
 }
