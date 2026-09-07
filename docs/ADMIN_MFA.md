@@ -2,6 +2,8 @@
 
 Ce document décrit l'exploitation de la MFA TOTP pour la console `/admin`. Il ne contient aucun secret, aucune clé et aucune commande destructive.
 
+La matrice des rôles SUPER_ADMIN / ADMIN / USER et les contrôles d'accès `/admin` sont dans `docs/ROLES_AND_PERMISSIONS.md` (T013).
+
 ## Architecture
 
 La connexion mot de passe ne crée **pas** de session administrateur lorsque `User.mfaEnabled` est vrai. Le serveur :

@@ -232,11 +232,13 @@
       "tests": [
         "connexion TOTP réelle par le SUPER_ADMIN"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "[X100-OWNER-AUTH] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572410876",
         "[X100-OWNER-CONFIRM] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572866491",
+        "[X100-CONTROL] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572967250",
         "[X100-CI] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
+        "GitHub Actions X100 CI run 34139405679 success on a81b896035bfebe2ed209ceea31f0c845d0773e5",
         "GitHub Actions X100 CI run 34135976815 success on 760d445edec228d68953fe1306f6944350ee361a",
         "SUPER_ADMIN active 1; mfaEnabled 1; UserMfaSecret active 1 pending 0; MfaRecoveryCode unused 10 used 0",
         "owner confirm: password+TOTP reconnection success; admin dashboard return success; recovery codes stored off git; no secrets shared"
@@ -337,7 +339,7 @@
       "tests": [
         "playwright"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "evidence": [],
       "estimatedCost": 3,
       "risk": "low",
@@ -418,7 +420,7 @@
       "tests": [
         "revue des journaux d'audit"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "evidence": [],
       "estimatedCost": 3,
       "risk": "medium",
@@ -445,11 +447,15 @@
       "tests": [
         "npm test"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "docs/ROLES_AND_PERMISSIONS.md role matrix SUPER_ADMIN/ADMIN/USER",
+        "npm test 40/40 including admin-access and /admin route classification",
+        "no production access; no user or role mutations; no merge main"
+      ],
       "estimatedCost": 2,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-07"
     },
@@ -665,6 +671,43 @@
       "taskId": "T006",
       "status": "EN_CONTRÔLE",
       "note": "[X100-OWNER-CONFIRM] comment 5572866491; mfaEnabled true; waiting for GitHub Actions [X100-CI]; no other task started"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T006",
+      "status": "TERMINÉE",
+      "commit": "a81b896035bfebe2ed209ceea31f0c845d0773e5",
+      "note": "[X100-CONTROL] comment 5572967250; X100 CI run 34139405679 success; MFA SUPER_ADMIN enrolled; T010/T011 remain À_FAIRE"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T009",
+      "status": "PRÊTE",
+      "note": "Unblocked after T006 TERMINÉE; non-human; T010/T011 remain À_FAIRE (requiresHuman)"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T012",
+      "status": "PRÊTE",
+      "note": "Unblocked after T006 TERMINÉE; non-human; not selected (P2)"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T013",
+      "status": "PRÊTE",
+      "note": "Unblocked after T006 TERMINÉE; P1; unblocks T014 and T015"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T013",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next; audit-only, no production, no role changes, no T009/T012 start"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T013",
+      "status": "EN_CONTRÔLE",
+      "note": "Role matrix documented in docs/ROLES_AND_PERMISSIONS.md; npm test 40/40; waiting for GitHub Actions [X100-CI]; T009 and T012 remain PRÊTE but not started"
     }
   ]
 }
