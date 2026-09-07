@@ -157,12 +157,16 @@
         "temporary restore test",
         "npm run x100:test"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "backup 20260907T020712Z on VM clevones-serveur",
         "sha256 01e056d12e7a5e8b21805de973acdd9c58d589ef7403753bfea528c371e099e1",
         "pg_restore --list OK; temp restore then dropdb of clevones_t004_restore_20260907t020712z only",
-        "production HEAD 10dbe97 unchanged; PM2 pid 1109352 unchanged"
+        "production HEAD 10dbe97 unchanged; PM2 pid 1109352 unchanged",
+        "commit 8052b4780c7d4094831babcbe5bb2c879138860d",
+        "PR #1: https://github.com/clevonegroup911/clevones.com/pull/1",
+        "GitHub Actions X100 CI run 34075526202: success",
+        "[X100-CI] comment: https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670"
       ],
       "estimatedCost": 3,
       "risk": "high",
@@ -576,6 +580,13 @@
       "taskId": "T004",
       "status": "EN_CONTRÔLE",
       "note": "Atomic dump 20260907T020712Z verified; waiting for [X100-CI]"
+    },
+    {
+      "at": "2026-09-07",
+      "taskId": "T004",
+      "status": "TERMINÉE",
+      "commit": "8052b4780c7d4094831babcbe5bb2c879138860d",
+      "note": "PR #1 — X100 CI run 34075526202 successful; [X100-CI] comment published; T005 remains À_FAIRE"
     }
   ]
 }

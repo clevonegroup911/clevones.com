@@ -8,7 +8,7 @@ T004
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -16,7 +16,7 @@ Créer et vérifier une sauvegarde cohérente de `clevones_prod`, conserver l'é
 
 ## Résultat
 
-Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restore --list` OK, restauration temporaire puis suppression de la seule base temporaire. Production inchangée. Scripts et `DEPLOYMENT.md` ajoutés. En attente du commentaire `[X100-CI]`.
+Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restore --list` OK, restauration temporaire puis suppression de la seule base temporaire. Production inchangée. Scripts et `DEPLOYMENT.md` ajoutés. GitHub Actions `X100 CI` a validé le SHA `8052b4780c7d4094831babcbe5bb2c879138860d` ; T004 est `TERMINÉE`. T005 reste `À_FAIRE`. Aucun merge, aucun déploiement, aucune migration Prisma.
 
 ## Fichiers créés
 
@@ -41,6 +41,7 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 - restauration stdin vers `clevones_t004_restore_20260907t020712z` puis `dropdb` de cette base
 - `npm run x100:test`
 - `npm run x100:validate`
+- `npm run x100:next -- --json`
 
 ## Tests réussis
 
@@ -49,6 +50,7 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 - restauration temporaire : 3 tables publiques, 1 migration Prisma, puis base temporaire absente
 - `clevones_prod` toujours présente
 - `bash -n` des scripts de sauvegarde
+- GitHub Actions X100 CI run 34075526202 : succès (tests, lint, build, backlog, rapport)
 
 ## Tests échoués
 
@@ -56,7 +58,7 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 
 ## Lint
 
-- non requis pour des scripts shell / markdown ; CI GitHub relancera le lint applicatif
+- succès en CI GitHub (run 34075526202)
 
 ## Type-check
 
@@ -64,7 +66,7 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 
 ## Build
 
-- non modifié ; aucun déploiement
+- succès en CI GitHub ; aucun déploiement
 
 ## Sécurité
 
@@ -74,14 +76,16 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 - aucune migration, aucun redémarrage, aucune suppression d'ancienne sauvegarde
 - `dropdb` limité à la base temporaire
 - PID PM2 `1109352` inchangé, HEAD production `10dbe97` inchangé
+- T005 non commencée ; aucune migration Prisma en production
 
 ## Commit
 
-- en attente après ce rapport
+- SHA contrôlé `8052b4780c7d4094831babcbe5bb2c879138860d`
+- clôture administrative X100 sur `admin-mfa` uniquement
 
 ## Pull Request
 
-- push de `admin-mfa` uniquement, sans merge ni `main`
+- PR draft #1, push de `admin-mfa` uniquement, sans merge ni `main`
 
 ## Preuves
 
@@ -89,16 +93,21 @@ Sauvegarde atomique `20260907T020712Z` créée sur la VM, checksum et `pg_restor
 - SHA-256 `01e056d12e7a5e8b21805de973acdd9c58d589ef7403753bfea528c371e099e1`
 - restauration temporaire OK puis `TEMP_GONE=yes` / `PROD_STILL=clevones_prod`
 - `DEPLOYMENT.md`
+- commit `8052b4780c7d4094831babcbe5bb2c879138860d`
+- PR #1 : https://github.com/clevonegroup911/clevones.com/pull/1
+- GitHub Actions X100 CI run 34075526202 : success
+- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
 
 ## Risques
 
 - restauration sur `clevones_prod` non automatisée (décision humaine hors T004)
 - dump petit (base applicative peu peuplée) ; volume disque largement suffisant
 - `.vscode/` local non suivi, non stagé
+- T005 reste humaine : ne pas migrer ni déployer sans autorisation explicite
 
 ## Blocage
 
-- aucun pour la sauvegarde ; contrôle GitHub Actions en cours après push
+- aucun
 
 ## Prochaine tâche prête
 
