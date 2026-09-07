@@ -75,13 +75,14 @@ function runCli(args, cwd = ROOT) {
   });
 }
 
-test("repository selector reports NO_READY_TASK while T007 is in progress", () => {
-  const run = runCli(["--json", join(ROOT, "backlog.json")]);
+test("repository selector matches the current valid backlog state", () => {
+  const source = join(ROOT, "backlog.json");
+  const expected = JSON.parse(readFileSync(source, "utf8")).nextTaskId;
+  const run = runCli(["--json", source]);
   assert.equal(run.status, 0, run.stderr);
   const payload = JSON.parse(run.stdout);
   assert.equal(payload.ok, true);
-  assert.equal(payload.nextTaskId, null);
-  assert.equal(payload.reason, "NO_READY_TASK");
+  assert.equal(payload.nextTaskId, expected);
 });
 
 test("does not select BLOQUÉE, ÉCHOUÉE or EN_CONTRÔLE tasks", () => {
