@@ -44,3 +44,6 @@ node_modules/
 .next/
 .env.local
 .env.*.local
+
+# X100 local CI output
+ci-artifact/

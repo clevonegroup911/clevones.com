@@ -1,0 +1,25 @@
+---
+description: Orchestration X100 — sélection, périmètre, contrôles, PR draft, jamais de merge ni déploiement automatique
+alwaysApply: true
+---
+
+# X100 — Clevones
+
+Suivre cet ordre à chaque session. Ne pas en commencer une autre hors de cet ordre.
+
+1. Lire `AGENTS.md`, `backlog.json` et `TASK_REPORT.md`.
+2. Valider le backlog : `npm run x100:validate`.
+3. Sélectionner uniquement une tâche `PRÊTE` : `npm run x100:next -- --json`. Ne pas prendre `BLOQUÉE`, `ÉCHOUÉE`, `EN_CONTRÔLE`. Une P0 `EN_COURS` à la fois. Max trois `EN_COURS`. Jamais paralléliser migration ou authentification.
+4. Travailler uniquement dans `scope`. Inspecter `git status` et chaque fichier avant modification. Préserver les commits existants.
+5. Exécuter les contrôles de la tâche (tests, lint, type-check, build, `git diff --check`). Ne jamais désactiver un test. Stopper après trois échecs identiques.
+6. Mettre à jour `TASK_REPORT.md` avec `[X100-CURSOR]` et toutes les sections obligatoires.
+7. Copier le rapport vers `reports/tasks/<ID>.md`.
+8. Mettre à jour `backlog.json` (état, preuves, `updatedAt`). `TERMINÉE` seulement avec preuves.
+9. Commiter sur la branche de travail, message conventionnel. Jamais de secret, jamais de `.env`.
+10. Pousser la branche seulement si la tâche l’autorise. Jamais `main`.
+11. Ouvrir ou mettre à jour une Pull Request. Laisser GitHub Actions publier `[X100-CI]`.
+12. Ne jamais fusionner. Ne jamais déployer. Aucune livraison sensible automatique.
+
+Priorité : propriétaire > sécurité > `AGENTS.md` > `backlog.json` > instruction de tâche > cette règle.
+
+Exemple : une tâche `EN_CONTRÔLE` attend le commentaire `[X100-CI]` ; ne pas démarrer T004 tant que T008 n’est pas `TERMINÉE`.
