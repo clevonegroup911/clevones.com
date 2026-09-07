@@ -8,7 +8,7 @@ T006
 
 ## Statut
 
-EN_COURS
+EN_CONTRÔLE
 
 ## Objectif
 
@@ -16,7 +16,7 @@ Activer TOTP sur le compte SUPER_ADMIN après déploiement.
 
 ## Résultat
 
-T006 sélectionnée après `[X100-OWNER-AUTH]` (comment 5572410876). T005 `TERMINÉE`. Production accessible. `/admin/login` 200. `/admin/security/mfa` disponible (307 vers login tant que non authentifié). SUPER_ADMIN actif, `mfaEnabled` faux, aucune ligne `UserMfaSecret` / recovery / challenge. L'enrôlement n'a **pas** été exécuté par l'agent : il doit être fait par le titulaire dans le navigateur, sans QR, secret TOTP, code TOTP, mot de passe ni codes de récupération dans Git, logs ou tickets. Accès production limité à l'inspection (exception propriétaire vs `AGENTS.md`). T006 reste `EN_COURS` jusqu'à enrôlement + reconnexion TOTP réels.
+Le titulaire SUPER_ADMIN a confirmé l'enrôlement TOTP hors bande (`[X100-OWNER-CONFIRM]` comment 5572866491). Inspection agrégée : `mfaEnabled` vrai sur le SUPER_ADMIN ACTIVE, un secret MFA actif non pending, 10 codes de récupération hashés inutilisés. Reconnexion mot de passe + TOTP et retour dashboard confirmés par le titulaire. Codes de récupération hors Git. Aucun secret exposé. T006 passe `EN_CONTRÔLE`. Aucune autre tâche commencée. Aucun merge `main`.
 
 ## Fichiers créés
 
@@ -33,67 +33,62 @@ T006 sélectionnée après `[X100-OWNER-AUTH]` (comment 5572410876). T005 `TERMI
 - `npm run x100:next -- --json`
 - `git status` / `git branch --show-current` / `git rev-parse HEAD`
 - `gh api` commentaires PR #1
-- HTTPS `https://clevones.com/` `/admin/login` `/admin/security/mfa`
-- inspection VM (gcloud ssh) : git, PM2, agrégats SQL sans e-mail ni secret
+- inspection VM (gcloud ssh) : agrégats SQL sans e-mail ni secret
 
 ## Tests réussis
 
-- T005 `TERMINÉE`
-- `[X100-OWNER-AUTH]` T006 comment 5572410876
-- HTTPS `/` 200 ; `/admin` 307 login ; `/admin/login` 200 ; `/admin/login/mfa` 200 ; `/admin/security/mfa` 307 vers `/admin/login?callbackUrl=/admin/security/mfa`
-- PM2 `clevones-com` online PID `1212469`
-- Prisma `20260904191500_add_admin_mfa` appliquée
-- SUPER_ADMIN : 1 compte ACTIVE, `mfaEnabled` 0, secrets MFA 0
+- `[X100-OWNER-CONFIRM]` : MFA activée, reconnexion e-mail + mot de passe + TOTP réussie, dashboard OK, recovery hors Git
+- agrégats production : SUPER_ADMIN 1/1/1/0 ; `UserMfaSecret` 1 actif 0 pending ; recovery 10 unused 0 used
+- GitHub Actions X100 CI run 34135976815 succès sur `760d445edec228d68953fe1306f6944350ee361a`
 
 ## Tests échoués
 
-- aucun. Connexion TOTP réelle non exécutée : réservée au titulaire.
+- aucun
 
 ## Lint
 
-- non rejoué (hors périmètre code)
+- succès en CI GitHub (run 34135976815) ; non rejoué localement
 
 ## Type-check
 
-- non rejoué (hors périmètre code)
+- succès en CI GitHub (inclus au build)
 
 ## Build
 
-- non redéployé
+- succès en CI GitHub (run 34135976815) ; aucun nouveau déploiement
 
 ## Sécurité
 
-- aucun mot de passe, QR, secret TOTP, code TOTP ni code de récupération généré ou affiché
-- aucune écriture SQL sur `User` / MFA
-- aucune désactivation forcée
-- SUPER_ADMIN non enrôlé par l'agent
+- aucun mot de passe, QR, secret TOTP, code TOTP ni code de récupération affiché ou commité
+- aucune écriture SQL
+- recovery codes hors Git (preuve titulaire + compteurs hashés uniquement)
 - aucun merge `main`
 
 ## Commit
 
-- métadonnées X100 `EN_COURS` sur `admin-mfa` uniquement
+- clôture `EN_CONTRÔLE` sur `admin-mfa` uniquement ; en attente `[X100-CI]`
 
 ## Pull Request
 
-- PR draft #1, `[X100-OWNER-AUTH]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572410876
+- PR draft #1, `[X100-OWNER-CONFIRM]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572866491
 - pas de merge vers `main`
 
 ## Preuves
 
-- `[X100-OWNER-AUTH]` comment 5572410876
-- HTTPS admin routes (statuts uniquement)
-- agrégats production : super 1/1/0/1 ; secrets 0 ; recovery 0 ; challenges 0
-- PM2 pid 1212469 ; HEAD production `1c33a65`
+- `[X100-OWNER-CONFIRM]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572866491
+- `[X100-OWNER-AUTH]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5572410876
+- `[X100-CI]` https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
+- GitHub Actions X100 CI run 34135976815 : success
+- agrégats : mfaEnabled 1 ; secret actif 1 ; recovery unused 10
 
 ## Risques
 
-- T006 ne peut pas passer `EN_CONTRÔLE` tant que le titulaire n'a pas enrôlé puis reconnecté (mot de passe + TOTP) hors bande
-- les codes de récupération ne doivent jamais transiter par Git ni un ticket
+- les codes de récupération restent hors dépôt ; une perte totale des facteurs exigerait un runbook hors bande
 
 ## Blocage
 
-- aucun échec technique. Enrôlement et test de reconnexion TOTP en attente du titulaire SUPER_ADMIN.
+- aucun. Contrôle externe : attendre `[X100-CI]` sur la PR draft.
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T006 `EN_COURS`, humaine)
+- NO_READY_TASK (T006 `EN_CONTRÔLE`)
