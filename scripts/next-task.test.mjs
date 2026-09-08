@@ -81,15 +81,16 @@ test("repository selector matches the current valid backlog state", () => {
   const t009 = backlog.tasks.find((task) => task.id === "T009");
   const t012 = backlog.tasks.find((task) => task.id === "T012");
   const t013 = backlog.tasks.find((task) => task.id === "T013");
-  assert.equal(t009?.status, "EN_CONTRÔLE");
-  assert.equal(t012?.status, "PRÊTE");
+  assert.equal(t009?.status, "TERMINÉE");
+  assert.equal(t012?.status, "EN_CONTRÔLE");
   assert.equal(t013?.status, "TERMINÉE");
   assert.equal(backlog.nextTaskId, null);
   const run = runCli(["--json", source]);
   assert.equal(run.status, 0, run.stderr);
   const payload = JSON.parse(run.stdout);
   assert.equal(payload.ok, true);
-  assert.equal(payload.nextTaskId, "T012");
+  assert.equal(payload.nextTaskId, null);
+  assert.equal(payload.reason, "NO_READY_TASK");
 });
 
 test("does not select BLOQUÉE, ÉCHOUÉE or EN_CONTRÔLE tasks", () => {

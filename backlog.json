@@ -342,12 +342,13 @@
         "npm run lint",
         "npm run x100:validate"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
+        "[X100-CONTROL] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5587208413",
+        "GitHub Actions X100 CI run 34240683563 success on 85132676a93d52af354c8b4cbcd78fc74f6627be",
         "npx tsc --noEmit and npm run build after e2eAppEnv ProcessEnv typing fix",
-        "npx playwright test: 2 passed (desktop+mobile login/MFA screens); MFA fixture login required in CI",
-        "safe screenshots tests/e2e/evidence/*.png gitignored; no QR/TOTP/recovery/password captured",
-        "T012 remains PRÊTE and not started; no production access; no merge main"
+        "playwright login/MFA screens desktop+mobile; fixture MFA login required and passed in CI",
+        "no production access; no merge main"
       ],
       "estimatedCost": 3,
       "risk": "low",
@@ -420,21 +421,30 @@
       ],
       "scope": [
         "lib/admin/audit.ts",
-        "docs"
+        "docs",
+        "scripts"
       ],
       "acceptanceCriteria": [
         "Signaux d'échec MFA et login sans secrets"
       ],
       "tests": [
-        "revue des journaux d'audit"
+        "bash scripts/health-check-app.sh --dry-run",
+        "npm test",
+        "npm run lint",
+        "npm run x100:validate"
       ],
-      "status": "PRÊTE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "docs/MONITORING.md audit, metrics, Cloud Monitoring plan, alert proposals",
+        "health-check-app/postgres/system.sh dry-run loopback only; no .env, no restarts",
+        "lib/admin/audit.ts critical AUTH_LOGIN_FAILURE and MFA_LOGIN_FAILED counters without secrets",
+        "no GCP alerting resources created; no production access; no merge main"
+      ],
       "estimatedCost": 3,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-08"
     },
     {
       "id": "T013",
@@ -749,6 +759,25 @@
       "taskId": "T009",
       "status": "EN_CONTRÔLE",
       "note": "CI run #14 typecheck/build failed on e2eAppEnv ProcessEnv typing; T009 remains EN_CONTRÔLE; T012 not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T009",
+      "status": "TERMINÉE",
+      "commit": "85132676a93d52af354c8b4cbcd78fc74f6627be",
+      "note": "[X100-CONTROL] comment 5587208413; X100 CI run 34240683563 success; T012 selected; T010/T011 remain À_FAIRE"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T012",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next after T009 TERMINÉE; monitoring docs and dry-run health checks; T010/T011 not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T012",
+      "status": "EN_CONTRÔLE",
+      "note": "MONITORING.md and loopback health-check scripts; waiting for [X100-CI]; no GCP resources; T010/T011 remain À_FAIRE"
     }
   ]
 }

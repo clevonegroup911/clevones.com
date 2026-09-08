@@ -52,3 +52,52 @@ export async function writeAuditLog(
     },
   });
 }
+
+export const CRITICAL_AUTH_AUDIT_ACTIONS = [
+  auditActions.AUTH_LOGIN_FAILURE,
+  auditActions.MFA_LOGIN_FAILED,
+] as const;
+
+export type AuthAuditSignalCounts = {
+  loginFailures: number;
+  mfaFailures: number;
+  mfaSuccesses: number;
+  recoveryUsed: number;
+  loginSuccesses: number;
+};
+
+export function isCriticalAuthAuditAction(action: string): boolean {
+  return (
+    action === auditActions.AUTH_LOGIN_FAILURE ||
+    action === auditActions.MFA_LOGIN_FAILED
+  );
+}
+
+/** Count auth/MFA audit actions only. Never inspect metadata, IPs, or secrets. */
+export function countAuthAuditSignals(
+  actions: readonly string[],
+): AuthAuditSignalCounts {
+  const counts: AuthAuditSignalCounts = {
+    loginFailures: 0,
+    mfaFailures: 0,
+    mfaSuccesses: 0,
+    recoveryUsed: 0,
+    loginSuccesses: 0,
+  };
+
+  for (const action of actions) {
+    if (action === auditActions.AUTH_LOGIN_FAILURE) {
+      counts.loginFailures += 1;
+    } else if (action === auditActions.MFA_LOGIN_FAILED) {
+      counts.mfaFailures += 1;
+    } else if (action === auditActions.MFA_LOGIN_SUCCESS) {
+      counts.mfaSuccesses += 1;
+    } else if (action === auditActions.MFA_RECOVERY_CODE_USED) {
+      counts.recoveryUsed += 1;
+    } else if (action === auditActions.AUTH_LOGIN_SUCCESS) {
+      counts.loginSuccesses += 1;
+    }
+  }
+
+  return counts;
+}
