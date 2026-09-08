@@ -75,7 +75,9 @@ export const E2E_MFA_ENCRYPTION_KEY =
   "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHg=";
 
 export function e2eAppEnv(databaseUrl: string): NodeJS.ProcessEnv {
-  const env: NodeJS.ProcessEnv = {};
+  const env: Record<string, string> = {
+    NODE_ENV: "development",
+  };
   for (const [key, value] of Object.entries(process.env)) {
     if (typeof value === "string") {
       env[key] = value;
@@ -86,11 +88,13 @@ export function e2eAppEnv(databaseUrl: string): NodeJS.ProcessEnv {
   env.MFA_ENCRYPTION_KEY = E2E_MFA_ENCRYPTION_KEY;
   env.MFA_ISSUER = "CLEVONES-E2E";
   env.APP_ORIGIN = E2E_ORIGIN;
-  env.NODE_ENV = "development";
   if (process.env.CI) {
     env.CI = process.env.CI;
   }
-  return env;
+  return {
+    ...env,
+    NODE_ENV: "development",
+  };
 }
 
 export function resolveProvidedE2eDatabaseUrl(

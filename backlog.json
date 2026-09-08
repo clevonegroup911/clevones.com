@@ -344,7 +344,7 @@
       ],
       "status": "EN_CONTRÔLE",
       "evidence": [
-        "playwright.config.ts and tests/e2e admin MFA fixtures",
+        "npx tsc --noEmit and npm run build after e2eAppEnv ProcessEnv typing fix",
         "npx playwright test: 2 passed (desktop+mobile login/MFA screens); MFA fixture login required in CI",
         "safe screenshots tests/e2e/evidence/*.png gitignored; no QR/TOTP/recovery/password captured",
         "T012 remains PRÊTE and not started; no production access; no merge main"
@@ -743,6 +743,12 @@
       "taskId": "T009",
       "status": "EN_CONTRÔLE",
       "note": "Playwright login+MFA screens desktop/mobile; fixture TOTP login required in CI; waiting for [X100-CI]; T012 not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T009",
+      "status": "EN_CONTRÔLE",
+      "note": "CI run #14 typecheck/build failed on e2eAppEnv ProcessEnv typing; T009 remains EN_CONTRÔLE; T012 not started"
     }
   ]
 }
