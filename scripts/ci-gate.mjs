@@ -35,6 +35,7 @@ const REQUIRED_STEPS = Object.freeze([
   "build",
   "diff_check",
   "audit",
+  "playwright",
 ]);
 
 export function buildSummary(results) {
@@ -60,6 +61,7 @@ export function buildSummary(results) {
       build: statusOf(steps, "build"),
       diffCheck: statusOf(steps, "diff_check"),
       audit: statusOf(steps, "audit"),
+      playwright: statusOf(steps, "playwright"),
     },
     steps,
   };
@@ -92,6 +94,7 @@ async function main() {
       `build=${summary.checks.build}`,
       `diffCheck=${summary.checks.diffCheck}`,
       `audit=${summary.checks.audit}`,
+      `playwright=${summary.checks.playwright}`,
       "",
       "## Commands",
       ...summary.steps.map((step) => `- ${step.name}: ${step.command} (exit ${step.exitCode})`),

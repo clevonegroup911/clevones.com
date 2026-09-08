@@ -48,6 +48,15 @@ node_modules/
 # X100 local CI output
 ci-artifact/
 
+# Playwright e2e
+tests/e2e/test-results/
+tests/e2e/report/
+tests/e2e/evidence/*.png
+tests/e2e/.runtime-state.json
+playwright-report/
+blob-report/
+test-results/
+
 # PostgreSQL dumps must never enter Git
 *.dump
 *.dump.partial

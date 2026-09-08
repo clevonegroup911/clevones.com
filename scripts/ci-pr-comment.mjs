@@ -48,6 +48,7 @@ export function buildCommentBody({
     `- Tests : ${checkLabel(checks.tests)} (X100 ${checkLabel(checks.x100Tests)})`,
     `- Lint : ${checkLabel(checks.lint)}`,
     `- Build : ${checkLabel(checks.build)}`,
+    `- Playwright : ${checkLabel(checks.playwright)}`,
     `- Backlog : ${backlogOk ? "valide" : "invalide"}`,
     `- Rapport : ${reportOk ? "valide" : "invalide"}`,
     `- Workflow : ${workflowUrl || "indisponible"}`,

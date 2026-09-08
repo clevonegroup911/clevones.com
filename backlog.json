@@ -337,15 +337,23 @@
         "Parcours login MFA capturé sans secret"
       ],
       "tests": [
-        "playwright"
+        "npx playwright test",
+        "npm test",
+        "npm run lint",
+        "npm run x100:validate"
       ],
-      "status": "PRÊTE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "playwright.config.ts and tests/e2e admin MFA fixtures",
+        "npx playwright test: 2 passed (desktop+mobile login/MFA screens); MFA fixture login required in CI",
+        "safe screenshots tests/e2e/evidence/*.png gitignored; no QR/TOTP/recovery/password captured",
+        "T012 remains PRÊTE and not started; no production access; no merge main"
+      ],
       "estimatedCost": 3,
       "risk": "low",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-08"
     },
     {
       "id": "T010",
@@ -447,11 +455,12 @@
       "tests": [
         "npm test"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "docs/ROLES_AND_PERMISSIONS.md role matrix SUPER_ADMIN/ADMIN/USER",
         "npm test 40/40 including admin-access and /admin route classification",
-        "x100:test 24/24 after selector expectation T009 (T013 EN_CONTRÔLE, nextTaskId null)",
+        "[X100-CONTROL] https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5584211675",
+        "GitHub Actions X100 CI run 34214425957 success on 5dfcd1388909a6fe3f90083e398b7ac475c88b4b",
         "no production access; no user or role mutations; no merge main"
       ],
       "estimatedCost": 2,
@@ -715,6 +724,25 @@
       "taskId": "T013",
       "status": "EN_CONTRÔLE",
       "note": "CI run #12 failed on obsolete selector test; expected T009 not null; T013 remains EN_CONTRÔLE; T009/T012 not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T013",
+      "status": "TERMINÉE",
+      "commit": "5dfcd1388909a6fe3f90083e398b7ac475c88b4b",
+      "note": "[X100-CONTROL] comment 5584211675; X100 CI run 34214425957 success; T009 selected next; T012 remains PRÊTE"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T009",
+      "status": "EN_COURS",
+      "note": "Selected by x100:next after T013 TERMINÉE; Playwright fixtures only; T012 not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T009",
+      "status": "EN_CONTRÔLE",
+      "note": "Playwright login+MFA screens desktop/mobile; fixture TOTP login required in CI; waiting for [X100-CI]; T012 not started"
     }
   ]
 }

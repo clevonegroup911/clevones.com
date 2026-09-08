@@ -28,6 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_pass
+          POSTGRES_DB: ci_x100
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d ci_x100"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,6 +98,22 @@ jobs:
       - name: Build
         continue-on-error: true
         run: node scripts/ci-step.mjs build -- npm run build
+
+      - name: Install Playwright Chromium
+        continue-on-error: true
+        run: node scripts/ci-step.mjs playwright_install -- npx playwright install --with-deps chromium
+
+      - name: Run Playwright evidence tests
+        continue-on-error: true
+        run: node scripts/ci-step.mjs playwright -- npx playwright test
+
+      - name: Collect Playwright evidence
+        if: always()
+        continue-on-error: true
+        run: |
+          mkdir -p ci-artifact/playwright
+          cp tests/e2e/evidence/*.png ci-artifact/playwright/ 2>/dev/null || true
+          cp tests/e2e/report/index.html ci-artifact/playwright/ 2>/dev/null || true
 
       - name: Check conflict markers and whitespace
         continue-on-error: true
