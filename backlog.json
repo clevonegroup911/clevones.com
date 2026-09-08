@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-07",
+  "updatedAt": "2026-09-08",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -451,13 +451,14 @@
       "evidence": [
         "docs/ROLES_AND_PERMISSIONS.md role matrix SUPER_ADMIN/ADMIN/USER",
         "npm test 40/40 including admin-access and /admin route classification",
+        "x100:test 24/24 after selector expectation T009 (T013 EN_CONTRÔLE, nextTaskId null)",
         "no production access; no user or role mutations; no merge main"
       ],
       "estimatedCost": 2,
       "risk": "medium",
       "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-08"
     },
     {
       "id": "T014",
@@ -708,6 +709,12 @@
       "taskId": "T013",
       "status": "EN_CONTRÔLE",
       "note": "Role matrix documented in docs/ROLES_AND_PERMISSIONS.md; npm test 40/40; waiting for GitHub Actions [X100-CI]; T009 and T012 remain PRÊTE but not started"
+    },
+    {
+      "at": "2026-09-08",
+      "taskId": "T013",
+      "status": "EN_CONTRÔLE",
+      "note": "CI run #12 failed on obsolete selector test; expected T009 not null; T013 remains EN_CONTRÔLE; T009/T012 not started"
     }
   ]
 }
