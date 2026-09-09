@@ -34,6 +34,11 @@ model User {
   auditLogs     AuditLog[]
   mfaSecret     UserMfaSecret?
   mfaChallenges MfaChallenge[]
+  contentPagesCreated  ContentPage[]  @relation("ContentPageCreatedBy")
+  contentPagesUpdated  ContentPage[]  @relation("ContentPageUpdatedBy")
+  contentEntriesCreated ContentEntry[] @relation("ContentEntryCreatedBy")
+  contentEntriesUpdated ContentEntry[] @relation("ContentEntryUpdatedBy")
+  mediaAssetsUploaded  MediaAsset[]
 }
 
 model UserMfaSecret {
@@ -107,4 +112,73 @@ model AuditLog {
   @@index([actorId])
   @@index([action])
   @@index([createdAt])
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentLocale {
+  fr
+  en
+}
+
+/// Site page shell (unique slug across locales).
+model ContentPage {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  description String         @default("")
+  status      ContentStatus  @default(DRAFT)
+  createdById String?
+  createdBy   User?          @relation("ContentPageCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedById String?
+  updatedBy   User?          @relation("ContentPageUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  entries     ContentEntry[]
+
+  @@index([status])
+  @@index([updatedAt])
+}
+
+/// Localized body for a content page (FR/EN).
+model ContentEntry {
+  id          String        @id @default(cuid())
+  pageId      String
+  page        ContentPage   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  locale      ContentLocale
+  title       String
+  summary     String        @default("")
+  body        String        @default("")
+  status      ContentStatus @default(DRAFT)
+  createdById String?
+  createdBy   User?         @relation("ContentEntryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedById String?
+  updatedBy   User?         @relation("ContentEntryUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([pageId, locale])
+  @@index([status])
+  @@index([locale])
+}
+
+/// Optional media metadata (no public/ storage; path is private key).
+model MediaAsset {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  fileName     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([uploadedById])
 }

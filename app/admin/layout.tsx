@@ -25,6 +25,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               >
                 Dashboard
               </Link>
+              <Link
+                href="/admin/cms"
+                className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
+              >
+                CMS
+              </Link>
               {actor.role === "SUPER_ADMIN" ? (
                 <Link
                   href="/admin/security/mfa"

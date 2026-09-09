@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 28
+- Registre : 31
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 1
+- EN_CONTRÔLE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 7
@@ -40,7 +40,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T016 | P0 | TERMINÉE | Corrections des dépendances high | non |
 | T017 | P1 | TERMINÉE | Migration gouvernance X100 → X200 | non |
 | T018 | P1 | TERMINÉE | Mise en service timer backup PostgreSQL production | oui |
-| T019 | P1 | PRÊTE | CMS interne sécurisé | non |
+| T019 | P1 | EN_CONTRÔLE | CMS interne sécurisé | non |
 | T020 | P1 | À_FAIRE | Documents privés et portail sécurisé | non |
 | T021 | P1 | À_FAIRE | Workflow documents et permissions | non |
 | T022 | P2 | À_FAIRE | Analytics first-party | non |

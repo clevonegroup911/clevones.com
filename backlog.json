@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T019",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1150,12 +1150,29 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T15:26:58.256Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST-PRODUCT] deps T014 TERMINÉE; schema owner wave 1",
-      "evidence": [],
-      "attempts": 0,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/CMS_INTERNAL.md ContentPage/ContentEntry/MediaAsset + admin CRUD/preview",
+        "migration 20260909170000_add_cms_content (CI/local only; no production migrate)",
+        "quality-gate T019 PASS (prisma validate, npm test, lint, tsc, x100:validate, diff-check)",
+        "requireAdmin + AuditLog CMS_* actions; USER denied by admin middleware",
+        "no production access; no real secrets; T020-T026 created À_FAIRE except T019"
+      ],
+      "attempts": 1,
       "updatedAt": "2026-09-09",
       "id": "T019",
       "title": "CMS interne sécurisé",
@@ -1181,9 +1198,11 @@
         "npx prisma validate",
         "npm test",
         "npm run lint",
-        "npx tsc --noEmit"
+        "npx tsc --noEmit",
+        "npm run x100:validate",
+        "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -1963,9 +1982,27 @@
       "taskId": "T019",
       "status": "PRÊTE",
       "note": "[X200-FAST-PRODUCT] À_FAIRE→PRÊTE; sole Prisma schema owner for CMS first"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST-PRODUCT] CMS implemented; local quality-gate PASS; attente quality CI FULL"
     }
   ],
-  "registryVersion": 28,
+  "registryVersion": 31,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

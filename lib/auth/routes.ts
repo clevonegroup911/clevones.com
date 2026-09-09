@@ -15,6 +15,7 @@ export const adminRoutes = {
   mfaVerify: "/admin/login/mfa",
   dashboard: "/admin/dashboard",
   securityMfa: "/admin/security/mfa",
+  cms: "/admin/cms",
 } as const;
 
 /** Paths that will require a session once auth is integrated. */

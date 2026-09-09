@@ -37,6 +37,19 @@ export default async function AdminDashboardPage() {
         </ul>
       </div>
 
+      <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+        <h2 className="text-sm font-semibold text-white">CMS interne</h2>
+        <p className="mt-2 text-sm text-gray-muted">
+          Créer, prévisualiser et publier des pages FR/EN (DRAFT / PUBLISHED / ARCHIVED).
+        </p>
+        <Link
+          href={adminRoutes.cms}
+          className="mt-4 inline-flex text-sm font-medium text-gold-muted transition-colors hover:text-gold"
+        >
+          Ouvrir le CMS
+        </Link>
+      </div>
+
       {actor.role === "SUPER_ADMIN" ? (
         <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
           <h2 className="text-sm font-semibold text-white">Sécurité / MFA</h2>

@@ -11,3 +11,10 @@ export {
   type CreateAdminAccountPayload,
 } from "@/lib/validation/admin-auth";
 export { evaluatePasswordStrength } from "@/lib/validation/password-policy";
+export {
+  createContentPageSchema,
+  upsertContentEntrySchema,
+  contentStatusSchema,
+  type CreateContentPageInput,
+  type UpsertContentEntryInput,
+} from "@/lib/validation/cms";
