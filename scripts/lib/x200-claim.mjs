@@ -19,6 +19,8 @@ import { readJsonFile, withExclusiveLock, writeJsonFileAtomic } from "./x100-fs.
 export const DEFAULT_LOCK_PATH = ".x200/executor.lock";
 export const DEFAULT_BACKLOG_PATH = "backlog.json";
 
+const SENSITIVE_SCOPE_PATTERN = /(prisma\/migrations|lib\/auth|app\/admin|middleware\.ts|instrumentation\.ts)/i;
+
 export function defaultWorkerId() {
   return process.env.X200_WORKER_ID || `local:${hostname()}`;
 }
@@ -45,6 +47,34 @@ function replaceTask(data, updated) {
       },
     ],
   };
+}
+
+function normalizeScopeEntry(value) {
+  return String(value || "").trim().replace(/^\.\//, "").replace(/\/+$/, "");
+}
+
+export function scopesConflict(a = [], b = []) {
+  for (const leftRaw of a) {
+    const left = normalizeScopeEntry(leftRaw);
+    if (!left) continue;
+    for (const rightRaw of b) {
+      const right = normalizeScopeEntry(rightRaw);
+      if (!right) continue;
+      if (left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function taskIsSensitive(task) {
+  const haystack = [...(task.scope || []), task.title || "", task.objective || ""].join("\n");
+  return SENSITIVE_SCOPE_PATTERN.test(haystack);
+}
+
+function activeWork(data) {
+  return (data.tasks || []).filter((task) => ["EN_COURS", "EN_CONTRÔLE"].includes(task.status));
 }
 
 export function mutateBacklogAtomic({
@@ -128,7 +158,7 @@ export function claimTask(data, {
     ? leaseSeconds
     : data.claimPolicy?.leaseSeconds || 7200;
 
-  let task = taskId
+  const task = taskId
     ? data.tasks.find((item) => item.id === taskId)
     : selectNextTaskResult(data, { includeHuman }).task;
 
@@ -138,6 +168,10 @@ export function claimTask(data, {
   if (!task) {
     const selection = selectNextTaskResult(data, { includeHuman });
     return { ok: false, error: selection.reason || "NO_READY_TASK", blocking: selection.blocking };
+  }
+
+  if (task.requiresHuman && !includeHuman) {
+    return { ok: false, error: "HUMAN_GATE_REQUIRED" };
   }
 
   if (task.status === "EN_COURS" && task.claim && !isClaimExpired(task.claim, now)) {
@@ -174,6 +208,24 @@ export function claimTask(data, {
     return { ok: false, error: "trois échecs identiques" };
   }
 
+  const active = activeWork(data);
+  const activeInProgress = active.filter((item) => item.status === "EN_COURS");
+  if (activeInProgress.length >= (data.wipLimits?.maxActiveTasks || 3)) {
+    return { ok: false, error: "WIP_LIMIT", blocking: activeInProgress.map((item) => item.id) };
+  }
+
+  const conflicting = active.find((item) => item.id !== task.id && scopesConflict(task.scope, item.scope));
+  if (conflicting) {
+    return { ok: false, error: "SCOPE_CONFLICT", blocking: [conflicting.id] };
+  }
+
+  if (taskIsSensitive(task)) {
+    const sensitive = active.find((item) => item.id !== task.id && taskIsSensitive(item));
+    if (sensitive) {
+      return { ok: false, error: "SENSITIVE_PARALLELISM_FORBIDDEN", blocking: [sensitive.id] };
+    }
+  }
+
   const claimed = {
     ...task,
     status: "EN_COURS",
@@ -199,7 +251,13 @@ export function releaseTask(data, { taskId, workerId, token, now = new Date() } 
   if (!task) {
     return { ok: false, error: `tâche introuvable (${taskId})` };
   }
-  if (task.claim && !claimMatches(task.claim, { workerId, token })) {
+  if (task.status !== "EN_COURS") {
+    return { ok: false, error: `release interdit depuis ${task.status}` };
+  }
+  if (!task.claim) {
+    return { ok: false, error: "aucune réservation" };
+  }
+  if (!claimMatches(task.claim, { workerId, token })) {
     return { ok: false, error: "jeton ou travailleur non reconnus" };
   }
   const released = {
@@ -229,15 +287,14 @@ export function completeTask(data, {
   if (!claimCheck.ok) {
     return claimCheck;
   }
+  if (!gate || gate.ok !== true || gate.taskId !== task.id) {
+    return { ok: false, error: "quality-gate absent, en échec ou d'une autre tâche" };
+  }
   if (targetStatus === "TERMINÉE") {
     const terminee = canMarkTerminee(task, gate);
     if (!terminee.ok) {
       return terminee;
     }
-  } else if (!gate || gate.ok !== true) {
-    return { ok: false, error: "quality-gate non satisfait" };
-  } else if (gate.taskId && gate.taskId !== task.id) {
-    return { ok: false, error: "quality-gate d'une autre tâche" };
   }
 
   const evidenceRecords = [
@@ -245,8 +302,8 @@ export function completeTask(data, {
     createEvidenceRecord({
       type: "control",
       command: "npm run x200:quality-gate",
-      result: gate.ok ? "pass" : "fail",
-      exitCode: gate.ok ? 0 : 1,
+      result: "pass",
+      exitCode: 0,
       reference: ".x200/quality-results.json",
       location: ".x200/quality-results.json",
     }),
@@ -258,10 +315,10 @@ export function completeTask(data, {
     claim: null,
     evidenceRecords,
     lastTransitionReason: targetStatus === "EN_CONTRÔLE"
-      ? "contrôles locaux réussis ; attente CI"
+      ? "contrôles locaux réussis ; attente du job quality"
       : "critères et contrôles satisfaits",
     nextAction: targetStatus === "EN_CONTRÔLE"
-      ? "attendre [X100-CI] puis clôturer"
+      ? "réconcilier le job quality puis clôturer et continuer dans le même cycle"
       : null,
     updatedAt: utcDateStamp(now),
   };
