@@ -1000,11 +1000,31 @@
           "version": null,
           "at": "2026-09-09T10:07:29Z",
           "location": "/home/clevones/backups/clevones.com/20260909T100729Z"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34338887982",
+          "version": "f2f0ba892e6bc258f868834784275f0af2a6ee90",
+          "at": "2026-09-09T10:14:33Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34338887982"
+        },
+        {
+          "type": "control",
+          "command": "[X200-CONTROL] GitHub",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "5600307396",
+          "version": "f2f0ba892e6bc258f868834784275f0af2a6ee90",
+          "at": "2026-09-09T10:22:52Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396"
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] puis clôturer",
-      "lastTransitionReason": "timer production enabled; first backup 20260909T100729Z SCHEDULED_BACKUP_OK; attente CI",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #24 34338887982 SUCCESS on f2f0ba8 ; T018 TERMINÉE",
       "id": "T018",
       "title": "Mise en service timer backup PostgreSQL production",
       "objective": "Activer de façon contrôlée le timer systemd de sauvegarde PostgreSQL sur la VM de production après T011, sans restauration ni rétention destructive.",
@@ -1033,17 +1053,18 @@
         "npm run x100:test",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "[X200-OWNER-AUTH] PR#1 comment 5600009305 T018 production timer install/enable/first-backup https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600009305",
-        "preflight OK on clevones-serveur: postgres active, PM2 clevones-com online pid 1212469, nginx active, HTTPS 200, disk 36%",
-        "scripts/units copied to match T011 SHA-256; systemd-analyze verify OK; units installed root:root 0644; daemon-reload only",
+        "[X200-CONTROL] PR#1 comment 5600307396 CI run #24 SUCCESS https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396",
+        "GitHub Actions X100 CI run #24 34338887982 SUCCESS on f2f0ba892e6bc258f868834784275f0af2a6ee90 https://github.com/clevonegroup911/clevones.com/actions/runs/34338887982",
+        "[X100-CI] T018 success SHA f2f0ba892e6bc258f868834784275f0af2a6ee90 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
         "TIMER enabled+active; NEXT_TRIGGER 2026-09-10 02:23:26 UTC",
-        "first backup stamps 20260909T100715Z (Persistent catch-up) and 20260909T100729Z (controlled start); dump+SHA256SUMS mode 600; dir 700",
-        "checksum PASS; pg_restore --list PASS (VERIFY_LIST_OK); SCHEDULED_BACKUP_OK; RESTORE_TEST=0",
-        "retention dry-run KEEP T004 20260907T020712Z T005 20260907T134843Z and both T018 stamps; EXPIRE_COUNT=0; no --apply",
-        "post-check: postgres pid 1067637, nginx pid 4081, pm2-clevones pid 5506, clevones-com pid 1212469 unchanged; HTTPS 200; disk 36%",
-        "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE"
+        "first backup PASS 20260909T100729Z (controlled) and 20260909T100715Z (Persistent catch-up); SCHEDULED_BACKUP_OK; RESTORE_TEST=0",
+        "checksum PASS; pg_restore --list PASS (VERIFY_LIST_OK); dump+SHA256SUMS mode 600; dir 700",
+        "retention dry-run only; T004 20260907T020712Z and T005 20260907T134843Z preserved; EXPIRE_COUNT=0; no --apply",
+        "production healthy: postgres pid 1067637, nginx pid 4081, pm2-clevones pid 5506, clevones-com pid 1212469 unchanged; HTTPS 200; disk 36%",
+        "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; no secrets exposed; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE"
       ],
       "estimatedCost": 3,
       "risk": "high",
@@ -1378,9 +1399,16 @@
       "taskId": "T018",
       "status": "EN_CONTRÔLE",
       "note": "timer enabled; first backup 20260909T100729Z SCHEDULED_BACKUP_OK; T004/T005 kept; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "TERMINÉE",
+      "commit": "f2f0ba892e6bc258f868834784275f0af2a6ee90",
+      "note": "[X200-CONTROL] GitHub CI run #24 34338887982 SUCCESS; owner=human requiresHuman=true conserved; TIMER_ENABLED=YES; T004/T005 kept; T014/T015 remain À_FAIRE; NO_READY_TASK"
     }
   ],
-  "registryVersion": 16,
+  "registryVersion": 17,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

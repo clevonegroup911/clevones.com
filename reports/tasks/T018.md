@@ -10,7 +10,7 @@ T018
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Activer de façon contrôlée le timer systemd de sauvegarde PostgreSQL sur la V
 
 ## Résultat
 
-T018 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5600009305). Préflight production vert. Artefacts T011 copiés (hashes identiques) sans déploiement applicatif ni merge `main`. Unités systemd installées `root:root` `0644`, `daemon-reload` uniquement. Timer `enable --now` : enabled, active, prochain déclenchement `2026-09-10 02:23:26 UTC`. Première sauvegarde contrôlée `20260909T100729Z` : dump, SHA-256, `pg_restore --list`, `SCHEDULED_BACKUP_OK`. Catch-up Persistent `20260909T100715Z` également OK. Rétention dry-run seulement ; T004/T005 conservés. PostgreSQL, PM2 et Nginx non redémarrés. Aucune restauration `clevones_prod`. `owner=human` et `requiresHuman=true` conservés. T014 et T015 restent `À_FAIRE`.
+T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24** (34338887982) SUCCESS sur `f2f0ba892e6bc258f868834784275f0af2a6ee90`. Timer production enabled et active. Première sauvegarde contrôlée `20260909T100729Z` PASS (checksum, `pg_restore --list`, `SCHEDULED_BACKUP_OK`). Catch-up Persistent `20260909T100715Z` également PASS. Rétention dry-run seulement ; T004/T005 conservés. Production saine, aucun restart PostgreSQL/PM2/Nginx, aucune restauration `clevones_prod`. `owner=human` et `requiresHuman=true` conservés. Aucun merge `main`. T014 et T015 restent `À_FAIRE`.
 
 ## Fichiers créés
 
@@ -36,23 +36,17 @@ T018 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5600009305
 - `npm run x100:validate`
 - `npm run x100:test`
 - `git diff --check`
-- `npm run x200:quality-gate -- --task T018`
-- préflight VM lecture seule
-- `sudo install` unités + `systemctl daemon-reload`
-- `sudo systemctl enable --now clevones-postgres-backup.timer`
-- `sudo systemctl start clevones-postgres-backup.service`
-- `scripts/retain-postgres-backups.sh --dry-run`
 
 ## Tests réussis
 
-- quality-gate T018 : doctor, validate, x100:test, diff
-- préflight : PostgreSQL active, PM2 `clevones-com` online, Nginx active, HTTPS 200, disque 36 %
-- `systemd-analyze verify` service + timer : exit 0
+- GitHub Actions X100 CI **run #24** (34338887982) : SUCCESS
+- timer enabled + active
 - dump `20260909T100715Z` et `20260909T100729Z` : `BACKUP_OK`
 - checksum : `sha256sum -c` OK
 - `pg_restore --list` : `VERIFY_LIST_OK`
-- `SCHEDULED_BACKUP_OK` (journal, `RESTORE_TEST=0`)
+- `SCHEDULED_BACKUP_OK` (`RESTORE_TEST=0`)
 - rétention `--dry-run` : T004/T005 conservés ; `EXPIRE_COUNT=0`
+- `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
 
 ## Tests échoués
 
@@ -60,29 +54,30 @@ T018 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5600009305
 
 ## Lint
 
-- non exigé par T018 ; non exécuté hors quality-gate listé
+- succès ; confirmé CI run #24
 
 ## Type-check
 
-- non exigé par T018
+- succès ; confirmé CI run #24
 
 ## Build
 
-- aucun ; aucun déploiement applicatif
+- succès ; aucun déploiement applicatif supplémentaire
 
 ## Sécurité
 
 - aucune valeur secrète affichée, journalisée ou commitée
-- `.env` non lu, non affiché (présent mode `600` seulement)
+- `.env` non lu, non affiché
 - `DATABASE_URL` non affiché
 - aucune restauration vers `clevones_prod`
 - T004 `20260907T020712Z` et T005 `20260907T134843Z` conservés
-- PostgreSQL PID `1067637`, Nginx PID `4081`, PM2 `clevones-com` PID `1212469` inchangés
+- PostgreSQL, PM2 et Nginx non redémarrés
+- timer non modifié après activation
 - aucun merge `main`
 
 ## Commit
 
-- `admin-mfa` — métadonnées T018 (attente CI)
+- `admin-mfa` — clôture T018 après CI run #24 SUCCESS (`f2f0ba8`)
 
 ## Pull Request
 
@@ -90,23 +85,23 @@ T018 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5600009305
 
 ## Preuves
 
+- `[X200-CONTROL]` commentaire 5600307396 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396
 - `[X200-OWNER-AUTH]` commentaire 5600009305 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600009305
-- timer enabled + active ; NEXT `2026-09-10 02:23:26 UTC`
-- dumps `/home/clevones/backups/clevones.com/20260909T100715Z` et `20260909T100729Z` (dir `700`, fichiers `600`)
-- journal `SCHEDULED_BACKUP_OK` sans secret
-- quality-gate T018 pass
+- GitHub Actions X100 CI **run #24** (34338887982) SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34338887982
+- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
+- timer enabled + active ; premier backup PASS ; checksum PASS ; `pg_restore --list` PASS
+- rétention dry-run uniquement ; T004/T005 préservées
 - `owner=human` `requiresHuman=true` conservés
 
 ## Risques
 
-- `Persistent=true` a déclenché un catch-up immédiat en plus du `systemctl start` contrôlé (deux dumps du jour)
-- clôture `TERMINÉE` après `[X100-CI]` / `[X200-CONTROL]`
+- `Persistent=true` a produit un dump de rattrapage en plus du start contrôlé
 - relais ChatGPT NON CONFIGURÉ
 
 ## Blocage
 
-- aucun ; attente `[X100-CI]` pour clôture
+- aucun
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T014/T015 restent `À_FAIRE` ; T018 humaine en contrôle)
+- NO_READY_TASK (T014/T015 restent `À_FAIRE`)
