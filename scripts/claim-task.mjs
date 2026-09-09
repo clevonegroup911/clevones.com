@@ -10,28 +10,50 @@ import {
   releaseTask,
 } from "./lib/x200-claim.mjs";
 
-function parseArgs(argv) {
-  const flags = new Set(argv.filter((arg) => arg.startsWith("--") && !arg.includes("=")));
-  const get = (name) => {
-    const index = argv.indexOf(name);
-    if (index === -1 || index === argv.length - 1) {
-      return null;
+const VALUE_OPTIONS = new Set([
+  "--id",
+  "--file",
+  "--worker",
+  "--token",
+  "--lease-seconds",
+  "--gate",
+]);
+
+export function parseArgs(argv) {
+  const values = new Map();
+  const flags = new Set();
+  const positional = [];
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (VALUE_OPTIONS.has(arg)) {
+      const value = argv[index + 1];
+      if (value != null && !value.startsWith("--")) {
+        values.set(arg, value);
+        index += 1;
+      }
+      continue;
     }
-    return argv[index + 1];
-  };
-  const positional = argv.filter((arg) => !arg.startsWith("--"));
+    if (arg.startsWith("--")) {
+      flags.add(arg);
+      continue;
+    }
+    positional.push(arg);
+  }
+
+  const leaseRaw = values.get("--lease-seconds") || null;
   return {
-    taskId: positional[0] || get("--id"),
-    filePath: get("--file") || "backlog.json",
+    taskId: values.get("--id") || positional[0] || null,
+    filePath: values.get("--file") || "backlog.json",
     dryRun: flags.has("--dry-run"),
     json: flags.has("--json"),
     includeHuman: flags.has("--include-human"),
-    workerId: get("--worker") || defaultWorkerId(),
-    token: get("--token") || process.env.X200_CLAIM_TOKEN || null,
-    leaseSeconds: get("--lease-seconds") ? Number.parseInt(get("--lease-seconds"), 10) : null,
+    workerId: values.get("--worker") || defaultWorkerId(),
+    token: values.get("--token") || process.env.X200_CLAIM_TOKEN || null,
+    leaseSeconds: leaseRaw ? Number.parseInt(leaseRaw, 10) : null,
     release: flags.has("--release"),
     complete: flags.has("--complete"),
-    gatePath: get("--gate") || ".x200/quality-results.json",
+    gatePath: values.get("--gate") || ".x200/quality-results.json",
     targetStatus: flags.has("--finalize") ? "TERMINÉE" : "EN_CONTRÔLE",
   };
 }
