@@ -2,7 +2,7 @@
 
 Règles applicables à tout le dépôt. Lire ce fichier, `backlog.json`, `PROJECT_CONTEXT.md` et `TASK_REPORT.md` avant toute action.
 
-X200 est la version courante de la gouvernance (registre T001–T200). X100 reste l’historique et l’alias des commandes. Ce n’est ni une promesse de vitesse ×200, ni une obligation de créer 200 tâches.
+X200 est la gouvernance courante (registre T001–T200). X100 reste l’historique, les preuves `[X100-*]` et le **contrat de commandes** `npm run x100:*`. Ce n’est ni une promesse de vitesse ×200, ni une obligation de créer 200 tâches. Détail : `docs/X200_GOVERNANCE.md`.
 
 ## Priorité des instructions
 
@@ -17,32 +17,44 @@ En cas de conflit, appliquer l’élément de rang supérieur et consigner l’�
 
 ## Lecture obligatoire
 
-Avant de modifier le code :
+Avant toute réponse ou exécution :
 
-1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`.
-2. Exécuter `npm run x200:validate` (alias : `npm run x100:validate`).
-3. Exécuter `npm run x200:next -- --json` (alias : `npm run x100:next -- --json`).
-4. Inspecter `git status`, la branche et `HEAD`.
-5. Après une interruption : `npm run x200:resume`.
+1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json`, `TASK_REPORT.md` et, si besoin, `docs/X200_GOVERNANCE.md`.
+2. Inspecter `git status`, la branche, `HEAD`, et l’état GitHub (PR/CI) lorsque l’accès le permet.
+3. Exécuter `npm run x100:validate` (alias `npm run x200:validate`).
+4. Exécuter `npm run x100:next -- --json` (alias `npm run x200:next -- --json`).
+5. Après une interruption : `HEAD`, PR, CI, backlog, tâche active, puis `npm run x200:resume`.
 
-## Correspondance des commandes
+## Contrat de commandes (compatibilité X100)
 
-| Fonction | Commande X200 | Alias X100 / lecture seule |
+Conserver et ne pas casser : `x100:validate`, `x100:next`, `x100:test`, `scripts/next-task.mjs`, `scripts/validate-backlog.mjs`, `scripts/validate-task-report.mjs`, GitHub Actions `[X100-CI]`.
+
+| Fonction | Commande stable | Alias optionnel |
 |---|---|---|
+| Valider backlog + rapport | `npm run x100:validate` | `x200:validate` |
+| Prochaine tâche (lecture) | `npm run x100:next -- --json` | `x200:next` |
+| Tests gouvernance | `npm run x100:test` | `x200:test` |
 | Diagnostic | `npm run x200:doctor` | lecture seule |
-| Valider le registre | `npm run x200:validate-backlog` | `npm run x100:validate-backlog` |
-| Valider le rapport | `npm run x200:validate-report` | `npm run x100:validate-report` |
-| Valider les deux | `npm run x200:validate` | `npm run x100:validate` |
-| Prochaine tâche | `npm run x200:next -- --json` | `npm run x100:next -- --json` (sans `--write` = simulation) |
 | Réserver | `npm run x200:claim -- --json [--dry-run] T0XX` | mutation |
-| Contrôles | `npm run x200:quality-gate -- --task T0XX` | `--dry-run` liste sans exécuter |
+| Contrôles tâche | `npm run x200:quality-gate -- --task T0XX` | `--dry-run` liste sans exécuter |
 | Rapport | `npm run x200:report` | n’écrit pas de commit |
 | Reprise | `npm run x200:resume` | `--apply` seulement après inspection |
 | Prérequis déploiement | `npm run x200:deploy-check` | ne déploie jamais |
-| Migration registre | `npm run x200:migrate` | `--dry-run` d’abord |
-| Tests gouvernance | `npm run x200:test` | `npm run x100:test` |
 
-Codex n’est pas une dépendance. Node.js standard suffit.
+Un renommage exclusif `x100:*` → `x200:*` n’est pas exigé par T017. Codex n’est pas une dépendance.
+
+## Règles X200
+
+1. Vérifier contexte + Git/GitHub + backlog avant d’agir.
+2. Zéro doublon : `TERMINÉE` + preuve valide = ne pas refaire.
+3. Après interruption : `HEAD`, PR, CI, backlog, tâche active.
+4. Vérité : `CONFIRMÉ` / `INDIQUÉ` / `PROPOSÉ` / `INCONNU` / `NON_ACCESSIBLE` ; aucun succès inventé.
+5. Continuité : tant qu’une tâche `PRÊTE` et autorisée existe, et qu’aucune `EN_CONTRÔLE` n’attend la CI, continuer.
+6. Sécurité : moindre privilège, MFA, secrets hors Git, backup et restauration distincts.
+7. Trois échecs identiques : stop, diagnostic, `BLOQUÉE` ou nouvelle stratégie.
+8. Mesure : délai, coût, défauts, doublons, preuves (`docs/X200_GOVERNANCE.md`).
+9. `TERMINÉE` = critères + contrôles + preuves.
+10. T001–T200 : espace d’identifiants ; ne jamais créer 200 tâches artificielles.
 
 ## Sélection des tâches
 

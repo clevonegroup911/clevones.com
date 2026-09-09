@@ -575,7 +575,7 @@
         "lib/admin/audit.ts critical AUTH_LOGIN_FAILURE and MFA_LOGIN_FAILED counters without secrets",
         "no GCP alerting resources created; no production access; no merge main",
         "[X100-CI] T012 success SHA 4ea9f74277318bc41c7817c3cab405e4ee7f0043 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
-        "GitHub Actions X100 CI run 34242618994 success https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994",
+        "GitHub Actions X100 CI run #16 (34242618994) success https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994",
         "[X200-GOVERNANCE] close T012 then T017 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5593482867"
       ],
       "estimatedCost": 3,
@@ -760,15 +760,14 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] puis clôturer",
+      "nextAction": "attendre [X100-CI] après correctif diff_check BACKLOG.md",
       "lastTransitionReason": "contrôles locaux réussis ; attente CI",
       "id": "T017",
       "title": "Migration gouvernance X100 → X200",
-      "objective": "Étendre X100 vers X200 sans rejouer T001–T016, avec registre 2.0, commandes, tests, CI et démonstration réelle.",
-      "priority": "P0",
+      "objective": "Faire évoluer le système de gouvernance du dépôt vers X200 sans casser les outils, preuves et automatisations existants.",
+      "priority": "P1",
       "owner": "cursor",
       "dependencies": [
-        "T007",
         "T012"
       ],
       "scope": [
@@ -780,19 +779,23 @@
         ".github",
         "PROJECT_CONTEXT.md",
         "DECISIONS.md",
-        "SECURITY.md"
+        "SECURITY.md",
+        "docs/X200_GOVERNANCE.md"
       ],
       "acceptanceCriteria": [
-        "T001–T016 préservées, schéma 2.0 valide, IDs jusqu'à T200 sans 200 tâches artificielles",
-        "Commandes doctor/validate/next/claim/quality-gate/report/resume/deploy-check réelles",
-        "Tests X200 des risques demandés ; CI étendue sans pipeline parallèle",
-        "Relais ChatGPT déclaré NON CONFIGURÉ ; aucun déploiement"
+        "historique T001–T016 préservé ; aucune TERMINÉE rejouée",
+        "registre extensible T001–T200 sans tâches artificielles",
+        "terminologie X200, zéro doublon, reprise, vérité CONFIRMÉ/INDIQUÉ/PROPOSÉ/INCONNU/NON_ACCESSIBLE",
+        "métriques délai/coût/défauts/doublons/preuves et règle 3 échecs documentées",
+        "WIP, no parallel auth/migration, sécurité, pas de production, x100:* et CI fonctionnels"
       ],
       "tests": [
-        "npm run x200:doctor",
-        "npm run x200:validate",
-        "npm run x200:test",
-        "npm run x200:deploy-check",
+        "npm run x100:validate",
+        "npm run x100:test",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run build",
         "git diff --check"
       ],
       "status": "EN_CONTRÔLE",
@@ -800,7 +803,9 @@
         "select x200:next -> T017",
         "claim T017 EN_COURS",
         "quality-gate ok doctor/validate/test/deploy-check/diff",
-        "T001-T016 preserved schema 2.0.0"
+        "T001-T016 preserved schema 2.0.0",
+        "docs/X200_GOVERNANCE.md ; x100:* compatibility kept",
+        "CI run 34293419590 failed only on BACKLOG.md EOF blank line ; fix submitted"
       ],
       "estimatedCost": 3,
       "risk": "medium",
@@ -1048,9 +1053,15 @@
       "taskId": "T017",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T017",
+      "status": "EN_CONTRÔLE",
+      "note": "P1 per owner; docs/X200_GOVERNANCE.md; x100:* contract; fix BACKLOG.md EOF for CI diff_check"
     }
   ],
-  "registryVersion": 3,
+  "registryVersion": 4,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

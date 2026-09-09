@@ -1,6 +1,6 @@
 # PROJECT_CONTEXT — Clevones.com
 
-Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **PROPOSÉ**, **INCONNU**, **NON ACCESSIBLE**. Un état historique n’est pas un état revérifié.
+Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **PROPOSÉ**, **INCONNU**, **NON_ACCESSIBLE**. Un état historique n’est pas un état revérifié.
 
 ## Identité
 
@@ -13,7 +13,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Gouvernance | X200 v2.0 (alias commandes X100) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt (routes et copies) |
 | Hébergement | VM Google Cloud Compute Engine `clevones-serveur` (`europe-west1-b`), projet GCP `clevonegroup` | INDIQUÉ (`DEPLOYMENT.md`, T004/T005) — non revérifié cette session |
-| Production HEAD / PM2 | valeurs T005 dans `DEPLOYMENT.md` | INDIQUÉ historique — NON ACCESSIBLE ici |
+| Production HEAD / PM2 | valeurs T005 dans `DEPLOYMENT.md` | INDIQUÉ historique — NON_ACCESSIBLE ici |
 
 ## Objectif courant
 
@@ -41,7 +41,7 @@ Poursuivre le durcissement admin et la gouvernance sans rejouer T001–T016, san
 | T014, T015 | `À_FAIRE` (dépendances T013 `TERMINÉE`) | CONFIRMÉ ; non promues `PRÊTE` |
 | T017 | `EN_CONTRÔLE` après quality-gate local ; attente `[X100-CI]` | CONFIRMÉ cette session |
 | Relais ChatGPT | absent | CONFIRMÉ non configuré (aucun webhook, aucune API) |
-| Production | non accédée cette session | NON ACCESSIBLE |
+| Production | non accédée cette session | NON_ACCESSIBLE |
 
 ## Reprise
 
@@ -61,9 +61,10 @@ Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieu
 
 | Couche | État |
 |---|---|
-| Local | commandes `x200:*` / alias `x100:*` |
+| Local | commandes `x100:*` (contrat) + alias `x200:*` |
 | CI GitHub | workflow `.github/workflows/ci.yml` (nom historique X100 CI), commentaire `[X100-CI]` |
 | Relais ChatGPT | NON CONFIGURÉ — un événement GitHub ne réveille pas une conversation |
+| Gouvernance | `docs/X200_GOVERNANCE.md` |
 | Production | hors périmètre automatique |
 
 ## Interdit

@@ -39,7 +39,6 @@ export function renderBacklogMarkdown(data) {
     "| ID | Priorité | État | Titre | Humain |",
     "|---|---|---|---|---|",
     ...data.tasks.map((task) => `| ${task.id} | ${task.priority} | ${task.status} | ${task.title.replaceAll("|", "/")} | ${task.requiresHuman ? "oui" : "non"} |`),
-    "",
   ];
   return `${lines.join("\n")}\n`;
 }

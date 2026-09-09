@@ -14,107 +14,79 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Étendre X100 vers X200 sans rejouer T001–T016, avec registre 2.0, commandes, tests, CI et démonstration réelle.
+Faire évoluer le système de gouvernance du dépôt vers X200 sans casser les outils, preuves et automatisations existants.
 
 ## Résultat
 
-Projet **clevones.com** (dépôt `clevonegroup911/clevones.com`), gouvernance **X200 schéma 2.0.0**, registre version 3, 17 tâches (T001–T017). X100 est conservé comme historique et alias de commandes.
+T012 n’a pas été rejouée : déjà `TERMINÉE` avec CI **run #16** (34242618994, SHA `4ea9f74277318bc41c7817c3cab405e4ee7f0043`). La mention run #16 a été ajoutée aux preuves.
 
-T012 a été clôturée `TERMINÉE` avec preuves CI **vérifiées cette session** (`gh` : run 34242618994 success, SHA `4ea9f74277318bc41c7817c3cab405e4ee7f0043`, commentaire `[X100-CI]`). T001–T016 restent en place. Aucune tâche artificielle T018–T200.
-
-Démonstration réelle : `x200:next` → T017 → `x200:claim` → `EN_COURS` → quality-gate (5/5) → `EN_CONTRÔLE`. `x200:next` suivant : `IN_CONTROL_WAIT`. Relais ChatGPT **NON CONFIGURÉ**. Production non accédée. Aucun merge `main`.
+T017 est P1, dépendance T012, `docs/X200_GOVERNANCE.md` créé. Contrat `x100:*` conservé. CI 34293419590 : échec uniquement `diff_check` (ligne vide EOF `BACKLOG.md`) — corrigé. Contrôles locaux : validate, x100:test 37/37, npm test 41/41, lint, tsc, build. Production inchangée. T010/T011 non lancées.
 
 ## Fichiers créés
 
-- `PROJECT_CONTEXT.md`
-- `DECISIONS.md`
-- `SECURITY.md`
-- `BACKLOG.md`
-- `scripts/doctor.mjs`
-- `scripts/claim-task.mjs`
-- `scripts/quality-gate.mjs`
-- `scripts/generate-report.mjs`
-- `scripts/resume.mjs`
-- `scripts/deploy-check.mjs`
-- `scripts/migrate-backlog.mjs`
-- `scripts/generate-backlog-md.mjs`
-- `scripts/lib/x200-claim.mjs`
-- `scripts/x200-governance.test.mjs`
-- `reports/tasks/T017.md`
+- `docs/X200_GOVERNANCE.md`
 
 ## Fichiers modifiés
 
 - `AGENTS.md`
 - `backlog.json`
 - `TASK_REPORT.md`
-- `DEPLOYMENT.md`
-- `package.json`
-- `.gitignore`
+- `BACKLOG.md`
+- `PROJECT_CONTEXT.md`
+- `DECISIONS.md`
 - `.cursor/rules/clevones.mdc`
-- `.github/workflows/ci.yml`
-- `.github/pull_request_template.md`
-- `scripts/lib/x100-backlog.mjs`
-- `scripts/lib/x100-fs.mjs`
-- `scripts/lib/x100-report.mjs`
-- `scripts/next-task.mjs`
-- `scripts/ci-gate.mjs`
-- `scripts/ci-pr-comment.mjs`
-- `scripts/next-task.test.mjs`
-- `scripts/validate-backlog.test.mjs`
-- `scripts/validate-task-report.test.mjs`
+- `scripts/generate-backlog-md.mjs`
+- `scripts/x200-governance.test.mjs`
 - `reports/tasks/T012.md`
+- `reports/tasks/T017.md`
 
 ## Commandes
 
-- `npm run x200:doctor -- --json`
-- `npm run x200:validate`
-- `npm run x200:next -- --json`
-- `npm run x200:claim -- --json T017`
-- `npm run x200:quality-gate -- --task T017`
-- `npm run x200:test`
-- `npm run x200:deploy-check -- --json`
-- `npm run x200:resume -- --json`
+- `npm run x100:validate`
+- `npm run x100:test`
+- `npm test`
+- `npm run lint`
+- `npx tsc --noEmit`
+- `npm run build`
 - `git diff --check`
 
 ## Tests réussis
 
-- `npm run x200:doctor` : DOCTOR_OK (Node 22.22.2, schema 2.0.0, 17 tasks, `.env` untracked)
-- `npm run x200:validate` : BACKLOG_VALID + TASK_REPORT_VALID
-- `npm run x200:test` : 36/36
-- `npm run x200:quality-gate -- --task T017` : QUALITY_GATE_OK (doctor, validate, test, deploy-check, git diff --check)
-- `npm run x200:deploy-check` : would_deploy=false, deployed=false
-- `git diff --check` : exit 0
-- `npm run x200:next -- --json` après clôture T012 : T017 ; après EN_CONTRÔLE : IN_CONTROL_WAIT
+- `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
+- `npm run x100:test` : 37/37
+- `npm test` : 41/41
+- `npm run lint` : aucun avertissement
+- `npx tsc --noEmit` : exit 0
+- `npm run build` : exit 0
+- `git diff --check` (arbre de travail) : exit 0
 
 ## Tests échoués
 
-- aucun
+- CI run 34293419590 : `diff_check` seulement (EOF `BACKLOG.md` dans `d28b5eb`) — corrigé ici, pas rejoué autrement
 
 ## Lint
 
-- non exigé localement pour T017 ; la CI distante exécute `next lint`
+- succès (`next lint`)
 
 ## Type-check
 
-- non exigé localement pour T017 ; la CI distante exécute `tsc --noEmit`
+- succès (`npx tsc --noEmit`)
 
 ## Build
 
-- aucun déploiement ; `x200:deploy-check` would_deploy=false
+- succès (`npm run build`) ; aucun déploiement
 
 ## Sécurité
 
-- aucun `.env` stagé
-- chemins personnels retirés des preuves
-- aucun secret de production dans le rapport
-- jeton de réservation non recopié ici
-- relais ChatGPT non configuré
-- exécutant unique local
-- aucun merge `main`, aucun accès production cette session
+- aucun secret réel
+- `.env` non stagé
+- commentaires `[X100-*]` conservés
+- T010/T011 non commencées
+- aucun merge `main`
 
 ## Commit
 
-- en attente sur `admin-mfa` (T017 EN_CONTRÔLE)
+- `admin-mfa` — docs X200 + correctif BACKLOG.md + T017 P1
 
 ## Pull Request
 
@@ -122,61 +94,21 @@ Démonstration réelle : `x200:next` → T017 → `x200:claim` → `EN_COURS` �
 
 ## Preuves
 
-- `[X100-CI]` T012 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
-- CI run 34242618994 : https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994
+- T012 TERMINÉE + CI run #16 : https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994
+- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
 - `[X200-GOVERNANCE]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5593482867
-- `backlog.json` schemaVersion 2.0.0, tasks=17
-- quality-gate : `.x200/quality-results.json` (local, gitignoré)
-- `reports/tasks/T012.md` et `reports/tasks/T017.md`
+- `docs/X200_GOVERNANCE.md`
+- CI T017 précédente : https://github.com/clevonegroup911/clevones.com/actions/runs/34293419590 (`diff_check` only)
 
 ## Risques
 
-- un bail local n'est pas une coordination multi-machines
-- un événement GitHub ne réveille pas ChatGPT
-- sauvegarde T004 documentée mais non rejouée cette session (NON ACCESSIBLE)
-- T010/T011 restent humaines ; T014/T015 restent `À_FAIRE`
+- relais ChatGPT NON CONFIGURÉ
+- T014/T015 restent `À_FAIRE`
 
 ## Blocage
 
-- T017 `EN_CONTRÔLE` : attendre `[X100-CI]` sur la PR. Relais ChatGPT NON CONFIGURÉ.
+- T017 `EN_CONTRÔLE` jusqu’à `[X100-CI]` vert après ce correctif
 
 ## Prochaine tâche prête
 
-- IN_CONTROL_WAIT (T017). Reprise : `npm run x200:resume -- --json` puis, après CI verte et clôture T017, `npm run x200:next -- --json`
-
-## Projet et version
-
-- clevones.com, X200 schema 2.0.0, package 0.1.0, branche `admin-mfa`
-
-## Préservé
-
-- T001–T016, scripts X100, workflow CI existant, MFA, DEPLOYMENT.md, `.env.example`, marqueur `[X100-CI]`
-
-## Changements X200
-
-- schéma 2.0, ANNULÉE, IDs T001–T200, claim/lock/atomic write, doctor/claim/quality-gate/report/resume/deploy-check, docs PROJECT_CONTEXT/DECISIONS/SECURITY, CI doctor + retention 14 jours
-
-## Intégration
-
-| Couche | État |
-|---|---|
-| Local | VÉRIFIÉ (commandes et tests exécutés) |
-| CI GitHub | IMPLÉMENTÉ NON VÉRIFIÉ (workflow étendu, run T017 pas encore poussé) |
-| Relais ChatGPT | NON CONFIGURÉ |
-| Production | NON APPLICABLE (non touchée) |
-
-## Matrice X200
-
-| Exigence | État réel | Preuve | Action restante |
-|---|---|---|---|
-| Contexte de reprise versionné | VÉRIFIÉ | `PROJECT_CONTEXT.md`, `backlog.json` 2.0.0 | tenir à jour après CI |
-| Backlog canonique T001–T016 préservés | VÉRIFIÉ | 17 tâches, test ids T001–T016 | aucune |
-| Sélection / réservation | VÉRIFIÉ | next→T017, claim EN_COURS, complete EN_CONTRÔLE | attendre CI |
-| Contrôles et rapports | VÉRIFIÉ | quality-gate 5/5, TASK_REPORT, `reports/tasks/` | CI distante |
-| CI GitHub | IMPLÉMENTÉ NON VÉRIFIÉ | `.github/workflows/ci.yml` doctor + retention-days 14 | push PR, `[X100-CI]` |
-| Relais ChatGPT | BLOQUÉ | aucun webhook/récepteur dans le dépôt | NON CONFIGURÉ jusqu’autorisation |
-| Sécurité / incident | VÉRIFIÉ docs | `SECURITY.md`, redact, `.env` untracked | T010/T011 humaines |
-| Reprise interruption | VÉRIFIÉ tests | resume fixture + `x200:resume` | pas de garantie exactement-une-fois |
-| Démo tâche réelle | VÉRIFIÉ | T017 select→claim→gate→EN_CONTRÔLE | CI puis clôture |
-| Production / merge | NON APPLICABLE | deploy-check would_deploy=false | décision humaine |
-| Application complète X200 | non déclarée | CI T017 non encore constatée ; relais absent | périmètre local + docs + tests **achevé** |
+- IN_CONTROL_WAIT (T017). Après CI : `npm run x100:next -- --json`

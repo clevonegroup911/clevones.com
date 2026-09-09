@@ -32,7 +32,12 @@ Décisions datées. Ne pas y coller de secrets.
 - **Décision** : ne pas les promouvoir `PRÊTE` pendant T017.
 - **Raisons** : le propriétaire a demandé une seule tâche de gouvernance suivante (T017). T010/T011 restent humaines.
 
-## 2026-09-09 — Marqueurs de rapport
+## 2026-09-09 — T017 P1 et contrat x100:*
+
+- **Décision** : T017 est P1, dépendance T012 seulement. Les commandes `x100:*` restent le contrat CI. Un renommage exclusif vers `x200:*` n’est pas T017.
+- **Raisons** : instruction propriétaire ; éviter une migration technique risquée.
+- **Conséquences** : alias `x200:*` facultatifs ; GitHub Actions conserve `[X100-CI]`.
+
 
 - **Décision** : conserver `[X100-CURSOR]` et `[X100-CI]` ; ajouter `[X200-CURSOR]` dans les nouveaux rapports.
 - **Raisons** : ne pas casser le bot CI qui met à jour le commentaire commençant par `[X100-CI]`.

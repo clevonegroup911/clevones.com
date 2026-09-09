@@ -19,6 +19,7 @@ import {
 import { claimTask, completeTask, resumeInspection } from "./lib/x200-claim.mjs";
 import { runMigrateBacklog } from "./migrate-backlog.mjs";
 import { buildTaskReport } from "./generate-report.mjs";
+import { renderBacklogMarkdown } from "./generate-backlog-md.mjs";
 import { commandsForTask } from "./quality-gate.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
@@ -213,6 +214,16 @@ test("three identical failures block the task", () => {
 test("quality-gate uses the task tests list", () => {
   const commands = commandsForTask(createTaskDocument({ tests: ["npm run x200:doctor"] }));
   assert.deepEqual(commands, ["npm run x200:doctor"]);
+});
+
+test("generated BACKLOG.md has a single trailing newline", () => {
+  const markdown = renderBacklogMarkdown(
+    createBacklogDocument([
+      createTaskDocument({ status: "TERMINÉE", evidence: ["ok"] }),
+    ]),
+  );
+  assert.equal(markdown.endsWith("\n"), true);
+  assert.equal(markdown.endsWith("\n\n"), false);
 });
 
 test("repository v1 backlog is rejected until migrated", () => {
