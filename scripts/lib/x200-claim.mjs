@@ -160,13 +160,13 @@ export function claimTask(data, {
 
   const task = taskId
     ? data.tasks.find((item) => item.id === taskId)
-    : selectNextTaskResult(data, { includeHuman }).task;
+    : selectNextTaskResult(data, { includeHuman, ignoreInControl: true }).task;
 
   if (!task && taskId) {
     return { ok: false, error: `tâche introuvable (${taskId})` };
   }
   if (!task) {
-    const selection = selectNextTaskResult(data, { includeHuman });
+    const selection = selectNextTaskResult(data, { includeHuman, ignoreInControl: true });
     return { ok: false, error: selection.reason || "NO_READY_TASK", blocking: selection.blocking };
   }
 
