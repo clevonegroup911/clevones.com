@@ -41,7 +41,7 @@ Poursuivre le durcissement admin et la gouvernance sans rejouer T001–T016, san
 | T010 | `TERMINÉE` après CI run #20/#21 ; `requiresHuman: true` conservé | CONFIRMÉ |
 | T011 | `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (5594283429) ; templates/docs/tests hors prod ; timer production non activé | CONFIRMÉ cette session |
 | T014 | `TERMINÉE` inventaire CMS (`docs/CMS_AND_DOCUMENTS.md`) | CONFIRMÉ |
-| T015 | `EN_CONTRÔLE` analytics/paiements | CONFIRMÉ cette session |
+| T015 | `TERMINÉE` analytics/paiements (`docs/ANALYTICS_AND_PAYMENTS.md`) | CONFIRMÉ |
 | Relais ChatGPT | absent | CONFIRMÉ non configuré (aucun webhook, aucune API) |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 

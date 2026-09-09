@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 26
+- Registre : 27
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 17
+- TERMINÉE : 18
 - ANNULÉE : 0
 
 ## Tâches
@@ -36,7 +36,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T012 | P2 | TERMINÉE | Monitoring et alertes | non |
 | T013 | P1 | TERMINÉE | Audit rôles et permissions | non |
 | T014 | P2 | TERMINÉE | Audit CMS et documents | non |
-| T015 | P2 | EN_CONTRÔLE | Analytics et paiements | non |
+| T015 | P2 | TERMINÉE | Analytics et paiements | non |
 | T016 | P0 | TERMINÉE | Corrections des dépendances high | non |
 | T017 | P1 | TERMINÉE | Migration gouvernance X100 → X200 | non |
 | T018 | P1 | TERMINÉE | Mise en service timer backup PostgreSQL production | oui |

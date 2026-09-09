@@ -10,7 +10,7 @@ T015
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,12 +18,14 @@ Auditer analytics et paiements après la matrice des rôles ; confirmer l’abse
 
 ## Résultat
 
-Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stripe/PayPal/analytics runtime. Mentions « Stripe » uniquement éditoriales (stratégie). `npm run x200:scan-secrets` : blocking_hits=0. Aucun accès production. Aucun merge `main`.
+Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stripe/PayPal/analytics runtime. Mentions « Stripe » uniquement éditoriales (stratégie). `npm run x200:scan-secrets` : blocking_hits=0. Aucun accès production. Aucun merge `main`. CI quality SUCCESS. T014 également TERMINÉE dans le même cycle FAST-LANE.
 
 ## Fichiers créés
 
 - `docs/ANALYTICS_AND_PAYMENTS.md`
+- `docs/CMS_AND_DOCUMENTS.md` (T014)
 - `reports/tasks/T015.md`
+- `reports/tasks/T014.md`
 
 ## Fichiers modifiés
 
@@ -31,7 +33,6 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 - `BACKLOG.md`
 - `TASK_REPORT.md`
 - `PROJECT_CONTEXT.md`
-- `reports/tasks/T014.md` (clôture T014)
 
 ## Commandes
 
@@ -44,9 +45,10 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 
 - `npm run x200:scan-secrets` : SCAN_SECRETS_OK, blocking_hits=0
 - `test -f docs/ANALYTICS_AND_PAYMENTS.md`
-- `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
+- `npm run x100:validate`
 - `git diff --check`
-- quality-gate T015 : PASS
+- quality-gate T015 PASS
+- GitHub Actions X100 CI run 34366056336 quality SUCCESS
 
 ## Tests échoués
 
@@ -69,10 +71,11 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 - scan secrets PASS (0 blocking)
 - aucune clé de paiement dans Git
 - aucun accès production
+- aucune transaction réelle
 
 ## Commit
 
-- (à renseigner)
+- `9b5f490` — `docs(audit): close T014 and inventory analytics/payments for T015`
 
 ## Pull Request
 
@@ -81,7 +84,9 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 ## Preuves
 
 - `docs/ANALYTICS_AND_PAYMENTS.md`
-- T014 TERMINÉE (CI 34365485246)
+- `docs/CMS_AND_DOCUMENTS.md`
+- CI T014 34365485246 SUCCESS
+- CI T015 34366056336 SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34366056336
 
 ## Risques
 
@@ -93,4 +98,4 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK attendu après T015
+- NO_READY_TASK

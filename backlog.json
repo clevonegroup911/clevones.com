@@ -833,8 +833,8 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] puis clôturer",
-      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
       "id": "T015",
       "title": "Analytics et paiements",
       "objective": "Auditer analytics et paiements après la matrice des rôles.",
@@ -860,13 +860,15 @@
         "npm run x100:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "docs/ANALYTICS_AND_PAYMENTS.md: no payment/analytics runtime deps; no payment keys in Git",
         "npm run x200:scan-secrets SCAN_SECRETS_OK blocking_hits=0 fixture_hits=22 tracked_env=no",
         "quality-gate T015 PASS",
         "no production access; no real payments; no merge main",
-        "T014 TERMINÉE prerequisite satisfied"
+        "T014 TERMINÉE prerequisite satisfied",
+        "GitHub Actions X100 CI run 34366056336 SUCCESS quality on 9b5f490c7c6e77b9a7ac77ed0ec476a20c2231ff https://github.com/clevonegroup911/clevones.com/actions/runs/34366056336",
+        "commit 9b5f490c7c6e77b9a7ac77ed0ec476a20c2231ff docs(audit): close T014 and inventory analytics/payments for T015"
       ],
       "estimatedCost": 3,
       "risk": "high",
@@ -1549,9 +1551,16 @@
       "taskId": "T015",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST] analytics/payments inventory; scan-secrets PASS; attente quality CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "TERMINÉE",
+      "commit": "9b5f490c7c6e77b9a7ac77ed0ec476a20c2231ff",
+      "note": "[X200-FAST] CI run 34366056336 quality SUCCESS; no payment keys in Git; NO_READY_TASK"
     }
   ],
-  "registryVersion": 26,
+  "registryVersion": 27,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
