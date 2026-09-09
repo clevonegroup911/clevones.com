@@ -962,6 +962,94 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-09"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": "PR#1 comment 5600009305",
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "review",
+          "command": "[X200-OWNER-AUTH] T018",
+          "result": "authorized production timer install enable first-backup; restore and --apply forbidden",
+          "exitCode": 0,
+          "reference": "5600009305",
+          "version": "bd7f57c6d768a21b40979fe0d3ac61fc939eb97b",
+          "at": "2026-09-09T09:58:41Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600009305"
+        },
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T10:09:39.374Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "command",
+          "command": "systemctl enable --now clevones-postgres-backup.timer && systemctl start clevones-postgres-backup.service",
+          "result": "enabled active; NEXT=2026-09-10T02:23:26Z; stamps 20260909T100715Z and 20260909T100729Z SCHEDULED_BACKUP_OK; T004/T005 kept; no restore",
+          "exitCode": 0,
+          "reference": "20260909T100729Z",
+          "version": null,
+          "at": "2026-09-09T10:07:29Z",
+          "location": "/home/clevones/backups/clevones.com/20260909T100729Z"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "timer production enabled; first backup 20260909T100729Z SCHEDULED_BACKUP_OK; attente CI",
+      "id": "T018",
+      "title": "Mise en service timer backup PostgreSQL production",
+      "objective": "Activer de façon contrôlée le timer systemd de sauvegarde PostgreSQL sur la VM de production après T011, sans restauration ni rétention destructive.",
+      "priority": "P1",
+      "owner": "human",
+      "dependencies": [
+        "T011"
+      ],
+      "scope": [
+        "ops/systemd/clevones-postgres-backup.service",
+        "ops/systemd/clevones-postgres-backup.timer",
+        "scripts/backup-postgres.sh",
+        "scripts/verify-backup.sh",
+        "scripts/run-scheduled-backup.sh"
+      ],
+      "acceptanceCriteria": [
+        "Préflight production vert avant activation",
+        "Unités systemd installées root:root 0644 et timer enable --now",
+        "Première sauvegarde contrôlée : dump, SHA-256, pg_restore --list, permissions 700/600",
+        "Rétention dry-run seulement ; dumps T004/T005 protégés",
+        "Aucun restart PostgreSQL/PM2/Nginx ; aucune restauration clevones_prod ; owner=human requiresHuman=true conservés"
+      ],
+      "tests": [
+        "npm run x200:doctor",
+        "npm run x100:validate",
+        "npm run x100:test",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "[X200-OWNER-AUTH] PR#1 comment 5600009305 T018 production timer install/enable/first-backup https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600009305",
+        "preflight OK on clevones-serveur: postgres active, PM2 clevones-com online pid 1212469, nginx active, HTTPS 200, disk 36%",
+        "scripts/units copied to match T011 SHA-256; systemd-analyze verify OK; units installed root:root 0644; daemon-reload only",
+        "TIMER enabled+active; NEXT_TRIGGER 2026-09-10 02:23:26 UTC",
+        "first backup stamps 20260909T100715Z (Persistent catch-up) and 20260909T100729Z (controlled start); dump+SHA256SUMS mode 600; dir 700",
+        "checksum PASS; pg_restore --list PASS (VERIFY_LIST_OK); SCHEDULED_BACKUP_OK; RESTORE_TEST=0",
+        "retention dry-run KEEP T004 20260907T020712Z T005 20260907T134843Z and both T018 stamps; EXPIRE_COUNT=0; no --apply",
+        "post-check: postgres pid 1067637, nginx pid 4081, pm2-clevones pid 5506, clevones-com pid 1212469 unchanged; HTTPS 200; disk 36%",
+        "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE"
+      ],
+      "estimatedCost": 3,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": true,
+      "updatedAt": "2026-09-09"
     }
   ],
   "history": [
@@ -1266,9 +1354,33 @@
       "status": "TERMINÉE",
       "commit": "efaee510fa4ea57c1d84a65dc881b807de33b114",
       "note": "[X200-CONTROL] GitHub CI run #22 34301070242 SUCCESS; owner=human requiresHuman=true conserved; TIMER_ENABLED_PRODUCTION=NO; production unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "À_FAIRE",
+      "note": "created after T011 TERMINÉE; production timer service"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "PRÊTE",
+      "note": "[X200-OWNER-AUTH] comment 5600009305; owner=human requiresHuman=true; T014/T015 remain À_FAIRE"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "EN_CONTRÔLE",
+      "note": "timer enabled; first backup 20260909T100729Z SCHEDULED_BACKUP_OK; T004/T005 kept; attente CI"
     }
   ],
-  "registryVersion": 13,
+  "registryVersion": 16,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

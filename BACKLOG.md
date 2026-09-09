@@ -3,14 +3,14 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 13
+- Registre : 16
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
+- EN_CONTRÔLE : 1
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
@@ -39,3 +39,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T015 | P2 | À_FAIRE | Analytics et paiements | non |
 | T016 | P0 | TERMINÉE | Corrections des dépendances high | non |
 | T017 | P1 | TERMINÉE | Migration gouvernance X100 → X200 | non |
+| T018 | P1 | EN_CONTRÔLE | Mise en service timer backup PostgreSQL production | oui |
