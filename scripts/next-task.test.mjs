@@ -8,6 +8,8 @@ import { test } from "node:test";
 import {
   ALLOWED_PRIORITIES,
   ALLOWED_STATUSES,
+  SCHEMA_VERSION,
+  selectNextTaskResult,
 } from "./lib/x100-backlog.mjs";
 import { runNextTask } from "./next-task.mjs";
 
@@ -37,7 +39,9 @@ function makeTask(overrides = {}) {
 
 function makeBacklog(tasks, extra = {}) {
   return {
-    schemaVersion: "1.0.0",
+    schemaVersion: SCHEMA_VERSION,
+    registryVersion: 1,
+    executionMode: "single-executor",
     project: "clevones.com",
     repository: "clevonegroup911/clevones.com",
     updatedAt: "2026-09-07",
@@ -51,8 +55,10 @@ function makeBacklog(tasks, extra = {}) {
     },
     selectionPolicy: {
       readyStatus: "PRÊTE",
-      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE"],
-      order: ["priority", "unblockCount", "riskAsc", "costAsc", "idAsc"],
+      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE", "ANNULÉE"],
+      excludeRequiresHuman: true,
+      blockWhenInControl: true,
+      order: ["priority", "riskDesc", "unblockCount", "costAsc", "idAsc"],
     },
     nextTaskId: null,
     tasks,
@@ -78,19 +84,13 @@ function runCli(args, cwd = ROOT) {
 test("repository selector matches the current valid backlog state", () => {
   const source = join(ROOT, "backlog.json");
   const backlog = JSON.parse(readFileSync(source, "utf8"));
-  const t009 = backlog.tasks.find((task) => task.id === "T009");
-  const t012 = backlog.tasks.find((task) => task.id === "T012");
-  const t013 = backlog.tasks.find((task) => task.id === "T013");
-  assert.equal(t009?.status, "TERMINÉE");
-  assert.equal(t012?.status, "EN_CONTRÔLE");
-  assert.equal(t013?.status, "TERMINÉE");
-  assert.equal(backlog.nextTaskId, null);
+  const selection = selectNextTaskResult(backlog);
   const run = runCli(["--json", source]);
   assert.equal(run.status, 0, run.stderr);
   const payload = JSON.parse(run.stdout);
   assert.equal(payload.ok, true);
-  assert.equal(payload.nextTaskId, null);
-  assert.equal(payload.reason, "NO_READY_TASK");
+  assert.equal(payload.nextTaskId, selection.task?.id ?? null);
+  assert.equal(payload.reason, selection.reason);
 });
 
 test("does not select BLOQUÉE, ÉCHOUÉE or EN_CONTRÔLE tasks", () => {
@@ -100,17 +100,42 @@ test("does not select BLOQUÉE, ÉCHOUÉE or EN_CONTRÔLE tasks", () => {
     evidence: ["ok"],
   });
   const file = writeBacklog(
-    makeBacklog([
-      done,
-      makeTask({ id: "T002", status: "BLOQUÉE", dependencies: ["T001"] }),
-      makeTask({ id: "T003", status: "ÉCHOUÉE", dependencies: ["T001"] }),
-      makeTask({ id: "T004", status: "EN_CONTRÔLE", dependencies: ["T001"] }),
-      makeTask({ id: "T005", status: "EN_COURS", dependencies: ["T001"] }),
-    ]),
+    makeBacklog(
+      [
+        done,
+        makeTask({ id: "T002", status: "BLOQUÉE", dependencies: ["T001"] }),
+        makeTask({ id: "T003", status: "ÉCHOUÉE", dependencies: ["T001"] }),
+        makeTask({ id: "T004", status: "EN_CONTRÔLE", dependencies: ["T001"] }),
+        makeTask({ id: "T005", status: "EN_COURS", dependencies: ["T001"] }),
+      ],
+      {
+        selectionPolicy: {
+          readyStatus: "PRÊTE",
+          excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE", "ANNULÉE"],
+          excludeRequiresHuman: true,
+          blockWhenInControl: false,
+          order: ["priority", "riskDesc", "unblockCount", "costAsc", "idAsc"],
+        },
+      },
+    ),
   );
   const result = runNextTask({ filePath: file });
   assert.equal(result.ok, true);
   assert.equal(result.reason, "NO_READY_TASK");
+  assert.equal(result.nextTaskId, null);
+});
+
+test("does not select a ready task while another is EN_CONTRÔLE", () => {
+  const file = writeBacklog(
+    makeBacklog([
+      makeTask({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }),
+      makeTask({ id: "T002", status: "EN_CONTRÔLE", dependencies: ["T001"] }),
+      makeTask({ id: "T003", status: "PRÊTE", dependencies: ["T001"] }),
+    ]),
+  );
+  const result = runNextTask({ filePath: file });
+  assert.equal(result.ok, true);
+  assert.equal(result.reason, "IN_CONTROL_WAIT");
   assert.equal(result.nextTaskId, null);
 });
 

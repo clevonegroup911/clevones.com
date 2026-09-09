@@ -1,6 +1,8 @@
 import { ALLOWED_STATUSES, isAllowedTaskId } from "./x100-backlog.mjs";
 
 export const REPORT_MARKER = "[X100-CURSOR]";
+export const REPORT_MARKER_X200 = "[X200-CURSOR]";
+export const REPORT_MARKERS = Object.freeze([REPORT_MARKER, REPORT_MARKER_X200]);
 
 export const REQUIRED_REPORT_SECTIONS = Object.freeze([
   "ID",
@@ -66,8 +68,9 @@ export function validateTaskReport(markdown, backlog) {
     return { ok: false, errors: ["rapport vide"] };
   }
 
-  if (!markdown.includes(REPORT_MARKER)) {
-    errors.push(`marqueur ${REPORT_MARKER} absent`);
+  const hasMarker = REPORT_MARKERS.some((marker) => markdown.includes(marker));
+  if (!hasMarker) {
+    errors.push(`marqueur ${REPORT_MARKER} ou ${REPORT_MARKER_X200} absent`);
   }
 
   const { sections, id, status } = parseTaskReport(markdown);

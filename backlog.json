@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-09-09",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -10,7 +10,8 @@
     "EN_CONTRÔLE",
     "BLOQUÉE",
     "ÉCHOUÉE",
-    "TERMINÉE"
+    "TERMINÉE",
+    "ANNULÉE"
   ],
   "allowedPriorities": [
     "P0",
@@ -34,12 +35,15 @@
     "excludeStatuses": [
       "BLOQUÉE",
       "ÉCHOUÉE",
-      "EN_CONTRÔLE"
+      "EN_CONTRÔLE",
+      "ANNULÉE"
     ],
+    "excludeRequiresHuman": true,
+    "blockWhenInControl": true,
     "order": [
       "priority",
+      "riskDesc",
       "unblockCount",
-      "riskAsc",
       "costAsc",
       "idAsc"
     ]
@@ -47,6 +51,16 @@
   "nextTaskId": null,
   "tasks": [
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T001",
       "title": "Corrections MFA administrateur",
       "objective": "Corriger et figer l'authentification TOTP administrateur.",
@@ -76,6 +90,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T002",
       "title": "Tests transactionnels PostgreSQL MFA",
       "objective": "Prouver les courses TOTP et recovery contre PostgreSQL réel.",
@@ -104,6 +128,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T003",
       "title": "Revue MFA",
       "objective": "Documenter l'architecture MFA, les risques résiduels et l'exploitation.",
@@ -133,6 +167,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T004",
       "title": "Sauvegarde PostgreSQL et rollback",
       "objective": "Préparer une sauvegarde vérifiée et un rollback avant toute migration MFA.",
@@ -175,6 +219,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T005",
       "title": "Déploiement MFA contrôlé",
       "objective": "Déployer la migration MFA seulement après sauvegarde et CI verte.",
@@ -214,6 +268,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T006",
       "title": "Enrôlement SUPER_ADMIN",
       "objective": "Activer TOTP sur le compte SUPER_ADMIN après déploiement.",
@@ -250,6 +314,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T007",
       "title": "Installation du système d'orchestration X100",
       "objective": "Installer le backlog automatisé, les règles Cursor, le rapport, le sélecteur et la CI GitHub.",
@@ -289,6 +363,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T008",
       "title": "Validation réelle de la première CI/PR",
       "objective": "Attendre le premier résultat GitHub Actions et le commentaire [X100-CI].",
@@ -321,6 +405,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T009",
       "title": "Playwright et preuves visuelles",
       "objective": "Ajouter des preuves de parcours admin après la première CI verte.",
@@ -357,6 +451,16 @@
       "updatedAt": "2026-09-08"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T010",
       "title": "Centralisation des secrets",
       "objective": "Inventorier et centraliser les secrets hors Git.",
@@ -385,6 +489,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T011",
       "title": "Sauvegardes automatiques",
       "objective": "Automatiser les sauvegardes PostgreSQL après la procédure manuelle T004.",
@@ -411,6 +525,27 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34242618994",
+          "version": "4ea9f74277318bc41c7817c3cab405e4ee7f0043",
+          "at": "2026-09-09T00:00:22.664Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "CI X100 run 34242618994 success ; clôture demandée par [X200-GOVERNANCE]",
       "id": "T012",
       "title": "Monitoring et alertes",
       "objective": "Définir le monitoring d'authentification admin après la première CI.",
@@ -433,20 +568,33 @@
         "npm run lint",
         "npm run x100:validate"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "docs/MONITORING.md audit, metrics, Cloud Monitoring plan, alert proposals",
         "health-check-app/postgres/system.sh dry-run loopback only; no .env, no restarts",
         "lib/admin/audit.ts critical AUTH_LOGIN_FAILURE and MFA_LOGIN_FAILED counters without secrets",
-        "no GCP alerting resources created; no production access; no merge main"
+        "no GCP alerting resources created; no production access; no merge main",
+        "[X100-CI] T012 success SHA 4ea9f74277318bc41c7817c3cab405e4ee7f0043 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
+        "GitHub Actions X100 CI run 34242618994 success https://github.com/clevonegroup911/clevones.com/actions/runs/34242618994",
+        "[X200-GOVERNANCE] close T012 then T017 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5593482867"
       ],
       "estimatedCost": 3,
       "risk": "medium",
       "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-08"
+      "updatedAt": "2026-09-09"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T013",
       "title": "Audit rôles et permissions",
       "objective": "Auditer les rôles admin après validation de la CI.",
@@ -480,6 +628,16 @@
       "updatedAt": "2026-09-08"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T014",
       "title": "Audit CMS et documents",
       "objective": "Auditer le CMS et les documents après la matrice des rôles.",
@@ -507,6 +665,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T015",
       "title": "Analytics et paiements",
       "objective": "Auditer analytics et paiements après la matrice des rôles.",
@@ -534,6 +702,16 @@
       "updatedAt": "2026-09-07"
     },
     {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
       "id": "T016",
       "title": "Corrections des dépendances high",
       "objective": "Corriger les vulnérabilités high compatibles sans casser Prisma.",
@@ -561,6 +739,74 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-07"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": "PR#1 comment 5593482867",
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T00:02:37.508Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "id": "T017",
+      "title": "Migration gouvernance X100 → X200",
+      "objective": "Étendre X100 vers X200 sans rejouer T001–T016, avec registre 2.0, commandes, tests, CI et démonstration réelle.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T007",
+        "T012"
+      ],
+      "scope": [
+        "AGENTS.md",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "scripts",
+        ".cursor/rules",
+        ".github",
+        "PROJECT_CONTEXT.md",
+        "DECISIONS.md",
+        "SECURITY.md"
+      ],
+      "acceptanceCriteria": [
+        "T001–T016 préservées, schéma 2.0 valide, IDs jusqu'à T200 sans 200 tâches artificielles",
+        "Commandes doctor/validate/next/claim/quality-gate/report/resume/deploy-check réelles",
+        "Tests X200 des risques demandés ; CI étendue sans pipeline parallèle",
+        "Relais ChatGPT déclaré NON CONFIGURÉ ; aucun déploiement"
+      ],
+      "tests": [
+        "npm run x200:doctor",
+        "npm run x200:validate",
+        "npm run x200:test",
+        "npm run x200:deploy-check",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "select x200:next -> T017",
+        "claim T017 EN_COURS",
+        "quality-gate ok doctor/validate/test/deploy-check/diff",
+        "T001-T016 preserved schema 2.0.0"
+      ],
+      "estimatedCost": 3,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-09"
     }
   ],
   "history": [
@@ -778,6 +1024,36 @@
       "taskId": "T012",
       "status": "EN_CONTRÔLE",
       "note": "MONITORING.md and loopback health-check scripts; waiting for [X100-CI]; no GCP resources; T010/T011 remain À_FAIRE"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T012",
+      "status": "TERMINÉE",
+      "note": "X100 CI run 34242618994 success on 4ea9f74; [X200-GOVERNANCE] authorized close before T017"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T017",
+      "status": "PRÊTE",
+      "note": "Created after T012 close; X100→X200 governance migration"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T017",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora:23882"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T017",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente CI"
     }
-  ]
+  ],
+  "registryVersion": 3,
+  "executionMode": "single-executor",
+  "claimPolicy": {
+    "leaseSeconds": 7200,
+    "singleExecutor": true
+  }
 }

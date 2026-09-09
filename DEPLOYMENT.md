@@ -72,6 +72,14 @@ La restauration **sur `clevones_prod`** n’est **pas** une commande de ce dép�
 
 Ne pas coller de `DROP DATABASE clevones_prod`, de `pg_restore` vers `clevones_prod`, ni de `UPDATE` SQL dans un ticket.
 
+## Prérequis sans déploiement
+
+```bash
+npm run x200:deploy-check -- --json
+```
+
+Cette commande vérifie la branche, la présence de ce runbook et l’absence de migrate/PM2. Elle **ne déploie pas**. Une documentation de sauvegarde ne prouve pas que la sauvegarde existe encore ni qu’une restauration récente a été rejouée.
+
 ## Interdit
 
 - `prisma migrate reset`, `prisma db push` destructif, `DROP DATABASE`

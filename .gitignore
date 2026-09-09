@@ -48,6 +48,10 @@ node_modules/
 # X100 local CI output
 ci-artifact/
 
+# X200 local executor state (locks, quality-gate, migrate backup)
+.x200/
+*.tmp
+
 # Playwright e2e
 tests/e2e/test-results/
 tests/e2e/report/

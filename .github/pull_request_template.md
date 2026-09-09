@@ -19,7 +19,7 @@
 
 ## Tests
 
-- [ ] `npm run x100:validate`
+- [ ] `npm run x200:validate` (alias `npm run x100:validate`)
 - [ ] Tests de la tâche
 - [ ] Lint
 - [ ] Type-check
@@ -44,7 +44,7 @@
 
 ## Rapport
 
-- [ ] `TASK_REPORT.md` à jour avec `[X100-CURSOR]`
+- [ ] `TASK_REPORT.md` à jour avec `[X100-CURSOR]` et `[X200-CURSOR]`
 - [ ] Copie dans `reports/tasks/`
 - [ ] `backlog.json` à jour
 

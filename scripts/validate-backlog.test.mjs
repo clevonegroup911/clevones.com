@@ -8,6 +8,7 @@ import { test } from "node:test";
 import {
   ALLOWED_PRIORITIES,
   ALLOWED_STATUSES,
+  SCHEMA_VERSION,
   selectNextTask,
   validateBacklog,
 } from "./lib/x100-backlog.mjs";
@@ -39,7 +40,9 @@ function makeTask(overrides = {}) {
 
 function makeBacklog(tasks, extra = {}) {
   return {
-    schemaVersion: "1.0.0",
+    schemaVersion: SCHEMA_VERSION,
+    registryVersion: 1,
+    executionMode: "single-executor",
     project: "clevones.com",
     repository: "clevonegroup911/clevones.com",
     updatedAt: "2026-09-07",
@@ -53,8 +56,10 @@ function makeBacklog(tasks, extra = {}) {
     },
     selectionPolicy: {
       readyStatus: "PRÊTE",
-      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE"],
-      order: ["priority", "unblockCount", "riskAsc", "costAsc", "idAsc"],
+      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE", "ANNULÉE"],
+      excludeRequiresHuman: true,
+      blockWhenInControl: true,
+      order: ["priority", "riskDesc", "unblockCount", "costAsc", "idAsc"],
     },
     nextTaskId: null,
     tasks,
@@ -89,9 +94,9 @@ test("rejects invalid JSON via CLI", () => {
   assert.match(run.stderr, /JSON invalide/);
 });
 
-test("rejects IDs outside T001–T100 and duplicates", () => {
+test("rejects IDs outside T001–T200 and duplicates", () => {
   reject(makeBacklog([makeTask({ id: "T000" })]), "hors T001");
-  reject(makeBacklog([makeTask({ id: "T101" })]), "hors T001");
+  reject(makeBacklog([makeTask({ id: "T201" })]), "hors T001");
   reject(
     makeBacklog([makeTask({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }), makeTask({ id: "T001" })]),
     "dupliqué",
@@ -100,6 +105,10 @@ test("rejects IDs outside T001–T100 and duplicates", () => {
     makeBacklog([makeTask({ id: "T100", status: "TERMINÉE", evidence: ["ok"] })]),
   );
   assert.equal(hundred.ok, true, hundred.errors.join(" | "));
+  const twoHundred = validateBacklog(
+    makeBacklog([makeTask({ id: "T200", status: "TERMINÉE", evidence: ["ok"] })]),
+  );
+  assert.equal(twoHundred.ok, true, twoHundred.errors.join(" | "));
 });
 
 test("rejects unknown status, priority, and missing fields", () => {
@@ -225,7 +234,7 @@ test("selects P0 first, then unblock count, risk, cost, then lowest id", () => {
       dependencies: ["T001"],
     }),
   ]);
-  assert.equal(selectNextTask(samePriority).id, "T009");
+  assert.equal(selectNextTask(samePriority).id, "T008");
 
   const sameRisk = makeBacklog([
     done,

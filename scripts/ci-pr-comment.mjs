@@ -51,6 +51,8 @@ export function buildCommentBody({
     `- Playwright : ${checkLabel(checks.playwright)}`,
     `- Backlog : ${backlogOk ? "valide" : "invalide"}`,
     `- Rapport : ${reportOk ? "valide" : "invalide"}`,
+    `- Gouvernance : X200 (commentaire [X100-CI] conservé)`,
+    `- Relais ChatGPT : non configuré`,
     `- Workflow : ${workflowUrl || "indisponible"}`,
     `- Prochaine tâche : ${nextLine}`,
     "",

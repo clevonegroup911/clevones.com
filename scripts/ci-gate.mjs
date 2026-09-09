@@ -25,6 +25,7 @@ function statusOf(steps, name) {
 }
 
 const REQUIRED_STEPS = Object.freeze([
+  "doctor",
   "prisma_validate",
   "backlog",
   "x100_tests",
@@ -51,6 +52,7 @@ export function buildSummary(results) {
     ok: failed.length === 0,
     failed,
     checks: {
+      doctor: statusOf(steps, "doctor"),
       prismaValidate: statusOf(steps, "prisma_validate"),
       backlog: statusOf(steps, "backlog"),
       x100Tests: statusOf(steps, "x100_tests"),
@@ -84,6 +86,7 @@ async function main() {
       "# X100 CI summary",
       `ok=${summary.ok}`,
       `failed=${summary.failed.join(",") || "none"}`,
+      `doctor=${summary.checks.doctor}`,
       `prismaValidate=${summary.checks.prismaValidate}`,
       `backlog=${summary.checks.backlog}`,
       `x100Tests=${summary.checks.x100Tests}`,

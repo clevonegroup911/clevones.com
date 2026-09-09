@@ -1,25 +1,28 @@
 ---
-description: Orchestration X100 — sélection, périmètre, contrôles, PR draft, jamais de merge ni déploiement automatique
+description: Orchestration X200 — sélection, réservation, contrôles, PR draft, jamais de merge ni déploiement automatique
 alwaysApply: true
 ---
 
-# X100 — Clevones
+# X200 — Clevones
+
+X200 est la gouvernance courante (registre T001–T200). Les commandes `x100:*` restent des alias. Ce n’est pas une promesse de vitesse ×200.
 
 Suivre cet ordre à chaque session. Ne pas en commencer une autre hors de cet ordre.
 
-1. Lire `AGENTS.md`, `backlog.json` et `TASK_REPORT.md`.
-2. Valider le backlog : `npm run x100:validate`.
-3. Sélectionner uniquement une tâche `PRÊTE` : `npm run x100:next -- --json`. Ne pas prendre `BLOQUÉE`, `ÉCHOUÉE`, `EN_CONTRÔLE`. Une P0 `EN_COURS` à la fois. Max trois `EN_COURS`. Jamais paralléliser migration ou authentification.
-4. Travailler uniquement dans `scope`. Inspecter `git status` et chaque fichier avant modification. Préserver les commits existants.
-5. Exécuter les contrôles de la tâche (tests, lint, type-check, build, `git diff --check`). Ne jamais désactiver un test. Stopper après trois échecs identiques.
-6. Mettre à jour `TASK_REPORT.md` avec `[X100-CURSOR]` et toutes les sections obligatoires.
-7. Copier le rapport vers `reports/tasks/<ID>.md`.
-8. Mettre à jour `backlog.json` (état, preuves, `updatedAt`). `TERMINÉE` seulement avec preuves.
-9. Commiter sur la branche de travail, message conventionnel. Jamais de secret, jamais de `.env`.
-10. Pousser la branche seulement si la tâche l’autorise. Jamais `main`.
-11. Ouvrir ou mettre à jour une Pull Request. Laisser GitHub Actions publier `[X100-CI]`.
-12. Ne jamais fusionner. Ne jamais déployer. Aucune livraison sensible automatique.
+1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`.
+2. Valider : `npm run x200:validate` (alias `npm run x100:validate`).
+3. Après coupure : `npm run x200:resume`. Ne pas répéter un effet externe incertain.
+4. Sélectionner uniquement une tâche `PRÊTE` : `npm run x200:next -- --json`. Si `IN_CONTROL_WAIT`, ne rien commencer. Ne pas prendre `BLOQUÉE`, `ÉCHOUÉE`, `EN_CONTRÔLE`, `ANNULÉE`. Une P0 `EN_COURS` à la fois. Max trois `EN_COURS`. Jamais paralléliser migration ou authentification.
+5. Réserver : `npm run x200:claim -- --json <ID>`. Un jeton expiré ne finalise pas une tâche reprise par un autre.
+6. Travailler uniquement dans `scope`. Inspecter `git status` et chaque fichier avant modification. Préserver T001–T016 et les commits existants.
+7. Exécuter `npm run x200:quality-gate -- --task <ID>`. Ne jamais désactiver un test. Stopper après trois échecs identiques.
+8. Mettre à jour `TASK_REPORT.md` avec `[X100-CURSOR]` et `[X200-CURSOR]`.
+9. Copier le rapport vers `reports/tasks/<ID>.md`.
+10. Mettre à jour `backlog.json` (état, preuves, `registryVersion`, `updatedAt`). `TERMINÉE` seulement avec preuves. Un quality-gate en échec interdit `TERMINÉE`.
+11. Commiter sur la branche de travail, message conventionnel. Jamais de secret, jamais de `.env`.
+12. Pousser la branche seulement si la tâche l’autorise. Jamais `main`. Ouvrir ou mettre à jour une PR draft. Laisser GitHub Actions publier `[X100-CI]`.
+13. Ne jamais fusionner. Ne jamais déployer. `npm run x200:deploy-check` ne déploie pas. Aucune livraison sensible automatique.
 
 Priorité : propriétaire > sécurité > `AGENTS.md` > `backlog.json` > instruction de tâche > cette règle.
 
-Exemple : une tâche `EN_CONTRÔLE` attend le commentaire `[X100-CI]` ; ne pas démarrer T004 tant que T008 n’est pas `TERMINÉE`.
+Exécutant unique local. Codex n’est pas requis. Relais ChatGPT : non configuré.

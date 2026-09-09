@@ -7,6 +7,7 @@ import { test } from "node:test";
 import {
   ALLOWED_PRIORITIES,
   ALLOWED_STATUSES,
+  SCHEMA_VERSION,
 } from "./lib/x100-backlog.mjs";
 import { REPORT_MARKER, validateTaskReport } from "./lib/x100-report.mjs";
 import { runValidateTaskReport } from "./validate-task-report.mjs";
@@ -37,7 +38,9 @@ function makeTask(overrides = {}) {
 
 function makeBacklog(taskOverrides = {}) {
   return {
-    schemaVersion: "1.0.0",
+    schemaVersion: SCHEMA_VERSION,
+    registryVersion: 1,
+    executionMode: "single-executor",
     project: "clevones.com",
     repository: "clevonegroup911/clevones.com",
     updatedAt: "2026-09-07",
@@ -51,7 +54,7 @@ function makeBacklog(taskOverrides = {}) {
     },
     selectionPolicy: {
       readyStatus: "PRÊTE",
-      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE"],
+      excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE", "ANNULÉE"],
     },
     nextTaskId: null,
     tasks: [makeTask(taskOverrides)],

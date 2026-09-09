@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { selectNextTask, utcDateStamp, validateBacklog } from "./lib/x100-backlog.mjs";
-import { isCliEntry, readJsonFile, writeJsonFile } from "./lib/x100-fs.mjs";
+import { selectNextTaskResult, utcDateStamp, validateBacklog } from "./lib/x100-backlog.mjs";
+import { isCliEntry, readJsonFile, writeJsonFileAtomic } from "./lib/x100-fs.mjs";
 
 function parseArgs(argv) {
   const flags = new Set(argv.filter((arg) => arg.startsWith("--")));
@@ -9,10 +9,18 @@ function parseArgs(argv) {
     filePath,
     json: flags.has("--json"),
     write: flags.has("--write"),
+    dryRun: flags.has("--dry-run") || !flags.has("--write"),
+    includeHuman: flags.has("--include-human"),
+    ignoreInControl: flags.has("--ignore-in-control"),
   };
 }
 
-export function runNextTask({ filePath = "backlog.json", write = false } = {}) {
+export function runNextTask({
+  filePath = "backlog.json",
+  write = false,
+  includeHuman = false,
+  ignoreInControl = false,
+} = {}) {
   const loaded = readJsonFile(filePath);
   if (!loaded.ok) {
     return { ok: false, errors: [loaded.error], path: loaded.path };
@@ -23,7 +31,8 @@ export function runNextTask({ filePath = "backlog.json", write = false } = {}) {
     return { ok: false, errors: validation.errors, path: loaded.path };
   }
 
-  const next = selectNextTask(loaded.data);
+  const selection = selectNextTaskResult(loaded.data, { includeHuman, ignoreInControl });
+  const next = selection.task;
   const nextTaskId = next ? next.id : null;
   let wrote = false;
 
@@ -33,7 +42,7 @@ export function runNextTask({ filePath = "backlog.json", write = false } = {}) {
       nextTaskId,
       updatedAt: utcDateStamp(),
     };
-    writeJsonFile(filePath, updated);
+    writeJsonFileAtomic(filePath, updated);
     wrote = true;
   }
 
@@ -41,15 +50,20 @@ export function runNextTask({ filePath = "backlog.json", write = false } = {}) {
     ok: true,
     path: loaded.path,
     nextTaskId,
-    reason: next ? null : "NO_READY_TASK",
+    reason: next ? null : selection.reason || "NO_READY_TASK",
+    blocking: selection.blocking || [],
     task: next,
     wrote,
+    dryRun: !write,
   };
 }
 
 function printHuman(result) {
   if (!result.nextTaskId) {
-    process.stdout.write("NO_READY_TASK\n");
+    process.stdout.write(`${result.reason || "NO_READY_TASK"}\n`);
+    if (result.blocking?.length) {
+      process.stdout.write(`blocking: ${result.blocking.join(", ")}\n`);
+    }
     return;
   }
   process.stdout.write(`NEXT_TASK ${result.nextTaskId}\n`);
@@ -81,6 +95,8 @@ async function main(argv) {
           ok: true,
           nextTaskId: result.nextTaskId,
           reason: result.reason,
+          blocking: result.blocking,
+          dryRun: result.dryRun,
           task: result.task
             ? {
                 id: result.task.id,
