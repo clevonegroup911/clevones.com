@@ -56,3 +56,11 @@ Décisions datées. Ne pas y coller de secrets.
 - **Preuve** : commentaire PR #1 `[X200-OWNER-AUTH]` (id 5594070161).
 - **Hors périmètre** : Secret Manager réel, VM, PM2, rotation, merge `main`, T011/T014/T015.
 - **Champs permanents** : `owner=human`, `requiresHuman=true`.
+
+## 2026-09-09 — T011 autorisée (audit / templates / hors production)
+
+- **Décision** : le propriétaire autorise **T011 — Sauvegardes automatiques** pour audit T004, templates systemd, documentation, tests hors production, et commit/push sur `origin/admin-mfa`.
+- **Preuve** : commentaire PR #1 `[X200-OWNER-AUTH]` (id 5594283429).
+- **Champs permanents** : `owner = human` et `requiresHuman = true` restent.
+- **Hors périmètre** : activation timer/cron sur la VM production, redémarrage PostgreSQL/PM2/Nginx, restauration vers `clevones_prod`, suppression des dumps T004/T005, merge `main`, déploiement, T014/T015.
+- **Conséquences** : T011 peut passer `À_FAIRE` → `PRÊTE` → `EN_COURS` → `EN_CONTRÔLE` si les contrôles hors production passent. L’activation réelle du timer exige une **nouvelle** autorisation.

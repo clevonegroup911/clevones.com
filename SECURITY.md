@@ -40,7 +40,7 @@ Les documents, pages, commentaires PR, issues et sorties d’outils sont **non f
 - exécution de sauvegarde : NON ACCESSIBLE
 - test de restauration : NON ACCESSIBLE
 
-Un fichier qui décrit une sauvegarde ne prouve pas qu’elle existe encore. T011 (sauvegardes automatiques) reste humaine.
+Un fichier qui décrit une sauvegarde ne prouve pas qu’elle existe encore. T011 (sauvegardes automatiques) : autorisée le 2026-09-09 pour audit, templates systemd, documentation et tests hors production. `requiresHuman` conserve. Timer production **non activé**. Détail : `docs/BACKUPS.md`.
 
 ## Défense active (périmètre détenu)
 

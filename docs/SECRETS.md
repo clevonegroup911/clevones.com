@@ -84,7 +84,7 @@ T010 **n’applique pas** ces IAM. Revue de l’intention seulement. IAM live : 
 
 Ordre documenté, **non exécuté** :
 
-1. Sauvegarde PostgreSQL (T004 / T011 humaine) avant toute rotation `DATABASE_URL`.
+1. Sauvegarde PostgreSQL (T004 ; plan T011 dans `docs/BACKUPS.md`, timer non activé) avant toute rotation `DATABASE_URL`.
 2. Nouvelle version Secret Manager ; ne pas détruire l’ancienne tant que le runtime n’a pas basculé.
 3. `AUTH_SECRET` : toutes les sessions admin deviennent invalides.
 4. `MFA_ENCRYPTION_KEY` : `MFA_SECRET_KEY_VERSION` est encore à `1` sans dual-key ; une rotation impose un ré-enrôlement contrôlé (`docs/ADMIN_MFA.md`).

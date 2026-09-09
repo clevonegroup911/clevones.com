@@ -1,0 +1,30 @@
+# T011 TEMPLATE — do not enable on the production VM without a new owner authorization.
+# This unit never deploys, never restarts PostgreSQL/PM2/Nginx, and never loads .env.
+
+[Unit]
+Description=Clevones PostgreSQL logical backup (T011 template, not enabled)
+Documentation=file:///home/clevones/apps/clevones.com/docs/BACKUPS.md
+After=network-online.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=oneshot
+User=clevones
+Group=clevones
+UMask=0077
+WorkingDirectory=/home/clevones/apps/clevones.com
+ExecStart=/home/clevones/apps/clevones.com/scripts/run-scheduled-backup.sh --backup-root /home/clevones/backups/clevones.com --dbname clevones_prod --max-disk-pct 90
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+TimeoutStartSec=30min
+SuccessExitStatus=0
+PrivateTmp=true
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=clevones-postgres-backup
+# Do not set Environment=DATABASE_URL. Do not set EnvironmentFile=.env.
+# The T004 dump path uses sudo -n -u postgres (peer), never a password.
+
+[Install]
+WantedBy=multi-user.target

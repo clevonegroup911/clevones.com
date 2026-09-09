@@ -12,7 +12,7 @@ Aucun redémarrage PM2, Nginx ou PostgreSQL. Aucun accès production depuis ce d
 | CI | GitHub Actions `X100 CI` (qualité, Playwright, audit npm). Ce n’est pas un uptime probe de production. |
 | Processus | PM2 `clevones-com` sur la VM `clevones-serveur` (voir `DEPLOYMENT.md`). |
 | Reverse proxy | Nginx devant l’application. Aucun export Prometheus dans ce dépôt. |
-| PostgreSQL | 15.x sur la VM. Sauvegardes manuelles T004. Pas de sonde périodique versionnée. |
+| PostgreSQL | 15.x sur la VM. Sauvegardes manuelles T004. Planification T011 **préparée** (`docs/BACKUPS.md`), timer production **non activé**. |
 | GCP Cloud Monitoring | Non provisionné par ce dépôt. Projet `clevonegroup`. Toute création d’uptime check / alerting policy exige une décision humaine. |
 
 Signaux d’authentification déjà émis (sans secrets) :
@@ -92,6 +92,8 @@ Cette requête n’est **pas** exécutée par T012. Elle reste un modèle pour u
 | PM2 down | `pm2 pid clevones-com` échoue | idem |
 | Espace disque critique | `df` ≥ 95 % | idem |
 | PostgreSQL indisponible | `pg_isready` échec | idem |
+| Échec backup PostgreSQL | pas de `BACKUP_OK` / `VERIFY_LIST_OK` (après activation future du timer T011) | idem ; voir `docs/BACKUPS.md` |
+| Timer backup silencieux | pas de sauvegarde depuis 36 h (après activation future) | idem |
 | MFA / login critiques | `AUTH_LOGIN_FAILURE` + `MFA_LOGIN_FAILED` > 10 / 15 min | idem ; ne pas alerter sur le **contenu** des codes |
 
 Ne pas créer d’alerting policy GCP, d’uptime check facturé, ni de notification channel depuis ce commit.

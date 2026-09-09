@@ -23,6 +23,10 @@ env:
   MFA_ENCRYPTION_KEY: eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHg=
   MFA_ISSUER: CLEVONES-CI
   CI: true
+  CLEVONES_BACKUP_TEST_HOST: 127.0.0.1
+  CLEVONES_BACKUP_TEST_PORT: 5432
+  CLEVONES_BACKUP_TEST_USER: ci_user
+  CLEVONES_BACKUP_TEST_PASSWORD: ci_pass
 
 jobs:
   quality:
@@ -76,6 +80,10 @@ jobs:
       - name: Validate Prisma schema
         continue-on-error: true
         run: node scripts/ci-step.mjs prisma_validate -- npx prisma validate
+
+      - name: Install PostgreSQL client tools
+        continue-on-error: true
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
 
       - name: Validate backlog
         continue-on-error: true

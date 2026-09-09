@@ -91,6 +91,8 @@ Avant toute application sur un environnement partagé :
 
 Preuve T004 : dump `20260907T020712Z`, checksum SHA-256 consigné dans `DEPLOYMENT.md`, restauration temporaire puis suppression de la seule base temporaire. `clevones_prod` n'a pas été écrasée.
 
+Planification future : `docs/BACKUPS.md` (T011). Les dumps T004/T005 restent protégés. Le timer systemd n’est pas activé par T011.
+
 ## Tests
 
 Tests unitaires (base mémoire, sans PostgreSQL) :

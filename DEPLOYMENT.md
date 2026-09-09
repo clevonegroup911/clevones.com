@@ -80,6 +80,12 @@ npm run x200:deploy-check -- --json
 
 Cette commande vérifie la branche, la présence de ce runbook et l’absence de migrate/PM2. Elle **ne déploie pas**. Une documentation de sauvegarde ne prouve pas que la sauvegarde existe encore ni qu’une restauration récente a été rejouée.
 
+## T011 — planification préparée, non activée
+
+L’automatisation quotidienne (systemd service + timer) est documentée dans `docs/BACKUPS.md` et versionnée sous `ops/systemd/`. T011 **n’active pas** le timer, n’installe pas les unités sur la VM, ne supprime pas les dumps T004/T005, et ne restaure pas `clevones_prod`.
+
+Wrapper : `scripts/run-scheduled-backup.sh` (appelle les scripts T004). Rétention : `scripts/retain-postgres-backups.sh --dry-run`.
+
 ## Interdit
 
 - `prisma migrate reset`, `prisma db push` destructif, `DROP DATABASE`

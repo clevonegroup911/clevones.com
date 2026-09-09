@@ -1,0 +1,17 @@
+# T011 TEMPLATE — do not enable on the production VM without a new owner authorization.
+# Proposed calendar: daily 02:15 UTC with a short random delay. Not activated by this task.
+
+[Unit]
+Description=Daily Clevones PostgreSQL backup timer (T011 template, not enabled)
+Documentation=file:///home/clevones/apps/clevones.com/docs/BACKUPS.md
+Requires=clevones-postgres-backup.service
+
+[Timer]
+OnCalendar=*-*-* 02:15:00 UTC
+Persistent=true
+RandomizedDelaySec=600
+AccuracySec=1min
+Unit=clevones-postgres-backup.service
+
+[Install]
+WantedBy=timers.target

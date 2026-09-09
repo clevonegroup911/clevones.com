@@ -38,8 +38,8 @@ Poursuivre le durcissement admin et la gouvernance sans rejouer T001–T016, san
 | T001–T009, T013, T016 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ dans le registre |
 | T012 | CI run 34242618994 **success** ; clôturée avec T017 | CONFIRMÉ |
 | T017 | `TERMINÉE` après CI run #18 puis #19 SUCCESS sur `4345b39` | CONFIRMÉ |
-| T010 | `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` commit/push `admin-mfa` ; `requiresHuman: true` conservé | CONFIRMÉ cette session |
-| T011 | `À_FAIRE`, `requiresHuman: true` | CONFIRMÉ |
+| T010 | `TERMINÉE` après CI run #20/#21 ; `requiresHuman: true` conservé | CONFIRMÉ |
+| T011 | `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (5594283429) ; templates/docs/tests hors prod ; timer production non activé | CONFIRMÉ cette session |
 | T014, T015 | `À_FAIRE` (non promues `PRÊTE`) | CONFIRMÉ |
 | Relais ChatGPT | absent | CONFIRMÉ non configuré (aucun webhook, aucune API) |
 | Production | non accédée cette session | NON_ACCESSIBLE |

@@ -66,7 +66,7 @@ Après **trois** échecs consécutifs de même cause pour une tâche et une vers
 - au plus trois `EN_COURS`
 - jamais de migration ou d’authentification en parallèle
 - pas d’autre tâche tant qu’une `EN_CONTRÔLE` attend la CI (`IN_CONTROL_WAIT`)
-- T010/T011 : humaines, sans autorisation propriétaire
+- T010/T011 : humaines. T010 clôturée. T011 autorisée le 2026-09-09 pour audit/templates/docs/tests hors production uniquement ; timer production interdit sans nouvelle autorisation.
 
 ## Sécurité
 

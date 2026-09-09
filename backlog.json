@@ -546,10 +546,7 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
       "id": "T011",
       "title": "Sauvegardes automatiques",
       "objective": "Automatiser les sauvegardes PostgreSQL après la procédure manuelle T004.",
@@ -559,21 +556,73 @@
         "T004"
       ],
       "scope": [
-        "docs"
+        "docs/BACKUPS.md",
+        "ops/systemd/clevones-postgres-backup.service",
+        "ops/systemd/clevones-postgres-backup.timer",
+        "scripts/backup-postgres.sh",
+        "scripts/verify-backup.sh",
+        "scripts/run-scheduled-backup.sh",
+        "scripts/retain-postgres-backups.sh",
+        "DEPLOYMENT.md"
       ],
       "acceptanceCriteria": [
-        "Plan de sauvegarde périodique hors production d'abord"
+        "Plan de sauvegarde périodique hors production d'abord",
+        "Templates systemd service et timer préparés, non activés en production",
+        "Scripts T004 réutilisés pour dump, checksum SHA-256 et restauration temporaire",
+        "Rétention documentée avec dry-run ; dumps T004/T005 protégés",
+        "owner=human et requiresHuman=true conservés"
       ],
       "tests": [
-        "restauration planifiée"
+        "npm run x200:doctor",
+        "npm run x100:validate",
+        "npm run x100:test",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run build",
+        "git diff --check"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "[X200-OWNER-AUTH] PR#1 comment 5594283429 T011 audit/templates/docs/off-prod tests/commit-push admin-mfa https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429",
+        "docs/BACKUPS.md architecture, retention, install/activation documented not executed",
+        "ops/systemd/clevones-postgres-backup.service + .timer prepared; TIMER_ENABLED_PRODUCTION=NO",
+        "T004 scripts reused: scripts/backup-postgres.sh and scripts/verify-backup.sh",
+        "scripts/run-scheduled-backup.sh wrapper; scripts/retain-postgres-backups.sh dry-run default; T004/T005 stamps protected",
+        "off-prod dump+SHA-256+pg_restore --list+temp restore PASS (ephemeral loopback PostgreSQL, not clevones_prod)",
+        "retention dry-run keeps T004/T005; --apply refused on production backup root",
+        "quality-gate T011 pass doctor/validate/x100:test/test/lint/tsc/build/diff; SCAN_SECRETS_OK",
+        "no production change; no cron/timer enable; no PostgreSQL/PM2/Nginx restart; no merge main; owner=human requiresHuman=true conserved"
+      ],
       "estimatedCost": 3,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": true,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-09",
+      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "evidenceRecords": [
+        {
+          "type": "review",
+          "command": "[X200-OWNER-AUTH] T011",
+          "result": "authorized audit templates docs off-prod-tests commit-push admin-mfa; production timer forbidden",
+          "exitCode": 0,
+          "reference": "5594283429",
+          "version": null,
+          "at": "2026-09-09T01:17:54.000Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429"
+        },
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T01:52:56.181Z",
+          "location": ".x200/quality-results.json"
+        }
+      ]
     },
     {
       "project": "clevones.com",
@@ -1166,9 +1215,27 @@
       "status": "TERMINÉE",
       "commit": "a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8",
       "note": "[X200-CONTROL] GitHub CI run #20 34297220698 SUCCESS; owner=human requiresHuman=true conserved; T011/T014/T015 remain À_FAIRE; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T011",
+      "status": "PRÊTE",
+      "note": "[X200-OWNER-AUTH] comment 5594283429; T004 reused; production timer/cron forbidden; owner=human requiresHuman=true conserved"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T011",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T011",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente CI"
     }
   ],
-  "registryVersion": 9,
+  "registryVersion": 12,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
