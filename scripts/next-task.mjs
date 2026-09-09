@@ -11,7 +11,7 @@ function parseArgs(argv) {
     write: flags.has("--write"),
     dryRun: flags.has("--dry-run") || !flags.has("--write"),
     includeHuman: flags.has("--include-human"),
-    ignoreInControl: flags.has("--ignore-in-control"),
+    ignoreInControl: !flags.has("--respect-in-control"),
   };
 }
 
@@ -19,7 +19,7 @@ export function runNextTask({
   filePath = "backlog.json",
   write = false,
   includeHuman = false,
-  ignoreInControl = false,
+  ignoreInControl = true,
 } = {}) {
   const loaded = readJsonFile(filePath);
   if (!loaded.ok) {
