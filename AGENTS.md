@@ -1,123 +1,158 @@
 # AGENTS.md — Clevones.com
 
-Règles applicables à tout le dépôt. Lire ce fichier, `backlog.json`, `PROJECT_CONTEXT.md` et `TASK_REPORT.md` avant toute action.
+Règles applicables à tout le dépôt. Lire `backlog.json`, `PROJECT_CONTEXT.md` et `TASK_REPORT.md` avant une nouvelle exécution. X200 FAST-LANE est la gouvernance courante. X100 reste l’historique et le contrat de compatibilité des commandes `npm run x100:*`.
 
-X200 est la gouvernance courante (registre T001–T200). X100 reste l’historique, les preuves `[X100-*]` et le **contrat de commandes** `npm run x100:*`. Ce n’est ni une promesse de vitesse ×200, ni une obligation de créer 200 tâches. Détail : `docs/X200_GOVERNANCE.md`.
-
-## Priorité des instructions
+## Priorité
 
 1. Demande explicite du propriétaire.
-2. Sécurité (secrets, production, authentification, données).
+2. Sécurité : production, secrets, authentification, données, permissions, opérations financières.
 3. `AGENTS.md`.
 4. `backlog.json`.
-5. Instruction de la tâche courante.
-6. Règles Cursor (`.cursor/rules/`).
+5. Tâche courante.
+6. Règles Cursor.
 
-En cas de conflit, appliquer l’élément de rang supérieur et consigner l’écart dans `TASK_REPORT.md`.
+Ne jamais inventer une validation, un déploiement ou une preuve.
 
-## Lecture obligatoire
+## X200 FAST-LANE
 
-Avant toute réponse ou exécution :
+Objectif : supprimer les pauses administratives, répétitions et contrôles lourds inutiles sans réduire la sécurité réelle.
 
-1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json`, `TASK_REPORT.md` et, si besoin, `docs/X200_GOVERNANCE.md`.
-2. Inspecter `git status`, la branche, `HEAD`, et l’état GitHub (PR/CI) lorsque l’accès le permet.
-3. Exécuter `npm run x100:validate` (alias `npm run x200:validate`).
-4. Exécuter `npm run x100:next -- --json` (alias `npm run x200:next -- --json`).
-5. Après une interruption : `HEAD`, PR, CI, backlog, tâche active, puis `npm run x200:resume`.
+1. Zéro doublon : une tâche `TERMINÉE` avec preuve valide n’est pas rejouée.
+2. Une tâche validée peut être clôturée et la prochaine tâche `PRÊTE` réservée dans le même cycle.
+3. Une tâche `EN_CONTRÔLE` ne bloque plus globalement les autres tâches indépendantes.
+4. Maximum trois tâches `EN_COURS` réellement indépendantes.
+5. Les périmètres qui se chevauchent ne sont jamais exécutés en parallèle.
+6. Authentification, MFA et migrations ne sont jamais parallélisés entre eux.
+7. Les tâches `requiresHuman: true` restent interdites à l’auto-exécution sans autorisation explicite du propriétaire.
+8. Trois échecs de même cause : arrêter la répétition, diagnostiquer et changer de stratégie.
+9. Aucun screenshot GitHub n’est une preuve requise. Utiliser les données GitHub/CI et les SHA.
+10. Le commentaire `[X100-CI]` est informatif et hors chemin critique. Le job requis est `quality`.
 
-## Contrat de commandes (compatibilité X100)
+## Gates humains
 
-Conserver et ne pas casser : `x100:validate`, `x100:next`, `x100:test`, `scripts/next-task.mjs`, `scripts/validate-backlog.mjs`, `scripts/validate-task-report.mjs`, GitHub Actions `[X100-CI]`.
+Aucune confirmation humaine de routine pour : lire le dépôt, analyser, modifier une branche de travail, tester, mettre à jour les rapports, pousser la branche autorisée, ouvrir ou mettre à jour une PR draft, clôturer une tâche non sensible dont les preuves sont valides, ou démarrer une autre tâche indépendante.
 
-| Fonction | Commande stable | Alias optionnel |
-|---|---|---|
-| Valider backlog + rapport | `npm run x100:validate` | `x200:validate` |
-| Prochaine tâche (lecture) | `npm run x100:next -- --json` | `x200:next` |
-| Tests gouvernance | `npm run x100:test` | `x200:test` |
-| Diagnostic | `npm run x200:doctor` | lecture seule |
-| Réserver | `npm run x200:claim -- --json [--dry-run] T0XX` | mutation |
-| Contrôles tâche | `npm run x200:quality-gate -- --task T0XX` | `--dry-run` liste sans exécuter |
-| Rapport | `npm run x200:report` | n’écrit pas de commit |
-| Reprise | `npm run x200:resume` | `--apply` seulement après inspection |
-| Prérequis déploiement | `npm run x200:deploy-check` | ne déploie jamais |
+Gate humain obligatoire pour une opération réellement sensible ou destructive, notamment :
 
-Un renommage exclusif `x100:*` → `x200:*` n’est pas exigé par T017. Codex n’est pas une dépendance.
+- merge final lorsqu’il livre un changement sensible ;
+- déploiement ou changement production ;
+- migration réelle de base de données ;
+- suppression/restauration de données ;
+- modification de secrets, credentials, permissions ou protections GitHub ;
+- auth/MFA en production ;
+- transaction financière réelle ou clé de paiement ;
+- opération irréversible ou à impact externe majeur.
 
-## Règles X200
+Un gate bloque seulement le travail concerné ; les autres tâches indépendantes peuvent continuer.
 
-1. Vérifier contexte + Git/GitHub + backlog avant d’agir.
-2. Zéro doublon : `TERMINÉE` + preuve valide = ne pas refaire.
-3. Après interruption : `HEAD`, PR, CI, backlog, tâche active.
-4. Vérité : `CONFIRMÉ` / `INDIQUÉ` / `PROPOSÉ` / `INCONNU` / `NON_ACCESSIBLE` ; aucun succès inventé.
-5. Continuité : tant qu’une tâche `PRÊTE` et autorisée existe, et qu’aucune `EN_CONTRÔLE` n’attend la CI, continuer.
-6. Sécurité : moindre privilège, MFA, secrets hors Git, backup et restauration distincts.
-7. Trois échecs identiques : stop, diagnostic, `BLOQUÉE` ou nouvelle stratégie.
-8. Mesure : délai, coût, défauts, doublons, preuves (`docs/X200_GOVERNANCE.md`).
-9. `TERMINÉE` = critères + contrôles + preuves.
-10. T001–T200 : espace d’identifiants ; ne jamais créer 200 tâches artificielles.
+## CI adaptative
 
-## Sélection des tâches
+### METADATA
 
-- Commencer uniquement une tâche dont l’état est `PRÊTE`.
-- Ne pas commencer une autre tâche tant qu’une tâche `EN_CONTRÔLE` attend la CI (`IN_CONTROL_WAIT`).
-- Respecter priorité, risque élevé, dépendances, périmètre (`scope`) et critères d’acceptation.
-- Une seule tâche **P0** simultanée (`EN_COURS`).
-- Maximum **trois** tâches `EN_COURS` indépendantes.
-- Ne jamais paralléliser des travaux de **migration** ou d’**authentification**.
-- Ne jamais sélectionner `BLOQUÉE`, `ÉCHOUÉE`, `EN_CONTRÔLE` ou `ANNULÉE`.
-- Une tâche `ANNULÉE` ne satisfait pas une dépendance : la requalifier explicitement.
-- Ne pas rejouer une tâche `TERMINÉE` dont les preuves restent valides.
-- Les tâches `requiresHuman: true` ne sont pas auto-sélectionnées (`--include-human` seulement si le propriétaire l’autorise).
-- Mode d’exécution : **un seul exécutant local**. `backlog.json` ne coordonne pas des machines distantes.
+Pour un delta composé uniquement d’état et de preuves non exécutables (`backlog.json` sans changement de politique, `BACKLOG.md`, `TASK_REPORT.md`, `reports/tasks/*`) :
 
-## Travail
+- validation backlog/rapport ;
+- diff-check ;
+- scan léger des secrets ;
+- pas de build ;
+- pas d’installation Chromium ;
+- pas de Playwright complet.
 
-- Inspecter `git status` avant toute modification.
-- Inspecter chaque fichier avant de le changer.
-- Préserver le travail existant (commits MFA, tests, scripts, T001–T016).
-- Rester dans le périmètre de la tâche.
-- Réserver via `x200:claim` avant d’écrire ; un jeton expiré ne peut pas finaliser une tâche reprise par un autre.
-- Ne jamais désactiver un test pour le faire passer.
-- Arrêter une boucle après **trois échecs identiques** ; marquer `BLOQUÉE` ou `ÉCHOUÉE` avec preuves.
-- Aucune dépendance npm si Node.js standard suffit.
-- Aucun service IA, aucune API payante, aucun `OPENAI_API_KEY`, aucun webhook secret.
+Une modification de politique, dépendances, `requiresHuman`, scope de sécurité ou règles d’exécution dans `backlog.json` n’est pas considérée comme simple metadata.
 
-## Secrets et production
+### FAST
 
-- Ne jamais afficher, journaliser ou committer un secret, mot de passe ou jeton.
-- Ne jamais modifier `.env` réel ni stager `.env`.
-- Ne jamais accéder à la production, ni la modifier, sauf autorisation propriétaire explicite limitée.
-- Ne jamais déployer automatiquement. `x200:deploy-check` ne déploie pas.
-- Ne jamais pousser sur `main`.
-- Ne jamais fusionner automatiquement.
-- Aucune livraison sensible automatique.
+Pour le code ordinaire sur une PR draft :
 
-## Contrôles
+- validation X200 ;
+- tests de gouvernance ;
+- tests unitaires ;
+- lint ;
+- type-check ;
+- diff-check ;
+- scan secrets.
 
-Avant de déclarer un résultat :
+Build et Playwright ne sont pas obligatoires à chaque cycle ordinaire.
 
-1. `npm run x200:validate`
-2. Contrôles listés par la tâche (`tests`, lint, type-check, build selon le périmètre) via `npm run x200:quality-gate`
-3. `git diff --check`
-4. Vérifier l’absence de secrets et de chemins personnels
+### FULL
 
-`TERMINÉE` exige critères satisfaits, contrôles réussis sur l’état livré, preuves enregistrées et absence de blocage critique. Distinguer implémenté, testé, fusionné et déployé. Un quality-gate en échec interdit `TERMINÉE`.
+Obligatoire pour :
+
+- PR prête à fusionner ;
+- push `main` de vérification ;
+- changements CI/règles de contrôle ;
+- auth/MFA ;
+- Prisma/migration DB ;
+- secrets/credentials ;
+- déploiement/production ;
+- dépendances/lockfile ;
+- classification inconnue ou ambiguë.
+
+FULL inclut FAST + validation Prisma, intégration PostgreSQL concernée, build, audit et Playwright. Les migrations exécutées en CI ne visent que la base éphémère CI, jamais la production.
+
+Le job `quality = SUCCESS` est la preuve CI principale. Ne pas attendre la fin du simple job de commentaire `[X100-CI]` pour avancer. Une preuve CI doit correspondre au bon dépôt, au bon SHA et à la lane requise.
+
+## Lecture et reprise
+
+Au démarrage ou après interruption :
+
+1. vérifier branche, `HEAD`, `git status` ;
+2. lire `backlog.json` et `TASK_REPORT.md` ;
+3. vérifier PR et job `quality` si nécessaire ;
+4. exécuter `npm run x200:validate` ;
+5. sélectionner uniquement du travail non déjà terminé ;
+6. réconcilier un bail expiré avant toute répétition d’effet externe.
+
+Ne pas refaire un audit complet si le contexte et les preuves actuelles sont déjà suffisants.
+
+## Contrat de commandes
+
+Conserver : `x100:validate`, `x100:next`, `x100:test` et leurs scripts historiques. Les alias X200 sont préférés pour les nouvelles opérations.
+
+| Fonction | Commande |
+|---|---|
+| Valider | `npm run x200:validate` |
+| Prochaine tâche | `npm run x200:next -- --json` |
+| Tests gouvernance | `npm run x200:test` |
+| Diagnostic | `npm run x200:doctor` |
+| Réserver | `npm run x200:claim -- --json T0XX` |
+| Contrôles tâche | `npm run x200:quality-gate -- --task T0XX` |
+| Rapport | `npm run x200:report` |
+| Reprise | `npm run x200:resume` |
+| Prérequis déploiement | `npm run x200:deploy-check` |
+
+## Sélection et parallélisme
+
+- Commencer uniquement une tâche `PRÊTE` dont les dépendances sont `TERMINÉE`.
+- `EN_CONTRÔLE` n’est plus un verrou global.
+- Maximum trois tâches `EN_COURS`.
+- Maximum une P0 `EN_COURS`.
+- Avant réservation parallèle, contrôler collision de scope avec les tâches `EN_COURS` et `EN_CONTRÔLE`.
+- Un scope parent/enfant est une collision (`app/` avec `app/foo/`).
+- Un scope inconnu ou ambigu n’est pas supposé indépendant.
+- Auth/MFA/migration ne sont jamais parallélisés.
+- Le registre canonique reste écrit sous verrou ; les workers ne doivent pas écraser les claims ou `registryVersion` d’un autre cycle.
+
+## Sécurité
+
+- Ne jamais afficher ou committer un secret réel.
+- Ne jamais modifier `.env` réel automatiquement.
+- Aucun accès production sans autorisation explicite adaptée à l’opération.
+- Aucun push direct sur `main`.
+- Aucun merge automatique sensible.
+- Aucun déploiement automatique.
+- Aucun service IA payant ou clé supplémentaire nécessaire à la CI.
 
 ## Clôture
 
-- Mettre à jour `backlog.json` (état, preuves, `updatedAt`, `registryVersion`, `nextTaskId`).
-- Mettre à jour `TASK_REPORT.md` avec `[X100-CURSOR]` et `[X200-CURSOR]`.
-- Copier le rapport dans `reports/tasks/<ID>.md`.
-- Déclarer `TERMINÉE` uniquement avec preuves (commit, tests, CI si exigée).
-- Commits conventionnels sur la branche de travail.
-- Ouvrir ou mettre à jour une **Pull Request draft**.
-- Laisser GitHub Actions publier `[X100-CI]` (canal CI). Aucun relais ChatGPT n’est configuré.
-- Ne pas fusionner. Ne pas déployer.
-- `x200:report` ne doit pas être branché sur un commit automatique (évite une boucle CI).
+`TERMINÉE` exige critères satisfaits, contrôles requis réussis sur le bon état et preuves enregistrées. Distinguer clairement : implémenté, testé, CI validée, fusionné, déployé.
 
-## Git
+Après `quality = SUCCESS` pour la lane requise :
 
-- Branche de travail, jamais `main` en push direct.
-- Push de la branche de tâche seulement si la tâche l’autorise.
-- Le commentaire CI `[X100-CI]` est le pont vers le contrôle GitHub.
-- Toute fusion ou mise en production reste une décision humaine.
+1. réconcilier la preuve au SHA concerné ;
+2. clôturer la tâche ;
+3. recalculer les tâches prêtes ;
+4. démarrer immédiatement une autre tâche autorisée dans le même cycle si disponible ;
+5. ne pas créer une attente supplémentaire uniquement pour valider le commentaire ou le rapport qui vient d’enregistrer cette preuve.
+
+Mettre à jour les rapports de façon compacte et éviter les commits de métadonnées multiples lorsqu’un seul commit suffit.
