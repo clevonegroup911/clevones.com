@@ -37,6 +37,7 @@ const REQUIRED_BY_MODE = Object.freeze({
     "tests",
     "lint",
     "typecheck",
+    "db_integration",
     "build",
     "diff_check",
     "secrets",
