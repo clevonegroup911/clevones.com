@@ -39,7 +39,7 @@
       "ANNULÉE"
     ],
     "excludeRequiresHuman": true,
-    "blockWhenInControl": true,
+    "blockWhenInControl": false,
     "order": [
       "priority",
       "riskDesc",
@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T019",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1142,6 +1142,357 @@
       "attempts": 1,
       "requiresHuman": true,
       "updatedAt": "2026-09-09"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST-PRODUCT] deps T014 TERMINÉE; schema owner wave 1",
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T019",
+      "title": "CMS interne sécurisé",
+      "objective": "Construire un CMS interne Prisma avec CRUD admin sécurisé, états DRAFT/PUBLISHED/ARCHIVED, FR/EN, preview et audit.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T014"
+      ],
+      "scope": [
+        "prisma",
+        "app/admin",
+        "lib/cms",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Modèles ContentPage/ContentEntry (et Media si besoin) avec slug unique",
+        "CRUD admin SUPER_ADMIN/ADMIN ; USER sans accès",
+        "États DRAFT/PUBLISHED/ARCHIVED + preview + Zod + AuditLog",
+        "Migration CI/local uniquement ; aucune migration production"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit"
+      ],
+      "status": "PRÊTE",
+      "estimatedCost": 5,
+      "risk": "high",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T020",
+      "title": "Documents privés et portail sécurisé",
+      "objective": "Implémenter documents privés, stockage abstrait non public, et portail /portal authentifié.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T014"
+      ],
+      "scope": [
+        "prisma",
+        "app/(dashboard)/portal",
+        "lib/documents",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Modèle Document avec métadonnées, accès, propriétaire",
+        "Stockage privé abstrait (filesystem local/testable)",
+        "/portal authentifié ; upload/liste/recherche/téléchargement/suppression logique + audit"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 5,
+      "risk": "high",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T021",
+      "title": "Workflow documents et permissions",
+      "objective": "Appliquer la matrice SUPER_ADMIN/ADMIN/USER sur documents avec contrôles serveur et tests d’escalade.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T013",
+        "T020"
+      ],
+      "scope": [
+        "lib/documents",
+        "lib/auth",
+        "app/(dashboard)/portal",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Contrôles serveur selon rôle et autorisations document",
+        "Téléchargement refusé sans permission",
+        "AuditLog + tests anti-escalade"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 3,
+      "risk": "high",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T022",
+      "title": "Analytics first-party",
+      "objective": "Enregistrer événements serveur utiles et dashboard admin sans tracker tiers obligatoire.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [
+        "T015"
+      ],
+      "scope": [
+        "prisma",
+        "lib/analytics",
+        "app/admin",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Événements pages/formulaires/admin/documents",
+        "Dashboard admin agrégé respectant la vie privée",
+        "Aucun tracker tiers obligatoire"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 4,
+      "risk": "medium",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T023",
+      "title": "Notifications email opérationnelles",
+      "objective": "Brancher une architecture email abstraite testable avec journal, retries et templates FR/EN.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [],
+      "scope": [
+        "lib/email",
+        "docs",
+        ".env.example"
+      ],
+      "acceptanceCriteria": [
+        "Provider abstrait + mode dev/test",
+        "Journal d’envoi, retries, erreurs",
+        "Templates FR/EN ; aucun secret réel dans Git"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 3,
+      "risk": "medium",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T024",
+      "title": "Paiements abstraction + sandbox",
+      "objective": "Construire PaymentProvider sandbox (CARD/VISA, M_PESA) avec idempotency et audit, sans transaction réelle.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [
+        "T015"
+      ],
+      "scope": [
+        "prisma",
+        "lib/payments",
+        "docs",
+        ".env.example"
+      ],
+      "acceptanceCriteria": [
+        "Payment/PaymentAttempt/PaymentStatus + webhook abstrait",
+        "Idempotency + AuditLog",
+        "Sandbox/stub seulement ; aucune clé réelle"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 5,
+      "risk": "high",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T025",
+      "title": "E2E sécurité/responsive nouvelles fonctions",
+      "objective": "Couvrir Playwright des parcours CMS/documents/analytics/email/paiements sandbox implémentés.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T019",
+        "T020",
+        "T021",
+        "T022",
+        "T023",
+        "T024"
+      ],
+      "scope": [
+        "tests/e2e",
+        "docs"
+      ],
+      "acceptanceCriteria": [
+        "Parcours e2e sécurité et responsive pour fonctions livrées",
+        "Aucune donnée production ; fixtures seulement"
+      ],
+      "tests": [
+        "npx playwright test",
+        "npm run x100:validate"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 4,
+      "risk": "medium",
+      "requiresHuman": false
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": null,
+      "evidence": [],
+      "attempts": 0,
+      "updatedAt": "2026-09-09",
+      "id": "T026",
+      "title": "Déploiement/migrations production",
+      "objective": "Exécuter migrations et déploiement production de façon contrôlée après validation humaine.",
+      "priority": "P0",
+      "owner": "human",
+      "dependencies": [
+        "T019",
+        "T020",
+        "T021",
+        "T022",
+        "T023",
+        "T024",
+        "T025"
+      ],
+      "scope": [
+        "DEPLOYMENT.md",
+        "prisma/migrations",
+        "ops"
+      ],
+      "acceptanceCriteria": [
+        "Autorisation propriétaire explicite",
+        "Migrations/deploy production contrôlés avec rollback",
+        "Aucune exécution automatique"
+      ],
+      "tests": [
+        "npm run x200:deploy-check"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 5,
+      "risk": "high",
+      "requiresHuman": true
     }
   ],
   "history": [
@@ -1558,9 +1909,63 @@
       "status": "TERMINÉE",
       "commit": "9b5f490c7c6e77b9a7ac77ed0ec476a20c2231ff",
       "note": "[X200-FAST] CI run 34366056336 quality SUCCESS; no payment keys in Git; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T020",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T021",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T022",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T023",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T024",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T025",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T026",
+      "status": "À_FAIRE",
+      "note": "[X200-FAST-PRODUCT] created for product phase after T014/T015 audits"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "PRÊTE",
+      "note": "[X200-FAST-PRODUCT] À_FAIRE→PRÊTE; sole Prisma schema owner for CMS first"
     }
   ],
-  "registryVersion": 27,
+  "registryVersion": 28,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

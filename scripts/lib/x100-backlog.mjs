@@ -211,7 +211,7 @@ export function migrateBacklogData(data) {
     readyStatus: "PRÊTE",
     excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE"],
     excludeRequiresHuman: true,
-    blockWhenInControl: true,
+    blockWhenInControl: false,
     order: [...DEFAULT_SELECTION_ORDER],
     ...(data.selectionPolicy && typeof data.selectionPolicy === "object" ? data.selectionPolicy : {}),
     order: Array.isArray(data.selectionPolicy?.order) && data.selectionPolicy.order.length
@@ -827,7 +827,7 @@ export function createBacklogDocument(tasks = [], extra = {}) {
       readyStatus: "PRÊTE",
       excludeStatuses: ["BLOQUÉE", "ÉCHOUÉE", "EN_CONTRÔLE", "ANNULÉE"],
       excludeRequiresHuman: true,
-      blockWhenInControl: true,
+      blockWhenInControl: false,
       order: [...DEFAULT_SELECTION_ORDER],
     },
     claimPolicy: {

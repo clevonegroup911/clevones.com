@@ -54,14 +54,6 @@ jobs:
         continue-on-error: true
         run: git fetch --no-tags origin main
 
-      - name: Classify X200 lane
-        id: classify
-        env:
-          X200_BASE_SHA: ${{ steps.base.outputs.sha }}
-          X200_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          X200_PREMERGE: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'push' && '1' || '0' }}
-        run: node scripts/ci-classify.mjs "$X200_BASE_SHA" "$X200_HEAD_SHA"
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -72,7 +64,17 @@ jobs:
         shell: bash
         run: |
           mkdir -p ci-artifact/logs
-          printf '%s\n' '{"steps":[{"name":"classify","command":"node scripts/ci-classify.mjs","exitCode":0}]}' > ci-artifact/results.json
+          printf '%s\n' '{"steps":[]}' > ci-artifact/results.json
+
+      - name: Classify X200 lane
+        id: classify
+        env:
+          X200_BASE_SHA: ${{ steps.base.outputs.sha }}
+          X200_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          X200_PREMERGE: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || (github.event_name == 'push') }}
+        run: >-
+          node scripts/ci-step.mjs classify --
+          node scripts/ci-classify.mjs "$X200_BASE_SHA" "$X200_HEAD_SHA"
 
       - name: Install dependencies
         if: steps.classify.outputs.mode != 'METADATA'
@@ -154,7 +156,7 @@ jobs:
 
       - name: Scan repository secrets
         continue-on-error: true
-        run: node scripts/ci-step.mjs secrets -- npm run x200:scan-secrets
+        run: node scripts/ci-step.mjs secrets -- node scripts/scan-secrets.mjs
 
       - name: Security audit
         if: steps.classify.outputs.mode == 'FULL'

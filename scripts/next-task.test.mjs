@@ -125,7 +125,31 @@ test("does not select BLOQUÉE, ÉCHOUÉE or EN_CONTRÔLE tasks", () => {
   assert.equal(result.nextTaskId, null);
 });
 
-test("does not select a ready task while another is EN_CONTRÔLE", () => {
+test("FAST-LANE next-task ignores EN_CONTRÔLE by default", () => {
+  const file = writeBacklog(
+    makeBacklog([
+      makeTask({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }),
+      makeTask({
+        id: "T002",
+        status: "EN_CONTRÔLE",
+        dependencies: ["T001"],
+        scope: ["docs/a"],
+      }),
+      makeTask({
+        id: "T003",
+        status: "PRÊTE",
+        dependencies: ["T001"],
+        scope: ["components/b"],
+      }),
+    ]),
+  );
+  const result = runNextTask({ filePath: file });
+  assert.equal(result.ok, true);
+  assert.equal(result.reason, null);
+  assert.equal(result.nextTaskId, "T003");
+});
+
+test("--respect-in-control still waits when policy blocks", () => {
   const file = writeBacklog(
     makeBacklog([
       makeTask({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }),
@@ -133,7 +157,7 @@ test("does not select a ready task while another is EN_CONTRÔLE", () => {
       makeTask({ id: "T003", status: "PRÊTE", dependencies: ["T001"] }),
     ]),
   );
-  const result = runNextTask({ filePath: file });
+  const result = runNextTask({ filePath: file, ignoreInControl: false });
   assert.equal(result.ok, true);
   assert.equal(result.reason, "IN_CONTROL_WAIT");
   assert.equal(result.nextTaskId, null);

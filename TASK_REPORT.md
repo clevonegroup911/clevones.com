@@ -6,76 +6,67 @@
 
 ## ID
 
-T015
+T019
 
 ## Statut
 
-TERMINÉE
+PRÊTE
 
 ## Objectif
 
-Auditer analytics et paiements après la matrice des rôles ; confirmer l’absence de clés de paiement dans Git.
+Corriger le gate CI FULL (classify/db_integration/secrets) puis construire le CMS interne sécurisé.
 
 ## Résultat
 
-Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stripe/PayPal/analytics runtime. Mentions « Stripe » uniquement éditoriales (stratégie). `npm run x200:scan-secrets` : blocking_hits=0. Aucun accès production. Aucun merge `main`. CI quality SUCCESS. T014 également TERMINÉE dans le même cycle FAST-LANE.
+Étape 0 : workflow aligne le gate FULL — `classify` enregistré via `ci-step`, `secrets` et `db_integration` exécutés explicitement. Tests gouvernance adaptés FAST-LANE (`ignoreInControl`). T019–T026 créées ; T019 `PRÊTE` (propriétaire Prisma vague 1). Implémentation CMS en cours.
 
 ## Fichiers créés
 
-- `docs/ANALYTICS_AND_PAYMENTS.md`
-- `docs/CMS_AND_DOCUMENTS.md` (T014)
-- `reports/tasks/T015.md`
-- `reports/tasks/T014.md`
+- (CMS à venir)
 
 ## Fichiers modifiés
 
+- `.github/workflows/ci.yml`
+- `scripts/next-task.test.mjs`
+- `scripts/lib/x100-backlog.mjs`
 - `backlog.json`
 - `BACKLOG.md`
 - `TASK_REPORT.md`
-- `PROJECT_CONTEXT.md`
 
 ## Commandes
 
-- `npm run x200:scan-secrets`
+- `npm run x100:test`
 - `npm run x100:validate`
-- `npm run x200:quality-gate -- --task T015`
-- `git diff --check`
 
 ## Tests réussis
 
-- `npm run x200:scan-secrets` : SCAN_SECRETS_OK, blocking_hits=0
-- `test -f docs/ANALYTICS_AND_PAYMENTS.md`
-- `npm run x100:validate`
-- `git diff --check`
-- quality-gate T015 PASS
-- GitHub Actions X100 CI run 34366056336 quality SUCCESS
+- `npm run x100:test` : 59 pass, 1 skip
 
 ## Tests échoués
 
-- aucun
+- CI #33 (34367472818) : classify/db_integration/secrets skipped — corrigé dans le workflow
 
 ## Lint
 
-- non requis (docs + registre)
+- à exécuter après code CMS
 
 ## Type-check
 
-- non requis
+- à exécuter après code CMS
 
 ## Build
 
-- non requis
+- à exécuter après code CMS
 
 ## Sécurité
 
-- scan secrets PASS (0 blocking)
-- aucune clé de paiement dans Git
 - aucun accès production
-- aucune transaction réelle
+- aucun secret réel
+- scan secrets via CI step explicite
 
 ## Commit
 
-- `9b5f490` — `docs(audit): close T014 and inventory analytics/payments for T015`
+- (à renseigner)
 
 ## Pull Request
 
@@ -83,14 +74,11 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 
 ## Preuves
 
-- `docs/ANALYTICS_AND_PAYMENTS.md`
-- `docs/CMS_AND_DOCUMENTS.md`
-- CI T014 34365485246 SUCCESS
-- CI T015 34366056336 SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34366056336
+- CI #33 FAILURE : https://github.com/clevonegroup911/clevones.com/actions/runs/34367472818
 
 ## Risques
 
-- README roadmap Visa/M-Pesa non implémenté (vision seule)
+- T020/T022 attendent la fin du ownership schema T019
 
 ## Blocage
 
@@ -98,4 +86,4 @@ Inventaire livré dans `docs/ANALYTICS_AND_PAYMENTS.md`. Aucune dépendance Stri
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK
+- T019 (cette tâche)

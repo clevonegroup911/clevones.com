@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 27
+- Registre : 28
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
@@ -11,10 +11,10 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 0
-- PRÊTE : 0
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 0
+- À_FAIRE : 7
 - TERMINÉE : 18
 - ANNULÉE : 0
 
@@ -40,3 +40,11 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T016 | P0 | TERMINÉE | Corrections des dépendances high | non |
 | T017 | P1 | TERMINÉE | Migration gouvernance X100 → X200 | non |
 | T018 | P1 | TERMINÉE | Mise en service timer backup PostgreSQL production | oui |
+| T019 | P1 | PRÊTE | CMS interne sécurisé | non |
+| T020 | P1 | À_FAIRE | Documents privés et portail sécurisé | non |
+| T021 | P1 | À_FAIRE | Workflow documents et permissions | non |
+| T022 | P2 | À_FAIRE | Analytics first-party | non |
+| T023 | P2 | À_FAIRE | Notifications email opérationnelles | non |
+| T024 | P2 | À_FAIRE | Paiements abstraction + sandbox | non |
+| T025 | P1 | À_FAIRE | E2E sécurité/responsive nouvelles fonctions | non |
+| T026 | P0 | À_FAIRE | Déploiement/migrations production | oui |
