@@ -39,6 +39,8 @@ model User {
   contentEntriesCreated ContentEntry[] @relation("ContentEntryCreatedBy")
   contentEntriesUpdated ContentEntry[] @relation("ContentEntryUpdatedBy")
   mediaAssetsUploaded  MediaAsset[]
+  documentsOwned       Document[]      @relation("DocumentOwner")
+  documentsUploaded    Document[]      @relation("DocumentUploader")
 }
 
 model UserMfaSecret {
@@ -181,4 +183,43 @@ model MediaAsset {
   updatedAt    DateTime @updatedAt
 
   @@index([uploadedById])
+}
+
+enum DocumentAccessLevel {
+  PRIVATE
+  INTERNAL
+  RESTRICTED
+}
+
+enum DocumentCategory {
+  CONTRACT
+  DELIVERABLE
+  EVIDENCE
+  OTHER
+}
+
+model Document {
+  id            String              @id @default(cuid())
+  title         String
+  description   String              @default("")
+  category      DocumentCategory    @default(OTHER)
+  accessLevel   DocumentAccessLevel @default(PRIVATE)
+  storageKey    String              @unique
+  fileName      String
+  mimeType      String
+  sizeBytes     Int
+  checksumSha256 String
+  ownerId       String
+  owner         User                @relation("DocumentOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  uploadedById  String?
+  uploadedBy    User?               @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  deletedAt     DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([ownerId])
+  @@index([category])
+  @@index([accessLevel])
+  @@index([deletedAt])
+  @@index([title])
 }

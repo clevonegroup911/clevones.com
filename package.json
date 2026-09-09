@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/auth/*.test.ts lib/cms/*.test.ts",
+    "test": "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/auth/*.test.ts lib/cms/*.test.ts lib/documents/*.test.ts",
     "test:mfa:postgres": "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/auth/integration/mfa-postgres.test.ts",
     "x100:validate-backlog": "node scripts/validate-backlog.mjs",
     "x100:validate-report": "node scripts/validate-task-report.mjs",

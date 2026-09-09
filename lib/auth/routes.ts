@@ -54,9 +54,13 @@ export function safeAdminCallbackUrl(value: string | null | undefined): string {
   }
 
   const [pathname] = value.split("?");
-  if (!pathname || !isAdminProtectedPath(pathname)) {
+  if (!pathname) {
     return adminRoutes.dashboard;
   }
 
-  return value;
+  if (isAdminProtectedPath(pathname) || isProtectedPath(pathname)) {
+    return value;
+  }
+
+  return adminRoutes.dashboard;
 }

@@ -47,9 +47,9 @@ function getTrustedAppOrigin(request: NextRequest): string {
 }
 
 /**
- * Locale negotiation plus admin session gate.
- * Portal protection remains prepared but inactive so public/preparatory
- * routes keep their current behaviour.
+ * Locale negotiation, admin session gate, and authenticated portal gate.
+ * Portal uses the admin session cookie in this phase (T020); T021 refines
+ * USER document permissions.
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -57,18 +57,18 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set(localeHeaderName, getLocaleFromPath(pathname));
   requestHeaders.set("x-pathname", pathname);
 
-  if (isProtectedPath(pathname)) {
-    // const session = request.cookies.get("session");
-    // if (!session) {
-    //   const signInUrl = new URL(authRoutes.signIn, request.url);
-    //   signInUrl.searchParams.set("callbackUrl", pathname);
-    //   return NextResponse.redirect(signInUrl);
-    // }
-  }
-
   const adminSession = await getAdminSessionFromRequest(request);
   const mfaChallenge = await getMfaChallengeFromRequest(request);
   const origin = getTrustedAppOrigin(request);
+
+  if (isProtectedPath(pathname) && !adminSession) {
+    if (mfaChallenge) {
+      return NextResponse.redirect(new URL(adminRoutes.mfaVerify, origin));
+    }
+    const loginUrl = new URL(adminRoutes.login, origin);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
   if (isAdminProtectedPath(pathname) && !adminSession) {
     if (mfaChallenge) {

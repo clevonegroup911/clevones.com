@@ -43,6 +43,6 @@ test("admin callback URLs reject open redirects and non-admin paths", () => {
     safeAdminCallbackUrl("https://evil.example/admin"),
     adminRoutes.dashboard,
   );
-  assert.equal(safeAdminCallbackUrl("/portal"), adminRoutes.dashboard);
+  assert.equal(safeAdminCallbackUrl("/portal"), "/portal");
   assert.equal(safeAdminCallbackUrl("/admin/login"), adminRoutes.dashboard);
 });

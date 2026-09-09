@@ -64,3 +64,6 @@ test-results/
 # PostgreSQL dumps must never enter Git
 *.dump
 *.dump.partial
+
+# Private local document storage (T020)
+.data/
