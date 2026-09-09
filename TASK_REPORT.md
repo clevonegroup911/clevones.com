@@ -10,7 +10,7 @@ T019
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,52 +18,37 @@ Construire un CMS interne Prisma avec CRUD admin sécurisé, états DRAFT/PUBLIS
 
 ## Résultat
 
-Étape 0 CI #33 corrigée (classify/secrets/db_integration enregistrés). CMS livré en branche : modèles ContentPage/ContentEntry/MediaAsset, migration locale `20260909170000_add_cms_content`, CRUD `/admin/cms`, preview, Zod, AuditLog. Aucune migration production. T020–T026 créées ; T020/T022 non démarrées (ownership schema T019).
+CMS livré : ContentPage/ContentEntry/MediaAsset, migration CI/local, `/admin/cms` CRUD + preview, Zod, AuditLog. CI #45 SUCCESS (classify, secrets, db_integration). Aucune migration production. T020 promue `PRÊTE`.
 
 ## Fichiers créés
 
 - `prisma/migrations/20260909170000_add_cms_content/migration.sql`
-- `lib/cms/content.ts`
-- `lib/cms/content.test.ts`
+- `lib/cms/**`
 - `lib/validation/cms.ts`
 - `app/admin/cms/**`
 - `docs/CMS_INTERNAL.md`
+- `reports/tasks/T019.md`
 
 ## Fichiers modifiés
 
 - `prisma/schema.prisma`
 - `lib/admin/audit.ts`
-- `lib/auth/routes.ts`
-- `lib/auth/routes.test.ts`
-- `app/admin/layout.tsx`
-- `app/admin/dashboard/page.tsx`
-- `package.json`
-- `backlog.json`
 - `.github/workflows/ci.yml`
+- `backlog.json`
 
 ## Commandes
 
-- `DATABASE_URL=… npx prisma validate`
-- `npx prisma generate`
-- `npm test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
-- `npm run x100:test`
-- `npm run x100:validate`
+- `npx prisma validate` ; `npm test` ; `npm run lint` ; `npx tsc --noEmit` ; `npm run build` ; `npm run x100:test`
 
 ## Tests réussis
 
-- `npm test` : 45/45 (auth + cms)
-- `npm run lint` : PASS
-- `npx tsc --noEmit` : PASS
-- `npm run build` : PASS
-- `npm run x100:test` : 59 pass, 1 skip
 - quality-gate T019 PASS
+- CI run 34370988171 (#45) SUCCESS (db_integration inclus)
 
 ## Tests échoués
 
-- CI #33 : classify/db_integration/secrets skipped — corrigé
+- CI #33 skipped steps — corrigé
+- CI #43/#44 db_integration URL name — corrigé (`ci_x100_test` + service Postgres)
 
 ## Lint
 
@@ -75,17 +60,16 @@ Construire un CMS interne Prisma avec CRUD admin sécurisé, états DRAFT/PUBLIS
 
 ## Build
 
-- succès ; aucun déploiement
+- succès
 
 ## Sécurité
 
-- `requireAdmin` sur CMS ; USER sans accès
-- AuditLog sur mutations
-- aucun secret réel ; aucune migration production
+- requireAdmin ; AuditLog ; pas de production migrate ; pas de secret réel
 
 ## Commit
 
-- (à renseigner)
+- `f2ccf94` feat(cms)
+- `d54e021` fix(ci) db_integration
 
 ## Pull Request
 
@@ -93,13 +77,12 @@ Construire un CMS interne Prisma avec CRUD admin sécurisé, états DRAFT/PUBLIS
 
 ## Preuves
 
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34370988171
 - `docs/CMS_INTERNAL.md`
-- migration CMS non appliquée en production
 
 ## Risques
 
-- contenu marketing i18n existant non remplacé (volontaire)
-- MediaAsset metadata seulement (pas d’upload binaire encore)
+- MediaAsset metadata seulement
 
 ## Blocage
 
@@ -107,4 +90,4 @@ Construire un CMS interne Prisma avec CRUD admin sécurisé, états DRAFT/PUBLIS
 
 ## Prochaine tâche prête
 
-- T020 après clôture schema ownership T019
+- T020

@@ -1163,14 +1163,16 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST-PRODUCT] quality CI SUCCESS #45; CMS delivered",
       "evidence": [
         "docs/CMS_INTERNAL.md ContentPage/ContentEntry/MediaAsset + admin CRUD/preview",
         "migration 20260909170000_add_cms_content (CI/local only; no production migrate)",
         "quality-gate T019 PASS (prisma validate, npm test, lint, tsc, x100:validate, diff-check)",
         "requireAdmin + AuditLog CMS_* actions; USER denied by admin middleware",
-        "no production access; no real secrets; T020-T026 created À_FAIRE except T019"
+        "no production access; no real secrets; T020-T026 created À_FAIRE except T019",
+        "GitHub Actions X200 CI run 34370988171 (#45) SUCCESS quality on d54e021 including db_integration https://github.com/clevonegroup911/clevones.com/actions/runs/34370988171",
+        "commits f2ccf94 feat(cms) + d54e021 fix(ci) db_integration"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-09",
@@ -1202,7 +1204,7 @@
         "npm run x100:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -1213,13 +1215,19 @@
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
-      "claim": null,
+      "claim": {
+        "workerId": "local:fedora",
+        "token": "e521403685d649c787f80acd4db32755",
+        "claimedAt": "2026-09-09T15:36:50.636Z",
+        "expiresAt": "2026-09-09T17:36:50.636Z",
+        "leaseSeconds": 7200
+      },
       "evidenceRecords": [],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
+      "nextAction": "exécuter le périmètre puis quality-gate",
+      "lastTransitionReason": "réservation par local:fedora",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "updatedAt": "2026-09-09",
       "id": "T020",
       "title": "Documents privés et portail sécurisé",
@@ -1246,7 +1254,7 @@
         "npm run lint",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "EN_COURS",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -2000,9 +2008,28 @@
       "taskId": "T019",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST-PRODUCT] CMS implemented; local quality-gate PASS; attente quality CI FULL"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T019",
+      "status": "TERMINÉE",
+      "commit": "d54e021f66cfeb1fd34100e1ff623062ee328cd8",
+      "note": "[X200-FAST-PRODUCT] CI #45 SUCCESS; CMS schema owner released; promote T020 next"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T020",
+      "status": "PRÊTE",
+      "note": "[X200-FAST-PRODUCT] À_FAIRE→PRÊTE after T019 TERMINÉE"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T020",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 31,
+  "registryVersion": 33,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
