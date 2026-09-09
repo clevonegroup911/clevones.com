@@ -8,6 +8,43 @@ import { redactSecrets } from "./lib/x100-redact.mjs";
 const ARTIFACT_DIR = "ci-artifact";
 const RESULTS_PATH = join(ARTIFACT_DIR, "results.json");
 
+const REQUIRED_BY_MODE = Object.freeze({
+  METADATA: Object.freeze([
+    "classify",
+    "backlog",
+    "task_report",
+    "diff_check",
+    "secrets",
+  ]),
+  FAST: Object.freeze([
+    "classify",
+    "backlog",
+    "x100_tests",
+    "task_report",
+    "tests",
+    "lint",
+    "typecheck",
+    "diff_check",
+    "secrets",
+  ]),
+  FULL: Object.freeze([
+    "classify",
+    "doctor",
+    "prisma_validate",
+    "backlog",
+    "x100_tests",
+    "task_report",
+    "tests",
+    "lint",
+    "typecheck",
+    "build",
+    "diff_check",
+    "secrets",
+    "audit",
+    "playwright",
+  ]),
+});
+
 function loadResults() {
   try {
     return JSON.parse(readFileSync(RESULTS_PATH, "utf8"));
@@ -24,47 +61,37 @@ function statusOf(steps, name) {
   return step.exitCode === 0 ? "pass" : "fail";
 }
 
-const REQUIRED_STEPS = Object.freeze([
-  "doctor",
-  "prisma_validate",
-  "backlog",
-  "x100_tests",
-  "task_report",
-  "tests",
-  "lint",
-  "typecheck",
-  "build",
-  "diff_check",
-  "audit",
-  "playwright",
-]);
+function normalizeMode(value) {
+  const mode = String(value || "").toUpperCase();
+  return Object.hasOwn(REQUIRED_BY_MODE, mode) ? mode : "FULL";
+}
 
-export function buildSummary(results) {
+export function buildSummary(results, requestedMode = process.env.X200_CI_MODE) {
   const steps = results.steps || [];
-  const failed = steps.filter((step) => step.exitCode !== 0).map((step) => step.name);
-  for (const name of REQUIRED_STEPS) {
+  const mode = normalizeMode(requestedMode || results.mode);
+  const required = REQUIRED_BY_MODE[mode];
+  const failed = steps
+    .filter((step) => required.includes(step.name) && step.exitCode !== 0)
+    .map((step) => step.name);
+
+  for (const name of required) {
     if (statusOf(steps, name) !== "pass" && !failed.includes(name)) {
       failed.push(name);
     }
   }
+
+  const checks = {};
+  for (const name of new Set(Object.values(REQUIRED_BY_MODE).flat())) {
+    checks[name] = statusOf(steps, name);
+  }
+
   return {
     generatedAt: new Date().toISOString(),
+    mode,
+    required,
     ok: failed.length === 0,
     failed,
-    checks: {
-      doctor: statusOf(steps, "doctor"),
-      prismaValidate: statusOf(steps, "prisma_validate"),
-      backlog: statusOf(steps, "backlog"),
-      x100Tests: statusOf(steps, "x100_tests"),
-      taskReport: statusOf(steps, "task_report"),
-      tests: statusOf(steps, "tests"),
-      lint: statusOf(steps, "lint"),
-      typecheck: statusOf(steps, "typecheck"),
-      build: statusOf(steps, "build"),
-      diffCheck: statusOf(steps, "diff_check"),
-      audit: statusOf(steps, "audit"),
-      playwright: statusOf(steps, "playwright"),
-    },
+    checks,
     steps,
   };
 }
@@ -83,21 +110,12 @@ async function main() {
   const summary = buildSummary(results);
   const summaryText = redactSecrets(
     [
-      "# X100 CI summary",
+      "# X200 CI summary",
+      `mode=${summary.mode}`,
       `ok=${summary.ok}`,
+      `required=${summary.required.join(",")}`,
       `failed=${summary.failed.join(",") || "none"}`,
-      `doctor=${summary.checks.doctor}`,
-      `prismaValidate=${summary.checks.prismaValidate}`,
-      `backlog=${summary.checks.backlog}`,
-      `x100Tests=${summary.checks.x100Tests}`,
-      `taskReport=${summary.checks.taskReport}`,
-      `tests=${summary.checks.tests}`,
-      `lint=${summary.checks.lint}`,
-      `typecheck=${summary.checks.typecheck}`,
-      `build=${summary.checks.build}`,
-      `diffCheck=${summary.checks.diffCheck}`,
-      `audit=${summary.checks.audit}`,
-      `playwright=${summary.checks.playwright}`,
+      ...Object.entries(summary.checks).map(([name, status]) => `${name}=${status}`),
       "",
       "## Commands",
       ...summary.steps.map((step) => `- ${step.name}: ${step.command} (exit ${step.exitCode})`),
