@@ -467,11 +467,31 @@
           "version": null,
           "at": "2026-09-09T00:55:31.212Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34297220698",
+          "version": "a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8",
+          "at": "2026-09-09T01:00:52Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34297220698"
+        },
+        {
+          "type": "control",
+          "command": "[X200-CONTROL] GitHub",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "5594153446",
+          "version": "a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8",
+          "at": "2026-09-09T01:02:55Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594153446"
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] puis clôturer",
-      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #20 34297220698 SUCCESS on a56cb3f ; T010 TERMINÉE",
       "id": "T010",
       "title": "Centralisation des secrets",
       "objective": "Inventorier et centraliser les secrets hors Git.",
@@ -500,15 +520,18 @@
         "npm run build",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "[X200-OWNER-AUTH] T010 only after CI run 34295378004 SUCCESS on 4345b3932e10435c8c1e79ef8b88252d88a1964a",
         "[X200-OWNER-AUTH] PR#1 comment 5594070161 commit/push admin-mfa audit only https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594070161",
+        "[X200-CONTROL] PR#1 comment 5594153446 CI run #20 SUCCESS https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594153446",
+        "GitHub Actions X100 CI run #20 34297220698 SUCCESS on a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8 https://github.com/clevonegroup911/clevones.com/actions/runs/34297220698",
         "DECISIONS.md 2026-09-09 T010 autorisée uniquement",
         "requiresHuman=true owner=human conserved",
         "docs/SECRETS.md names and location types only; Secret Manager proposed not applied",
         "npm run x200:scan-secrets SCAN_SECRETS_OK; .env not tracked; no production values in git",
-        "quality-gate T010 pass scan/validate/x100:test/test/lint/tsc/build/diff; no production change"
+        "quality-gate T010 pass scan/validate/x100:test/test/lint/tsc/build/diff; no production change",
+        "no Secret Manager runtime change; no rotation; no merge main; T011/T014/T015 remain À_FAIRE"
       ],
       "estimatedCost": 2,
       "risk": "high",
@@ -1136,9 +1159,16 @@
       "taskId": "T010",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T010",
+      "status": "TERMINÉE",
+      "commit": "a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8",
+      "note": "[X200-CONTROL] GitHub CI run #20 34297220698 SUCCESS; owner=human requiresHuman=true conserved; T011/T014/T015 remain À_FAIRE; NO_READY_TASK"
     }
   ],
-  "registryVersion": 8,
+  "registryVersion": 9,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

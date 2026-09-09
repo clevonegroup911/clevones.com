@@ -10,7 +10,7 @@ T010
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Inventorier et centraliser les secrets hors Git.
 
 ## Résultat
 
-Phase audit/documentation T010 soumise au contrôle CI. Autorisation `[X200-OWNER-AUTH]` (PR #1 commentaire 5594070161) pour commit/push `admin-mfa` uniquement. `owner=human` et `requiresHuman=true` conservés. Inventaire des **noms** dans `docs/SECRETS.md`. Cible Secret Manager documentée, non appliquée. `SCAN_SECRETS_OK`. Quality-gate local réussi. T011, T014 et T015 restent `À_FAIRE`. Production inchangée. Aucun merge `main`. Aucune valeur secrète affichée.
+T010 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #20** (34297220698) SUCCESS sur `a56cb3f5cad7f6f2ce4450bc1efb8547d09796d8`. Phase audit/documentation seulement. `owner=human` et `requiresHuman=true` conservés. Inventaire des noms dans `docs/SECRETS.md`. Secret Manager cible documentaire, non appliqué. Aucun secret d’exploitation dans Git. Production inchangée. Aucune rotation. Aucun merge `main`. T011, T014 et T015 restent `À_FAIRE`.
 
 ## Fichiers créés
 
@@ -41,27 +41,17 @@ Phase audit/documentation T010 soumise au contrôle CI. Autorisation `[X200-OWNE
 
 ## Commandes
 
-- `npm run x200:scan-secrets`
 - `npm run x200:doctor`
 - `npm run x100:validate`
 - `npm run x100:test`
-- `npm test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
 - `git diff --check`
 
 ## Tests réussis
 
-- `npm run x200:scan-secrets` : SCAN_SECRETS_OK
-- `npm run x200:quality-gate -- --task T010` : QUALITY_GATE_OK
+- GitHub Actions X100 CI **run #20** (34297220698) : SUCCESS
+- `npm run x200:scan-secrets` : SCAN_SECRETS_OK (état livré `a56cb3f`)
 - `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
-- `npm run x100:test` : 43/43 (quality-gate)
-- `npm test` : exit 0
-- `npm run lint` : exit 0
-- `npx tsc --noEmit` : exit 0
-- `npm run build` : exit 0
-- `git diff --check` : exit 0
+- `npm run x100:test` : 43/43 (état livré)
 
 ## Tests échoués
 
@@ -69,27 +59,27 @@ Phase audit/documentation T010 soumise au contrôle CI. Autorisation `[X200-OWNE
 
 ## Lint
 
-- succès (`next lint`)
+- succès ; confirmé CI run #20
 
 ## Type-check
 
-- succès (`npx tsc --noEmit`)
+- succès ; confirmé CI run #20
 
 ## Build
 
-- succès (`npm run build`) ; aucun déploiement
+- succès ; aucun déploiement
 
 ## Sécurité
 
 - aucune valeur secrète affichée, journalisée ou commitée
-- `.env` non suivi, absent, non stagé
+- `.env` non suivi
 - T011/T014/T015 non commencées
 - aucun accès production, Secret Manager réel, PM2
 - aucun merge `main`
 
 ## Commit
 
-- `admin-mfa` — documentation T010 (plan Secret Manager, scan Git)
+- `admin-mfa` — clôture T010 après CI run #20 SUCCESS (`a56cb3f`)
 
 ## Pull Request
 
@@ -97,11 +87,11 @@ Phase audit/documentation T010 soumise au contrôle CI. Autorisation `[X200-OWNE
 
 ## Preuves
 
+- `[X200-CONTROL]` commentaire 5594153446 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594153446
 - `[X200-OWNER-AUTH]` commentaire 5594070161 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594070161
-- CI run #19 SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34295378004
+- GitHub Actions X100 CI **run #20** (34297220698) SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34297220698
 - `docs/SECRETS.md`
 - `npm run x200:scan-secrets` → SCAN_SECRETS_OK
-- quality-gate T010 QUALITY_GATE_OK
 
 ## Risques
 
@@ -111,8 +101,8 @@ Phase audit/documentation T010 soumise au contrôle CI. Autorisation `[X200-OWNE
 
 ## Blocage
 
-- aucun ; attente `[X100-CI]` après push `admin-mfa`
+- aucun
 
 ## Prochaine tâche prête
 
-- IN_CONTROL_WAIT (T010). T011/T014/T015 restent `À_FAIRE`.
+- NO_READY_TASK (T011/T014/T015 restent `À_FAIRE` ; T011 humaine)

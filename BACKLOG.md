@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 8
+- Registre : 9
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 3
-- TERMINÉE : 13
+- TERMINÉE : 14
 - ANNULÉE : 0
 
 ## Tâches
@@ -31,7 +31,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T007 | P0 | TERMINÉE | Installation du système d'orchestration X100 | non |
 | T008 | P0 | TERMINÉE | Validation réelle de la première CI/PR | non |
 | T009 | P1 | TERMINÉE | Playwright et preuves visuelles | non |
-| T010 | P1 | EN_CONTRÔLE | Centralisation des secrets | oui |
+| T010 | P1 | TERMINÉE | Centralisation des secrets | oui |
 | T011 | P1 | À_FAIRE | Sauvegardes automatiques | oui |
 | T012 | P2 | TERMINÉE | Monitoring et alertes | non |
 | T013 | P1 | TERMINÉE | Audit rôles et permissions | non |
