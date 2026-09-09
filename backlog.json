@@ -760,10 +760,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T14:42:07.801Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
       "id": "T014",
       "title": "Audit CMS et documents",
       "objective": "Auditer le CMS et les documents après la matrice des rôles.",
@@ -774,21 +785,31 @@
       ],
       "scope": [
         "app",
-        "docs"
+        "docs",
+        "docs/CMS_AND_DOCUMENTS.md",
+        "lib/i18n/content",
+        "prisma/schema.prisma"
       ],
       "acceptanceCriteria": [
         "Inventaire CMS sans accès production"
       ],
       "tests": [
-        "revue documentaire"
+        "test -f docs/CMS_AND_DOCUMENTS.md",
+        "npm run x100:validate",
+        "git diff --check"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "docs/CMS_AND_DOCUMENTS.md CMS inventory: no headless CMS, no content Prisma models, no uploads, i18n TS content only",
+        "quality-gate T014 PASS (test -f docs/CMS_AND_DOCUMENTS.md; x100:validate; git diff --check)",
+        "no production access; no secrets exposed; no merge main",
+        "T013 dependency TERMINÉE; T015 remains À_FAIRE until T014 closed"
+      ],
       "estimatedCost": 3,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-09"
     },
     {
       "project": "clevones.com",
@@ -1441,9 +1462,33 @@
       "status": "TERMINÉE",
       "commit": "7e7c5de3d2c0778f418d296f5cdbe69e9e837dda",
       "note": "CI_FIX confirmed: X100 CI run #26 34347605991 SUCCESS on 7e7c5de; PLAYWRIGHT_SELECTOR; production/timer unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T014",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] À_FAIRE→PRÊTE; deps T013 TERMINÉE; CI #27 quality SUCCESS; no EN_CONTRÔLE"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T014",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T014",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T014",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] CMS inventory docs/CMS_AND_DOCUMENTS.md; local quality-gate PASS; attente quality CI"
     }
   ],
-  "registryVersion": 18,
+  "registryVersion": 21,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
