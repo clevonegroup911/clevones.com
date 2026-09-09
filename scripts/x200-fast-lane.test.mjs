@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { parseArgs } from "./claim-task.mjs";
 import { classifyChangedFiles } from "./ci-classify.mjs";
 import { createBacklogDocument, createTaskDocument } from "./lib/x100-backlog.mjs";
 import { claimTask, releaseTask, scopesConflict } from "./lib/x200-claim.mjs";
@@ -70,6 +71,21 @@ test("claim refuses overlapping scope already in control", () => {
   assert.equal(result.error, "SCOPE_CONFLICT");
 });
 
+test("automatic claim can continue while unrelated work is in control", () => {
+  const backlog = createBacklogDocument([
+    createTaskDocument({
+      id: "T001",
+      status: "EN_CONTRÔLE",
+      evidence: ["quality pending"],
+      scope: ["docs/a"],
+    }),
+    createTaskDocument({ id: "T002", status: "PRÊTE", scope: ["components/b"] }),
+  ]);
+  const result = claimTask(backlog, { workerId: "worker-b" });
+  assert.equal(result.ok, true);
+  assert.equal(result.task.id, "T002");
+});
+
 test("release cannot reopen a completed task", () => {
   const backlog = createBacklogDocument([
     createTaskDocument({ id: "T001", status: "TERMINÉE", evidence: ["commit abc"] }),
@@ -77,4 +93,12 @@ test("release cannot reopen a completed task", () => {
   const result = releaseTask(backlog, { taskId: "T001", workerId: "worker-a" });
   assert.equal(result.ok, false);
   assert.match(result.error, /release interdit/);
+});
+
+test("claim parser does not treat option values as task ids", () => {
+  const parsed = parseArgs(["--worker", "worker-a", "--file", "tmp/backlog.json", "T042", "--json"]);
+  assert.equal(parsed.taskId, "T042");
+  assert.equal(parsed.workerId, "worker-a");
+  assert.equal(parsed.filePath, "tmp/backlog.json");
+  assert.equal(parsed.json, true);
 });
