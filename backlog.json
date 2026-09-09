@@ -757,11 +757,31 @@
           "version": null,
           "at": "2026-09-09T00:02:37.508Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34294282577",
+          "version": "bd980cd8bce88e217ada040c3929e138a66e2cef",
+          "at": "2026-09-09T00:18:39Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34294282577"
+        },
+        {
+          "type": "control",
+          "command": "[X200-CONTROL] GitHub",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "5593834682",
+          "version": "bd980cd8bce88e217ada040c3929e138a66e2cef",
+          "at": "2026-09-09T00:24:09Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5593834682"
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] après correctif diff_check BACKLOG.md",
-      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #18 34294282577 SUCCESS on bd980cd ; T017 TERMINÉE",
       "id": "T017",
       "title": "Migration gouvernance X100 → X200",
       "objective": "Faire évoluer le système de gouvernance du dépôt vers X200 sans casser les outils, preuves et automatisations existants.",
@@ -798,14 +818,18 @@
         "npm run build",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "select x200:next -> T017",
         "claim T017 EN_COURS",
         "quality-gate ok doctor/validate/test/deploy-check/diff",
         "T001-T016 preserved schema 2.0.0",
         "docs/X200_GOVERNANCE.md ; x100:* compatibility kept",
-        "CI run 34293419590 failed only on BACKLOG.md EOF blank line ; fix submitted"
+        "CI run 34293419590 failed only on BACKLOG.md EOF blank line ; fix submitted",
+        "[X200-CONTROL] GitHub run #18 SUCCESS https://github.com/clevonegroup911/clevones.com/actions/runs/34294282577",
+        "[X100-CI] T017 success SHA bd980cd8bce88e217ada040c3929e138a66e2cef https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
+        "[X200-CONTROL] comment 5593834682 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5593834682",
+        "no production access; no merge main; T010/T011 remain À_FAIRE human; T014/T015 remain À_FAIRE"
       ],
       "estimatedCost": 3,
       "risk": "medium",
@@ -1059,9 +1083,16 @@
       "taskId": "T017",
       "status": "EN_CONTRÔLE",
       "note": "P1 per owner; docs/X200_GOVERNANCE.md; x100:* contract; fix BACKLOG.md EOF for CI diff_check"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T017",
+      "status": "TERMINÉE",
+      "commit": "bd980cd8bce88e217ada040c3929e138a66e2cef",
+      "note": "[X200-CONTROL] GitHub CI run #18 34294282577 SUCCESS; T014/T015 remain À_FAIRE; T010/T011 remain human; NO_READY_TASK"
     }
   ],
-  "registryVersion": 4,
+  "registryVersion": 5,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

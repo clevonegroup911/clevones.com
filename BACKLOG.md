@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 4
+- Registre : 5
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 4
-- TERMINÉE : 12
+- TERMINÉE : 13
 - ANNULÉE : 0
 
 ## Tâches
@@ -38,4 +38,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T014 | P2 | À_FAIRE | Audit CMS et documents | non |
 | T015 | P2 | À_FAIRE | Analytics et paiements | non |
 | T016 | P0 | TERMINÉE | Corrections des dépendances high | non |
-| T017 | P1 | EN_CONTRÔLE | Migration gouvernance X100 → X200 | non |
+| T017 | P1 | TERMINÉE | Migration gouvernance X100 → X200 | non |
