@@ -10,7 +10,7 @@ T020
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Implémenter documents privés, stockage abstrait non public, et portail `/porta
 
 ## Résultat
 
-Document Prisma + migration locale, stockage `.data/private-documents`, `/portal` authentifié (session admin), upload/liste/recherche/téléchargement/soft-delete + AuditLog. T021 affinera les permissions USER.
+Document Prisma + migration locale, stockage `.data/private-documents`, `/portal` authentifié, upload/liste/recherche/téléchargement/soft-delete + AuditLog. CI quality SUCCESS. Aucune migration production. T022 devient la prochaine tâche admissible.
 
 ## Fichiers créés
 
@@ -26,6 +26,7 @@ Document Prisma + migration locale, stockage `.data/private-documents`, `/portal
 - `lib/documents/**`
 - `app/api/portal/documents/**`
 - `docs/PRIVATE_DOCUMENTS.md`
+- `reports/tasks/T020.md`
 
 ## Fichiers modifiés
 
@@ -33,20 +34,20 @@ Document Prisma + migration locale, stockage `.data/private-documents`, `/portal
 - `middleware.ts`
 - `app/(dashboard)/portal/page.tsx`
 - `lib/auth/routes.ts`
-- `.gitignore`
+- `backlog.json`
 
 ## Commandes
 
-- `npx prisma validate` ; `npm test` ; `npm run lint` ; `npx tsc --noEmit` ; `npm run build`
+- `npx prisma validate` ; `npm test` ; `npm run lint` ; `npx tsc --noEmit` ; `npm run build` ; `npm run x100:validate`
 
 ## Tests réussis
 
-- `npm test` 47/47
-- lint PASS ; tsc PASS ; build PASS
+- quality-gate T020 PASS
+- GitHub Actions run 34372209792 SUCCESS
 
 ## Tests échoués
 
-- aucun local
+- aucun
 
 ## Lint
 
@@ -62,18 +63,19 @@ Document Prisma + migration locale, stockage `.data/private-documents`, `/portal
 
 ## Sécurité
 
-- stockage hors public/ ; auth requise ; soft-delete ; audit
+- stockage hors `public/` ; auth requise ; soft-delete ; audit ; pas de production migrate
 
 ## Commit
 
-- (à renseigner)
+- `c312e0e` — feat(portal): add private documents storage and authenticated portal
 
 ## Pull Request
 
-- PR draft #1
+- PR draft #1 : https://github.com/clevonegroup911/clevones.com/pull/1
 
 ## Preuves
 
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34372209792
 - `docs/PRIVATE_DOCUMENTS.md`
 
 ## Risques
@@ -86,4 +88,4 @@ Document Prisma + migration locale, stockage `.data/private-documents`, `/portal
 
 ## Prochaine tâche prête
 
-- T021 / T022 après clôture T020
+- T022

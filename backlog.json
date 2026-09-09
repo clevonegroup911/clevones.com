@@ -1229,14 +1229,16 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST-PRODUCT] quality CI SUCCESS #46; private documents portal delivered",
       "evidence": [
         "docs/PRIVATE_DOCUMENTS.md Document model + private storage + authenticated /portal",
         "migration 20260909173000_add_private_documents (CI/local only)",
         "quality-gate T020 PASS",
         "middleware portal auth via admin session; API upload/list/download/soft-delete + AuditLog",
-        "no production migrate; storage outside public/"
+        "no production migrate; storage outside public/",
+        "GitHub Actions X200 CI run 34372209792 SUCCESS quality on c312e0e https://github.com/clevonegroup911/clevones.com/actions/runs/34372209792",
+        "commit c312e0e feat(portal): private documents + authenticated portal"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-09",
@@ -1267,7 +1269,7 @@
         "npm run x100:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -1322,13 +1324,19 @@
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
-      "claim": null,
+      "claim": {
+        "workerId": "local:fedora",
+        "token": "a4acebe97bdba51f47ad15d1dcf3ad6f",
+        "claimedAt": "2026-09-09T16:06:37.088Z",
+        "expiresAt": "2026-09-09T18:06:37.088Z",
+        "leaseSeconds": 7200
+      },
       "evidenceRecords": [],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
+      "nextAction": "exécuter le périmètre puis quality-gate",
+      "lastTransitionReason": "réservation par local:fedora",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "updatedAt": "2026-09-09",
       "id": "T022",
       "title": "Analytics first-party",
@@ -1354,7 +1362,7 @@
         "npm run lint",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "EN_COURS",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -1369,7 +1377,7 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": null,
+      "lastTransitionReason": "[X200-FAST-PRODUCT] independent of T020 CI wait",
       "evidence": [],
       "attempts": 0,
       "updatedAt": "2026-09-09",
@@ -1395,7 +1403,7 @@
         "npx tsc --noEmit",
         "npm run x200:scan-secrets"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "estimatedCost": 3,
       "risk": "medium",
       "requiresHuman": false
@@ -2052,9 +2060,34 @@
       "taskId": "T020",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST-PRODUCT] documents portal implemented; attente quality CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T022",
+      "status": "PRÊTE",
+      "note": "[X200-FAST-PRODUCT] promote analytics first-party"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T023",
+      "status": "PRÊTE",
+      "note": "[X200-FAST-PRODUCT] promote while T020 CI in progress"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T020",
+      "status": "TERMINÉE",
+      "commit": "c312e0e63fb0b204b24b62f90bc79356f129ae34",
+      "note": "[X200-FAST-PRODUCT] CI #46 SUCCESS; schema free for T022 analytics"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T022",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 35,
+  "registryVersion": 39,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
