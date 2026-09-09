@@ -582,25 +582,31 @@
         "npm run build",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "[X200-OWNER-AUTH] PR#1 comment 5594283429 T011 audit/templates/docs/off-prod tests/commit-push admin-mfa https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429",
+        "[X200-CONTROL] PR#1 comment 5599211476 CI run #22 SUCCESS https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5599211476",
+        "GitHub Actions X100 CI run #22 34301070242 SUCCESS on efaee510fa4ea57c1d84a65dc881b807de33b114 https://github.com/clevonegroup911/clevones.com/actions/runs/34301070242",
+        "[X100-CI] T011 success SHA efaee510fa4ea57c1d84a65dc881b807de33b114 https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670",
+        "dump test PASS (BACKUP_OK, ephemeral loopback PostgreSQL, not clevones_prod)",
+        "checksum PASS (sha256sum -c)",
+        "pg_restore --list PASS (VERIFY_LIST_OK)",
+        "restore temporaire PASS (RESTORE_TEST_OK then TEMP_DB_DROPPED only)",
+        "retention dry-run PASS (T004 20260907T020712Z and T005 20260907T134843Z kept; --apply refused on production backup root)",
+        "TIMER_ENABLED_PRODUCTION=NO; production unchanged; no cron/timer enable; no PostgreSQL/PM2/Nginx restart; no merge main",
         "docs/BACKUPS.md architecture, retention, install/activation documented not executed",
-        "ops/systemd/clevones-postgres-backup.service + .timer prepared; TIMER_ENABLED_PRODUCTION=NO",
+        "ops/systemd/clevones-postgres-backup.service + .timer prepared, not enabled",
         "T004 scripts reused: scripts/backup-postgres.sh and scripts/verify-backup.sh",
-        "scripts/run-scheduled-backup.sh wrapper; scripts/retain-postgres-backups.sh dry-run default; T004/T005 stamps protected",
-        "off-prod dump+SHA-256+pg_restore --list+temp restore PASS (ephemeral loopback PostgreSQL, not clevones_prod)",
-        "retention dry-run keeps T004/T005; --apply refused on production backup root",
         "quality-gate T011 pass doctor/validate/x100:test/test/lint/tsc/build/diff; SCAN_SECRETS_OK",
-        "no production change; no cron/timer enable; no PostgreSQL/PM2/Nginx restart; no merge main; owner=human requiresHuman=true conserved"
+        "owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE"
       ],
       "estimatedCost": 3,
       "risk": "medium",
       "attempts": 1,
       "requiresHuman": true,
       "updatedAt": "2026-09-09",
-      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
-      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #22 34301070242 SUCCESS on efaee51 ; T011 TERMINÉE",
+      "nextAction": null,
       "evidenceRecords": [
         {
           "type": "review",
@@ -621,6 +627,26 @@
           "version": null,
           "at": "2026-09-09T01:52:56.181Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34301070242",
+          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
+          "at": "2026-09-09T01:57:25Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34301070242"
+        },
+        {
+          "type": "control",
+          "command": "[X200-CONTROL] GitHub",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "5599211476",
+          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
+          "at": "2026-09-09T08:58:26Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5599211476"
         }
       ]
     },
@@ -1233,9 +1259,16 @@
       "taskId": "T011",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T011",
+      "status": "TERMINÉE",
+      "commit": "efaee510fa4ea57c1d84a65dc881b807de33b114",
+      "note": "[X200-CONTROL] GitHub CI run #22 34301070242 SUCCESS; owner=human requiresHuman=true conserved; TIMER_ENABLED_PRODUCTION=NO; production unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
     }
   ],
-  "registryVersion": 12,
+  "registryVersion": 13,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

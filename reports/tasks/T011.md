@@ -10,7 +10,7 @@ T011
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Automatiser les sauvegardes PostgreSQL après la procédure manuelle T004.
 
 ## Résultat
 
-T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429). Phase audit/templates/documentation/tests hors production. `owner=human` et `requiresHuman=true` conservés. Les scripts T004 `backup-postgres.sh` et `verify-backup.sh` sont réutilisés. Wrapper `run-scheduled-backup.sh` et unités systemd préparés, **non activés** en production. Rétention documentée avec dry-run ; dumps T004/T005 protégés. Dump + SHA-256 + `pg_restore --list` + restauration temporaire réussis sur PostgreSQL éphémère loopback, jamais vers `clevones_prod`. Production inchangée. Aucun merge `main`. T014 et T015 restent `À_FAIRE`.
+T011 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #22** (34301070242) SUCCESS sur `efaee510fa4ea57c1d84a65dc881b807de33b114`. Phase audit/templates/documentation/tests hors production. `owner=human` et `requiresHuman=true` conservés. Les scripts T004 `backup-postgres.sh` et `verify-backup.sh` sont réutilisés. Wrapper `run-scheduled-backup.sh` et unités systemd préparés, **non activés** en production. Rétention documentée avec dry-run ; dumps T004/T005 protégés. Dump + SHA-256 + `pg_restore --list` + restauration temporaire réussis sur PostgreSQL éphémère loopback, jamais vers `clevones_prod`. Production inchangée. Aucun merge `main`. T014 et T015 restent `À_FAIRE`.
 
 ## Fichiers créés
 
@@ -52,23 +52,17 @@ T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429
 - `npm run x200:doctor`
 - `npm run x100:validate`
 - `npm run x100:test`
-- `npm test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
 - `git diff --check`
-- `npm run x200:scan-secrets`
-- `npm run x200:quality-gate -- --task T011`
-- `systemd-analyze verify` (chemin VM absent en local, attendu)
 
 ## Tests réussis
 
-- quality-gate T011 : doctor, validate, x100:test (48/48), npm test (41/41), lint, tsc, build, diff
+- GitHub Actions X100 CI **run #22** (34301070242) : SUCCESS
 - dump custom hors production : `BACKUP_OK`
 - checksum : `sha256sum -c` OK
-- `pg_restore --list` : `VERIFY_LIST_OK` (table `t011_probe`)
+- `pg_restore --list` : `VERIFY_LIST_OK`
 - restauration temporaire puis `TEMP_DB_DROPPED` uniquement
 - rétention `--dry-run` : T004/T005 conservés ; `--apply` refuse la racine production
+- quality-gate T011 : doctor, validate, x100:test, npm test, lint, tsc, build, diff
 - `npm run x200:scan-secrets` : SCAN_SECRETS_OK
 
 ## Tests échoués
@@ -77,11 +71,11 @@ T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429
 
 ## Lint
 
-- succès
+- succès ; confirmé CI run #22
 
 ## Type-check
 
-- succès (`npx tsc --noEmit` et build Next.js)
+- succès ; confirmé CI run #22
 
 ## Build
 
@@ -100,7 +94,7 @@ T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429
 
 ## Commit
 
-- `admin-mfa` — préparation T011 (attente CI)
+- `admin-mfa` — clôture T011 après CI run #22 SUCCESS (`efaee51`)
 
 ## Pull Request
 
@@ -108,11 +102,12 @@ T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429
 
 ## Preuves
 
+- `[X200-CONTROL]` commentaire 5599211476 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5599211476
 - `[X200-OWNER-AUTH]` commentaire 5594283429 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429
-- `docs/BACKUPS.md`
-- `ops/systemd/clevones-postgres-backup.service` et `.timer` (non activés)
-- quality-gate T011 pass
-- SCAN_SECRETS_OK
+- GitHub Actions X100 CI **run #22** (34301070242) SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34301070242
+- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
+- dump test PASS ; checksum PASS ; `pg_restore --list` PASS ; restore temporaire PASS ; retention dry-run PASS
+- timer production NON activé ; production inchangée
 - `owner=human` `requiresHuman=true` conservés
 
 ## Risques
@@ -123,8 +118,8 @@ T011 est `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` (commentaire PR #1 5594283429
 
 ## Blocage
 
-- aucun ; attente `[X100-CI]` pour clôture
+- aucun
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK (T014/T015 restent `À_FAIRE` ; T011 humaine en contrôle)
+- NO_READY_TASK (T014/T015 restent `À_FAIRE`)
