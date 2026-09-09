@@ -773,8 +773,8 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "attendre [X100-CI] puis clôturer",
-      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
       "id": "T014",
       "title": "Audit CMS et documents",
       "objective": "Auditer le CMS et les documents après la matrice des rôles.",
@@ -798,12 +798,14 @@
         "npm run x100:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "docs/CMS_AND_DOCUMENTS.md CMS inventory: no headless CMS, no content Prisma models, no uploads, i18n TS content only",
         "quality-gate T014 PASS (test -f docs/CMS_AND_DOCUMENTS.md; x100:validate; git diff --check)",
         "no production access; no secrets exposed; no merge main",
-        "T013 dependency TERMINÉE; T015 remains À_FAIRE until T014 closed"
+        "T013 dependency TERMINÉE; T015 remains À_FAIRE until T014 closed",
+        "GitHub Actions X100 CI run 34365485246 SUCCESS quality on 597183081c4359933474bcec66eac5b549d9b939 https://github.com/clevonegroup911/clevones.com/actions/runs/34365485246",
+        "commit 597183081c4359933474bcec66eac5b549d9b939 docs(audit): inventory CMS and documents for T014"
       ],
       "estimatedCost": 3,
       "risk": "medium",
@@ -818,10 +820,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T14:47:58.851Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
       "id": "T015",
       "title": "Analytics et paiements",
       "objective": "Auditer analytics et paiements après la matrice des rôles.",
@@ -832,21 +845,34 @@
       ],
       "scope": [
         "app",
-        "docs"
+        "docs",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "package.json",
+        ".env.example",
+        "scripts/scan-secrets.mjs"
       ],
       "acceptanceCriteria": [
         "Aucune clé de paiement dans Git"
       ],
       "tests": [
-        "scan secrets"
+        "npm run x200:scan-secrets",
+        "test -f docs/ANALYTICS_AND_PAYMENTS.md",
+        "npm run x100:validate",
+        "git diff --check"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "docs/ANALYTICS_AND_PAYMENTS.md: no payment/analytics runtime deps; no payment keys in Git",
+        "npm run x200:scan-secrets SCAN_SECRETS_OK blocking_hits=0 fixture_hits=22 tracked_env=no",
+        "quality-gate T015 PASS",
+        "no production access; no real payments; no merge main",
+        "T014 TERMINÉE prerequisite satisfied"
+      ],
       "estimatedCost": 3,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-09"
     },
     {
       "project": "clevones.com",
@@ -1486,9 +1512,46 @@
       "taskId": "T014",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST] CMS inventory docs/CMS_AND_DOCUMENTS.md; local quality-gate PASS; attente quality CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T014",
+      "status": "TERMINÉE",
+      "commit": "597183081c4359933474bcec66eac5b549d9b939",
+      "note": "[X200-FAST] CI run 34365485246 quality SUCCESS; CMS inventory; no production access; T015 next"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] À_FAIRE→PRÊTE after T014 TERMINÉE; requiresHuman=false"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente CI"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T015",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] analytics/payments inventory; scan-secrets PASS; attente quality CI"
     }
   ],
-  "registryVersion": 21,
+  "registryVersion": 26,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
