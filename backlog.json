@@ -1020,11 +1020,31 @@
           "version": "f2f0ba892e6bc258f868834784275f0af2a6ee90",
           "at": "2026-09-09T10:22:52Z",
           "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "failure",
+          "exitCode": 1,
+          "reference": "34340389024",
+          "version": "8e671965e7b74d35fa246415390d02a9f10d8294",
+          "at": "2026-09-09T11:35:00Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34340389024"
+        },
+        {
+          "type": "control",
+          "command": "npx playwright test",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "CI_FIX PLAYWRIGHT_SELECTOR desktop+mobile expiry alert",
+          "version": null,
+          "at": "2026-09-09T11:42:00Z",
+          "location": "tests/e2e/admin-mfa.spec.ts"
         }
       ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #24 34338887982 SUCCESS on f2f0ba8 ; T018 TERMINÉE",
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #24 34338887982 SUCCESS on f2f0ba8 ; T018 TERMINÉE ; CI_FIX playwright selector after run #25 FAILURE",
       "id": "T018",
       "title": "Mise en service timer backup PostgreSQL production",
       "objective": "Activer de façon contrôlée le timer systemd de sauvegarde PostgreSQL sur la VM de production après T011, sans restauration ni rétention destructive.",
@@ -1064,7 +1084,8 @@
         "checksum PASS; pg_restore --list PASS (VERIFY_LIST_OK); dump+SHA256SUMS mode 600; dir 700",
         "retention dry-run only; T004 20260907T020712Z and T005 20260907T134843Z preserved; EXPIRE_COUNT=0; no --apply",
         "production healthy: postgres pid 1067637, nginx pid 4081, pm2-clevones pid 5506, clevones-com pid 1212469 unchanged; HTTPS 200; disk 36%",
-        "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; no secrets exposed; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE"
+        "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; no secrets exposed; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE",
+        "CI_FIX PLAYWRIGHT_SELECTOR after X100 CI run #25 34340389024 FAILURE unique playwright; tests/e2e/admin-mfa.spec.ts getByRole(alert).filter({ hasText: expiré }); production unchanged; timer unchanged"
       ],
       "estimatedCost": 3,
       "risk": "high",
@@ -1406,9 +1427,15 @@
       "status": "TERMINÉE",
       "commit": "f2f0ba892e6bc258f868834784275f0af2a6ee90",
       "note": "[X200-CONTROL] GitHub CI run #24 34338887982 SUCCESS; owner=human requiresHuman=true conserved; TIMER_ENABLED=YES; T004/T005 kept; T014/T015 remain À_FAIRE; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "TERMINÉE",
+      "note": "CI_FIX PLAYWRIGHT_SELECTOR after run #25 34340389024 FAILURE; getByRole(alert).filter({ hasText: expiré }); production and timer unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
     }
   ],
-  "registryVersion": 17,
+  "registryVersion": 18,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

@@ -18,7 +18,7 @@ Activer de façon contrôlée le timer systemd de sauvegarde PostgreSQL sur la V
 
 ## Résultat
 
-T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24** (34338887982) SUCCESS sur `f2f0ba892e6bc258f868834784275f0af2a6ee90`. Timer production enabled et active. Première sauvegarde contrôlée `20260909T100729Z` PASS (checksum, `pg_restore --list`, `SCHEDULED_BACKUP_OK`). Catch-up Persistent `20260909T100715Z` également PASS. Rétention dry-run seulement ; T004/T005 conservés. Production saine, aucun restart PostgreSQL/PM2/Nginx, aucune restauration `clevones_prod`. `owner=human` et `requiresHuman=true` conservés. Aucun merge `main`. T014 et T015 restent `À_FAIRE`.
+T018 reste `TERMINÉE` : le timer production n’est pas modifié. Correctif CI ciblé après X100 CI **run #25** (34340389024) FAILURE unique `playwright` : `tests/e2e/admin-mfa.spec.ts` ligne 40, `page.getByRole("alert")` résolvait 2 éléments (alerte métier « La vérification a expiré. » + `#__next-route-announcer__`). Sélecteur disambigué : `page.getByRole("alert").filter({ hasText: "expiré" })`. Playwright desktop+mobile PASS en local sur le test d’expiration. Production inchangée. Timer inchangé. Aucun merge `main`. T014 et T015 restent `À_FAIRE`.
 
 ## Fichiers créés
 
@@ -26,43 +26,48 @@ T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24*
 
 ## Fichiers modifiés
 
+- `tests/e2e/admin-mfa.spec.ts`
 - `backlog.json`
 - `TASK_REPORT.md`
 - `BACKLOG.md`
 
 ## Commandes
 
-- `npm run x200:doctor`
-- `npm run x100:validate`
+- `npx playwright test`
+- `npm test`
+- `npm run lint`
+- `npx tsc --noEmit`
+- `npm run build`
 - `npm run x100:test`
+- `npm run x100:validate`
 - `git diff --check`
 
 ## Tests réussis
 
-- GitHub Actions X100 CI **run #24** (34338887982) : SUCCESS
-- timer enabled + active
-- dump `20260909T100715Z` et `20260909T100729Z` : `BACKUP_OK`
-- checksum : `sha256sum -c` OK
-- `pg_restore --list` : `VERIFY_LIST_OK`
-- `SCHEDULED_BACKUP_OK` (`RESTORE_TEST=0`)
-- rétention `--dry-run` : T004/T005 conservés ; `EXPIRE_COUNT=0`
+- `npx playwright test` : desktop PASS, mobile PASS (capture login/MFA expiry)
+- `npm test` : 41/41
+- `npm run lint` : aucun warning
+- `npx tsc --noEmit` : succès
+- `npm run build` : succès
+- `npm run x100:test` : 47 pass, 1 skip (dump hors-prod sans PostgreSQL loopback)
 - `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
+- GitHub Actions X100 CI **run #24** (34338887982) : SUCCESS (clôture fonctionnelle T018)
 
 ## Tests échoués
 
-- aucun
+- GitHub Actions X100 CI **run #25** (34340389024) : FAILURE unique `playwright` (strict mode : 2 `alert`) — corrigé localement, non rejoué tant que CI suivante non publiée
 
 ## Lint
 
-- succès ; confirmé CI run #24
+- succès (`npm run lint`)
 
 ## Type-check
 
-- succès ; confirmé CI run #24
+- succès (`npx tsc --noEmit`)
 
 ## Build
 
-- succès ; aucun déploiement applicatif supplémentaire
+- succès (`npm run build`) ; aucun déploiement
 
 ## Sécurité
 
@@ -73,11 +78,12 @@ T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24*
 - T004 `20260907T020712Z` et T005 `20260907T134843Z` conservés
 - PostgreSQL, PM2 et Nginx non redémarrés
 - timer non modifié après activation
+- logique MFA et pages production inchangées
 - aucun merge `main`
 
 ## Commit
 
-- `admin-mfa` — clôture T018 après CI run #24 SUCCESS (`f2f0ba8`)
+- `admin-mfa` — `test(e2e): disambiguate MFA expiry alert selector`
 
 ## Pull Request
 
@@ -85,10 +91,12 @@ T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24*
 
 ## Preuves
 
+- X100 CI run #25 FAILURE playwright : https://github.com/clevonegroup911/clevones.com/actions/runs/34340389024
+- sélecteur `getByRole("alert").filter({ hasText: "expiré" })` dans `tests/e2e/admin-mfa.spec.ts`
+- Playwright local : desktop PASS, mobile PASS (test capture login/MFA)
+- `npm test` 41/41 ; lint PASS ; tsc PASS ; build PASS ; x100:test PASS ; x100:validate PASS
 - `[X200-CONTROL]` commentaire 5600307396 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396
-- `[X200-OWNER-AUTH]` commentaire 5600009305 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600009305
 - GitHub Actions X100 CI **run #24** (34338887982) SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34338887982
-- `[X100-CI]` : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5563860670
 - timer enabled + active ; premier backup PASS ; checksum PASS ; `pg_restore --list` PASS
 - rétention dry-run uniquement ; T004/T005 préservées
 - `owner=human` `requiresHuman=true` conservés
@@ -97,10 +105,11 @@ T018 est `TERMINÉE` après `[X200-CONTROL]` : GitHub Actions X100 CI **run #24*
 
 - `Persistent=true` a produit un dump de rattrapage en plus du start contrôlé
 - relais ChatGPT NON CONFIGURÉ
+- login MFA fixture Playwright skippé en local (PostgreSQL Docker non joignable depuis l’hôte) ; le test CI correspondant n’était pas l’échec run #25
 
 ## Blocage
 
-- aucun
+- aucun pour le sélecteur ; T014/T015 restent `À_FAIRE` ; pas de tâche `PRÊTE`
 
 ## Prochaine tâche prête
 

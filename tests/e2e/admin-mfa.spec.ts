@@ -37,7 +37,9 @@ test("captures safe admin login and MFA screens", async ({ page }, testInfo) => 
 
   await page.goto("/admin/login/mfa");
   await expect(page.getByRole("heading", { name: "Vérification MFA" })).toBeVisible();
-  await expect(page.getByRole("alert")).toContainText("expiré");
+  await expect(
+    page.getByRole("alert").filter({ hasText: "expiré" }),
+  ).toBeVisible();
   await captureSafeEvidence(page, `${project}-mfa.png`);
 });
 
