@@ -1,16 +1,17 @@
-name: X100 CI
+name: X200 CI
 
-# X200 extends this workflow. It never deploys, never merges, and never
-# writes the backlog. cancel-in-progress applies only to this quality job.
+# FAST-LANE: one stable required job named `quality`.
+# Draft PR iterations use the latest delta. A PR that is ready to merge is
+# forced through FULL so incremental evidence cannot substitute pre-merge proof.
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
   push:
     branches: [main]
   workflow_dispatch:
 
 concurrency:
-  group: x100-ci-${{ github.event.pull_request.number || github.ref }}
+  group: x200-ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -18,15 +19,12 @@ permissions:
 
 env:
   DATABASE_URL: postgresql://ci_user:ci_pass@127.0.0.1:5432/ci_x100?schema=public
+  TEST_DATABASE_URL: postgresql://ci_user:ci_pass@127.0.0.1:5432/ci_x100?schema=public
   APP_ORIGIN: http://localhost:3000
   AUTH_SECRET: ci-only-auth-secret-not-for-production-use
   MFA_ENCRYPTION_KEY: eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHg=
   MFA_ISSUER: CLEVONES-CI
   CI: true
-  CLEVONES_BACKUP_TEST_HOST: 127.0.0.1
-  CLEVONES_BACKUP_TEST_PORT: 5432
-  CLEVONES_BACKUP_TEST_USER: ci_user
-  CLEVONES_BACKUP_TEST_PASSWORD: ci_pass
 
 jobs:
   quality:
@@ -34,25 +32,35 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: ci_user
-          POSTGRES_PASSWORD: ci_pass
-          POSTGRES_DB: ci_x100
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U ci_user -d ci_x100"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Resolve comparison base
+        id: base
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ -n "${{ github.event.before }}" ]; then
+            echo "sha=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "sha=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch comparison refs
+        continue-on-error: true
+        run: git fetch --no-tags origin main
+
+      - name: Classify X200 lane
+        id: classify
+        env:
+          X200_BASE_SHA: ${{ steps.base.outputs.sha }}
+          X200_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          X200_PREMERGE: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'push' && '1' || '0' }}
+        run: node scripts/ci-classify.mjs "$X200_BASE_SHA" "$X200_HEAD_SHA"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -60,69 +68,80 @@ jobs:
           node-version: "20"
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
       - name: Prepare artifact directory
-        run: mkdir -p ci-artifact/logs && printf '%s\n' '{"steps":[]}' > ci-artifact/results.json
+        shell: bash
+        run: |
+          mkdir -p ci-artifact/logs
+          printf '%s\n' '{"steps":[{"name":"classify","command":"node scripts/ci-classify.mjs","exitCode":0}]}' > ci-artifact/results.json
 
-      - name: Fetch main for diff check
-        continue-on-error: true
-        run: git fetch --no-tags origin main
-
-      - name: X200 doctor
-        continue-on-error: true
-        run: node scripts/ci-step.mjs doctor -- npm run x200:doctor
-
-      - name: Validate Prisma schema
-        continue-on-error: true
-        run: node scripts/ci-step.mjs prisma_validate -- npx prisma validate
-
-      - name: Install PostgreSQL client tools
-        continue-on-error: true
-        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Install dependencies
+        if: steps.classify.outputs.mode != 'METADATA'
+        run: npm ci
 
       - name: Validate backlog
         continue-on-error: true
         run: node scripts/ci-step.mjs backlog -- npm run x100:validate-backlog
 
-      - name: Run X100 tests
-        continue-on-error: true
-        run: node scripts/ci-step.mjs x100_tests -- npm run x100:test
-
       - name: Validate task report
         continue-on-error: true
         run: node scripts/ci-step.mjs task_report -- npm run x100:validate-report
 
-      - name: Run application tests
+      - name: Run governance tests
+        if: steps.classify.outputs.mode != 'METADATA'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs x100_tests -- npm run x100:test
+
+      - name: Run application unit tests
+        if: steps.classify.outputs.mode != 'METADATA'
         continue-on-error: true
         run: node scripts/ci-step.mjs tests -- npm test
 
       - name: Lint
+        if: steps.classify.outputs.mode != 'METADATA'
         continue-on-error: true
         run: node scripts/ci-step.mjs lint -- npm run lint
 
       - name: Type-check
+        if: steps.classify.outputs.mode != 'METADATA'
         continue-on-error: true
         run: node scripts/ci-step.mjs typecheck -- npx tsc --noEmit
 
+      - name: X200 doctor
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs doctor -- npm run x200:doctor
+
+      - name: Validate Prisma schema
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs prisma_validate -- npx prisma validate
+
+      - name: PostgreSQL MFA integration
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: >-
+          node scripts/ci-step.mjs db_integration -- sh -c
+          'docker run -d --rm --name x200-postgres -e POSTGRES_USER=ci_user -e POSTGRES_PASSWORD=ci_pass -e POSTGRES_DB=ci_x100 -p 5432:5432 postgres:16-alpine >/dev/null &&
+          for i in $(seq 1 30); do docker exec x200-postgres pg_isready -U ci_user -d ci_x100 >/dev/null 2>&1 && break; sleep 1; done &&
+          npx prisma migrate deploy && npm run test:mfa:postgres'
+
       - name: Build
+        if: steps.classify.outputs.mode == 'FULL'
         continue-on-error: true
         run: node scripts/ci-step.mjs build -- npm run build
 
       - name: Install Playwright Chromium
+        if: steps.classify.outputs.mode == 'FULL'
         continue-on-error: true
-        run: node scripts/ci-step.mjs playwright_install -- npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright evidence tests
+        if: steps.classify.outputs.mode == 'FULL'
         continue-on-error: true
         run: node scripts/ci-step.mjs playwright -- npx playwright test
 
       - name: Collect Playwright evidence
-        if: always()
+        if: always() && steps.classify.outputs.mode == 'FULL'
         continue-on-error: true
         run: |
           mkdir -p ci-artifact/playwright
@@ -133,26 +152,35 @@ jobs:
         continue-on-error: true
         run: node scripts/ci-step.mjs diff_check -- node scripts/ci-diff-check.mjs
 
+      - name: Scan repository secrets
+        continue-on-error: true
+        run: node scripts/ci-step.mjs secrets -- npm run x200:scan-secrets
+
       - name: Security audit
+        if: steps.classify.outputs.mode == 'FULL'
         continue-on-error: true
         run: node scripts/ci-step.mjs audit -- node scripts/ci-audit.mjs
 
       - name: Collect artifact
         if: always()
+        env:
+          X200_CI_MODE: ${{ steps.classify.outputs.mode }}
         run: node scripts/ci-gate.mjs
         continue-on-error: true
 
-      - name: Upload X100 artifact
+      - name: Upload X200 artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: x100-ci
+          name: x200-ci
           path: ci-artifact/
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Fail if quality checks failed
+      - name: Fail if required quality checks failed
         if: always()
+        env:
+          X200_CI_MODE: ${{ steps.classify.outputs.mode }}
         run: node scripts/ci-gate.mjs
 
   comment:
@@ -172,13 +200,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Download X100 artifact
+      - name: Download X200 artifact
         uses: actions/download-artifact@v4
         with:
-          name: x100-ci
+          name: x200-ci
           path: ci-artifact
 
-      - name: Publish [X100-CI] comment
+      - name: Publish legacy [X100-CI] comment
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
