@@ -44,7 +44,7 @@ function splitCommand(command) {
   if (!text) {
     return ["true"];
   }
-  return ["bash", "-lc", text];
+  return ["bash", "-c", text];
 }
 
 export function runQualityGate({

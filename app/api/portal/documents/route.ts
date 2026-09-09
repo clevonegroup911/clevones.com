@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { actorKindFromRole, trackEvent } from "@/lib/analytics";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import { uploadDocument } from "@/lib/documents/service";
@@ -60,6 +61,12 @@ export async function POST(request: Request) {
       sizeBytes: document.sizeBytes,
     },
     ...ctx,
+  });
+  await trackEvent({
+    name: "document_upload",
+    category: "DOCUMENT",
+    path: "/api/portal/documents",
+    actorKind: actorKindFromRole(actor.role),
   });
 
   return NextResponse.json({ id: document.id });

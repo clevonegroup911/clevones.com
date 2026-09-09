@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 38
+- Registre : 42
 - Mode : single-executor
 - Mis à jour : 2026-09-09
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 2
+- EN_CONTRÔLE : 1
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 4
@@ -43,7 +43,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T019 | P1 | TERMINÉE | CMS interne sécurisé | non |
 | T020 | P1 | TERMINÉE | Documents privés et portail sécurisé | non |
 | T021 | P1 | À_FAIRE | Workflow documents et permissions | non |
-| T022 | P2 | PRÊTE | Analytics first-party | non |
+| T022 | P2 | EN_CONTRÔLE | Analytics first-party | non |
 | T023 | P2 | PRÊTE | Notifications email opérationnelles | non |
 | T024 | P2 | À_FAIRE | Paiements abstraction + sandbox | non |
 | T025 | P1 | À_FAIRE | E2E sécurité/responsive nouvelles fonctions | non |

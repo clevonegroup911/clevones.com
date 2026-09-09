@@ -2,13 +2,23 @@ import type { ReactNode } from "react";
 
 import Link from "next/link";
 
+import { headers } from "next/headers";
+
 import { logoutAdmin } from "@/app/admin/actions";
 import { Container } from "@/components/ui/container";
+import { actorKindFromRole, trackPageView } from "@/lib/analytics";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import { siteConfig } from "@/lib/site";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const actor = await getOptionalAdminActor();
+  const requestHeaders = await headers();
+  await trackPageView({
+    path: requestHeaders.get("x-pathname") || "/admin",
+    locale: requestHeaders.get("x-locale"),
+    actorKind: actorKindFromRole(actor?.role),
+    admin: true,
+  });
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
@@ -30,6 +40,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
               >
                 CMS
+              </Link>
+              <Link
+                href="/admin/analytics"
+                className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
+              >
+                Analytics
               </Link>
               {actor.role === "SUPER_ADMIN" ? (
                 <Link

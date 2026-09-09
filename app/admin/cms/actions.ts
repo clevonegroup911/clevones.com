@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { actorKindFromRole, trackEvent } from "@/lib/analytics";
 import { adminRoutes } from "@/lib/auth";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
 import { requireAdmin } from "@/lib/auth/require-admin";
@@ -72,6 +73,12 @@ export async function createCmsPageAction(
     metadata: { slug: page.slug },
     ...ctx,
   });
+  await trackEvent({
+    name: "admin_mutation",
+    category: "ADMIN",
+    path: adminRoutes.cms,
+    actorKind: actorKindFromRole(actor.role),
+  });
 
   revalidatePath(adminRoutes.cms);
   redirect(`${adminRoutes.cms}/${page.id}`);
@@ -117,6 +124,12 @@ export async function upsertCmsEntryAction(
     metadata: { pageId: page.id, locale: entry.locale },
     ...ctx,
   });
+  await trackEvent({
+    name: "admin_mutation",
+    category: "ADMIN",
+    path: `${adminRoutes.cms}/${page.id}`,
+    actorKind: actorKindFromRole(actor.role),
+  });
 
   revalidatePath(`${adminRoutes.cms}/${page.id}`);
   return { ok: true };
@@ -151,6 +164,12 @@ export async function changeCmsStatusAction(
       metadata: { status: page.status },
       ...ctx,
     });
+    await trackEvent({
+      name: "admin_mutation",
+      category: "ADMIN",
+      path: `${adminRoutes.cms}/${page.id}`,
+      actorKind: actorKindFromRole(actor.role),
+    });
     revalidatePath(adminRoutes.cms);
     revalidatePath(`${adminRoutes.cms}/${page.id}`);
     return { ok: true };
@@ -164,6 +183,12 @@ export async function changeCmsStatusAction(
     entityId: entry.id,
     metadata: { status: entry.status, locale: entry.locale },
     ...ctx,
+  });
+  await trackEvent({
+    name: "admin_mutation",
+    category: "ADMIN",
+    path: `${adminRoutes.cms}/${entry.pageId}`,
+    actorKind: actorKindFromRole(actor.role),
   });
   revalidatePath(`${adminRoutes.cms}/${entry.pageId}`);
   return { ok: true };

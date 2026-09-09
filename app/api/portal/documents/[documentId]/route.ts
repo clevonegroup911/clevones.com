@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { actorKindFromRole, trackEvent } from "@/lib/analytics";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import {
@@ -35,6 +36,12 @@ export async function GET(_request: Request, context: RouteContext) {
     metadata: { sizeBytes: document.sizeBytes },
     ...ctx,
   });
+  await trackEvent({
+    name: "document_download",
+    category: "DOCUMENT",
+    path: `/api/portal/documents/${document.id}`,
+    actorKind: actorKindFromRole(actor.role),
+  });
 
   return new NextResponse(bytes, {
     headers: {
@@ -67,6 +74,12 @@ export async function DELETE(_request: Request, context: RouteContext) {
     entityId: document.id,
     metadata: {},
     ...ctx,
+  });
+  await trackEvent({
+    name: "document_delete",
+    category: "DOCUMENT",
+    path: `/api/portal/documents/${document.id}`,
+    actorKind: actorKindFromRole(actor.role),
   });
 
   return NextResponse.json({ ok: true });

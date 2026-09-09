@@ -17,7 +17,7 @@ Classes : **CONFIRMÉ** = observé cette session ; **INDIQUÉ** = documenté ail
 | Google Analytics / gtag / GTM | Absent du code applicatif | CONFIRMÉ |
 | Plausible / PostHog / Mixpanel / Segment | Absent | CONFIRMÉ |
 | `@vercel/analytics` | Absent de `package.json` | CONFIRMÉ |
-| Scripts tracking dans `app/` | Aucun trouvé | CONFIRMÉ |
+| Scripts tracking dans `app/` | Aucun tracker tiers ; T022 ajoute une collecte **serveur first-party** (`docs/ANALYTICS.md`) | CONFIRMÉ + suite T022 |
 | Mentions « Stripe » / analytics | Uniquement références **éditoriales** dans `docs/strategy/CLEVONES-INSTITUTIONAL-READINESS-AUDIT.md` (benchmark UX), pas d’intégration | CONFIRMÉ |
 
 ## Paiements

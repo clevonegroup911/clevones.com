@@ -223,3 +223,34 @@ model Document {
   @@index([deletedAt])
   @@index([title])
 }
+
+enum AnalyticsCategory {
+  PAGE
+  FORM
+  ADMIN
+  DOCUMENT
+}
+
+enum AnalyticsActorKind {
+  ANONYMOUS
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+/// First-party server event. No IP, user-agent, email, or user id.
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  name      String
+  category  AnalyticsCategory
+  path      String
+  locale    String?
+  actorKind AnalyticsActorKind @default(ANONYMOUS)
+  day       DateTime
+  createdAt DateTime           @default(now())
+
+  @@index([category, createdAt])
+  @@index([name, day])
+  @@index([day])
+  @@index([path, day])
+}

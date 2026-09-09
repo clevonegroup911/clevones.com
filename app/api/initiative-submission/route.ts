@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { trackEvent } from "@/lib/analytics";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -26,6 +27,12 @@ export async function POST(request: Request) {
   const parsed = initiativeSubmissionSchema.safeParse(body);
 
   if (!parsed.success) {
+    await trackEvent({
+      name: "form_reject",
+      category: "FORM",
+      path: "/contact",
+      actorKind: "ANONYMOUS",
+    });
     return NextResponse.json(
       {
         success: false,
@@ -42,6 +49,13 @@ export async function POST(request: Request) {
 
     const preparedEmail = prepareInitiativeSubmissionEmail(submission);
     void preparedEmail;
+
+    await trackEvent({
+      name: "form_submit",
+      category: "FORM",
+      path: "/contact",
+      actorKind: "ANONYMOUS",
+    });
 
     return NextResponse.json({
       success: true,

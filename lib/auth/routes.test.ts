@@ -20,9 +20,11 @@ test("admin login paths stay public while the console is protected", () => {
   assert.equal(isAdminProtectedPath(adminRoutes.dashboard), true);
   assert.equal(isAdminProtectedPath(adminRoutes.securityMfa), true);
   assert.equal(isAdminProtectedPath(adminRoutes.cms), true);
+  assert.equal(isAdminProtectedPath(adminRoutes.analytics), true);
   assert.equal(isAdminPublicPath(adminRoutes.dashboard), false);
   assert.equal(isAdminPublicPath(adminRoutes.securityMfa), false);
   assert.equal(isAdminPublicPath(adminRoutes.cms), false);
+  assert.equal(isAdminPublicPath(adminRoutes.analytics), false);
 });
 
 test("non-admin paths are not classified as the admin console", () => {

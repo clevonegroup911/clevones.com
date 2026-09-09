@@ -50,6 +50,19 @@ export default async function AdminDashboardPage() {
         </Link>
       </div>
 
+      <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+        <h2 className="text-sm font-semibold text-white">Analytics first-party</h2>
+        <p className="mt-2 text-sm text-gray-muted">
+          Compteurs serveur agrégés, sans tracker tiers ni identifiant personnel.
+        </p>
+        <Link
+          href={adminRoutes.analytics}
+          className="mt-4 inline-flex text-sm font-medium text-gold-muted transition-colors hover:text-gold"
+        >
+          Ouvrir le dashboard
+        </Link>
+      </div>
+
       {actor.role === "SUPER_ADMIN" ? (
         <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
           <h2 className="text-sm font-semibold text-white">Sécurité / MFA</h2>
