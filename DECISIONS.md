@@ -41,3 +41,18 @@ Décisions datées. Ne pas y coller de secrets.
 
 - **Décision** : conserver `[X100-CURSOR]` et `[X100-CI]` ; ajouter `[X200-CURSOR]` dans les nouveaux rapports.
 - **Raisons** : ne pas casser le bot CI qui met à jour le commentaire commençant par `[X100-CI]`.
+
+## 2026-09-09 — T010 autorisée uniquement
+
+- **Décision** : le propriétaire autorise **T010 — Centralisation des secrets**, et aucune autre tâche.
+- **Preuve** : instruction propriétaire session 2026-09-09, après GitHub Actions X100 CI **run #19** (34295378004) SUCCESS sur `4345b3932e10435c8c1e79ef8b88252d88a1964a`.
+- **Champs permanents** : `owner = human` et `requiresHuman = true` restent ; l’autorisation est enregistrée à part (cette décision + `evidence` / `history` T010).
+- **Garde-fous** : n’afficher aucune valeur secrète ; ne pas modifier la production, Secret Manager réel, PM2, ni `.env` d’exploitation ; T011, T014 et T015 restent `À_FAIRE`.
+- **Conséquences** : T010 peut passer `À_FAIRE` → `PRÊTE` → `EN_COURS` via `x200:claim --include-human`. La bascule runtime vers Secret Manager exige une **nouvelle** autorisation si elle change la VM ou les secrets d’exploitation.
+
+## 2026-09-09 — T010 commit/push admin-mfa
+
+- **Décision** : le propriétaire autorise le **commit et le push** de la phase audit/documentation T010 sur `origin/admin-mfa` uniquement.
+- **Preuve** : commentaire PR #1 `[X200-OWNER-AUTH]` (id 5594070161).
+- **Hors périmètre** : Secret Manager réel, VM, PM2, rotation, merge `main`, T011/T014/T015.
+- **Champs permanents** : `owner=human`, `requiresHuman=true`.

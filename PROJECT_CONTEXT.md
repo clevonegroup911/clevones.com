@@ -36,10 +36,11 @@ Poursuivre le durcissement admin et la gouvernance sans rejouer T001–T016, san
 | ID | État | Classe |
 |---|---|---|
 | T001–T009, T013, T016 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ dans le registre |
-| T012 | CI run 34242618994 **success** sur `4ea9f74277318bc41c7817c3cab405e4ee7f0043`, commentaire `[X100-CI]` | CONFIRMÉ via `gh` cette session ; clôture registre = T017 |
-| T010, T011 | `À_FAIRE`, `requiresHuman: true` | CONFIRMÉ |
-| T014, T015 | `À_FAIRE` (dépendances T013 `TERMINÉE`) | CONFIRMÉ ; non promues `PRÊTE` |
-| T017 | `EN_CONTRÔLE` après quality-gate local ; attente `[X100-CI]` | CONFIRMÉ cette session |
+| T012 | CI run 34242618994 **success** ; clôturée avec T017 | CONFIRMÉ |
+| T017 | `TERMINÉE` après CI run #18 puis #19 SUCCESS sur `4345b39` | CONFIRMÉ |
+| T010 | `EN_CONTRÔLE` après `[X200-OWNER-AUTH]` commit/push `admin-mfa` ; `requiresHuman: true` conservé | CONFIRMÉ cette session |
+| T011 | `À_FAIRE`, `requiresHuman: true` | CONFIRMÉ |
+| T014, T015 | `À_FAIRE` (non promues `PRÊTE`) | CONFIRMÉ |
 | Relais ChatGPT | absent | CONFIRMÉ non configuré (aucun webhook, aucune API) |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 

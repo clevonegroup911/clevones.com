@@ -457,10 +457,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T00:55:31.212Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": null,
+      "nextAction": "attendre [X100-CI] puis clôturer",
+      "lastTransitionReason": "contrôles locaux réussis ; attente CI",
       "id": "T010",
       "title": "Centralisation des secrets",
       "objective": "Inventorier et centraliser les secrets hors Git.",
@@ -471,22 +482,39 @@
       ],
       "scope": [
         ".env.example",
-        "docs"
+        "docs",
+        "docs/SECRETS.md",
+        "scripts/scan-secrets.mjs"
       ],
       "acceptanceCriteria": [
         "Aucun secret réel dans Git",
         "Emplacements d'exploitation documentés hors dépôt"
       ],
       "tests": [
-        "scan secrets du dépôt"
+        "npm run x200:scan-secrets",
+        "npm run x100:validate",
+        "npm run x100:test",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run build",
+        "git diff --check"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "[X200-OWNER-AUTH] T010 only after CI run 34295378004 SUCCESS on 4345b3932e10435c8c1e79ef8b88252d88a1964a",
+        "[X200-OWNER-AUTH] PR#1 comment 5594070161 commit/push admin-mfa audit only https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594070161",
+        "DECISIONS.md 2026-09-09 T010 autorisée uniquement",
+        "requiresHuman=true owner=human conserved",
+        "docs/SECRETS.md names and location types only; Secret Manager proposed not applied",
+        "npm run x200:scan-secrets SCAN_SECRETS_OK; .env not tracked; no production values in git",
+        "quality-gate T010 pass scan/validate/x100:test/test/lint/tsc/build/diff; no production change"
+      ],
       "estimatedCost": 2,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": true,
-      "updatedAt": "2026-09-07"
+      "updatedAt": "2026-09-09"
     },
     {
       "project": "clevones.com",
@@ -1090,9 +1118,27 @@
       "status": "TERMINÉE",
       "commit": "bd980cd8bce88e217ada040c3929e138a66e2cef",
       "note": "[X200-CONTROL] GitHub CI run #18 34294282577 SUCCESS; T014/T015 remain À_FAIRE; T010/T011 remain human; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T010",
+      "status": "PRÊTE",
+      "note": "[X200-OWNER-AUTH] T010 only after CI run 34295378004 SUCCESS on 4345b39; T011/T014/T015 remain À_FAIRE; requiresHuman conserved"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T010",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T010",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente CI"
     }
   ],
-  "registryVersion": 5,
+  "registryVersion": 8,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

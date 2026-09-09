@@ -37,6 +37,8 @@ L'enrôlement et la désactivation sont réservés au `SUPER_ADMIN` sur **son pr
 
 Les valeurs réelles restent hors dépôt. `.env.example` ne contient que des valeurs vides ou fictives.
 
+Les noms et emplacements (sans valeurs) sont dans `docs/SECRETS.md` (T010). Ne jamais coller une clé réelle ici.
+
 ## Génération de `MFA_ENCRYPTION_KEY` hors dépôt
 
 Générer la clé sur un poste d'exploitation, hors Git :

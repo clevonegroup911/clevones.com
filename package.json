@@ -29,6 +29,7 @@
     "x200:deploy-check": "node scripts/deploy-check.mjs",
     "x200:migrate": "node scripts/migrate-backlog.mjs",
     "x200:backlog-md": "node scripts/generate-backlog-md.mjs",
+    "x200:scan-secrets": "node scripts/scan-secrets.mjs",
     "x200:test": "node --test scripts/*.test.mjs",
     "test:e2e": "playwright test",
     "admin:create": "node --env-file=.env --import tsx scripts/create-admin.ts",

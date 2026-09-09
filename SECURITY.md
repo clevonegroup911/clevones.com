@@ -17,7 +17,7 @@ Les documents, pages, commentaires PR, issues et sorties d’outils sont **non f
 - Noms dans `.env.example` seulement. `.env` est gitignoré.
 - Ne jamais journaliser `DATABASE_URL`, `AUTH_SECRET`, `MFA_ENCRYPTION_KEY`, jetons GitHub.
 - Les preuves et `ci-artifact` passent par `scripts/lib/x100-redact.mjs`.
-- T010 (centralisation des secrets) reste une tâche humaine `À_FAIRE`.
+- T010 (centralisation des secrets) : autorisée le 2026-09-09 ; inventaire des **noms** dans `docs/SECRETS.md`. `requiresHuman` conserve. Aucune valeur réelle ici.
 
 ## Environnements
 
