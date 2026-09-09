@@ -51,11 +51,13 @@ T018 reste `TERMINÉE` : le timer production n’est pas modifié. Correctif CI 
 - `npm run build` : succès
 - `npm run x100:test` : 47 pass, 1 skip (dump hors-prod sans PostgreSQL loopback)
 - `npm run x100:validate` : BACKLOG_VALID + TASK_REPORT_VALID
+- `npm run x200:doctor` : DOCTOR_OK
 - GitHub Actions X100 CI **run #24** (34338887982) : SUCCESS (clôture fonctionnelle T018)
+- GitHub Actions X100 CI **run #26** (34347605991) : SUCCESS sur `7e7c5de` (correctif sélecteur Playwright)
 
 ## Tests échoués
 
-- GitHub Actions X100 CI **run #25** (34340389024) : FAILURE unique `playwright` (strict mode : 2 `alert`) — corrigé localement, non rejoué tant que CI suivante non publiée
+- GitHub Actions X100 CI **run #25** (34340389024) : FAILURE unique `playwright` (strict mode : 2 `alert`) — corrigé par `7e7c5de` ; confirmé par run #26 SUCCESS
 
 ## Lint
 
@@ -92,9 +94,10 @@ T018 reste `TERMINÉE` : le timer production n’est pas modifié. Correctif CI 
 ## Preuves
 
 - X100 CI run #25 FAILURE playwright : https://github.com/clevonegroup911/clevones.com/actions/runs/34340389024
+- X100 CI run #26 SUCCESS (playwright inclus) sur `7e7c5de` : https://github.com/clevonegroup911/clevones.com/actions/runs/34347605991
 - sélecteur `getByRole("alert").filter({ hasText: "expiré" })` dans `tests/e2e/admin-mfa.spec.ts`
-- Playwright local : desktop PASS, mobile PASS (test capture login/MFA)
-- `npm test` 41/41 ; lint PASS ; tsc PASS ; build PASS ; x100:test PASS ; x100:validate PASS
+- Playwright local : desktop PASS, mobile PASS (test capture login/MFA) ; fixture MFA skippée hors CI (PostgreSQL loopback)
+- `npm test` 41/41 ; lint PASS ; tsc PASS ; build PASS ; x100:test PASS ; x100:validate PASS ; x200:doctor PASS
 - `[X200-CONTROL]` commentaire 5600307396 : https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5600307396
 - GitHub Actions X100 CI **run #24** (34338887982) SUCCESS : https://github.com/clevonegroup911/clevones.com/actions/runs/34338887982
 - timer enabled + active ; premier backup PASS ; checksum PASS ; `pg_restore --list` PASS

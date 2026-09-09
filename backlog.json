@@ -1085,7 +1085,8 @@
         "retention dry-run only; T004 20260907T020712Z and T005 20260907T134843Z preserved; EXPIRE_COUNT=0; no --apply",
         "production healthy: postgres pid 1067637, nginx pid 4081, pm2-clevones pid 5506, clevones-com pid 1212469 unchanged; HTTPS 200; disk 36%",
         "no production restore; no PostgreSQL/PM2/Nginx restart; no merge main; no secrets exposed; owner=human requiresHuman=true conserved; T014/T015 remain À_FAIRE",
-        "CI_FIX PLAYWRIGHT_SELECTOR after X100 CI run #25 34340389024 FAILURE unique playwright; tests/e2e/admin-mfa.spec.ts getByRole(alert).filter({ hasText: expiré }); production unchanged; timer unchanged"
+        "CI_FIX PLAYWRIGHT_SELECTOR after X100 CI run #25 34340389024 FAILURE unique playwright; tests/e2e/admin-mfa.spec.ts getByRole(alert).filter({ hasText: expiré }); production unchanged; timer unchanged",
+        "GitHub Actions X100 CI run #26 34347605991 SUCCESS on 7e7c5de3d2c0778f418d296f5cdbe69e9e837dda https://github.com/clevonegroup911/clevones.com/actions/runs/34347605991"
       ],
       "estimatedCost": 3,
       "risk": "high",
@@ -1433,6 +1434,13 @@
       "taskId": "T018",
       "status": "TERMINÉE",
       "note": "CI_FIX PLAYWRIGHT_SELECTOR after run #25 34340389024 FAILURE; getByRole(alert).filter({ hasText: expiré }); production and timer unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
+    },
+    {
+      "at": "2026-09-09",
+      "taskId": "T018",
+      "status": "TERMINÉE",
+      "commit": "7e7c5de3d2c0778f418d296f5cdbe69e9e837dda",
+      "note": "CI_FIX confirmed: X100 CI run #26 34347605991 SUCCESS on 7e7c5de; PLAYWRIGHT_SELECTOR; production/timer unchanged; T014/T015 remain À_FAIRE; NO_READY_TASK"
     }
   ],
   "registryVersion": 18,
