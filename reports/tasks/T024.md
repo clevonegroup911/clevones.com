@@ -86,4 +86,4 @@ Sandbox `PaymentProvider` + modèles Prisma Payment/PaymentAttempt. Aucune clé 
 
 ## Prochaine tâche prête
 
-- T025 (E2E) ; T026 requiresHuman
+- T024 CI puis T025 ; T026 requiresHuman

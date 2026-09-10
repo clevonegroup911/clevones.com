@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 49
+- Registre : 52
 - Mode : single-executor
 - Mis à jour : 2026-09-10
 
@@ -11,11 +11,11 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 1
-- PRÊTE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 2
-- TERMINÉE : 22
+- TERMINÉE : 23
 - ANNULÉE : 0
 
 ## Tâches
@@ -44,7 +44,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T020 | P1 | TERMINÉE | Documents privés et portail sécurisé | non |
 | T021 | P1 | TERMINÉE | Workflow documents et permissions | non |
 | T022 | P2 | TERMINÉE | Analytics first-party | non |
-| T023 | P2 | EN_CONTRÔLE | Notifications email opérationnelles | non |
-| T024 | P2 | PRÊTE | Paiements abstraction + sandbox | non |
+| T023 | P2 | TERMINÉE | Notifications email opérationnelles | non |
+| T024 | P2 | EN_CONTRÔLE | Paiements abstraction + sandbox | non |
 | T025 | P1 | À_FAIRE | E2E sécurité/responsive nouvelles fonctions | non |
 | T026 | P0 | À_FAIRE | Déploiement/migrations production | oui |

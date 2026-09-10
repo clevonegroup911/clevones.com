@@ -1540,7 +1540,7 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] deps product features delivered; wave3 e2e",
+      "lastTransitionReason": "deps T024 not TERMINÉE yet; demote until CI close",
       "evidence": [],
       "attempts": 0,
       "updatedAt": "2026-09-10",
@@ -1569,7 +1569,7 @@
         "npx playwright test",
         "npm run x100:validate"
       ],
-      "status": "PRÊTE",
+      "status": "À_FAIRE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2286,6 +2286,12 @@
       "taskId": "T025",
       "status": "PRÊTE",
       "note": "wave3 after T019-T024"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "À_FAIRE",
+      "note": "demote: T024 still EN_CONTRÔLE"
     }
   ],
   "registryVersion": 52,
