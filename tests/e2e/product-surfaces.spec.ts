@@ -82,8 +82,11 @@ test("authenticated admin can open CMS, analytics, and upload a private document
   await page.goto("/admin/cms");
   await expect(page.getByRole("heading", { name: "CMS" })).toBeVisible();
   await page.locator('input[name="title"]').fill(`E2E CMS ${project}`);
-  await page.getByRole("button", { name: "Créer" }).click();
-  await expect(page.getByRole("link", { name: `E2E CMS ${project}` })).toBeVisible();
+  await Promise.all([
+    page.waitForURL(/\/admin\/cms\/[^/]+$/),
+    page.getByRole("button", { name: "Créer" }).click(),
+  ]);
+  await expect(page.getByRole("heading", { name: `E2E CMS ${project}` })).toBeVisible();
   await captureSafeEvidence(page, `${project}-cms.png`);
 
   await page.goto("/admin/analytics");
