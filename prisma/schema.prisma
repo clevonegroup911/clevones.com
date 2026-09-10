@@ -263,3 +263,47 @@ model AnalyticsEvent {
   @@index([path])
   @@index([createdAt])
 }
+
+enum PaymentMethod {
+  CARD
+  M_PESA
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  CANCELLED
+}
+
+/// Sandbox/persisted payment intent (no real PSP keys).
+model Payment {
+  id             String           @id @default(cuid())
+  amountCents    Int
+  currency       String
+  method         PaymentMethod
+  status         PaymentStatus    @default(PENDING)
+  idempotencyKey String           @unique
+  provider       String           @default("sandbox")
+  providerRef    String
+  customerRef    String?
+  metadata       Json?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  attempts       PaymentAttempt[]
+
+  @@index([status, createdAt])
+  @@index([method])
+}
+
+model PaymentAttempt {
+  id              String        @id @default(cuid())
+  paymentId       String
+  payment         Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  status          PaymentStatus
+  providerMessage String        @default("")
+  createdAt       DateTime      @default(now())
+
+  @@index([paymentId, createdAt])
+}

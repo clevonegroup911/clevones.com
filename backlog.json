@@ -1428,13 +1428,15 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS",
       "evidence": [
         "docs/EMAIL_OPERATIONS.md abstract EmailProvider + console/memory + retries journal",
         "quality-gate T023 PASS",
         "EMAIL_PROVIDER=console in .env.example; no real SMTP secrets",
-        "initiative submission wired to sendEmail"
+        "initiative submission wired to sendEmail",
+        "GitHub Actions run 34460861264 SUCCESS on b54b2fc6f1b0642eabc88907de0f21008e1975c3 https://github.com/clevonegroup911/clevones.com/actions/runs/34460861264",
+        "commit ef6644ee06f3b147648401ed25f997e268f3a4aa feat(email); fix b54b2fc report"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-10",
@@ -1461,7 +1463,7 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 3,
       "risk": "medium",
       "requiresHuman": false
@@ -1473,12 +1475,28 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T09:32:08.988Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] deps satisfied; wave 2 promote",
-      "evidence": [],
-      "attempts": 0,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/PAYMENTS_SANDBOX.md PaymentProvider CARD/M_PESA sandbox",
+        "prisma Payment + PaymentAttempt migration CI/local only",
+        "lib/payments/sandbox.ts idempotency + webhook stub",
+        "quality-gate T024 PASS; no real payment keys"
+      ],
+      "attempts": 1,
       "updatedAt": "2026-09-10",
       "id": "T024",
       "title": "Paiements abstraction + sandbox",
@@ -1503,9 +1521,11 @@
         "npm test",
         "npm run lint",
         "npx tsc --noEmit",
-        "npm run x200:scan-secrets"
+        "npx prisma validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -1520,10 +1540,10 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": null,
+      "lastTransitionReason": "[X200-FAST] deps product features delivered; wave3 e2e",
       "evidence": [],
       "attempts": 0,
-      "updatedAt": "2026-09-09",
+      "updatedAt": "2026-09-10",
       "id": "T025",
       "title": "E2E sécurité/responsive nouvelles fonctions",
       "objective": "Couvrir Playwright des parcours CMS/documents/analytics/email/paiements sandbox implémentés.",
@@ -1549,7 +1569,7 @@
         "npx playwright test",
         "npm run x100:validate"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2235,9 +2255,40 @@
       "taskId": "T023",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST] email abstraction local gate PASS"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T023",
+      "status": "TERMINÉE",
+      "commit": "b54b2fc6f1b0642eabc88907de0f21008e1975c3",
+      "note": "[X200-FAST] email CI SUCCESS"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T024",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T024",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T024",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] payments sandbox local gate PASS"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "PRÊTE",
+      "note": "wave3 after T019-T024"
     }
   ],
-  "registryVersion": 49,
+  "registryVersion": 52,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
