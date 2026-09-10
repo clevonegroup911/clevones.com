@@ -1281,12 +1281,29 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T09:22:17.058Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] deps satisfied; wave 2 promote",
-      "evidence": [],
-      "attempts": 0,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/PRIVATE_DOCUMENTS.md ACL matrix + DocumentGrant",
+        "lib/documents/access.ts + access.test.ts privilege escalation coverage",
+        "API download/delete 403 + DOCUMENT_ACCESS_DENIED audit",
+        "quality-gate T021 PASS",
+        "no production migration"
+      ],
+      "attempts": 1,
       "updatedAt": "2026-09-10",
       "id": "T021",
       "title": "Workflow documents et permissions",
@@ -1300,7 +1317,10 @@
       "scope": [
         "lib/documents",
         "lib/auth",
+        "lib/admin",
         "app/(dashboard)/portal",
+        "app/api/portal",
+        "prisma",
         "docs"
       ],
       "acceptanceCriteria": [
@@ -1311,9 +1331,12 @@
       "tests": [
         "npm test",
         "npm run lint",
-        "npx tsc --noEmit"
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 3,
       "risk": "high",
       "requiresHuman": false
@@ -1338,14 +1361,16 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS",
       "evidence": [
         "docs/ANALYTICS_FIRST_PARTY.md first-party AnalyticsEvent + dashboard /admin/analytics",
         "quality-gate T022 PASS (prisma validate, npm test, lint, tsc, scan-secrets, diff-check)",
         "npm run build PASS this session",
         "no third-party tracker; no IP/UA in AnalyticsEvent; no production migration",
-        "CI #33 classify/secrets/db_integration already fixed on HEAD via ci-step"
+        "CI #33 classify/secrets/db_integration already fixed on HEAD via ci-step",
+        "GitHub Actions run 34459771603 SUCCESS on f1195a71ddea95e6ecc53e88a862ce369003122b https://github.com/clevonegroup911/clevones.com/actions/runs/34459771603",
+        "commit f1195a71ddea95e6ecc53e88a862ce369003122b feat(analytics): add first-party event tracking and admin dashboard"
       ],
       "attempts": 2,
       "updatedAt": "2026-09-10",
@@ -1376,7 +1401,7 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2135,9 +2160,40 @@
       "taskId": "T024",
       "status": "PRÊTE",
       "note": "[X200-FAST] À_FAIRE→PRÊTE after T022 EN_CONTRÔLE"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T022",
+      "status": "TERMINÉE",
+      "commit": "f1195a71ddea95e6ecc53e88a862ce369003122b",
+      "note": "[X200-FAST] CI quality SUCCESS; analytics first-party"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] document ACL local gate PASS"
     }
   ],
-  "registryVersion": 42,
+  "registryVersion": 46,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

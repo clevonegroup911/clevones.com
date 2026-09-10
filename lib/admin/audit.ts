@@ -21,6 +21,7 @@ export const auditActions = {
   DOCUMENT_UPLOADED: "DOCUMENT_UPLOADED",
   DOCUMENT_DOWNLOADED: "DOCUMENT_DOWNLOADED",
   DOCUMENT_SOFT_DELETED: "DOCUMENT_SOFT_DELETED",
+  DOCUMENT_ACCESS_DENIED: "DOCUMENT_ACCESS_DENIED",
 } as const;
 
 export type AuditAction = (typeof auditActions)[keyof typeof auditActions];

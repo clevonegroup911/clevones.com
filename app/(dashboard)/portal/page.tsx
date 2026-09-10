@@ -5,7 +5,7 @@ import Link from "next/link";
 import { DocumentUploadForm } from "@/app/(dashboard)/portal/upload-form";
 import { SoftDeleteButton } from "@/app/(dashboard)/portal/soft-delete-button";
 import { requireAdmin } from "@/lib/auth/require-admin";
-import { listDocuments } from "@/lib/documents/service";
+import { listDocumentsForActor } from "@/lib/documents/service";
 
 export const metadata = createPageMetadata({
   title: "Client portal",
@@ -21,7 +21,10 @@ type PageProps = {
 export default async function PortalPage({ searchParams }: PageProps) {
   const actor = await requireAdmin();
   const query = (await searchParams).q?.trim() || "";
-  const documents = await listDocuments({ query });
+  const documents = await listDocumentsForActor(
+    { id: actor.id, role: actor.role },
+    { query },
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-10 sm:px-6">

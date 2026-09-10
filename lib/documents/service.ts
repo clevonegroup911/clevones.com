@@ -5,6 +5,11 @@ import type {
   PrismaClient,
 } from "@prisma/client";
 
+import {
+  canAccessDocument,
+  documentListFilterForActor,
+  type DocumentActor,
+} from "@/lib/documents/access";
 import { prisma } from "@/lib/db/prisma";
 import {
   buildStorageKey,
@@ -14,6 +19,17 @@ import {
 } from "@/lib/documents/storage";
 
 export type DocumentsClient = PrismaClient | Prisma.TransactionClient;
+
+export class DocumentAccessError extends Error {
+  readonly code = "DOCUMENT_ACCESS_DENIED";
+  readonly reason: string;
+
+  constructor(reason: string) {
+    super(`Document access denied: ${reason}`);
+    this.name = "DocumentAccessError";
+    this.reason = reason;
+  }
+}
 
 export type UploadDocumentInput = {
   title: string;
@@ -26,6 +42,18 @@ export type UploadDocumentInput = {
   ownerId: string;
   uploadedById: string;
 };
+
+async function actorHasGrant(
+  documentId: string,
+  userId: string,
+  client: DocumentsClient,
+): Promise<boolean> {
+  const grant = await client.documentGrant.findUnique({
+    where: { documentId_userId: { documentId, userId } },
+    select: { canRead: true },
+  });
+  return Boolean(grant?.canRead);
+}
 
 export async function uploadDocument(
   input: UploadDocumentInput,
@@ -55,20 +83,65 @@ export async function uploadDocument(
   }
 }
 
-export async function listDocuments(options: {
-  query?: string;
-  includeDeleted?: boolean;
-} = {}, client: DocumentsClient = prisma) {
+export async function listDocumentsForActor(
+  actor: DocumentActor,
+  options: { query?: string; includeDeleted?: boolean } = {},
+  client: DocumentsClient = prisma,
+) {
   const query = options.query?.trim();
+  const filter = documentListFilterForActor(actor);
+  const textFilter = query
+    ? {
+        OR: [
+          { title: { contains: query, mode: "insensitive" as const } },
+          { fileName: { contains: query, mode: "insensitive" as const } },
+          { description: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
+
+  if (filter.mode === "all") {
+    return client.document.findMany({
+      where: {
+        deletedAt: options.includeDeleted ? undefined : null,
+        ...textFilter,
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+  }
+
   return client.document.findMany({
     where: {
       deletedAt: options.includeDeleted ? undefined : null,
-      ...(query
+      AND: [
+        {
+          OR: [
+            { ownerId: actor.id },
+            ...(filter.includeInternal ? [{ accessLevel: "INTERNAL" as const }] : []),
+            { grants: { some: { userId: actor.id, canRead: true as const } } },
+          ],
+        },
+        textFilter,
+      ],
+    },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
+/** @deprecated Prefer listDocumentsForActor */
+export async function listDocuments(
+  options: { query?: string; includeDeleted?: boolean } = {},
+  client: DocumentsClient = prisma,
+) {
+  return client.document.findMany({
+    where: {
+      deletedAt: options.includeDeleted ? undefined : null,
+      ...(options.query?.trim()
         ? {
             OR: [
-              { title: { contains: query, mode: "insensitive" } },
-              { fileName: { contains: query, mode: "insensitive" } },
-              { description: { contains: query, mode: "insensitive" } },
+              { title: { contains: options.query.trim(), mode: "insensitive" } },
+              { fileName: { contains: options.query.trim(), mode: "insensitive" } },
+              { description: { contains: options.query.trim(), mode: "insensitive" } },
             ],
           }
         : {}),
@@ -81,6 +154,24 @@ export async function getActiveDocument(id: string, client: DocumentsClient = pr
   return client.document.findFirst({
     where: { id, deletedAt: null },
   });
+}
+
+export async function assertCanAccessDocument(
+  actor: DocumentActor,
+  documentId: string,
+  action: "read" | "delete",
+  client: DocumentsClient = prisma,
+) {
+  const document = await getActiveDocument(documentId, client);
+  if (!document) {
+    return null;
+  }
+  const hasGrant = await actorHasGrant(document.id, actor.id, client);
+  const decision = canAccessDocument(actor, document, action, { hasGrant });
+  if (!decision.allowed) {
+    throw new DocumentAccessError(decision.reason);
+  }
+  return document;
 }
 
 export async function softDeleteDocument(

@@ -41,6 +41,7 @@ model User {
   mediaAssetsUploaded  MediaAsset[]
   documentsOwned       Document[]      @relation("DocumentOwner")
   documentsUploaded    Document[]      @relation("DocumentUploader")
+  documentGrants       DocumentGrant[] @relation("DocumentGrants")
 }
 
 model UserMfaSecret {
@@ -216,12 +217,28 @@ model Document {
   deletedAt     DateTime?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
+  grants        DocumentGrant[]
 
   @@index([ownerId])
   @@index([category])
   @@index([accessLevel])
   @@index([deletedAt])
   @@index([title])
+}
+
+/// Explicit per-user grant for RESTRICTED (and optional PRIVATE) documents.
+model DocumentGrant {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation("DocumentGrants", fields: [userId], references: [id], onDelete: Cascade)
+  canRead    Boolean  @default(true)
+  canWrite   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([documentId, userId])
+  @@index([userId])
 }
 
 enum AnalyticsEventName {
