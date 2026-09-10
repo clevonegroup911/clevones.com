@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T025",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1539,12 +1539,28 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T09:43:26.116Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] T019-T024 TERMINÉE",
-      "evidence": [],
-      "attempts": 0,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/E2E_PRODUCT.md Playwright CMS/analytics/portal/email/payments surfaces",
+        "quality-gate T025 PASS (playwright + x100:validate)",
+        "fixtures only; no production data",
+        "T026 not started (requiresHuman)"
+      ],
+      "attempts": 1,
       "updatedAt": "2026-09-10",
       "id": "T025",
       "title": "E2E sécurité/responsive nouvelles fonctions",
@@ -1571,7 +1587,7 @@
         "npx playwright test",
         "npm run x100:validate"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2307,9 +2323,21 @@
       "taskId": "T025",
       "status": "PRÊTE",
       "note": "wave3 e2e ready"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "EN_COURS",
+      "note": "réservation par cloud:cursor-t025-0652"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 53,
+  "registryVersion": 55,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
