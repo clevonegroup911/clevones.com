@@ -1601,13 +1601,32 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T11:13:22.529Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": null,
-      "evidence": [],
-      "attempts": 0,
-      "updatedAt": "2026-09-09",
+      "lastTransitionReason": "critères et contrôles satisfaits",
+      "evidence": [
+        "[X200-OWNER-AUTH] T026 controlled deploy sequence 2026-09-10; TARGET_SHA=1c2f4f884ac1a5633a2104258dbe1babc1dda274",
+        "PRE_DEPLOY_SHA=1c33a65aa552637afbe5f20b056730fed4e0e3e3",
+        "DEPLOYED_SHA=1c2f4f884ac1a5633a2104258dbe1babc1dda274",
+        "backup 20260910T110552Z sha256 04943daf0302847ec4e959191b446c6d7f6eaade59cf265c0d81c3ebebb687d2 checksum+list+temp restore PASS; temp db dropped; clevones_prod untouched",
+        "prisma migrate deploy applied 20260909170000_add_cms_content 20260909173000_add_private_documents 20260909180000_add_analytics_events 20260910100000_add_document_grants 20260910110000_add_payment_sandbox; status up to date",
+        "npm ci PASS; next build PASS; pm2 restart clevones-com only (restarts 6→7, online, unstable=0); nginx -t OK no restart",
+        "smoke HTTPS / 200 login 200 dashboard/cms/portal/analytics 307→login; SUPER_ADMIN ACTIVE mfaEnabled=1; schema CMS/Document/DocumentGrant/AnalyticsEvent/Payment present"
+      ],
+      "attempts": 1,
+      "updatedAt": "2026-09-10",
       "id": "T026",
       "title": "Déploiement/migrations production",
       "objective": "Exécuter migrations et déploiement production de façon contrôlée après validation humaine.",
@@ -1635,7 +1654,7 @@
       "tests": [
         "npm run x200:deploy-check"
       ],
-      "status": "À_FAIRE",
+      "status": "TERMINÉE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": true
@@ -2344,9 +2363,28 @@
       "status": "TERMINÉE",
       "commit": "79e434067656fa1bf672155fc6178e938dd2ce65",
       "note": "[X200-FAST] CI FULL quality SUCCESS incl. Playwright; T026 not started"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T026",
+      "status": "PRÊTE",
+      "note": "[X200-OWNER-AUTH] controlled production sequence; TARGET_SHA=1c2f4f884ac1a5633a2104258dbe1babc1dda274"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T026",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T026",
+      "status": "TERMINÉE",
+      "commit": "1c2f4f884ac1a5633a2104258dbe1babc1dda274",
+      "note": "[X200-OWNER-AUTH] production deployed TARGET_SHA; backup 20260910T110552Z; 5 additive migrations; PM2 restart clevones-com only"
     }
   ],
-  "registryVersion": 56,
+  "registryVersion": 58,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

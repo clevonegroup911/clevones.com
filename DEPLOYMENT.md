@@ -86,6 +86,10 @@ L’automatisation quotidienne (systemd service + timer) est documentée dans `d
 
 Wrapper : `scripts/run-scheduled-backup.sh` (appelle les scripts T004). Rétention : `scripts/retain-postgres-backups.sh --dry-run`.
 
+## T026 — déploiement contrôlé 2026-09-10
+
+Après `[X200-OWNER-AUTH]`, production sert le SHA figé `1c2f4f884ac1a5633a2104258dbe1babc1dda274` (detached). Dump pré-déploiement `20260910T110552Z` (mode `700`/`600`, checksum `04943daf…87d2`, `pg_restore --list` OK, restore-test `clevones_t026_restore_20260910t110552z` puis drop de cette base seulement). Cinq migrations additives appliquées une fois. `npm ci` + `next build` OK. PM2 `clevones-com` restart unique (`--update-env`), online, unstable=0. Nginx `-t` OK, non redémarré. `clevones_prod` non restaurée. PR #1 reste Draft. Aucun merge `main`.
+
 ## Interdit
 
 - `prisma migrate reset`, `prisma db push` destructif, `DROP DATABASE`
