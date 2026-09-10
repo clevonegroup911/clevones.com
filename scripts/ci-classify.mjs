@@ -15,6 +15,8 @@ const FULL_PATTERNS = [
   /^prisma\//,
   /^lib\/auth\//,
   /^app\/admin\//,
+  /^tests\/e2e\//,
+  /^playwright\.config\.ts$/,
   /^middleware\.ts$/,
   /^instrumentation\.ts$/,
   /^\.env(?:\.|$)/,

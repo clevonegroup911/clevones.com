@@ -11,9 +11,9 @@ test("CI classifier sends ordinary code to FAST", () => {
   assert.equal(result.mode, "FAST");
 });
 
-test("CI classifier sends auth and workflow changes to FULL", () => {
-  assert.equal(classifyChangedFiles({ files: ["lib/auth/session.ts"] }).mode, "FULL");
-  assert.equal(classifyChangedFiles({ files: [".github/workflows/ci.yml"] }).mode, "FULL");
+test("CI classifier sends Playwright e2e coverage to FULL", () => {
+  assert.equal(classifyChangedFiles({ files: ["tests/e2e/product-surfaces.spec.ts"] }).mode, "FULL");
+  assert.equal(classifyChangedFiles({ files: ["playwright.config.ts"] }).mode, "FULL");
 });
 
 test("CI classifier allows report-only metadata lane", () => {
