@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 55
+- Registre : 56
 - Mode : single-executor
 - Mis à jour : 2026-09-10
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 1
-- TERMINÉE : 24
+- TERMINÉE : 25
 - ANNULÉE : 0
 
 ## Tâches
@@ -46,5 +46,5 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T022 | P2 | TERMINÉE | Analytics first-party | non |
 | T023 | P2 | TERMINÉE | Notifications email opérationnelles | non |
 | T024 | P2 | TERMINÉE | Paiements abstraction + sandbox | non |
-| T025 | P1 | EN_CONTRÔLE | E2E sécurité/responsive nouvelles fonctions | non |
+| T025 | P1 | TERMINÉE | E2E sécurité/responsive nouvelles fonctions | non |
 | T026 | P0 | À_FAIRE | Déploiement/migrations production | oui |

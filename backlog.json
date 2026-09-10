@@ -1552,13 +1552,15 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS",
       "evidence": [
         "docs/E2E_PRODUCT.md Playwright CMS/analytics/portal/email/payments surfaces",
         "quality-gate T025 PASS (playwright + x100:validate)",
         "fixtures only; no production data",
-        "T026 not started (requiresHuman)"
+        "T026 not started (requiresHuman)",
+        "GitHub Actions run 34462998008 SUCCESS on 361c27b7c045525399602cf0f7753f3db2570010 https://github.com/clevonegroup911/clevones.com/actions/runs/34462998008",
+        "commit 79e434067656fa1bf672155fc6178e938dd2ce65 test(e2e) + 361c27b CMS redirect fix"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-10",
@@ -1587,7 +1589,7 @@
         "npx playwright test",
         "npm run x100:validate"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2335,9 +2337,16 @@
       "taskId": "T025",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "TERMINÉE",
+      "commit": "79e434067656fa1bf672155fc6178e938dd2ce65",
+      "note": "[X200-FAST] CI FULL quality SUCCESS incl. Playwright; T026 not started"
     }
   ],
-  "registryVersion": 55,
+  "registryVersion": 56,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

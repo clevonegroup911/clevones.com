@@ -10,7 +10,7 @@ T025
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Couvrir Playwright des parcours CMS/documents/analytics/email/paiements sandbox 
 
 ## Résultat
 
-Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public sans clés paiement + POST initiative fixture ; parcours admin CMS/analytics/upload (CI Postgres). T022 rapport clôturé (CI #49 / `f1195a71`). T023/T024 déjà TERMINÉES. T026 non démarrée. Branche Cloud analytics non fusionnée.
+Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public sans clés paiement + POST initiative fixture ; parcours admin CMS (création → éditeur), analytics, upload document privé. CI FULL `quality` SUCCESS run 34462998008 (Playwright inclus). T022 clôturée (CI #49 / `f1195a71`). T023/T024 déjà TERMINÉES. T026 non démarrée (`requiresHuman`). Branche Cloud analytics non fusionnée.
 
 ## Fichiers créés
 
@@ -30,6 +30,7 @@ Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public 
 ## Fichiers modifiés
 
 - `reports/tasks/T022.md`
+- `scripts/ci-classify.mjs` (tests/e2e → lane FULL)
 - `backlog.json`
 
 ## Commandes
@@ -39,6 +40,7 @@ Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public 
 ## Tests réussis
 
 - quality-gate T025 PASS
+- GitHub Actions run 34462998008 (`quality` + `x100-ci-comment`) SUCCESS, lane FULL, Playwright inclus
 
 ## Tests échoués
 
@@ -46,7 +48,7 @@ Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public 
 
 ## Lint
 
-- succès (tsc local)
+- succès
 
 ## Type-check
 
@@ -54,15 +56,16 @@ Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public 
 
 ## Build
 
-- Playwright e2e (FULL CI à venir)
+- CI FULL SUCCESS
 
 ## Sécurité
 
-- fixtures seulement ; screenshots loopback ; pas de secrets
+- fixtures seulement ; screenshots loopback ; pas de secrets ; pas de merge `main` ; pas de deploy
 
 ## Commit
 
-- (à renseigner après push)
+- `79e434067656fa1bf672155fc6178e938dd2ce65` — test(e2e): cover CMS, analytics, portal, email, and sandbox payments
+- `361c27b7c045525399602cf0f7753f3db2570010` — fix(e2e): wait for CMS create redirect to the page editor
 
 ## Pull Request
 
@@ -70,18 +73,18 @@ Playwright desktop/mobile : refus unauth CMS/analytics/portail ; contact public 
 
 ## Preuves
 
-- quality-gate T025
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34462998008
 - T022 CI #49 https://github.com/clevonegroup911/clevones.com/actions/runs/34459771603
 - `docs/E2E_PRODUCT.md`
 
 ## Risques
 
-- e2e authentifié exige Postgres éphémère (skip local sans Docker ; obligatoire en CI)
+- aucun bloquant
 
 ## Blocage
 
-- aucun
+- T026 `requiresHuman` — non démarrée
 
 ## Prochaine tâche prête
 
-- T026 requiresHuman — non démarrée
+- NO_READY_TASK (T026 humaine)
