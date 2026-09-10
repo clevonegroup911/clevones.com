@@ -10,7 +10,7 @@ T024
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -86,4 +86,4 @@ Sandbox `PaymentProvider` + modèles Prisma Payment/PaymentAttempt. Aucune clé 
 
 ## Prochaine tâche prête
 
-- T024 CI puis T025 ; T026 requiresHuman
+- T025 PRÊTE ; T026 requiresHuman=true

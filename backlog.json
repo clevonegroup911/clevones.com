@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T025",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1488,13 +1488,15 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS",
       "evidence": [
         "docs/PAYMENTS_SANDBOX.md PaymentProvider CARD/M_PESA sandbox",
         "prisma Payment + PaymentAttempt migration CI/local only",
         "lib/payments/sandbox.ts idempotency + webhook stub",
-        "quality-gate T024 PASS; no real payment keys"
+        "quality-gate T024 PASS; no real payment keys",
+        "GitHub Actions run 34461245971 SUCCESS https://github.com/clevonegroup911/clevones.com/actions/runs/34461245971",
+        "commit 5f99e48 feat(payments); 7ce632a backlog fix"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-10",
@@ -1525,7 +1527,7 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -1540,7 +1542,7 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "deps T024 not TERMINÉE yet; demote until CI close",
+      "lastTransitionReason": "[X200-FAST] T019-T024 TERMINÉE",
       "evidence": [],
       "attempts": 0,
       "updatedAt": "2026-09-10",
@@ -1569,7 +1571,7 @@
         "npx playwright test",
         "npm run x100:validate"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -2292,9 +2294,22 @@
       "taskId": "T025",
       "status": "À_FAIRE",
       "note": "demote: T024 still EN_CONTRÔLE"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T024",
+      "status": "TERMINÉE",
+      "commit": "7ce632a1740ab31b2eb896f7436162cdd296b348",
+      "note": "[X200-FAST] payments CI SUCCESS"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T025",
+      "status": "PRÊTE",
+      "note": "wave3 e2e ready"
     }
   ],
-  "registryVersion": 52,
+  "registryVersion": 53,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
