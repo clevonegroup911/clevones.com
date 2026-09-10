@@ -1294,14 +1294,16 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS",
       "evidence": [
         "docs/PRIVATE_DOCUMENTS.md ACL matrix + DocumentGrant",
         "lib/documents/access.ts + access.test.ts privilege escalation coverage",
         "API download/delete 403 + DOCUMENT_ACCESS_DENIED audit",
         "quality-gate T021 PASS",
-        "no production migration"
+        "no production migration",
+        "GitHub Actions run 34460367753 SUCCESS on 1862246625a114bbf6e500319e6be67c9b655ab1 https://github.com/clevonegroup911/clevones.com/actions/runs/34460367753",
+        "commit 1862246625a114bbf6e500319e6be67c9b655ab1 feat(documents): enforce role-scoped ACL and document grants"
       ],
       "attempts": 1,
       "updatedAt": "2026-09-10",
@@ -1336,7 +1338,7 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 3,
       "risk": "high",
       "requiresHuman": false
@@ -1413,13 +1415,29 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T09:27:52.780Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST-PRODUCT] independent of T020 CI wait",
-      "evidence": [],
-      "attempts": 0,
-      "updatedAt": "2026-09-09",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/EMAIL_OPERATIONS.md abstract EmailProvider + console/memory + retries journal",
+        "quality-gate T023 PASS",
+        "EMAIL_PROVIDER=console in .env.example; no real SMTP secrets",
+        "initiative submission wired to sendEmail"
+      ],
+      "attempts": 1,
+      "updatedAt": "2026-09-10",
       "id": "T023",
       "title": "Notifications email opérationnelles",
       "objective": "Brancher une architecture email abstraite testable avec journal, retries et templates FR/EN.",
@@ -1440,9 +1458,10 @@
         "npm test",
         "npm run lint",
         "npx tsc --noEmit",
-        "npm run x200:scan-secrets"
+        "npm run x200:scan-secrets",
+        "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 3,
       "risk": "medium",
       "requiresHuman": false
@@ -2191,9 +2210,34 @@
       "taskId": "T021",
       "status": "EN_CONTRÔLE",
       "note": "[X200-FAST] document ACL local gate PASS"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "TERMINÉE",
+      "commit": "1862246625a114bbf6e500319e6be67c9b655ab1",
+      "note": "[X200-FAST] CI SUCCESS document ACL"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T023",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T023",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T023",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] email abstraction local gate PASS"
     }
   ],
-  "registryVersion": 46,
+  "registryVersion": 49,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

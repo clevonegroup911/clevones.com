@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
+import { resolveEmailProviderFromEnv, sendEmail } from "@/lib/email/send";
+import { initiativeEmailTemplate } from "@/lib/email/templates";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -42,7 +44,12 @@ export async function POST(request: Request) {
     logInitiativeSubmissionInDevelopment(submission);
 
     const preparedEmail = prepareInitiativeSubmissionEmail(submission);
-    void preparedEmail;
+    const message = initiativeEmailTemplate(preparedEmail, "en");
+    await sendEmail(message, {
+      provider: resolveEmailProviderFromEnv(),
+      maxAttempts: 3,
+      retryDelayMs: 0,
+    });
 
     await trackAnalyticsEvent({
       name: "FORM_SUBMIT",
