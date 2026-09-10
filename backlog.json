@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-09",
+  "updatedAt": "2026-09-10",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -1284,10 +1284,10 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": null,
+      "lastTransitionReason": "[X200-FAST] deps satisfied; wave 2 promote",
       "evidence": [],
       "attempts": 0,
-      "updatedAt": "2026-09-09",
+      "updatedAt": "2026-09-10",
       "id": "T021",
       "title": "Workflow documents et permissions",
       "objective": "Appliquer la matrice SUPER_ADMIN/ADMIN/USER sur documents avec contrôles serveur et tests d’escalade.",
@@ -1313,7 +1313,7 @@
         "npm run lint",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "estimatedCost": 3,
       "risk": "high",
       "requiresHuman": false
@@ -1324,20 +1324,31 @@
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
-      "claim": {
-        "workerId": "local:fedora",
-        "token": "a4acebe97bdba51f47ad15d1dcf3ad6f",
-        "claimedAt": "2026-09-09T16:06:37.088Z",
-        "expiresAt": "2026-09-09T18:06:37.088Z",
-        "leaseSeconds": 7200
-      },
-      "evidenceRecords": [],
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-10T09:15:50.387Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "exécuter le périmètre puis quality-gate",
-      "lastTransitionReason": "réservation par local:fedora",
-      "evidence": [],
-      "attempts": 1,
-      "updatedAt": "2026-09-09",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "evidence": [
+        "docs/ANALYTICS_FIRST_PARTY.md first-party AnalyticsEvent + dashboard /admin/analytics",
+        "quality-gate T022 PASS (prisma validate, npm test, lint, tsc, scan-secrets, diff-check)",
+        "npm run build PASS this session",
+        "no third-party tracker; no IP/UA in AnalyticsEvent; no production migration",
+        "CI #33 classify/secrets/db_integration already fixed on HEAD via ci-step"
+      ],
+      "attempts": 2,
+      "updatedAt": "2026-09-10",
       "id": "T022",
       "title": "Analytics first-party",
       "objective": "Enregistrer événements serveur utiles et dashboard admin sans tracker tiers obligatoire.",
@@ -1358,11 +1369,14 @@
         "Aucun tracker tiers obligatoire"
       ],
       "tests": [
+        "npx prisma validate",
         "npm test",
         "npm run lint",
-        "npx tsc --noEmit"
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "git diff --check"
       ],
-      "status": "EN_COURS",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 4,
       "risk": "medium",
       "requiresHuman": false
@@ -1418,10 +1432,10 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": null,
+      "lastTransitionReason": "[X200-FAST] deps satisfied; wave 2 promote",
       "evidence": [],
       "attempts": 0,
-      "updatedAt": "2026-09-09",
+      "updatedAt": "2026-09-10",
       "id": "T024",
       "title": "Paiements abstraction + sandbox",
       "objective": "Construire PaymentProvider sandbox (CARD/VISA, M_PESA) avec idempotency et audit, sans transaction réelle.",
@@ -1447,7 +1461,7 @@
         "npx tsc --noEmit",
         "npm run x200:scan-secrets"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": false
@@ -2085,9 +2099,45 @@
       "taskId": "T022",
       "status": "EN_COURS",
       "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T022",
+      "status": "PRÊTE",
+      "note": "expired claim cleared after WIP reconcile; analytics partial retained"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T022",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T022",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T022",
+      "status": "EN_CONTRÔLE",
+      "note": "[X200-FAST] analytics first-party local gate PASS; attente quality CI"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T021",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] À_FAIRE→PRÊTE after T022 EN_CONTRÔLE"
+    },
+    {
+      "at": "2026-09-10",
+      "taskId": "T024",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] À_FAIRE→PRÊTE after T022 EN_CONTRÔLE"
     }
   ],
-  "registryVersion": 39,
+  "registryVersion": 42,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

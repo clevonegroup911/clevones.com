@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import {
@@ -34,6 +35,12 @@ export async function GET(_request: Request, context: RouteContext) {
     entityId: document.id,
     metadata: { sizeBytes: document.sizeBytes },
     ...ctx,
+  });
+  await trackAnalyticsEvent({
+    name: "DOCUMENT_DOWNLOAD",
+    path: "/portal",
+    label: document.category,
+    actorId: actor.id,
   });
 
   return new NextResponse(bytes, {

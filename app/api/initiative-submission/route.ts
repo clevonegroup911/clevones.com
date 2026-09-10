@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -42,6 +43,17 @@ export async function POST(request: Request) {
 
     const preparedEmail = prepareInitiativeSubmissionEmail(submission);
     void preparedEmail;
+
+    await trackAnalyticsEvent({
+      name: "FORM_SUBMIT",
+      path: "/api/initiative-submission",
+      label: "initiative",
+    });
+    await trackAnalyticsEvent({
+      name: "COMMERCIAL_ACTION",
+      path: "/api/initiative-submission",
+      label: submission.expectedCollaborationType.slice(0, 80),
+    });
 
     return NextResponse.json({
       success: true,

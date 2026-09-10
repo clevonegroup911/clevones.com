@@ -223,3 +223,26 @@ model Document {
   @@index([deletedAt])
   @@index([title])
 }
+
+enum AnalyticsEventName {
+  PAGE_VIEW
+  FORM_SUBMIT
+  ADMIN_LOGIN
+  DOCUMENT_UPLOAD
+  DOCUMENT_DOWNLOAD
+  COMMERCIAL_ACTION
+}
+
+/// First-party analytics event (privacy-preserving: no raw IP/UA stored).
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  name      AnalyticsEventName
+  path      String             @default("")
+  label     String             @default("")
+  actorId   String?
+  createdAt DateTime           @default(now())
+
+  @@index([name, createdAt])
+  @@index([path])
+  @@index([createdAt])
+}

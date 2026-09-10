@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import {
   canAccessAdminConsole,
   getAdminAccessDenialReason,
@@ -189,6 +190,11 @@ export async function loginAdmin(
         sub: user.id,
         email: user.email,
         role: user.role,
+      });
+      await trackAnalyticsEvent({
+        name: "ADMIN_LOGIN",
+        path: "/admin/login",
+        actorId: user.id,
       });
     }
   } catch {

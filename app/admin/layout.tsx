@@ -4,11 +4,16 @@ import Link from "next/link";
 
 import { logoutAdmin } from "@/app/admin/actions";
 import { Container } from "@/components/ui/container";
+import { recordPageView } from "@/lib/analytics/page-view";
+import { adminRoutes } from "@/lib/auth/routes";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import { siteConfig } from "@/lib/site";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const actor = await getOptionalAdminActor();
+  if (actor) {
+    await recordPageView(adminRoutes.root);
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
@@ -20,20 +25,26 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           {actor ? (
             <div className="flex items-center gap-3">
               <Link
-                href="/admin/dashboard"
+                href={adminRoutes.dashboard}
                 className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
               >
                 Dashboard
               </Link>
               <Link
-                href="/admin/cms"
+                href={adminRoutes.cms}
                 className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
               >
                 CMS
               </Link>
+              <Link
+                href={adminRoutes.analytics}
+                className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
+              >
+                Analytics
+              </Link>
               {actor.role === "SUPER_ADMIN" ? (
                 <Link
-                  href="/admin/security/mfa"
+                  href={adminRoutes.securityMfa}
                   className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
                 >
                   Sécurité / MFA
@@ -50,7 +61,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             </div>
           ) : (
             <Link
-              href="/admin/login"
+              href={adminRoutes.login}
               className="rounded-sm border border-border-subtle px-2.5 py-1 text-xs font-medium text-gold-muted transition-colors hover:border-gold/30 hover:text-gold"
             >
               Admin

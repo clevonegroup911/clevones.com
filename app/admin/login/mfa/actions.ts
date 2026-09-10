@@ -37,6 +37,7 @@ import {
 } from "@/lib/auth/rate-limit";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
 import { safeAdminCallbackUrl } from "@/lib/auth/routes";
+import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { setAdminSessionCookie } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import type { Prisma } from "@prisma/client";
@@ -266,6 +267,12 @@ export async function verifyAdminMfa(
       sub: user.id,
       email: user.email,
       role: user.role,
+    });
+    await trackAnalyticsEvent({
+      name: "ADMIN_LOGIN",
+      path: "/admin/login/mfa",
+      actorId: user.id,
+      label: usedRecoveryCodeId ? "recovery" : "totp",
     });
     destination = safeAdminCallbackUrl(claims.callbackUrl);
   } catch (error) {
