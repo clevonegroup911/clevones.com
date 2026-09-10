@@ -45,7 +45,11 @@ Architecture email réelle mais testable : provider abstrait, mode dev/test, jou
 
 - aucun
 
-## Lint / Type-check
+## Lint
+
+- succès
+
+## Type-check
 
 - succès
 
@@ -60,11 +64,11 @@ Architecture email réelle mais testable : provider abstrait, mode dev/test, jou
 
 ## Commit
 
-- (à renseigner)
+- `ef6644e` — `feat(email): add abstract operational email provider with retries`
 
 ## Pull Request
 
-- PR draft #1
+- PR draft #1 : https://github.com/clevonegroup911/clevones.com/pull/1
 
 ## Preuves
 
