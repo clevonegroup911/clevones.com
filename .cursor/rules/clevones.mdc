@@ -1,28 +1,62 @@
 ---
-description: Orchestration X200 — sélection, réservation, contrôles, PR draft, jamais de merge ni déploiement automatique
+description: Orchestration X200 FAST-LANE — Fedora local, reprise automatique, zéro doublon, gates humains ciblés
 alwaysApply: true
 ---
 
-# X200 — Clevones
+# X200 FAST-LANE — Clevones
 
-X200 est la gouvernance courante (registre T001–T200). Les commandes `x100:*` restent le contrat d’automatisation. Ce n’est pas une promesse de vitesse ×200. Voir `docs/X200_GOVERNANCE.md`.
+X200 est la gouvernance courante. X100 reste l'historique et le contrat de compatibilité de certaines commandes. Lire `AGENTS.md` comme autorité opérationnelle principale du dépôt.
 
-Suivre cet ordre à chaque session. Ne pas en commencer une autre hors de cet ordre.
+## Mode par défaut
 
-1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`. Vérifier Git et GitHub.
-2. Valider : `npm run x100:validate` (alias `x200:validate`).
-3. Après coupure : `HEAD`, PR, CI, backlog, puis `npm run x200:resume`. Ne pas répéter un effet externe incertain.
-4. Sélectionner uniquement une tâche `PRÊTE` : `npm run x100:next -- --json`. Si `IN_CONTROL_WAIT`, ne rien commencer. Ne pas prendre `BLOQUÉE`, `ÉCHOUÉE`, `EN_CONTRÔLE`, `ANNULÉE`. Une P0 `EN_COURS` à la fois. Max trois `EN_COURS`. Jamais paralléliser migration ou authentification. Zéro doublon : ne pas rejouer une `TERMINÉE` encore prouvée.
-5. Réserver si besoin : `npm run x200:claim -- --json <ID>`. Un jeton expiré ne finalise pas une tâche reprise par un autre.
-6. Travailler uniquement dans `scope`. Inspecter `git status` et chaque fichier avant modification. Préserver T001–T016 et les commentaires `[X100-*]`.
-7. Exécuter les contrôles de la tâche (`npm run x100:test`, tests listés, `git diff --check`). Ne jamais désactiver un test. Stopper après trois échecs identiques.
-8. Mettre à jour `TASK_REPORT.md` avec `[X100-CURSOR]` et `[X200-CURSOR]`.
-9. Copier le rapport vers `reports/tasks/<ID>.md`.
-10. Mettre à jour `backlog.json` (état, preuves, `registryVersion`, `updatedAt`). `TERMINÉE` seulement avec preuves. Un quality-gate en échec interdit `TERMINÉE`.
-11. Commiter sur la branche de travail, message conventionnel. Jamais de secret, jamais de `.env`.
-12. Pousser la branche seulement si la tâche l’autorise. Jamais `main`. Ouvrir ou mettre à jour une PR draft. Laisser GitHub Actions publier `[X100-CI]`.
-13. Ne jamais fusionner. Ne jamais déployer. `npm run x200:deploy-check` ne déploie pas. Aucune livraison sensible automatique. Ne pas lancer T010/T011 sans autorisation humaine.
+- Exécution Cursor locale sur Fedora uniquement ; pas de Cloud Agent.
+- Continuer automatiquement tant qu'il existe du travail admissible.
+- Une session qui se termine ou atteint sa limite n'est pas une raison d'arrêter le projet : le superviseur `x200:autopilot` doit lancer une nouvelle session et reprendre l'état réel.
+- Ne jamais refaire une tâche `TERMINÉE` encore prouvée.
+- Une tâche `EN_CONTRÔLE` ne bloque pas globalement une autre tâche indépendante.
+- Maximum trois tâches `EN_COURS` dans le registre, mais le superviseur Fedora courant exécute un agent local à la fois tant que le mode multi-worktree n'est pas validé.
 
-Priorité : propriétaire > sécurité > `AGENTS.md` > `backlog.json` > instruction de tâche > cette règle.
+## À chaque prise ou reprise de travail
 
-Exécutant unique local. Codex n’est pas requis. Relais ChatGPT : non configuré.
+1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`.
+2. Vérifier branche, HEAD, `git status`, PR et CI nécessaires.
+3. Valider avec `npm run x200:validate`.
+4. Si une tâche est `EN_COURS`, la reprendre après inspection des claims et effets externes ; ne pas répéter aveuglément.
+5. Si une tâche est `EN_CONTRÔLE`, vérifier le vrai job GitHub `quality` sur le bon SHA et la lane requise ; si la preuve est valide, clôturer puis continuer immédiatement.
+6. Sinon sélectionner une tâche `PRÊTE` non humaine avec `npm run x200:next -- --json`.
+7. Réserver avec `npm run x200:claim -- --json <ID>`.
+8. Travailler uniquement dans `scope`, satisfaire les critères, lancer les tests adaptés et `npm run x200:quality-gate -- --task <ID>`.
+9. Mettre à jour `TASK_REPORT.md`, `reports/tasks/<ID>.md` et `backlog.json` en un minimum de commits de métadonnées.
+10. Commit/push sur la branche de travail autorisée ; jamais de push direct sur `main`.
+11. Enchaîner immédiatement la prochaine tâche admissible sans attendre un screenshot ou le commentaire `[X100-CI]`.
+
+## Arrêts autorisés
+
+Ne s'arrêter que pour :
+
+- aucune tâche automatique restante ;
+- gate propriétaire réellement requis ;
+- arbre Git sale ou état externe incertain empêchant une reprise sûre ;
+- trois échecs de même cause ou trois cycles sans progrès ;
+- incident de sécurité ou incohérence du registre.
+
+Un gate humain est obligatoire pour production, migration réelle, suppression/restauration de données, secrets/credentials, permissions/protections sensibles, auth/MFA production, paiement réel, merge sensible ou opération irréversible. Le gate ne bloque que le périmètre concerné.
+
+## Vérité et preuves
+
+- Distinguer implémenté, testé, CI validée, fusionné et déployé.
+- `quality = SUCCESS` sur le bon SHA est la preuve CI principale.
+- Un screenshot n'est jamais requis comme preuve.
+- Ne jamais inventer un test, un succès, une migration ou un déploiement.
+- Après trois échecs identiques : arrêter la répétition, diagnostiquer et changer de stratégie.
+
+## Sécurité
+
+- Ne jamais afficher, lire inutilement ou committer un secret réel.
+- Ne jamais modifier `.env` réel automatiquement.
+- Aucun déploiement automatique, migration production ou merge sensible sans autorisation explicite.
+- Aucun service IA payant supplémentaire ne doit être ajouté automatiquement.
+
+## Autopilot
+
+Le superviseur est `npm run x200:autopilot:daemon`. Il relance des sessions Cursor headless locales et écrit `.x200/HUMAN_GATE.json` lorsqu'une décision propriétaire est indispensable. Voir `docs/X200_AUTOPILOT.md`.
