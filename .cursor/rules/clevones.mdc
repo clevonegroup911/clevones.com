@@ -1,16 +1,17 @@
 ---
-description: Orchestration X200 FAST-LANE — Fedora local, reprise automatique, zéro doublon, gates humains ciblés
+description: Orchestration X200 AUTOPLAN + FAST-LANE — Fedora local, planification continue, reprise automatique, zéro doublon, gates humains ciblés
 alwaysApply: true
 ---
 
-# X200 FAST-LANE — Clevones
+# X200 AUTOPLAN + FAST-LANE — Clevones
 
-X200 est la gouvernance courante. X100 reste l'historique et le contrat de compatibilité de certaines commandes. Lire `AGENTS.md` comme autorité opérationnelle principale du dépôt.
+X200 AUTOPLAN + FAST-LANE est la gouvernance courante. X100 reste l'historique et le contrat de compatibilité de certaines commandes. Lire `PRODUCT_GOAL.md` et `AGENTS.md` comme autorités opérationnelles principales du dépôt.
 
 ## Mode par défaut
 
 - Exécution Cursor locale sur Fedora uniquement ; pas de Cloud Agent.
 - Continuer automatiquement tant qu'il existe du travail admissible.
+- Si aucun travail automatique admissible n'existe, AUTOPLAN audite l'état réel contre `PRODUCT_GOAL.md` et crée le prochain travail utile sans doublon.
 - Une session qui se termine ou atteint sa limite n'est pas une raison d'arrêter le projet : le superviseur `x200:autopilot` doit lancer une nouvelle session et reprendre l'état réel.
 - Ne jamais refaire une tâche `TERMINÉE` encore prouvée.
 - Une tâche `EN_CONTRÔLE` ne bloque pas globalement une autre tâche indépendante.
@@ -18,7 +19,7 @@ X200 est la gouvernance courante. X100 reste l'historique et le contrat de compa
 
 ## À chaque prise ou reprise de travail
 
-1. Lire `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`.
+1. Lire `AGENTS.md`, `PRODUCT_GOAL.md`, `PROJECT_CONTEXT.md`, `backlog.json` et `TASK_REPORT.md`.
 2. Vérifier branche, HEAD, `git status`, PR et CI nécessaires.
 3. Valider avec `npm run x200:validate`.
 4. Si une tâche est `EN_COURS`, la reprendre après inspection des claims et effets externes ; ne pas répéter aveuglément.
@@ -29,22 +30,41 @@ X200 est la gouvernance courante. X100 reste l'historique et le contrat de compa
 9. Mettre à jour `TASK_REPORT.md`, `reports/tasks/<ID>.md` et `backlog.json` en un minimum de commits de métadonnées.
 10. Commit/push sur la branche de travail autorisée ; jamais de push direct sur `main`.
 11. Enchaîner immédiatement la prochaine tâche admissible sans attendre un screenshot ou le commentaire `[X100-CI]`.
+12. Si aucune tâche automatique n'est disponible, laisser le superviseur lancer AUTOPLAN au lieu de conclure que le produit est fini.
+
+## AUTOPLAN
+
+AUTOPLAN :
+
+- compare l'état réel au but canonique `PRODUCT_GOAL.md` ;
+- inspecte code, tests, backlog, rapports, documentation et preuves ;
+- cherche d'abord un travail déjà existant ou terminé avant de créer quoi que ce soit ;
+- crée au maximum trois tâches cohérentes par cycle ;
+- utilise le prochain ID `Txxx` disponible sans dépasser `T200` ;
+- renseigne dépendances, scope, critères, tests, risque, coût, owner et `requiresHuman` ;
+- met `PRÊTE` seulement si les dépendances sont réellement satisfaites, sinon `À_FAIRE` ;
+- valide avec `npm run x200:validate` et `npm run x200:test` ;
+- ne code pas de fonctionnalité applicative pendant le cycle de planification ;
+- ne crée jamais de tâche de remplissage pour entretenir artificiellement le mouvement.
+
+Le produit n'est fini que si `.x200/PRODUCT_COMPLETE.json` correspond au HEAD courant, au hash courant de `PRODUCT_GOAL.md` et contient des preuves concrètes. Tout changement de HEAD ou du but invalide automatiquement cet état de fin.
 
 ## Arrêts autorisés
 
 Ne s'arrêter que pour :
 
-- aucune tâche automatique restante ;
-- gate propriétaire réellement requis ;
+- produit réellement fini et marqueur de fin valide ;
+- gate propriétaire réellement requis sans autre travail automatique utile ;
 - arbre Git sale ou état externe incertain empêchant une reprise sûre ;
 - trois échecs de même cause ou trois cycles sans progrès ;
+- trois cycles AUTOPLAN sans progrès utile ;
 - incident de sécurité ou incohérence du registre.
 
 Un gate humain est obligatoire pour production, migration réelle, suppression/restauration de données, secrets/credentials, permissions/protections sensibles, auth/MFA production, paiement réel, merge sensible ou opération irréversible. Le gate ne bloque que le périmètre concerné.
 
 ## Vérité et preuves
 
-- Distinguer implémenté, testé, CI validée, fusionné et déployé.
+- Distinguer conçu, implémenté, testé localement, CI validée, fusionné, déployé et activé réellement.
 - `quality = SUCCESS` sur le bon SHA est la preuve CI principale.
 - Un screenshot n'est jamais requis comme preuve.
 - Ne jamais inventer un test, un succès, une migration ou un déploiement.
@@ -59,4 +79,4 @@ Un gate humain est obligatoire pour production, migration réelle, suppression/r
 
 ## Autopilot
 
-Le superviseur est `npm run x200:autopilot:daemon`. Il relance des sessions Cursor headless locales et écrit `.x200/HUMAN_GATE.json` lorsqu'une décision propriétaire est indispensable. Voir `docs/X200_AUTOPILOT.md`.
+Le superviseur est `npm run x200:autopilot:daemon`. Il alterne FAST-LANE et AUTOPLAN, relance des sessions Cursor headless locales, écrit `.x200/HUMAN_GATE.json` lorsqu'une décision propriétaire est indispensable et accepte `.x200/PRODUCT_COMPLETE.json` uniquement s'il est encore valide. Voir `docs/X200_AUTOPILOT.md`.

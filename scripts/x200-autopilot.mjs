@@ -4,12 +4,15 @@ import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, write
 import { hostname } from "node:os";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { buildAutoplanPrompt, completionMarkerMatches, hashFileIfExists } from "./lib/x200-autoplan.mjs";
 
 const ROOT = process.cwd();
 const STATE_DIR = resolve(ROOT, ".x200");
 const LOCK = resolve(STATE_DIR, "autopilot.lock");
 const GATE = resolve(STATE_DIR, "HUMAN_GATE.json");
+const COMPLETE = resolve(STATE_DIR, "PRODUCT_COMPLETE.json");
 const BACKLOG = resolve(ROOT, "backlog.json");
+const PRODUCT_GOAL = resolve(ROOT, "PRODUCT_GOAL.md");
 const DEFAULT_SLEEP_MS = Number(process.env.X200_AUTOPILOT_POLL_MS || 60000);
 const DEFAULT_AGENT_TIMEOUT_MS = Number(process.env.X200_AGENT_TIMEOUT_MS || 3300000);
 const MAX_STALLS = 3;
@@ -59,6 +62,15 @@ function detectAgent() {
 
 function readBacklog() {
   return JSON.parse(readFileSync(BACKLOG, "utf8"));
+}
+
+function readCompletionMarker() {
+  if (!existsSync(COMPLETE)) return null;
+  try {
+    return JSON.parse(readFileSync(COMPLETE, "utf8"));
+  } catch {
+    return null;
+  }
 }
 
 function statusSnapshot() {
@@ -156,20 +168,20 @@ function promptFor(backlog) {
 
   const selected = selectedReadyTask(backlog);
   if (selected && !selected.requiresHuman) {
-    return `MODE X200 FAST-LANE — FEDORA LOCAL AUTOPILOT.\n\nExécute TOUTE la tâche ci-dessous de bout en bout sans demander de confirmation de routine. Commence par lire AGENTS.md, PROJECT_CONTEXT.md, backlog.json, TASK_REPORT.md et .cursor/rules/clevones.mdc, puis valide x200. Réserve la tâche avec x200:claim, travaille uniquement dans son scope, satisfais les critères, lance les contrôles adaptés, mets à jour TASK_REPORT.md + reports/tasks/<ID>.md + backlog.json de façon compacte, commit et push sur la branche de travail autorisée. Si CI est nécessaire, utilise gh/GitHub pour vérifier le job quality réel et finalise quand la preuve correspond au bon SHA. Continue ensuite automatiquement vers une autre tâche PRÊTE admissible tant que la session le permet. Zéro doublon. Après 3 échecs identiques, change de stratégie ou bloque la tâche avec diagnostic. Ne modifie jamais .env/secrets. Aucun merge main, déploiement, migration production, auth/MFA production, suppression de données ou paiement réel sans gate propriétaire explicite.\n\nTâche cible:\n${taskSummary(selected)}`;
+    return `MODE X200 FAST-LANE — FEDORA LOCAL AUTOPILOT.\n\nExécute TOUTE la tâche ci-dessous de bout en bout sans demander de confirmation de routine. Commence par lire AGENTS.md, PROJECT_CONTEXT.md, PRODUCT_GOAL.md, backlog.json, TASK_REPORT.md et .cursor/rules/clevones.mdc, puis valide x200. Réserve la tâche avec x200:claim, travaille uniquement dans son scope, satisfais les critères, lance les contrôles adaptés, mets à jour TASK_REPORT.md + reports/tasks/<ID>.md + backlog.json de façon compacte, commit et push sur la branche de travail autorisée. Si CI est nécessaire, utilise gh/GitHub pour vérifier le job quality réel et finalise quand la preuve correspond au bon SHA. Continue ensuite automatiquement vers une autre tâche PRÊTE admissible tant que la session le permet. Zéro doublon. Après 3 échecs identiques, change de stratégie ou bloque la tâche avec diagnostic. Ne modifie jamais .env/secrets. Aucun merge main, déploiement, migration production, auth/MFA production, suppression de données ou paiement réel sans gate propriétaire explicite.\n\nTâche cible:\n${taskSummary(selected)}`;
   }
 
   return null;
 }
 
-function launchAgent(agentBin, prompt, options) {
+function launchAgent(agentBin, prompt, options, label = "AUTOPILOT") {
   const args = ["-p", "--force", "--output-format", "text"];
   if (options.model) args.push("--model", options.model);
   args.push(prompt);
-  process.stdout.write(`AUTOPILOT_AGENT_START bin=${agentBin}\n`);
+  process.stdout.write(`${label}_AGENT_START bin=${agentBin}\n`);
   const result = run(agentBin, args, { inherit: true, timeout: options.agentTimeoutMs });
   if (result.error?.code === "ETIMEDOUT") {
-    process.stderr.write("AUTOPILOT_AGENT_TIMEOUT — un nouvel agent reprendra au cycle suivant.\n");
+    process.stderr.write(`${label}_AGENT_TIMEOUT — un nouvel agent reprendra au cycle suivant.\n`);
     return 124;
   }
   return result.status ?? 1;
@@ -212,6 +224,10 @@ async function main() {
         process.stderr.write("backlog.json introuvable.\n");
         return 2;
       }
+      if (!existsSync(PRODUCT_GOAL)) {
+        writeGate("PRODUCT_GOAL_MISSING", []);
+        return 2;
+      }
       if (gitDirty()) {
         writeGate("WORKTREE_DIRTY_BEFORE_AUTOPILOT", []);
         return 3;
@@ -225,38 +241,90 @@ async function main() {
       const humanReady = backlog.tasks.filter((task) => task.status === "PRÊTE" && task.requiresHuman);
       const prompt = promptFor(backlog);
 
-      if (!prompt) {
-        if (humanReady.length) {
-          writeGate("OWNER_AUTHORIZATION_REQUIRED", humanReady);
-          if (!options.daemon || options.once) return 10;
-          await sleep(options.sleepMs);
-          continue;
-        }
+      if (prompt) {
         clearGate();
-        process.stdout.write("AUTOPILOT_IDLE no active, in-control or ready non-human task.\n");
+        const before = statusSnapshot();
+        if (options.dryRun) {
+          process.stdout.write(`${prompt}\n`);
+          return 0;
+        }
+
+        const exitCode = launchAgent(agentBin, prompt, options, "AUTOPILOT");
+        const after = statusSnapshot();
+        const progressed = before.head !== after.head || before.backlogHash !== after.backlogHash;
+        stalls = progressed ? 0 : stalls + 1;
+
+        process.stdout.write(`AUTOPILOT_CYCLE cycle=${cycles} agentExit=${exitCode} progressed=${progressed} stalls=${stalls}\n`);
+        if (stalls >= MAX_STALLS) {
+          writeGate("THREE_CYCLES_WITHOUT_PROGRESS", []);
+          return 5;
+        }
+        if (options.once) return exitCode === 0 || exitCode === 124 ? 0 : exitCode;
+        continue;
+      }
+
+      const snapshot = statusSnapshot();
+      const goalHash = hashFileIfExists(PRODUCT_GOAL);
+      const completion = readCompletionMarker();
+      if (goalHash && completionMarkerMatches(completion, { head: snapshot.head, goalHash })) {
+        clearGate();
+        process.stdout.write(`AUTOPLAN_COMPLETE head=${snapshot.head}\n`);
         if (!options.daemon || options.once) return 0;
         await sleep(options.sleepMs);
         continue;
       }
 
       clearGate();
-      const before = statusSnapshot();
+      const autoplanPrompt = buildAutoplanPrompt({
+        head: snapshot.head,
+        goalHash: goalHash || "missing",
+        humanReadyTasks: humanReady,
+      });
+
       if (options.dryRun) {
-        process.stdout.write(`${prompt}\n`);
+        process.stdout.write(`${autoplanPrompt}\n`);
         return 0;
       }
 
-      const exitCode = launchAgent(agentBin, prompt, options);
-      const after = statusSnapshot();
-      const progressed = before.head !== after.head || before.backlogHash !== after.backlogHash;
-      stalls = progressed ? 0 : stalls + 1;
+      const beforePlan = statusSnapshot();
+      const planExit = launchAgent(agentBin, autoplanPrompt, options, "AUTOPLAN");
+      const afterPlan = statusSnapshot();
+      const backlogAfterPlan = readBacklog();
+      const planProgressed = beforePlan.head !== afterPlan.head || beforePlan.backlogHash !== afterPlan.backlogHash;
+      const newPrompt = promptFor(backlogAfterPlan);
+      const completionAfterPlan = readCompletionMarker();
+      const goalHashAfterPlan = hashFileIfExists(PRODUCT_GOAL);
 
-      process.stdout.write(`AUTOPILOT_CYCLE cycle=${cycles} agentExit=${exitCode} progressed=${progressed} stalls=${stalls}\n`);
+      if (goalHashAfterPlan && completionMarkerMatches(completionAfterPlan, { head: afterPlan.head, goalHash: goalHashAfterPlan })) {
+        stalls = 0;
+        clearGate();
+        process.stdout.write(`AUTOPLAN_COMPLETE head=${afterPlan.head}\n`);
+        if (options.once) return 0;
+        continue;
+      }
+
+      if (newPrompt) {
+        stalls = 0;
+        process.stdout.write(`AUTOPLAN_CREATED_WORK cycle=${cycles} agentExit=${planExit}\n`);
+        if (options.once) return planExit === 0 || planExit === 124 ? 0 : planExit;
+        continue;
+      }
+
+      if (humanReady.length) {
+        writeGate("OWNER_AUTHORIZATION_REQUIRED", humanReady);
+        if (!options.daemon || options.once) return 10;
+        await sleep(options.sleepMs);
+        continue;
+      }
+
+      stalls = planProgressed ? 0 : stalls + 1;
+      process.stdout.write(`AUTOPLAN_CYCLE cycle=${cycles} agentExit=${planExit} progressed=${planProgressed} stalls=${stalls}\n`);
       if (stalls >= MAX_STALLS) {
-        writeGate("THREE_CYCLES_WITHOUT_PROGRESS", []);
+        writeGate("AUTOPLAN_THREE_CYCLES_WITHOUT_USEFUL_PROGRESS", []);
         return 5;
       }
-      if (options.once) return exitCode === 0 || exitCode === 124 ? 0 : exitCode;
+      if (options.once) return planExit === 0 || planExit === 124 ? 0 : planExit;
+      await sleep(options.sleepMs);
     }
     writeGate("MAX_CYCLES_REACHED", []);
     return 6;
