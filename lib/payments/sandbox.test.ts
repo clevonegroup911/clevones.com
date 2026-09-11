@@ -44,6 +44,27 @@ test("sandbox supports M_PESA and webhook status updates", async () => {
   assert.equal(updated?.status, "CAPTURED");
 });
 
+test("sandbox supports RAWBANK CDF and USD transfer rails", async () => {
+  const provider = createSandboxPaymentProvider();
+  const cdf = await provider.createPayment({
+    amountCents: 17110580,
+    currency: "CDF",
+    method: "RAWBANK_CDF",
+    idempotencyKey: "rawbank-cdf-1",
+  });
+  const usd = await provider.createPayment({
+    amountCents: 55000,
+    currency: "USD",
+    method: "RAWBANK_USD",
+    idempotencyKey: "rawbank-usd-1",
+  });
+
+  assert.equal(cdf.method, "RAWBANK_CDF");
+  assert.equal(usd.method, "RAWBANK_USD");
+  assert.equal(cdf.status, "PENDING");
+  assert.equal(usd.status, "PENDING");
+});
+
 test("sandbox rejects invalid webhook signature marker", async () => {
   const provider = createSandboxPaymentProvider();
   const payment = await provider.createPayment({
