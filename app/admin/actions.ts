@@ -3,11 +3,13 @@
 import { redirect } from "next/navigation";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
+import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import {
   canAccessAdminConsole,
   getAdminAccessDenialReason,
   isAdminRole,
 } from "@/lib/auth/admin-access";
+import { clearMfaChallengeCookie, issueMfaChallenge } from "@/lib/auth/mfa-challenge";
 import {
   clearFailedLogins,
   getLoginRateLimitKey,
@@ -84,6 +86,7 @@ export async function loginAdmin(
   const { email, password, callbackUrl } = parsed.data;
   const { ipAddress, userAgent } = await getRequestAuditContext();
   const rateLimitKey = getLoginRateLimitKey(email, ipAddress);
+  let mfaRedirect = false;
 
   if (isLoginRateLimited(rateLimitKey)) {
     await recordLoginFailure(
@@ -98,6 +101,14 @@ export async function loginAdmin(
   try {
     const user = await prisma.user.findUnique({
       where: { email },
+      include: {
+        mfaSecret: {
+          select: {
+            id: true,
+            pending: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -133,36 +144,68 @@ export async function loginAdmin(
       return { error: GENERIC_LOGIN_ERROR };
     }
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      await tx.user.update({
-        where: { id: user.id },
-        data: { lastLoginAt: new Date() },
-      });
-      await writeAuditLog(
-        {
-          actorId: user.id,
-          action: auditActions.AUTH_LOGIN_SUCCESS,
-          entityType: "User",
-          entityId: user.id,
-          metadata: { email: user.email, role: user.role },
+    if (user.mfaEnabled) {
+      if (!user.mfaSecret || user.mfaSecret.pending) {
+        registerFailedLogin(rateLimitKey);
+        await recordLoginFailure(
+          "mfa_secret_missing",
+          email,
           ipAddress,
           userAgent,
-        },
-        tx,
-      );
-    });
+          user.id,
+        );
+        return { error: GENERIC_LOGIN_ERROR };
+      }
 
-    clearFailedLogins(rateLimitKey);
-    await setAdminSessionCookie({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+      await clearAdminSessionCookie();
+      await issueMfaChallenge({
+        userId: user.id,
+        callbackUrl: safeAdminCallbackUrl(callbackUrl),
+      });
+      clearFailedLogins(rateLimitKey);
+      mfaRedirect = true;
+    } else {
+      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        await tx.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        });
+        await writeAuditLog(
+          {
+            actorId: user.id,
+            action: auditActions.AUTH_LOGIN_SUCCESS,
+            entityType: "User",
+            entityId: user.id,
+            metadata: { email: user.email, role: user.role },
+            ipAddress,
+            userAgent,
+          },
+          tx,
+        );
+      });
+
+      await clearMfaChallengeCookie();
+      clearFailedLogins(rateLimitKey);
+      await setAdminSessionCookie({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      });
+      await trackAnalyticsEvent({
+        name: "ADMIN_LOGIN",
+        path: "/admin/login",
+        actorId: user.id,
+      });
+    }
   } catch {
     return {
       error:
         "La connexion administrative est temporairement indisponible. Réessayez plus tard.",
     };
+  }
+
+  if (mfaRedirect) {
+    redirect(adminRoutes.mfaVerify);
   }
 
   redirect(safeAdminCallbackUrl(callbackUrl));
@@ -171,6 +214,7 @@ export async function loginAdmin(
 export async function logoutAdmin() {
   const actor = await getOptionalAdminActor();
   if (!actor) {
+    await clearMfaChallengeCookie();
     await clearAdminSessionCookie();
     redirect(adminRoutes.login);
   }
@@ -187,6 +231,7 @@ export async function logoutAdmin() {
     userAgent,
   });
 
+  await clearMfaChallengeCookie();
   await clearAdminSessionCookie();
   redirect(adminRoutes.login);
 }

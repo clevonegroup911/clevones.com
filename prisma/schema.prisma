@@ -20,18 +20,84 @@ enum UserStatus {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
-  passwordHash String
-  firstName    String
-  lastName     String
-  role         UserRole   @default(USER)
-  status       UserStatus @default(PENDING)
-  mfaEnabled   Boolean    @default(false)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
-  lastLoginAt  DateTime?
-  auditLogs    AuditLog[]
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          UserRole       @default(USER)
+  status        UserStatus     @default(PENDING)
+  mfaEnabled    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  lastLoginAt   DateTime?
+  auditLogs     AuditLog[]
+  mfaSecret     UserMfaSecret?
+  mfaChallenges MfaChallenge[]
+  contentPagesCreated  ContentPage[]  @relation("ContentPageCreatedBy")
+  contentPagesUpdated  ContentPage[]  @relation("ContentPageUpdatedBy")
+  contentEntriesCreated ContentEntry[] @relation("ContentEntryCreatedBy")
+  contentEntriesUpdated ContentEntry[] @relation("ContentEntryUpdatedBy")
+  mediaAssetsUploaded  MediaAsset[]
+  documentsOwned       Document[]      @relation("DocumentOwner")
+  documentsUploaded    Document[]      @relation("DocumentUploader")
+  documentGrants       DocumentGrant[] @relation("DocumentGrants")
+}
+
+model UserMfaSecret {
+  id               String            @id @default(cuid())
+  userId           String            @unique
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ciphertext       Bytes
+  iv               Bytes
+  authTag          Bytes
+  keyVersion       Int               @default(1)
+  pending          Boolean           @default(true)
+  pendingExpiresAt DateTime?
+  lastUsedStep     Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+  recoveryCodes    MfaRecoveryCode[]
+}
+
+model MfaChallenge {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  callbackUrl  String
+  failureCount Int       @default(0)
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([userId, consumedAt])
+}
+
+model MfaRateLimit {
+  id           String   @id @default(cuid())
+  subjectType  String
+  subjectHash  String
+  failureCount Int      @default(0)
+  windowEndsAt DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([subjectType, subjectHash])
+  @@index([windowEndsAt])
+}
+
+model MfaRecoveryCode {
+  id        String        @id @default(cuid())
+  secretId  String
+  secret    UserMfaSecret @relation(fields: [secretId], references: [id], onDelete: Cascade)
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([secretId, usedAt])
 }
 
 model AuditLog {
@@ -49,4 +115,195 @@ model AuditLog {
   @@index([actorId])
   @@index([action])
   @@index([createdAt])
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentLocale {
+  fr
+  en
+}
+
+/// Site page shell (unique slug across locales).
+model ContentPage {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  description String         @default("")
+  status      ContentStatus  @default(DRAFT)
+  createdById String?
+  createdBy   User?          @relation("ContentPageCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedById String?
+  updatedBy   User?          @relation("ContentPageUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  entries     ContentEntry[]
+
+  @@index([status])
+  @@index([updatedAt])
+}
+
+/// Localized body for a content page (FR/EN).
+model ContentEntry {
+  id          String        @id @default(cuid())
+  pageId      String
+  page        ContentPage   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  locale      ContentLocale
+  title       String
+  summary     String        @default("")
+  body        String        @default("")
+  status      ContentStatus @default(DRAFT)
+  createdById String?
+  createdBy   User?         @relation("ContentEntryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedById String?
+  updatedBy   User?         @relation("ContentEntryUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([pageId, locale])
+  @@index([status])
+  @@index([locale])
+}
+
+/// Optional media metadata (no public/ storage; path is private key).
+model MediaAsset {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  fileName     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([uploadedById])
+}
+
+enum DocumentAccessLevel {
+  PRIVATE
+  INTERNAL
+  RESTRICTED
+}
+
+enum DocumentCategory {
+  CONTRACT
+  DELIVERABLE
+  EVIDENCE
+  OTHER
+}
+
+model Document {
+  id            String              @id @default(cuid())
+  title         String
+  description   String              @default("")
+  category      DocumentCategory    @default(OTHER)
+  accessLevel   DocumentAccessLevel @default(PRIVATE)
+  storageKey    String              @unique
+  fileName      String
+  mimeType      String
+  sizeBytes     Int
+  checksumSha256 String
+  ownerId       String
+  owner         User                @relation("DocumentOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  uploadedById  String?
+  uploadedBy    User?               @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  deletedAt     DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  grants        DocumentGrant[]
+
+  @@index([ownerId])
+  @@index([category])
+  @@index([accessLevel])
+  @@index([deletedAt])
+  @@index([title])
+}
+
+/// Explicit per-user grant for RESTRICTED (and optional PRIVATE) documents.
+model DocumentGrant {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation("DocumentGrants", fields: [userId], references: [id], onDelete: Cascade)
+  canRead    Boolean  @default(true)
+  canWrite   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([documentId, userId])
+  @@index([userId])
+}
+
+enum AnalyticsEventName {
+  PAGE_VIEW
+  FORM_SUBMIT
+  ADMIN_LOGIN
+  DOCUMENT_UPLOAD
+  DOCUMENT_DOWNLOAD
+  COMMERCIAL_ACTION
+}
+
+/// First-party analytics event (privacy-preserving: no raw IP/UA stored).
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  name      AnalyticsEventName
+  path      String             @default("")
+  label     String             @default("")
+  actorId   String?
+  createdAt DateTime           @default(now())
+
+  @@index([name, createdAt])
+  @@index([path])
+  @@index([createdAt])
+}
+
+enum PaymentMethod {
+  CARD
+  M_PESA
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  CANCELLED
+}
+
+/// Sandbox/persisted payment intent (no real PSP keys).
+model Payment {
+  id             String           @id @default(cuid())
+  amountCents    Int
+  currency       String
+  method         PaymentMethod
+  status         PaymentStatus    @default(PENDING)
+  idempotencyKey String           @unique
+  provider       String           @default("sandbox")
+  providerRef    String
+  customerRef    String?
+  metadata       Json?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  attempts       PaymentAttempt[]
+
+  @@index([status, createdAt])
+  @@index([method])
+}
+
+model PaymentAttempt {
+  id              String        @id @default(cuid())
+  paymentId       String
+  payment         Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  status          PaymentStatus
+  providerMessage String        @default("")
+  createdAt       DateTime      @default(now())
+
+  @@index([paymentId, createdAt])
 }

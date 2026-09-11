@@ -12,6 +12,7 @@ export type AdminActor = {
   firstName: string;
   lastName: string;
   role: AdminRole;
+  mfaEnabled: boolean;
 };
 
 export function isAdminRole(role: UserRole): role is AdminRole {
@@ -19,15 +20,22 @@ export function isAdminRole(role: UserRole): role is AdminRole {
 }
 
 export function canAccessAdminConsole(
-  user: Pick<{ role: UserRole; status: UserStatus; mfaEnabled: boolean }, "role" | "status" | "mfaEnabled">,
+  user: Pick<{ role: UserRole; status: UserStatus }, "role" | "status">,
 ) {
-  return isAdminRole(user.role) && user.status === "ACTIVE" && !user.mfaEnabled;
+  return isAdminRole(user.role) && user.status === "ACTIVE";
 }
 
 export function toAdminActor(
   user: Pick<
-    { id: string; email: string; firstName: string; lastName: string; role: UserRole },
-    "id" | "email" | "firstName" | "lastName" | "role"
+    {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: UserRole;
+      mfaEnabled: boolean;
+    },
+    "id" | "email" | "firstName" | "lastName" | "role" | "mfaEnabled"
   >,
 ): AdminActor | null {
   if (!isAdminRole(user.role)) {
@@ -40,14 +48,12 @@ export function toAdminActor(
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role,
+    mfaEnabled: user.mfaEnabled,
   };
 }
 
 export function getAdminAccessDenialReason(
-  user: Pick<
-    { role: UserRole; status: UserStatus; mfaEnabled: boolean },
-    "role" | "status" | "mfaEnabled"
-  >,
+  user: Pick<{ role: UserRole; status: UserStatus }, "role" | "status">,
 ): string | null {
   if (!isAdminRole(user.role)) {
     return "insufficient_role";
@@ -63,10 +69,6 @@ export function getAdminAccessDenialReason(
 
   if (user.status !== "ACTIVE") {
     return "inactive";
-  }
-
-  if (user.mfaEnabled) {
-    return "mfa_unavailable";
   }
 
   return null;

@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 
 import { Header } from "@/components/layout/header";
 import { SiteBodyChrome } from "@/components/layout/mobile-cta-shell";
+import { recordPageView } from "@/lib/analytics/page-view";
 import { getContent, getLocaleFromHeaders } from "@/lib/i18n";
 
 type SiteShellProps = {
@@ -11,6 +12,7 @@ type SiteShellProps = {
 export async function SiteShell({ children }: SiteShellProps) {
   const locale = getLocaleFromHeaders(await headers());
   const { shell } = getContent(locale);
+  await recordPageView("/");
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
       <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden>

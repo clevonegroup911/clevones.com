@@ -44,3 +44,26 @@ node_modules/
 .next/
 .env.local
 .env.*.local
+
+# X100 local CI output
+ci-artifact/
+
+# X200 local executor state (locks, quality-gate, migrate backup)
+.x200/
+*.tmp
+
+# Playwright e2e
+tests/e2e/test-results/
+tests/e2e/report/
+tests/e2e/evidence/*.png
+tests/e2e/.runtime-state.json
+playwright-report/
+blob-report/
+test-results/
+
+# PostgreSQL dumps must never enter Git
+*.dump
+*.dump.partial
+
+# Private local document storage (T020)
+.data/

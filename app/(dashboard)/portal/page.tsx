@@ -1,64 +1,92 @@
 import { createPageMetadata } from "@/lib/metadata";
 
-import { ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { CtaButtonGroup } from "@/components/ui/cta-button-group";
-import { buttonFullMobile } from "@/lib/ui-classes";
+import Link from "next/link";
+
+import { DocumentUploadForm } from "@/app/(dashboard)/portal/upload-form";
+import { SoftDeleteButton } from "@/app/(dashboard)/portal/soft-delete-button";
+import { requireAdmin } from "@/lib/auth/require-admin";
+import { listDocumentsForActor } from "@/lib/documents/service";
 
 export const metadata = createPageMetadata({
   title: "Client portal",
-  description:
-    "Secure client portal for Clevones partners — governance dashboards, initiative tracking, and institutional document access.",
+  description: "Authenticated private document portal for Clevones partners.",
   path: "/portal",
   robots: { index: false, follow: false },
 });
 
-const upcomingFeatures = [
-  "Personalized governance dashboard",
-  "Real-time territorial initiative tracking",
-  "Secure document and deliverable repository",
-  "Dedicated institutional messaging",
-] as const;
+type PageProps = {
+  searchParams: Promise<{ q?: string }>;
+};
 
-export default function PortalPage() {
+export default async function PortalPage({ searchParams }: PageProps) {
+  const actor = await requireAdmin();
+  const query = (await searchParams).q?.trim() || "";
+  const documents = await listDocumentsForActor(
+    { id: actor.id, role: actor.role },
+    { query },
+  );
+
   return (
-    <Section spacing="md">
-      <Container size="prose" className="text-center">
-        <SectionHeading
-          eyebrow="Extranet"
-          title="Client portal — coming soon"
-          description="This area is reserved for a future client portal. No authentication system is live on this website."
-          align="center"
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-10 sm:px-6">
+      <div>
+        <h1 className="font-heading text-2xl font-semibold text-white">
+          Portail documents
+        </h1>
+        <p className="mt-2 text-sm text-gray-muted">
+          Espace authentifié ({actor.firstName}). Stockage privé hors{" "}
+          <code className="text-gold-muted">public/</code>.
+        </p>
+      </div>
+
+      <DocumentUploadForm />
+
+      <form className="flex gap-2" method="get">
+        <input
+          name="q"
+          defaultValue={query}
+          placeholder="Rechercher titre, fichier, description"
+          className="w-full rounded-sm border border-border-subtle bg-surface px-3 py-2 text-sm text-white"
         />
+        <button
+          type="submit"
+          className="rounded-sm border border-gold/40 px-3 py-2 text-xs text-gold"
+        >
+          Chercher
+        </button>
+      </form>
 
-        <ul className="mt-10 space-y-3 text-left">
-          {upcomingFeatures.map((feature) => (
-            <li key={feature}>
-              <Card variant="muted" padding="sm" className="flex items-center gap-3">
-                <span
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-subtle text-xs text-gold"
-                  aria-hidden
-                >
-                  ·
-                </span>
-                <span className="text-sm text-soft-white">{feature}</span>
-              </Card>
-            </li>
-          ))}
-        </ul>
-
-        <CtaButtonGroup align="center" className="mx-auto mt-8 sm:mt-10">
-          <ButtonLink href="/contact" size="lg" className={buttonFullMobile}>
-            Request access
-          </ButtonLink>
-          <ButtonLink href="/" variant="outline" size="lg" className={buttonFullMobile}>
-            Back to site
-          </ButtonLink>
-        </CtaButtonGroup>
-      </Container>
-    </Section>
+      <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+        <h2 className="text-sm font-semibold text-white">Documents</h2>
+        {documents.length === 0 ? (
+          <p className="mt-3 text-sm text-gray-muted">Aucun document.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-border-subtle">
+            {documents.map((doc) => (
+              <li
+                key={doc.id}
+                className="flex flex-wrap items-center justify-between gap-3 py-3"
+              >
+                <div>
+                  <p className="text-sm font-medium text-white">{doc.title}</p>
+                  <p className="text-xs text-gray-muted">
+                    {doc.fileName} · {doc.category} · {doc.accessLevel} ·{" "}
+                    {doc.sizeBytes} o
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href={`/api/portal/documents/${doc.id}`}
+                    className="text-xs text-gold-muted hover:text-gold"
+                  >
+                    Télécharger
+                  </Link>
+                  <SoftDeleteButton documentId={doc.id} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
   );
 }

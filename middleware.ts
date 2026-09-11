@@ -8,6 +8,8 @@ import {
   isProtectedPath,
   safeAdminCallbackUrl,
 } from "@/lib/auth";
+import { ADMIN_MFA_CHALLENGE_COOKIE } from "@/lib/auth/mfa-challenge-cookie";
+import { verifyMfaChallengeToken } from "@/lib/auth/mfa-challenge-token";
 import { ADMIN_SESSION_COOKIE } from "@/lib/auth/session-cookie";
 import { verifyAdminSessionToken } from "@/lib/auth/session-token";
 import { getLocaleFromPath } from "@/lib/i18n/routes";
@@ -45,9 +47,9 @@ function getTrustedAppOrigin(request: NextRequest): string {
 }
 
 /**
- * Locale negotiation plus admin session gate.
- * Portal protection remains prepared but inactive so public/preparatory
- * routes keep their current behaviour.
+ * Locale negotiation, admin session gate, and authenticated portal gate.
+ * Portal uses the admin session cookie in this phase (T020); T021 refines
+ * USER document permissions.
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -55,19 +57,25 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set(localeHeaderName, getLocaleFromPath(pathname));
   requestHeaders.set("x-pathname", pathname);
 
-  if (isProtectedPath(pathname)) {
-    // const session = request.cookies.get("session");
-    // if (!session) {
-    //   const signInUrl = new URL(authRoutes.signIn, request.url);
-    //   signInUrl.searchParams.set("callbackUrl", pathname);
-    //   return NextResponse.redirect(signInUrl);
-    // }
+  const adminSession = await getAdminSessionFromRequest(request);
+  const mfaChallenge = await getMfaChallengeFromRequest(request);
+  const origin = getTrustedAppOrigin(request);
+
+  if (isProtectedPath(pathname) && !adminSession) {
+    if (mfaChallenge) {
+      return NextResponse.redirect(new URL(adminRoutes.mfaVerify, origin));
+    }
+    const loginUrl = new URL(adminRoutes.login, origin);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  const adminSession = await getAdminSessionFromRequest(request);
-
   if (isAdminProtectedPath(pathname) && !adminSession) {
-    const loginUrl = new URL(adminRoutes.login, getTrustedAppOrigin(request));
+    if (mfaChallenge) {
+      return NextResponse.redirect(new URL(adminRoutes.mfaVerify, origin));
+    }
+
+    const loginUrl = new URL(adminRoutes.login, origin);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
@@ -76,9 +84,7 @@ export async function middleware(request: NextRequest) {
     const callbackUrl = safeAdminCallbackUrl(
       request.nextUrl.searchParams.get("callbackUrl"),
     );
-    return NextResponse.redirect(
-      new URL(callbackUrl, getTrustedAppOrigin(request)),
-    );
+    return NextResponse.redirect(new URL(callbackUrl, origin));
   }
 
   return NextResponse.next({
@@ -95,6 +101,15 @@ async function getAdminSessionFromRequest(request: NextRequest) {
   }
 
   return verifyAdminSessionToken(token);
+}
+
+async function getMfaChallengeFromRequest(request: NextRequest) {
+  const token = request.cookies.get(ADMIN_MFA_CHALLENGE_COOKIE)?.value;
+  if (!token) {
+    return null;
+  }
+
+  return verifyMfaChallengeToken(token);
 }
 
 export const config = {

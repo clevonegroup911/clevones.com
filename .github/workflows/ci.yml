@@ -1,0 +1,231 @@
+name: X200 CI
+
+# FAST-LANE: one stable required job named `quality`.
+# Draft PR iterations use the latest delta. A PR that is ready to merge is
+# forced through FULL so incremental evidence cannot substitute pre-merge proof.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: x200-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DATABASE_URL: postgresql://ci_user:ci_pass@127.0.0.1:5432/ci_x100_test?schema=public
+  TEST_DATABASE_URL: postgresql://ci_user:ci_pass@127.0.0.1:5432/ci_x100_test?schema=public
+  APP_ORIGIN: http://localhost:3000
+  AUTH_SECRET: ci-only-auth-secret-not-for-production-use
+  MFA_ENCRYPTION_KEY: eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHg=
+  MFA_ISSUER: CLEVONES-CI
+  CI: true
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_pass
+          POSTGRES_DB: ci_x100_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d ci_x100_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve comparison base
+        id: base
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ -n "${{ github.event.before }}" ]; then
+            echo "sha=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "sha=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch comparison refs
+        continue-on-error: true
+        run: git fetch --no-tags origin main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Prepare artifact directory
+        shell: bash
+        run: |
+          mkdir -p ci-artifact/logs
+          printf '%s\n' '{"steps":[]}' > ci-artifact/results.json
+
+      - name: Classify X200 lane
+        id: classify
+        env:
+          X200_BASE_SHA: ${{ steps.base.outputs.sha }}
+          X200_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          X200_PREMERGE: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || (github.event_name == 'push') }}
+        run: >-
+          node scripts/ci-step.mjs classify --
+          node scripts/ci-classify.mjs "$X200_BASE_SHA" "$X200_HEAD_SHA"
+
+      - name: Install dependencies
+        if: steps.classify.outputs.mode != 'METADATA'
+        run: npm ci
+
+      - name: Validate backlog
+        continue-on-error: true
+        run: node scripts/ci-step.mjs backlog -- npm run x100:validate-backlog
+
+      - name: Validate task report
+        continue-on-error: true
+        run: node scripts/ci-step.mjs task_report -- npm run x100:validate-report
+
+      - name: Run governance tests
+        if: steps.classify.outputs.mode != 'METADATA'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs x100_tests -- npm run x100:test
+
+      - name: Run application unit tests
+        if: steps.classify.outputs.mode != 'METADATA'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs tests -- npm test
+
+      - name: Lint
+        if: steps.classify.outputs.mode != 'METADATA'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs lint -- npm run lint
+
+      - name: Type-check
+        if: steps.classify.outputs.mode != 'METADATA'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs typecheck -- npx tsc --noEmit
+
+      - name: X200 doctor
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs doctor -- npm run x200:doctor
+
+      - name: Validate Prisma schema
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs prisma_validate -- npx prisma validate
+
+      - name: PostgreSQL MFA integration
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: >-
+          node scripts/ci-step.mjs db_integration -- sh -c
+          'npx prisma migrate deploy && npm run test:mfa:postgres'
+
+      - name: Build
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs build -- npm run build
+
+      - name: Install Playwright Chromium
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright evidence tests
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs playwright -- npx playwright test
+
+      - name: Collect Playwright evidence
+        if: always() && steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: |
+          mkdir -p ci-artifact/playwright
+          cp tests/e2e/evidence/*.png ci-artifact/playwright/ 2>/dev/null || true
+          cp tests/e2e/report/index.html ci-artifact/playwright/ 2>/dev/null || true
+
+      - name: Check conflict markers and whitespace
+        continue-on-error: true
+        run: node scripts/ci-step.mjs diff_check -- node scripts/ci-diff-check.mjs
+
+      - name: Scan repository secrets
+        continue-on-error: true
+        run: node scripts/ci-step.mjs secrets -- node scripts/scan-secrets.mjs
+
+      - name: Security audit
+        if: steps.classify.outputs.mode == 'FULL'
+        continue-on-error: true
+        run: node scripts/ci-step.mjs audit -- node scripts/ci-audit.mjs
+
+      - name: Collect artifact
+        if: always()
+        env:
+          X200_CI_MODE: ${{ steps.classify.outputs.mode }}
+        run: node scripts/ci-gate.mjs
+        continue-on-error: true
+
+      - name: Upload X200 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: x200-ci
+          path: ci-artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail if required quality checks failed
+        if: always()
+        env:
+          X200_CI_MODE: ${{ steps.classify.outputs.mode }}
+        run: node scripts/ci-gate.mjs
+
+  comment:
+    name: x100-ci-comment
+    needs: quality
+    if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Download X200 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: x200-ci
+          path: ci-artifact
+
+      - name: Publish legacy [X100-CI] comment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          X100_ARTIFACT_DIR: ci-artifact
+        run: node scripts/ci-pr-comment.mjs

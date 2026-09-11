@@ -59,8 +59,41 @@ export const createAdminAccountSchema = z
     }
   });
 
+export const adminMfaPasswordSchema = z.object({
+  password: z
+    .string({ error: "Le mot de passe est requis." })
+    .min(1, "Le mot de passe est requis.")
+    .max(128, "Le mot de passe est trop long."),
+});
+
+export const adminTotpCodeSchema = z
+  .string({ error: "Le code d'authentification est requis." })
+  .trim()
+  .regex(/^\d{6}$/, "Entrez un code à 6 chiffres.");
+
+export const adminMfaChallengeCodeSchema = z
+  .string({ error: "Le code est requis." })
+  .trim()
+  .min(6, "Le code est requis.")
+  .max(32, "Le code est invalide.");
+
+export const adminMfaConfirmSchema = z.object({
+  code: adminTotpCodeSchema,
+});
+
+export const adminMfaVerifySchema = z.object({
+  code: adminMfaChallengeCodeSchema,
+});
+
+export const adminMfaDisableSchema = z.object({
+  password: adminMfaPasswordSchema.shape.password,
+  code: adminMfaChallengeCodeSchema,
+});
+
 export type AdminLoginPayload = z.infer<typeof adminLoginSchema>;
 export type CreateAdminAccountPayload = z.infer<typeof createAdminAccountSchema>;
+export type AdminMfaVerifyPayload = z.infer<typeof adminMfaVerifySchema>;
+export type AdminMfaDisablePayload = z.infer<typeof adminMfaDisableSchema>;
 
 export function formatZodFieldErrors(
   error: z.ZodError,

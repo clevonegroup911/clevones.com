@@ -12,7 +12,11 @@ export const platformRoutes = {
 export const adminRoutes = {
   root: "/admin",
   login: "/admin/login",
+  mfaVerify: "/admin/login/mfa",
   dashboard: "/admin/dashboard",
+  securityMfa: "/admin/security/mfa",
+  cms: "/admin/cms",
+  analytics: "/admin/analytics",
 } as const;
 
 /** Paths that will require a session once auth is integrated. */
@@ -51,9 +55,13 @@ export function safeAdminCallbackUrl(value: string | null | undefined): string {
   }
 
   const [pathname] = value.split("?");
-  if (!pathname || !isAdminProtectedPath(pathname)) {
+  if (!pathname) {
     return adminRoutes.dashboard;
   }
 
-  return value;
+  if (isAdminProtectedPath(pathname) || isProtectedPath(pathname)) {
+    return value;
+  }
+
+  return adminRoutes.dashboard;
 }
