@@ -32,7 +32,7 @@ function now(): string {
 }
 
 /**
- * Sandbox/stub PaymentProvider supporting CARD and M_PESA.
+ * Sandbox/stub PaymentProvider supporting CARD, M_PESA and RAWBANK transfer rails.
  * No network. No real keys. Idempotent create + abstract webhook.
  */
 export function createSandboxPaymentProvider(store: Store = createStore()): PaymentProvider & {
@@ -45,7 +45,7 @@ export function createSandboxPaymentProvider(store: Store = createStore()): Paym
       if (!Number.isInteger(input.amountCents) || input.amountCents <= 0) {
         throw new Error("invalid_amount");
       }
-      if (!["CARD", "M_PESA"].includes(input.method)) {
+      if (!["CARD", "M_PESA", "RAWBANK_CDF", "RAWBANK_USD"].includes(input.method)) {
         throw new Error("unsupported_method");
       }
 
