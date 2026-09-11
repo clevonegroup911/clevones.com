@@ -28,6 +28,21 @@ Objectif : supprimer les pauses administratives, répétitions et contrôles lou
 9. Aucun screenshot GitHub n’est une preuve requise. Utiliser les données GitHub/CI et les SHA.
 10. Le commentaire `[X100-CI]` est informatif et hors chemin critique. Le job requis est `quality`.
 
+## Autopilot Fedora local
+
+Le mode recommandé pour le travail continu est `npm run x200:autopilot:daemon`.
+
+- Le superviseur reste sur Fedora et n'utilise pas de Cursor Cloud Agent.
+- Il lance Cursor CLI en mode headless, puis relance automatiquement une nouvelle session quand une session se termine ou atteint son timeout.
+- Une session interrompue doit reprendre l'état réel (`EN_COURS`, claims, Git, preuves) au lieu de recommencer la tâche.
+- Il réconcilie les tâches `EN_CONTRÔLE` avec le vrai job GitHub `quality`, puis poursuit immédiatement.
+- Il continue tant qu'il existe une tâche automatique admissible.
+- Il écrit `.x200/HUMAN_GATE.json` seulement lorsqu'une décision propriétaire est réellement obligatoire.
+- Le superviseur courant exécute un agent local à la fois pour éviter les collisions d'un seul working tree. Le registre conserve néanmoins la limite X200 de trois tâches indépendantes pour une future exécution multi-worktree validée.
+- Trois cycles sans progrès Git ni backlog provoquent un arrêt diagnostiqué au lieu d'une boucle coûteuse.
+
+Voir `docs/X200_AUTOPILOT.md`.
+
 ## Gates humains
 
 Aucune confirmation humaine de routine pour : lire le dépôt, analyser, modifier une branche de travail, tester, mettre à jour les rapports, pousser la branche autorisée, ouvrir ou mettre à jour une PR draft, clôturer une tâche non sensible dont les preuves sont valides, ou démarrer une autre tâche indépendante.
@@ -120,6 +135,7 @@ Conserver : `x100:validate`, `x100:next`, `x100:test` et leurs scripts historiqu
 | Rapport | `npm run x200:report` |
 | Reprise | `npm run x200:resume` |
 | Prérequis déploiement | `npm run x200:deploy-check` |
+| Autopilot local | `npm run x200:autopilot:daemon` |
 
 ## Sélection et parallélisme
 
