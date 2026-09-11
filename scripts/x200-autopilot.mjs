@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { closeSync, existsSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { hostname } from "node:os";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const ROOT = process.cwd();
-const LOCK = resolve(ROOT, ".x200/autopilot.lock");
-const GATE = resolve(ROOT, ".x200/HUMAN_GATE.json");
+const STATE_DIR = resolve(ROOT, ".x200");
+const LOCK = resolve(STATE_DIR, "autopilot.lock");
+const GATE = resolve(STATE_DIR, "HUMAN_GATE.json");
 const BACKLOG = resolve(ROOT, "backlog.json");
 const DEFAULT_SLEEP_MS = Number(process.env.X200_AUTOPILOT_POLL_MS || 60000);
 const DEFAULT_AGENT_TIMEOUT_MS = Number(process.env.X200_AGENT_TIMEOUT_MS || 3300000);
@@ -87,7 +88,23 @@ function validate() {
   return true;
 }
 
+function selectedReadyTask(backlog) {
+  const result = run("node", ["scripts/next-task.mjs", "--json"]);
+  if (result.status === 0) {
+    try {
+      const payload = JSON.parse(result.stdout);
+      if (payload.nextTaskId) {
+        return backlog.tasks.find((task) => task.id === payload.nextTaskId) || null;
+      }
+    } catch {
+      // Fall through to a deterministic safe fallback.
+    }
+  }
+  return backlog.tasks.find((task) => task.status === "PRÊTE" && !task.requiresHuman) || null;
+}
+
 function writeGate(reason, tasks = []) {
+  mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 });
   const payload = {
     version: 1,
     generatedAt: new Date().toISOString(),
@@ -102,7 +119,7 @@ function writeGate(reason, tasks = []) {
       nextAction: task.nextAction || null,
     })),
   };
-  writeFileSync(GATE, `${JSON.stringify(payload, null, 2)}\n`);
+  writeFileSync(GATE, `${JSON.stringify(payload, null, 2)}\n`, { mode: 0o600 });
   process.stdout.write(`HUMAN_GATE ${reason}: ${tasks.map((task) => task.id).join(", ") || "none"}\n`);
 }
 
@@ -137,9 +154,8 @@ function promptFor(backlog) {
     return `MODE X200 FAST-LANE — FEDORA LOCAL AUTOPILOT.\n\nRéconcilie les tâches EN_CONTRÔLE ci-dessous. Utilise GitHub/gh et les SHA réels, pas des captures. Vérifie le job quality correspondant à la lane exigée. Si SUCCESS sur le bon SHA et critères satisfaits, finalise la tâche, mets à jour les preuves/rapports de façon compacte, commit/push sur la branche de travail autorisée, puis enchaîne immédiatement la prochaine tâche PRÊTE non sensible dans la même session. Un commentaire [X100-CI] n'est pas bloquant. Ne merge pas main et ne déploie pas.\n\nTâches en contrôle:\n${inControl.map(taskSummary).join("\n\n")}`;
   }
 
-  const ready = backlog.tasks.filter((task) => task.status === "PRÊTE" && !task.requiresHuman);
-  if (ready.length) {
-    const selected = [...ready].sort((a, b) => String(a.id).localeCompare(String(b.id)))[0];
+  const selected = selectedReadyTask(backlog);
+  if (selected && !selected.requiresHuman) {
     return `MODE X200 FAST-LANE — FEDORA LOCAL AUTOPILOT.\n\nExécute TOUTE la tâche ci-dessous de bout en bout sans demander de confirmation de routine. Commence par lire AGENTS.md, PROJECT_CONTEXT.md, backlog.json, TASK_REPORT.md et .cursor/rules/clevones.mdc, puis valide x200. Réserve la tâche avec x200:claim, travaille uniquement dans son scope, satisfais les critères, lance les contrôles adaptés, mets à jour TASK_REPORT.md + reports/tasks/<ID>.md + backlog.json de façon compacte, commit et push sur la branche de travail autorisée. Si CI est nécessaire, utilise gh/GitHub pour vérifier le job quality réel et finalise quand la preuve correspond au bon SHA. Continue ensuite automatiquement vers une autre tâche PRÊTE admissible tant que la session le permet. Zéro doublon. Après 3 échecs identiques, change de stratégie ou bloque la tâche avec diagnostic. Ne modifie jamais .env/secrets. Aucun merge main, déploiement, migration production, auth/MFA production, suppression de données ou paiement réel sans gate propriétaire explicite.\n\nTâche cible:\n${taskSummary(selected)}`;
   }
 
@@ -160,6 +176,7 @@ function launchAgent(agentBin, prompt, options) {
 }
 
 function acquireLock() {
+  mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 });
   try {
     const fd = openSync(LOCK, "wx", 0o600);
     writeFileSync(fd, `${JSON.stringify({ pid: process.pid, host: hostname(), startedAt: new Date().toISOString() })}\n`);
