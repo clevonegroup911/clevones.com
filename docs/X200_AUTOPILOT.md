@@ -1,58 +1,77 @@
-# X200 FAST-LANE — Fedora Local Autopilot
+# X200 AUTOPLAN + FAST-LANE — Fedora Local Autopilot
 
 ## Objectif
 
-Supprimer les pauses manuelles entre tâches tout en conservant les gates humains uniquement pour les opérations réellement sensibles. Le superviseur local relance automatiquement un nouvel agent Cursor après chaque tâche, après une interruption ou après un timeout.
+Travailler continuellement jusqu'à la fin réelle du produit : analyser, planifier, exécuter, vérifier, replanifier et reprendre automatiquement, avec gates humains uniquement pour les opérations réellement sensibles.
 
-## Principe
+Le superviseur local relance automatiquement un nouvel agent Cursor après chaque tâche, interruption ou timeout. Lorsque le backlog n'a plus de tâche automatique admissible, il ne s'arrête plus immédiatement : il déclenche AUTOPLAN pour comparer l'état réel au but canonique `PRODUCT_GOAL.md` et générer le prochain travail utile sans doublon.
+
+## Boucle
 
 Le processus `scripts/x200-autopilot.mjs` reste local sur Fedora. Il ne dépend pas des Cursor Cloud Agents.
 
-Boucle :
-
 1. vérifier que le dépôt est propre ;
 2. valider `backlog.json` et `TASK_REPORT.md` ;
-3. reprendre une tâche `EN_COURS` si une session précédente s'est arrêtée ;
-4. réconcilier les tâches `EN_CONTRÔLE` avec le vrai job GitHub `quality` ;
+3. reprendre une tâche `EN_COURS` ;
+4. réconcilier `EN_CONTRÔLE` avec le vrai job GitHub `quality` ;
 5. sinon sélectionner une tâche `PRÊTE` non humaine ;
-6. lancer Cursor CLI en mode headless ;
-7. laisser l'agent implémenter, tester, enregistrer les preuves, commit/push sur la branche de travail ;
-8. relancer un nouvel agent et continuer jusqu'à ce qu'il n'existe plus de travail automatique ;
-9. créer `.x200/HUMAN_GATE.json` seulement lorsqu'une décision propriétaire est réellement nécessaire.
+6. lancer Cursor CLI headless pour exécuter la tâche ;
+7. enregistrer tests, preuves, commit/push sur la branche autorisée ;
+8. relancer immédiatement un cycle ;
+9. s'il n'existe plus de travail automatique, lancer AUTOPLAN ;
+10. AUTOPLAN audite le code, le backlog, les tests, la documentation et `PRODUCT_GOAL.md` ;
+11. AUTOPLAN crée au maximum trois tâches réellement utiles, cohérentes et non dupliquées ;
+12. le superviseur reprend FAST-LANE sur ces nouvelles tâches ;
+13. répéter jusqu'à preuve réelle de fin produit ou jusqu'à un gate humain/externe légitime.
 
-Une session Cursor qui atteint sa limite de temps n'arrête donc plus le projet : le superviseur relance un nouvel agent au cycle suivant. Le nouvel agent doit inspecter les claims, Git et les preuves avant de reprendre afin d'éviter un double effet externe.
+## Fin produit
+
+Le produit n'est pas considéré fini uniquement parce que le backlog est vide.
+
+AUTOPLAN doit comparer l'état réel aux critères de `PRODUCT_GOAL.md`. Si tous les critères sont réellement satisfaits sur le HEAD courant, l'agent écrit localement :
+
+```text
+.x200/PRODUCT_COMPLETE.json
+```
+
+Le superviseur n'accepte ce marqueur que s'il contient :
+
+- `version: 1` ;
+- le `head` Git courant ;
+- le hash SHA-256 courant de `PRODUCT_GOAL.md` ;
+- des preuves concrètes non vides.
+
+Tout changement de HEAD ou de `PRODUCT_GOAL.md` invalide donc automatiquement l'ancien marqueur et force un nouvel audit AUTOPLAN.
 
 ## Prérequis Fedora
 
 - Node.js conforme à `package.json` ;
-- Git et GitHub CLI configurés pour le dépôt ;
+- Git et GitHub CLI configurés ;
 - Cursor CLI installé ;
 - authentification Cursor locale active (`cursor-agent status` ou `agent status`) ;
 - branche de travail propre, jamais `main` pour les modifications automatiques.
 
-Cursor documente le mode non interactif avec `-p/--print`, `--output-format` et le mode d'autorisation automatique `--force`. Le superviseur utilise ces capacités uniquement dans le périmètre gouverné par `AGENTS.md` et les règles Cursor.
+## Utilisation
 
-## Utilisation manuelle
-
-Test d'un cycle :
+Un cycle :
 
 ```bash
 npm run x200:autopilot:once
 ```
 
-Boucle continue dans le terminal :
+Boucle continue :
 
 ```bash
 npm run x200:autopilot:daemon
 ```
 
-Simulation sans lancer Cursor :
+Simulation :
 
 ```bash
 npm run x200:autopilot -- --dry-run
 ```
 
-Paramètres utiles :
+Paramètres :
 
 ```bash
 X200_CURSOR_MODEL=auto npm run x200:autopilot:daemon
@@ -62,7 +81,7 @@ X200_AUTOPILOT_POLL_MS=60000 npm run x200:autopilot:daemon
 
 ## Service systemd utilisateur
 
-Après vérification manuelle d'un cycle :
+Après vérification d'un cycle local :
 
 ```bash
 bash scripts/install-x200-autopilot.sh
@@ -81,31 +100,42 @@ Arrêt :
 systemctl --user disable --now clevones-x200-autopilot.service
 ```
 
-## Comportement des gates
+## Règles AUTOPLAN
 
-Le superviseur continue sans demander confirmation pour le travail normal : analyse, code, tests, rapports, commits et push sur la branche autorisée.
+AUTOPLAN :
 
-Il s'arrête devant un gate propriétaire pour les catégories déjà définies par `AGENTS.md`, notamment production, migration réelle, secrets/credentials, permissions sensibles, auth/MFA production, suppression/restauration de données, paiement réel ou opération irréversible.
+- lit `PRODUCT_GOAL.md`, `AGENTS.md`, `PROJECT_CONTEXT.md`, `backlog.json`, `BACKLOG.md`, `TASK_REPORT.md`, les règles Cursor, les tests et le code pertinent ;
+- recherche d'abord une tâche existante ou terminée couvrant déjà le besoin ;
+- crée au maximum trois tâches par cycle ;
+- utilise le prochain ID `Txxx` disponible sans dépasser `T200` ;
+- remplit scope, dépendances, critères d'acceptation, tests, risque, coût, owner et `requiresHuman` ;
+- met `PRÊTE` uniquement si les dépendances sont réellement satisfaites ;
+- utilise `À_FAIRE` sinon ;
+- lance `npm run x200:validate` et `npm run x200:test` avant de terminer son cycle ;
+- ne code pas une fonctionnalité applicative pendant le cycle de planification ;
+- ne crée jamais de tâche de remplissage pour maintenir artificiellement le mouvement.
 
-Quand un gate est requis, le fichier suivant est écrit :
+## Gates humains
 
-```text
-.x200/HUMAN_GATE.json
-```
+Aucune confirmation humaine de routine pour : analyse, planification, création de tâches, code, tests, rapports, commit/push sur la branche autorisée, réconciliation CI ou démarrage d'une autre tâche indépendante.
 
-Le service reste alors en attente au lieu de fabriquer une autorisation.
+Gate humain obligatoire pour : production, migration réelle, secrets/credentials, permissions/protections sensibles, auth/MFA production, suppression/restauration de données, paiement réel, merge sensible ou opération irréversible.
 
-## Protection contre les boucles inutiles
+Un gate bloque uniquement son périmètre. AUTOPLAN cherche d'abord du travail indépendant utile. Si tous les écarts restants nécessitent un gate humain, il ne fabrique pas de tâche automatique et le superviseur écrit `.x200/HUMAN_GATE.json`.
 
-- un verrou `.x200/autopilot.lock` empêche deux superviseurs locaux simultanés ;
-- un dépôt sale avant démarrage provoque un gate au lieu d'écraser du travail ;
-- une tâche `TERMINÉE` n'est jamais rejouée ;
-- après trois cycles sans aucun progrès Git ni backlog, l'autopilot s'arrête et écrit un diagnostic de gate ;
-- un timeout Cursor n'est pas considéré comme preuve d'échec de la tâche : le cycle suivant reprend l'état réel ;
-- les tâches `EN_CONTRÔLE` sont réconciliées par SHA et job `quality`, pas par screenshot.
+## Protection contre les boucles
 
-## Limite actuelle du parallélisme
+- verrou `.x200/autopilot.lock` contre deux superviseurs simultanés ;
+- worktree sale : arrêt diagnostiqué ;
+- tâche `TERMINÉE` : jamais rejouée avec preuve valide ;
+- trois échecs identiques : changement de stratégie ou blocage ;
+- trois cycles sans progrès Git/backlog : arrêt diagnostiqué ;
+- trois cycles AUTOPLAN sans progrès utile : arrêt diagnostiqué ;
+- timeout Cursor : nouveau cycle, pas répétition aveugle ;
+- `EN_CONTRÔLE` : vérification par SHA et job `quality`, jamais par screenshot.
 
-Le registre X200 autorise jusqu'à trois tâches indépendantes `EN_COURS`, mais ce superviseur local lance volontairement un agent Cursor à la fois. Cette décision évite les collisions de working tree et de `backlog.json` sur une seule copie Fedora.
+## Parallélisme
 
-Le gain principal vient de la suppression des pauses humaines et du relancement automatique. Le parallélisme multi-worktree pourra être ajouté séparément lorsque la fusion automatique des résultats et la sérialisation du registre seront prouvées par tests.
+Le registre X200 autorise jusqu'à trois tâches indépendantes `EN_COURS`. Le superviseur Fedora actuel lance volontairement un seul agent Cursor à la fois sur un working tree afin d'éviter les collisions de fichiers et de registre.
+
+Le parallélisme multi-worktree reste une évolution séparée à valider par tests avant activation réelle.
