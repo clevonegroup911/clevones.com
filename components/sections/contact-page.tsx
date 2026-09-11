@@ -1,4 +1,5 @@
 import { ContactInitiativeForm } from "@/components/sections/contact-initiative-form";
+import { PaymentMethods } from "@/components/sections/payment-methods";
 import { CompanyContact } from "@/components/layout/company-contact";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
@@ -41,6 +42,12 @@ export async function ContactPageContent({
               className="mt-4"
             />
           </div>
+        </Container>
+      </Section>
+
+      <Section tone="elevated" spacing="sm" bordered="bottom">
+        <Container size="prose">
+          <PaymentMethods />
         </Container>
       </Section>
 
