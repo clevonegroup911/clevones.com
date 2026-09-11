@@ -1,4 +1,8 @@
-export type PaymentMethod = "CARD" | "M_PESA";
+export type PaymentMethod =
+  | "CARD"
+  | "M_PESA"
+  | "RAWBANK_CDF"
+  | "RAWBANK_USD";
 
 export type PaymentStatus =
   | "PENDING"
@@ -6,6 +10,23 @@ export type PaymentStatus =
   | "CAPTURED"
   | "FAILED"
   | "CANCELLED";
+
+export type PaymentVerificationStatus =
+  | "PENDING_VERIFICATION"
+  | "MATCHED"
+  | "VERIFIED"
+  | "REVIEW_REQUIRED"
+  | "DUPLICATE_SUSPECTED"
+  | "REJECTED";
+
+export type PaymentEventSource =
+  | "CLIENT_UPLOAD"
+  | "M_PESA_SMS"
+  | "RAWBANK_SMS"
+  | "RAWBANK_EMAIL"
+  | "M_PESA_API"
+  | "RAWBANK_API"
+  | "MANUAL_ADMIN";
 
 export type CreatePaymentInput = {
   amountCents: number;
