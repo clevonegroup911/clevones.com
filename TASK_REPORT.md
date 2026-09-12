@@ -97,4 +97,4 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Prochaine tâche prête
 
-- aucune tâche automatique PRÊTE ; laisser AUTOPLAN créer T030+ depuis PRODUCT_GOAL
+- T030 (PRÊTE) — Gateway sandbox événements CLEVONE persistés + reconcile HTTP ; puis T031/T032 (À_FAIRE)

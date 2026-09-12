@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 72
+- Registre : 73
 - Mode : single-executor
 - Mis à jour : 2026-09-12
 
@@ -11,10 +11,10 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 0
-- PRÊTE : 0
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 0
+- À_FAIRE : 2
 - TERMINÉE : 29
 - ANNULÉE : 0
 
@@ -51,3 +51,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T027 | P1 | TERMINÉE | Gateway paiements — chaîne commande/facture | non |
 | T028 | P1 | TERMINÉE | Gateway paiements — preuves et rapprochement | non |
 | T029 | P1 | TERMINÉE | Gateway paiements — surfaces admin/client | non |
+| T030 | P1 | PRÊTE | Gateway sandbox — événements CLEVONE persistés + reconcile HTTP | non |
+| T031 | P1 | À_FAIRE | Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED | non |
+| T032 | P2 | À_FAIRE | E2E Playwright — gateway paiements sandbox | non |

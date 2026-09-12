@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T030",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1887,6 +1887,145 @@
       "attempts": 2,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] créé pour fermer la boucle gateway sandbox vs PRODUCT_GOAL 9-13/15",
+      "id": "T030",
+      "title": "Gateway sandbox — événements CLEVONE persistés + reconcile HTTP",
+      "objective": "Rendre opérable via API/admin la boucle preuve client → événement CLEVONE authentifié sandbox → rapprochement persisté, sans rail PSP réel ni clé réelle.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T029"
+      ],
+      "scope": [
+        "lib/payments",
+        "app/api/admin/payments",
+        "app/admin/payments",
+        "prisma",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Admin SUPER_ADMIN/ADMIN peut enregistrer un événement CLEVONE sandbox authentifié (Zod + ACL) lié à un paiement existant ; persistance Prisma (modèle additif ou réutilisation PaymentProof/ClevoneGatewayEvent documentée)",
+        "Reconcile HTTP recharge preuves et événements depuis le store persistant ; une preuve client seule ne produit jamais VERIFIED ni capture",
+        "Avec événement CLEVONE concordant → VERIFIED possible ; mismatch → HUMAN_REVIEW avec reviewDueAt ≤ +24 h ; anti-doublon/idempotence conservés",
+        "Aucun secret PSP ; aucun webhook réseau réel ; migration additive CI/local seulement ; docs/PAYMENTS_GATEWAY.md mis à jour (niveaux de vérité)"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] dépend de T030 ; résolution HUMAN_REVIEW + activation sur VERIFIED",
+      "id": "T031",
+      "title": "Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED",
+      "objective": "Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T030"
+      ],
+      "scope": [
+        "lib/payments",
+        "app/api/admin/payments",
+        "app/admin/payments",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Actions admin approve/reject (ou équivalent) sur décisions HUMAN_REVIEW avec audit et états explicites (REJECTED utilisable)",
+        "Décision VERIFIED déclenche activation idempotente + reçu/facture SETTLED via la chaîne gateway (pas le shortcut seed settle seul)",
+        "reviewDueAt visible sur la file HUMAN_REVIEW ; USER sans accès aux actions admin",
+        "Aucun rail PSP réel ; aucun secret ; documentation des actions dans docs/PAYMENTS_GATEWAY.md"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "À_FAIRE",
+      "evidence": [],
+      "estimatedCost": 4,
+      "risk": "high",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] E2E gateway sandbox après boucle HTTP/UI opérable (T030/T031)",
+      "id": "T032",
+      "title": "E2E Playwright — gateway paiements sandbox",
+      "objective": "Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [
+        "T031"
+      ],
+      "scope": [
+        "tests/e2e",
+        "docs/E2E_PRODUCT.md"
+      ],
+      "acceptanceCriteria": [
+        "Spec Playwright couvre seed admin, upload preuve portail (jamais VERIFIED seul), enregistrement événement CLEVONE sandbox / reconcile, et état reçu après VERIFIED",
+        "Aucun secret PSP ni appel réseau réel dans le scénario ; fixtures locales uniquement",
+        "docs/E2E_PRODUCT.md documente le parcours et ses limites"
+      ],
+      "tests": [
+        "npm test",
+        "npx playwright test tests/e2e --grep payments || npx playwright test",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "À_FAIRE",
+      "evidence": [],
+      "estimatedCost": 4,
+      "risk": "medium",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
     }
   ],
   "history": [
@@ -2703,9 +2842,33 @@
       "taskId": "T029",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "TERMINÉE",
+      "note": "AUTOPLAN: écart restant = boucle reconcile HTTP/UI non opérable (critères PRODUCT_GOAL 9-13/15)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: événements CLEVONE persistés + reconcile HTTP"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: résolution HUMAN_REVIEW + activation VERIFIED (dépend T030)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: E2E Playwright gateway sandbox (dépend T031)"
     }
   ],
-  "registryVersion": 72,
+  "registryVersion": 73,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
