@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T029",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1752,11 +1752,21 @@
           "version": null,
           "at": "2026-09-12T00:49:40.403Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34662913027",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027",
+          "version": "c071a6341cbce61c25329324abd2d3cea15125d1",
+          "at": "2026-09-12T01:06:20.133Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL; close without waiting comment job",
       "id": "T028",
       "title": "Gateway paiements — preuves et rapprochement",
       "objective": "Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.",
@@ -1787,12 +1797,14 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "quality-gate T028 PASS",
         "lib/payments/reconciliation.ts + reconciliation.test.ts",
         "prisma/migrations/20260912040000_add_payment_proof_reconciliation/",
-        "docs/PAYMENTS_GATEWAY.md § T028"
+        "docs/PAYMENTS_GATEWAY.md § T028",
+        "commit c071a6341cbce61c25329324abd2d3cea15125d1",
+        "GitHub Actions X200 CI run 34662913027 SUCCESS quality on c071a6341cbce61c25329324abd2d3cea15125d1 https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027"
       ],
       "estimatedCost": 5,
       "risk": "high",
@@ -1809,8 +1821,8 @@
       "claim": null,
       "evidenceRecords": [],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] écart PRODUCT_GOAL critères 9-10 surfaces utilisables",
+      "nextAction": "exécuter le périmètre puis quality-gate",
+      "lastTransitionReason": "[X200-FAST] deps T027+T028 TERMINÉE; promoted PRÊTE",
       "id": "T029",
       "title": "Gateway paiements — surfaces admin/client",
       "objective": "Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.",
@@ -1840,7 +1852,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "evidence": [],
       "estimatedCost": 5,
       "risk": "high",
@@ -2626,9 +2638,22 @@
       "taskId": "T028",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "TERMINÉE",
+      "commit": "c071a6341cbce61c25329324abd2d3cea15125d1",
+      "note": "[X200-FAST] quality SUCCESS run 34662913027 FULL; proof/reconciliation"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] promoted after T027+T028 TERMINÉE"
     }
   ],
-  "registryVersion": 65,
+  "registryVersion": 66,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

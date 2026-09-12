@@ -10,7 +10,7 @@ T028
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : un
 
 ## Résultat
 
-Rapprochement sandbox livré : `PaymentProof` + `ReconciliationDecision`, stockage privé `.data/payment-proofs` via `lib/documents/storage`, API `createReconciliationService` avec invariants preuve-client-seule / CLEVONE authentifié / HUMAN_REVIEW ≤ 24 h / anti-doublon. Quality-gate local PASS. Attente `quality` CI.
+Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, `PaymentProof`/`ReconciliationDecision`, invariants preuve-client-seule / CLEVONE authentifié / HUMAN_REVIEW ≤ 24 h / anti-doublon. `quality` SUCCESS run 34662913027 sur `c071a6341cbce61c25329324abd2d3cea15125d1`. T029 promue PRÊTE.
 
 ## Fichiers créés
 
@@ -37,12 +37,13 @@ Rapprochement sandbox livré : `PaymentProof` + `ReconciliationDecision`, stocka
 
 ## Commandes
 
-- `npm run x200:claim -- --json T028`
 - `npm run x200:quality-gate -- --task T028`
+- CI run 34662913027
 
 ## Tests réussis
 
-- quality-gate T028 PASS (7/7)
+- quality-gate T028 PASS
+- GitHub Actions run 34662913027 `quality` SUCCESS (FULL)
 
 ## Tests échoués
 
@@ -58,15 +59,15 @@ Rapprochement sandbox livré : `PaymentProof` + `ReconciliationDecision`, stocka
 
 ## Build
 
-- CI FULL attendu (prisma/)
+- CI FULL SUCCESS
 
 ## Sécurité
 
-- preuves hors Git ; aucune clé PSP ; pas de migration production ; `.env` non touché
+- preuves hors Git ; aucune clé PSP ; pas de migration production
 
 ## Commit
 
-- (à renseigner après push)
+- `c071a6341cbce61c25329324abd2d3cea15125d1`
 
 ## Pull Request
 
@@ -74,7 +75,7 @@ Rapprochement sandbox livré : `PaymentProof` + `ReconciliationDecision`, stocka
 
 ## Preuves
 
-- quality-gate T028
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027
 - docs/PAYMENTS_GATEWAY.md § T028
 
 ## Risques
@@ -83,8 +84,8 @@ Rapprochement sandbox livré : `PaymentProof` + `ReconciliationDecision`, stocka
 
 ## Blocage
 
-- EN_CONTRÔLE jusqu'à quality SUCCESS
+- aucun
 
 ## Prochaine tâche prête
 
-T029 (après TERMINÉE T027+T028)
+T029
