@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T028",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1742,10 +1742,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T00:49:40.403Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "exécuter le périmètre puis quality-gate",
-      "lastTransitionReason": "[X200-FAST] deps T027 TERMINÉE; promoted PRÊTE",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T028",
       "title": "Gateway paiements — preuves et rapprochement",
       "objective": "Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.",
@@ -1776,11 +1787,16 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "quality-gate T028 PASS",
+        "lib/payments/reconciliation.ts + reconciliation.test.ts",
+        "prisma/migrations/20260912040000_add_payment_proof_reconciliation/",
+        "docs/PAYMENTS_GATEWAY.md § T028"
+      ],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -2598,9 +2614,21 @@
       "taskId": "T028",
       "status": "PRÊTE",
       "note": "[X200-FAST] promoted after T027 TERMINÉE"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 62,
+  "registryVersion": 65,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

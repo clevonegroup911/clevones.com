@@ -46,14 +46,51 @@ Migration additive : `prisma/migrations/20260912030000_add_payment_gateway_chain
 
 Journal d’audit local (`GATEWAY_*`) aligné sur le modèle `AuditLog` (action, entityType, entityId).
 
-## Hors périmètre (T028 / T029 / gates)
+## Hors périmètre restant (T029 / gates)
 
-- Preuves client, rapprochement, file `HUMAN_REVIEW` → **T028**
 - Surfaces admin/client → **T029**
 - Clés réelles, webhooks réseau, migration production → gate propriétaire
+
+## Preuves et rapprochement (T028)
+
+### Chaîne étendue
+
+```
+… → Payment
+  → PaymentProof (CLIENT_UPLOAD, stockage privé `.data/payment-proofs/`, hors Git)
+  → événement CLEVONE authentifié (CLEVONE_SANDBOX / CLEVONE_OFFICIAL)
+  → ReconciliationDecision (idempotent)
+       ├─ VERIFIED → seule voie auto vers capture/activation
+       ├─ PENDING (preuve client seule)
+       ├─ HUMAN_REVIEW (conflit ; reviewDueAt ≤ +24 h)
+       └─ DUPLICATE_SUSPECTED (référence déjà vérifiée)
+```
+
+### Invariants
+
+| Règle | Niveau |
+|---|---|
+| Preuve client seule → jamais `VERIFIED` / jamais capture | **testé** (`reconciliation.test.ts`) |
+| Source CLEVONE authentifiée requise pour validation auto | **testé** |
+| Mismatch montant/référence/devise → `HUMAN_REVIEW` ≤ 24 h | **testé** |
+| Idempotence + anti-rejeu (idempotencyKey + refs vérifiées) | **testé** |
+| Stockage preuves hors `public/` et hors Git (`.data/`) | **implémenté** |
+| Rails réels / clés PSP | **non** |
+
+### API
+
+`createReconciliationService()` (`lib/payments/reconciliation.ts`) :
+
+- `storeClientProof` — écrit via `lib/documents/storage` dans `PAYMENT_PROOF_ROOT`
+- `registerClevoneEvent` — événement authentifié sandbox/officiel
+- `reconcile` — décision idempotente + journal d’audit
+- `allowsCapture` — `true` uniquement si `VERIFIED`
+
+Modèles Prisma additifs : `PaymentProof`, `ReconciliationDecision` — migration `20260912040000_add_payment_proof_reconciliation` (CI/local only).
 
 ## Tests
 
 - `lib/payments/gateway.test.ts`
-- `lib/payments/sandbox.test.ts` (T024, inchangé)
-- Contrôles tâche : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`
+- `lib/payments/reconciliation.test.ts`
+- `lib/payments/sandbox.test.ts` (T024)
+- Contrôles : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`

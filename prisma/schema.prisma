@@ -405,3 +405,63 @@ model ClevoneGatewayEvent {
   @@index([orderId])
   @@index([paymentId])
 }
+
+enum PaymentProofSource {
+  CLIENT_UPLOAD
+  CLEVONE_SANDBOX
+  CLEVONE_OFFICIAL
+}
+
+enum ReconciliationStatus {
+  PENDING
+  MATCHED
+  VERIFIED
+  HUMAN_REVIEW
+  DUPLICATE_SUSPECTED
+  REJECTED
+}
+
+/// Preuve de paiement stockée hors Git (chemin privé).
+model PaymentProof {
+  id             String             @id @default(cuid())
+  paymentId      String
+  invoiceId      String?
+  source         PaymentProofSource
+  storageKey     String             @unique
+  fileName       String
+  mimeType       String
+  sizeBytes      Int
+  checksumSha256 String
+  reference      String?
+  amountCents    Int?
+  currency       String?
+  /// true seulement pour source CLEVONE authentifiée / événement officiel sandbox.
+  authenticated  Boolean            @default(false)
+  createdAt      DateTime           @default(now())
+
+  @@index([paymentId, createdAt])
+  @@index([invoiceId])
+  @@index([reference])
+  @@index([source])
+}
+
+/// Décision de rapprochement idempotente (anti-rejeu).
+model ReconciliationDecision {
+  id               String                @id @default(cuid())
+  paymentId        String
+  invoiceId        String?
+  status           ReconciliationStatus
+  score            Int                   @default(0)
+  reasons          Json
+  idempotencyKey   String                @unique
+  clientProofId    String?
+  matchedEventKey  String?
+  /// Délai indicatif de revue humaine (jusqu'à 24 h).
+  reviewDueAt      DateTime?
+  decidedAt        DateTime              @default(now())
+  createdAt        DateTime              @default(now())
+
+  @@index([paymentId, createdAt])
+  @@index([status, createdAt])
+  @@index([invoiceId])
+}
