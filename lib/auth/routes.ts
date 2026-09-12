@@ -17,6 +17,7 @@ export const adminRoutes = {
   securityMfa: "/admin/security/mfa",
   cms: "/admin/cms",
   analytics: "/admin/analytics",
+  payments: "/admin/payments",
 } as const;
 
 /** Paths that will require a session once auth is integrated. */

@@ -88,9 +88,21 @@ Journal d’audit local (`GATEWAY_*`) aligné sur le modèle `AuditLog` (action,
 
 Modèles Prisma additifs : `PaymentProof`, `ReconciliationDecision` — migration `20260912040000_add_payment_proof_reconciliation` (CI/local only).
 
+## Surfaces admin / client (T029)
+
+| Surface | Route | Accès | Contenu |
+|---|---|---|---|
+| Console admin | `/admin/payments` (+ détail `/admin/payments/[orderId]`) | SUPER_ADMIN / ADMIN | commandes/factures/paiements, file HUMAN_REVIEW, audit décisions |
+| API admin | `GET /api/admin/payments` | SUPER_ADMIN / ADMIN (403 pour USER) | JSON listes |
+| Portail client | `/portal/payments` | session authentifiée | état facture/paiement/reçu ; upload preuve |
+| API client | `GET /api/portal/payments`, `POST /api/portal/payments/proof` | authentifié | list + upload ; **preuve seule ≠ VERIFIED** |
+
+Zod : `lib/payments/schemas.ts`. Contrôles rôle : `lib/payments/access.ts`.
+
 ## Tests
 
 - `lib/payments/gateway.test.ts`
 - `lib/payments/reconciliation.test.ts`
+- `lib/payments/access.test.ts`
 - `lib/payments/sandbox.test.ts` (T024)
 - Contrôles : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`

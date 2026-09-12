@@ -23,10 +23,6 @@ function resolveStorageRoot(rootOverride?: string): string {
   return absolute;
 }
 
-function storageRoot(): string {
-  return resolveStorageRoot();
-}
-
 export function buildStorageKey(fileName: string): string {
   const safe = fileName.replace(/[^a-zA-Z0-9._-]+/g, "_").slice(0, 80);
   return `${new Date().toISOString().slice(0, 10)}/${randomUUID()}-${safe}`;

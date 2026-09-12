@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T029",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1818,11 +1818,17 @@
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
-      "claim": null,
+      "claim": {
+        "workerId": "local:fedora",
+        "token": "f04db37f1c805b359a627fb7c2197315",
+        "claimedAt": "2026-09-12T01:06:44.954Z",
+        "expiresAt": "2026-09-12T03:06:44.954Z",
+        "leaseSeconds": 7200
+      },
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": "exécuter le périmètre puis quality-gate",
-      "lastTransitionReason": "[X200-FAST] deps T027+T028 TERMINÉE; promoted PRÊTE",
+      "lastTransitionReason": "réservation par local:fedora",
       "id": "T029",
       "title": "Gateway paiements — surfaces admin/client",
       "objective": "Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.",
@@ -1852,11 +1858,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_COURS",
       "evidence": [],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     }
@@ -2651,9 +2657,15 @@
       "taskId": "T029",
       "status": "PRÊTE",
       "note": "[X200-FAST] promoted after T027+T028 TERMINÉE"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 66,
+  "registryVersion": 67,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

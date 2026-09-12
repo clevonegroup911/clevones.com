@@ -34,7 +34,10 @@ export default async function PortalPage({ searchParams }: PageProps) {
         </h1>
         <p className="mt-2 text-sm text-gray-muted">
           Espace authentifié ({actor.firstName}). Stockage privé hors{" "}
-          <code className="text-gold-muted">public/</code>.
+          <code className="text-gold-muted">public/</code>.{" "}
+          <Link href="/portal/payments" className="text-gold-muted hover:text-gold">
+            Mes paiements
+          </Link>
         </p>
       </div>
 
