@@ -1,6 +1,6 @@
 # CLEVONE Payment Gateway — chaîne commande/facture (T027)
 
-Livré 2026-09-12. **Sandbox uniquement. Aucune clé PSP. Aucun appel réseau M-PESA / RAWBANK / Stripe.**
+Livré 2026-09-12. **Sandbox uniquement. Aucune clé PSP. Aucun appel réseau M-PESA / RAWBANK / Stripe.** Source opérationnelle paiements (l’inventaire T015 est historique pour « absences »).
 
 ## Chaîne
 

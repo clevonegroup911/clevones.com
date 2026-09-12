@@ -1,6 +1,6 @@
 # CMS interne (T019)
 
-Livré le 2026-09-09. Aucune migration production.
+Livré le 2026-09-09. Aucune migration production. **Toujours la source opérationnelle CMS** (l’inventaire T014 `CMS_AND_DOCUMENTS.md` est historique).
 
 ## Modèles
 

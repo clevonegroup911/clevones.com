@@ -6,7 +6,7 @@
 
 ## ID
 
-T033
+T035
 
 ## Statut
 
@@ -14,48 +14,37 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Authentification portail USER : `/sign-in` credentials, session `portal_session`, garde portail hors `requireAdmin()` seul, sans MFA admin ni production.
+Resynchroniser inventaires docs avec l’état réel (PRODUCT_GOAL §17).
 
 ## Résultat
 
-Livré localement. Quality-gate PASS. Attente job GitHub `quality` sur le SHA poussé.
+Inventaires T014/T015 marqués historiques + état réel T019–T033 ; MONITORING aligné backups/timer non activé + alertes GCP non provisionnées ; PROJECT_CONTEXT à jour. Pas de PRODUCT_COMPLETE. T033 TERMINÉE (CI quality SUCCESS e363418). Quality-gate T035 PASS.
 
 ## Fichiers créés
 
-- `lib/auth/portal-access.ts` (+ test)
-- `lib/auth/portal-session-cookie.ts`
-- `lib/auth/portal-session-token.ts` (+ test)
-- `lib/auth/portal-session.ts`
-- `lib/auth/require-portal.ts`
-- `app/(auth)/actions.ts`
-- `app/(auth)/sign-in/sign-in-form.tsx`
-- `tests/e2e/portal-login.ts`
-- `tests/e2e/portal-user.spec.ts`
-- `reports/tasks/T033.md`
+- `reports/tasks/T035.md`
 
 ## Fichiers modifiés
 
-- `app/(auth)/sign-in/page.tsx`
-- `middleware.ts`
-- `lib/auth/routes.ts` (+ test) / `index.ts`
-- `app/(dashboard)/portal/page.tsx`
-- `app/(dashboard)/portal/payments/page.tsx`
-- `app/api/portal/**`
-- `docs/ROLES_AND_PERMISSIONS.md`
-- `docs/PRIVATE_DOCUMENTS.md`
-- `tests/e2e/fixture.ts` / `seed.ts` / `product-surfaces.spec.ts`
-- `backlog.json`
+- `docs/CMS_AND_DOCUMENTS.md`
+- `docs/ANALYTICS_AND_PAYMENTS.md`
+- `docs/MONITORING.md`
+- `docs/CMS_INTERNAL.md`
+- `docs/ANALYTICS_FIRST_PARTY.md`
+- `docs/PAYMENTS_GATEWAY.md`
+- `PROJECT_CONTEXT.md`
+- `backlog.json` / `BACKLOG.md`
 - `TASK_REPORT.md`
+- `reports/tasks/T033.md`
 
 ## Commandes
 
-- `npm run x200:claim -- --json T033`
-- `npm run x200:quality-gate -- --task T033`
-- `npm run x200:claim -- --json T033 --complete`
+- `npm run x200:quality-gate -- --task T035`
+- `npm run x200:claim -- --json T035 --complete`
 
 ## Tests réussis
 
-- quality-gate T033 (npm test, lint, tsc, scan-secrets, validate, diff-check)
+- quality-gate T035 (validate, scan-secrets, diff-check)
 
 ## Tests échoués
 
@@ -63,41 +52,41 @@ Livré localement. Quality-gate PASS. Attente job GitHub `quality` sur le SHA po
 
 ## Lint
 
-- pass
+- n/a
 
 ## Type-check
 
-- pass
+- n/a
 
 ## Build
 
-- attendu CI
+- n/a METADATA
 
 ## Sécurité
 
-- cookies distincts admin/portail ; USER ne passe pas le middleware admin ; pas de `.env` / secrets / prod
+- docs only ; aucun secret ; pas de PRODUCT_COMPLETE
 
 ## Commit
 
-- (push en cours)
+- (push)
 
 ## Pull Request
 
-- PR draft #7 : https://github.com/clevonegroup911/clevones.com/pull/7
+- PR draft #7
 
 ## Preuves
 
-- `.x200/quality-results.json` task=T033 ok
-- e2e `portal-user.spec.ts` (USER → /portal, refus /admin)
+- `.x200/quality-results.json` task=T035
+- T033 CI 34715775346 SUCCESS
 
 ## Risques
 
-- Auth high — CI FULL/FAST selon lane PR
+- low
 
 ## Blocage
 
-- attente `quality=SUCCESS` sur SHA
+- attente quality CI sur SHA docs
 
 ## Prochaine tâche prête
 
-- T035 (indépendante) après push ; T034 après TERMINÉE T033
+- T034
