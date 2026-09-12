@@ -2057,11 +2057,21 @@
           "version": null,
           "at": "2026-09-12T19:28:23.279Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34714768811",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811",
+          "version": "9aea82089a2f310d4754bbda05682d4eb9872d3c",
+          "at": "2026-09-12T19:43:30.517Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL playwright; close",
       "id": "T032",
       "title": "E2E Playwright — gateway paiements sandbox",
       "objective": "Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.",
@@ -2086,8 +2096,14 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T032 PASS",
+        "tests/e2e/payments-gateway.spec.ts + docs/E2E_PRODUCT.md § Gateway paiements",
+        "commit 9aea82089a2f310d4754bbda05682d4eb9872d3c",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34714768811 SUCCESS quality on 9aea82089a2f310d4754bbda05682d4eb9872d3c https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811"
+      ],
       "estimatedCost": 4,
       "risk": "medium",
       "attempts": 1,
@@ -2993,9 +3009,15 @@
       "taskId": "T032",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; Playwright gateway sandbox"
     }
   ],
-  "registryVersion": 81,
+  "registryVersion": 82,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

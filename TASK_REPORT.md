@@ -10,7 +10,7 @@ T032
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client
 
 ## Résultat
 
-Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-gate local PASS (Playwright skipped sans DB loopback locale ; exécution réelle attendue en CI FULL). Attente job `quality` CI.
+Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-gate local PASS. Job `quality` CI SUCCESS (Playwright FULL) sur `9aea82089a2f310d4754bbda05682d4eb9872d3c`.
 
 ## Fichiers créés
 
@@ -63,7 +63,7 @@ Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-g
 
 ## Commit
 
-- (à renseigner après commit)
+- `9aea82089a2f310d4754bbda05682d4eb9872d3c`
 
 ## Pull Request
 
@@ -72,6 +72,7 @@ Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-g
 ## Preuves
 
 - quality-gate T032
+- GitHub Actions X200 CI run 34714768811 SUCCESS quality on 9aea82089a2f310d4754bbda05682d4eb9872d3c https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811
 - docs/E2E_PRODUCT.md § Gateway paiements (T032)
 
 ## Risques
@@ -80,8 +81,8 @@ Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-g
 
 ## Blocage
 
-- attente `quality` CI SUCCESS sur SHA d'implémentation
+- aucun
 
 ## Prochaine tâche prête
 
-- AUTOPLAN si plus de tâche automatique admissible
+- aucune PRÊTE ; AUTOPLAN au prochain cycle
