@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AdminClevoneReconcileForms } from "@/app/admin/payments/clevone-reconcile-forms";
+import { ActivateVerifiedButton } from "@/app/admin/payments/activate-verified-button";
 import { adminRoutes } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { canAccessAdminPayments } from "@/lib/payments/access";
@@ -52,6 +53,8 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
   ]);
 
   const latestClientProof = proofs.find((row) => row.source === "CLIENT_UPLOAD");
+  const verifiedDecision = decisions.find((row) => row.status === "VERIFIED");
+  const alreadySettled = Boolean(invoice?.receipt) || invoice?.status === "SETTLED";
 
   return (
     <div className="flex w-full flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
@@ -106,6 +109,23 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
           defaultCurrency={invoice.payment.currency}
           defaultReference={latestClientProof?.reference ?? ""}
         />
+      ) : null}
+
+      {invoice?.payment && verifiedDecision && !alreadySettled ? (
+        <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+          <h2 className="text-sm font-semibold text-white">
+            Activation VERIFIED
+          </h2>
+          <p className="mt-2 text-xs text-gray-muted">
+            Décision VERIFIED détectée — activation via chaîne gateway (pas le
+            shortcut seed settle).
+          </p>
+          <ActivateVerifiedButton
+            paymentId={invoice.payment.id}
+            decisionId={verifiedDecision.id}
+            canActivate
+          />
+        </section>
       ) : null}
 
       <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">

@@ -142,7 +142,7 @@ export async function findPaymentWithInvoice(
     where: { id: paymentId },
     include: {
       invoice: {
-        include: { order: true },
+        include: { order: true, receipt: true },
       },
     },
   });

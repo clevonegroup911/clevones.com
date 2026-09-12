@@ -142,11 +142,31 @@ Helpers : `lib/payments/clevone-events.ts`. Hydratation : `hydratePersistedState
 | Webhook réseau / clé PSP | non | **non** | scan-secrets | n/a | n/a | **non** |
 | Migration production | n/a | **interdite** | aucune migration T030 (réutilisation modèle) | n/a | n/a | **non** |
 
+## Résolution HUMAN_REVIEW + activation VERIFIED (T031)
+
+| Surface | Route | Accès | Contenu |
+|---|---|---|---|
+| File HUMAN_REVIEW | `/admin/payments` | SUPER_ADMIN / ADMIN | `reviewDueAt` visible ; boutons approve / reject |
+| Résoudre revue | `POST /api/admin/payments/review` | SUPER_ADMIN / ADMIN | `approve` → VERIFIED + activation ; `reject` → REJECTED |
+| Activer VERIFIED | `POST /api/admin/payments/activate` | SUPER_ADMIN / ADMIN | exige décision VERIFIED ; `activateFromClevoneEvent` + persist |
+
+API domaine : `lib/payments/activation.ts` (`resolvePersistedHumanReview`, `activateVerifiedPayment`) + `resolveHumanReview` sur le service de rapprochement.
+
+### Niveaux de vérité (T031)
+
+| Élément | Conçu | Implémenté | Testé localement | Validé CI | Fusionné | Live rails |
+|---|---|---|---|---|---|---|
+| Approve / reject HUMAN_REVIEW | oui | oui | `activation.test.ts` | en cours | non | non |
+| VERIFIED → activation gateway + SETTLED | oui | oui | gateway + activation tests | en cours | non | non |
+| USER sans actions admin | oui | oui | ACL | en cours | non | non |
+| Bypass seed settle pour activation métier | non | **non** (chemin gateway) | tests | en cours | non | non |
+
 ## Tests
 
 - `lib/payments/gateway.test.ts`
 - `lib/payments/reconciliation.test.ts`
 - `lib/payments/persist-reconcile.test.ts` (T030)
+- `lib/payments/activation.test.ts` (T031)
 - `lib/payments/access.test.ts`
 - `lib/payments/sandbox.test.ts` (T024)
 - Contrôles : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`

@@ -526,6 +526,69 @@ export function createReconciliationService(options?: { store?: Store }) {
     allowsCapture(decision: ReconciliationDecisionRecord): boolean {
       return decision.status === "VERIFIED";
     },
+
+    /**
+     * Résolution admin d’une décision HUMAN_REVIEW.
+     * approve → VERIFIED (ouvre la voie capture) ; reject → REJECTED.
+     */
+    resolveHumanReview(input: {
+      decisionId: string;
+      action: "approve" | "reject";
+      actorId?: string;
+      note?: string;
+    }): ReconciliationDecisionRecord {
+      const existing = store.decisions.get(input.decisionId);
+      if (!existing) {
+        throw new Error("decision_not_found");
+      }
+      if (existing.status !== "HUMAN_REVIEW") {
+        throw new Error("decision_not_in_human_review");
+      }
+
+      const ts = now();
+      const next: ReconciliationDecisionRecord = {
+        ...existing,
+        status: input.action === "approve" ? "VERIFIED" : "REJECTED",
+        score: input.action === "approve" ? Math.max(existing.score, 90) : existing.score,
+        reasons: [
+          ...existing.reasons,
+          input.action === "approve"
+            ? "admin_human_review_approved"
+            : "admin_human_review_rejected",
+          ...(input.note ? [`note:${input.note}`] : []),
+        ],
+        reviewDueAt: undefined,
+        decidedAt: ts,
+      };
+
+      if (input.action === "approve") {
+        const matched = next.matchedEventKey
+          ? store.officialEvents.get(next.matchedEventKey)
+          : undefined;
+        if (matched?.reference) {
+          store.verifiedReferences.add(normalize(matched.reference));
+        }
+        const proof = next.clientProofId
+          ? store.proofs.get(next.clientProofId)
+          : undefined;
+        if (proof?.reference) {
+          store.verifiedReferences.add(normalize(proof.reference));
+        }
+      }
+
+      store.decisions.set(next.id, next);
+      store.decisionsByIdempotency.set(next.idempotencyKey, next.id);
+      pushAudit(
+        store,
+        input.action === "approve"
+          ? "HUMAN_REVIEW_APPROVED"
+          : "HUMAN_REVIEW_REJECTED",
+        "ReconciliationDecision",
+        next.id,
+        input.actorId ?? "admin",
+      );
+      return next;
+    },
   };
 
   return service;

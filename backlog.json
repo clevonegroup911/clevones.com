@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T031",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1972,10 +1972,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:14:45.176Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] dépendances satisfaites après T030 TERMINÉE",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T031",
       "title": "Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED",
       "objective": "Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.",
@@ -2004,11 +2015,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 4,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -2918,9 +2929,21 @@
       "taskId": "T031",
       "status": "PRÊTE",
       "note": "unlocked after T030"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 76,
+  "registryVersion": 78,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

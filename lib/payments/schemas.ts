@@ -59,7 +59,22 @@ export const adminReconcileSchema = z.object({
   idempotencyKey: z.string().min(1).max(200).optional(),
 });
 
+/** Admin: résoudre HUMAN_REVIEW (approve → VERIFIED+activation ; reject → REJECTED). */
+export const adminReviewResolveSchema = z.object({
+  decisionId: z.string().min(1).max(64),
+  action: z.enum(["approve", "reject"]),
+  note: z.string().min(1).max(500).optional(),
+});
+
+/** Admin: activer une chaîne déjà VERIFIED (idempotent ; pas de bypass rapprochement). */
+export const adminActivateVerifiedSchema = z.object({
+  paymentId: z.string().min(1).max(64),
+  decisionId: z.string().min(1).max(64).optional(),
+});
+
 export type PaymentProofUploadInput = z.infer<typeof paymentProofUploadSchema>;
 export type AdminSandboxCreateInput = z.infer<typeof adminSandboxCreateSchema>;
 export type AdminClevoneEventInput = z.infer<typeof adminClevoneEventSchema>;
 export type AdminReconcileInput = z.infer<typeof adminReconcileSchema>;
+export type AdminReviewResolveInput = z.infer<typeof adminReviewResolveSchema>;
+export type AdminActivateVerifiedInput = z.infer<typeof adminActivateVerifiedSchema>;

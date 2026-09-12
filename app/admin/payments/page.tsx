@@ -2,6 +2,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 import Link from "next/link";
 
+import { HumanReviewActions } from "@/app/admin/payments/human-review-actions";
 import { SandboxSeedForm } from "@/app/admin/payments/sandbox-seed-form";
 import { adminRoutes } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/require-admin";
@@ -59,30 +60,23 @@ export default async function AdminPaymentsPage() {
         <h2 className="text-sm font-semibold text-white">
           File HUMAN_REVIEW ({humanReview.length})
         </h2>
-        {humanReview.length === 0 ? (
-          <p className="mt-3 text-sm text-gray-muted">Aucune décision en revue.</p>
-        ) : (
-          <ul className="mt-3 divide-y divide-border-subtle">
-            {humanReview.map((row) => (
-              <li key={row.id} className="py-3 text-sm">
-                <p className="text-white">
-                  {row.paymentId} · score {row.score}
-                </p>
-                <p className="text-gray-muted">
-                  échéance indicative{" "}
-                  {row.reviewDueAt
-                    ? row.reviewDueAt.toISOString().slice(0, 16)
-                    : "n/a"}
-                </p>
-                <p className="text-xs text-gray-muted">
-                  {Array.isArray(row.reasons)
-                    ? row.reasons.map(String).join(", ")
-                    : String(row.reasons ?? "")}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <p className="mt-2 text-xs text-gray-muted">
+          reviewDueAt visible ; approve → VERIFIED + activation ; reject →
+          REJECTED. USER sans accès.
+        </p>
+        <HumanReviewActions
+          rows={humanReview.map((row) => ({
+            id: row.id,
+            paymentId: row.paymentId,
+            score: row.score,
+            reviewDueAt: row.reviewDueAt
+              ? row.reviewDueAt.toISOString().slice(0, 16)
+              : null,
+            reasons: Array.isArray(row.reasons)
+              ? row.reasons.map(String).join(", ")
+              : String(row.reasons ?? ""),
+          }))}
+        />
       </section>
 
       <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
@@ -143,6 +137,9 @@ export default async function AdminPaymentsPage() {
                 <span className="text-gray-muted">
                   {" "}
                   · {row.paymentId} · {row.decidedAt.toISOString().slice(0, 19)}
+                  {row.reviewDueAt
+                    ? ` · revue ≤ ${row.reviewDueAt.toISOString().slice(0, 16)}`
+                    : ""}
                 </span>
               </li>
             ))}
