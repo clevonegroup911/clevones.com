@@ -6,40 +6,40 @@
 
 ## ID
 
-T032
+T033
 
 ## Statut
 
-TERMINÉE
+PRÊTE
 
 ## Objectif
 
-Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.
+Authentification portail USER — créée par AUTOPLAN après audit PRODUCT_GOAL (écarts §2/§5). Ce cycle n’implémente pas la fonctionnalité ; il planifie uniquement.
 
 ## Résultat
 
-Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-gate local PASS. Job `quality` CI SUCCESS (Playwright FULL) sur `9aea82089a2f310d4754bbda05682d4eb9872d3c`.
+AUTOPLAN 2026-09-12 : T033 PRÊTE, T034 À_FAIRE (dépend de T033), T035 PRÊTE. Pas de PRODUCT_COMPLETE — écarts code confirmés (`/sign-in` placeholder, portal `requireAdmin()`, pas de mutation DocumentGrant admin, inventaires docs obsolètes).
 
 ## Fichiers créés
 
-- `tests/e2e/payments-gateway.spec.ts`
-- `reports/tasks/T032.md`
+- aucun applicatif (planification)
 
 ## Fichiers modifiés
 
-- `docs/E2E_PRODUCT.md`
 - `backlog.json`
-- `TASK_REPORT.md`
 - `BACKLOG.md`
+- `TASK_REPORT.md`
 
 ## Commandes
 
-- `npm run x200:claim -- --json T032`
-- `npm run x200:quality-gate -- --task T032`
+- `npm run x200:validate`
+- `npm run x200:test`
+- `npm run x200:backlog-md`
+- `npm run x200:next -- --json`
 
 ## Tests réussis
 
-- quality-gate T032 PASS
+- x200:validate / x200:test (registre après planification)
 
 ## Tests échoués
 
@@ -47,23 +47,23 @@ Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-g
 
 ## Lint
 
-- non listé dans tests T032 (inclus unitaires via npm test)
+- n/a planification
 
 ## Type-check
 
-- non listé dans tests T032
+- n/a planification
 
 ## Build
 
-- attendu CI FULL (Playwright)
+- n/a
 
 ## Sécurité
 
-- fixtures e2e seulement ; aucun secret PSP ; `.env` non touché
+- aucune modification `.env` / secrets / production
 
 ## Commit
 
-- `9aea82089a2f310d4754bbda05682d4eb9872d3c`
+- (planification sur `autoplan/payments-recovery-20260912`)
 
 ## Pull Request
 
@@ -71,18 +71,18 @@ Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-g
 
 ## Preuves
 
-- quality-gate T032
-- GitHub Actions X200 CI run 34714768811 SUCCESS quality on 9aea82089a2f310d4754bbda05682d4eb9872d3c https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811
-- docs/E2E_PRODUCT.md § Gateway paiements (T032)
+- HEAD `def299808c8c3b0e5c60f835669c09b40baa4226` ; quality SUCCESS run 34715003806
+- Audit code : `app/(auth)/sign-in/page.tsx`, portal `requireAdmin()`, `lib/documents/service.ts` grants lecture seule
+- Registre : T033–T035 ; registryVersion 83
 
 ## Risques
 
-- Docker e2e PG non joignable sur cet hôte Fedora ; preuve E2E réelle = CI
+- Auth : T033/T034 séquentiels (neverParallelize authentication)
 
 ## Blocage
 
-- aucun
+- aucun pour T033 ; gates humaines (SMTP, PSP live, alertes GCP, merge/deploy) hors auto
 
 ## Prochaine tâche prête
 
-- aucune PRÊTE ; AUTOPLAN au prochain cycle
+- T033

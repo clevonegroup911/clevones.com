@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 82
+- Registre : 83
 - Mode : single-executor
 - Mis à jour : 2026-09-12
 
@@ -11,10 +11,10 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 0
-- PRÊTE : 0
+- PRÊTE : 2
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 0
+- À_FAIRE : 1
 - TERMINÉE : 32
 - ANNULÉE : 0
 
@@ -54,3 +54,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T030 | P1 | TERMINÉE | Gateway sandbox — événements CLEVONE persistés + reconcile HTTP | non |
 | T031 | P1 | TERMINÉE | Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED | non |
 | T032 | P2 | TERMINÉE | E2E Playwright — gateway paiements sandbox | non |
+| T033 | P1 | PRÊTE | Authentification portail USER | non |
+| T034 | P1 | À_FAIRE | Gestion utilisateurs et grants documents | non |
+| T035 | P2 | PRÊTE | Resynchroniser inventaires docs avec l’état réel | non |

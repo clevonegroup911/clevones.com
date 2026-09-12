@@ -2109,6 +2109,152 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] created: USER portal auth gap vs PRODUCT_GOAL §2/§5",
+      "id": "T033",
+      "title": "Authentification portail USER",
+      "objective": "Rendre le rôle USER opérationnel sur le portail client : remplacer le placeholder /sign-in et cesser de gater /portal uniquement via requireAdmin(), sans ouvrir MFA admin ni production.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T020",
+        "T021"
+      ],
+      "scope": [
+        "app/(auth)",
+        "lib/auth",
+        "app/(dashboard)/portal",
+        "app/api/portal",
+        "docs/ROLES_AND_PERMISSIONS.md",
+        "docs/PRIVATE_DOCUMENTS.md"
+      ],
+      "acceptanceCriteria": [
+        "/sign-in authentifie un utilisateur ACTIVE de rôle USER (credentials) et établit une session portail utilisable ; plus de page « Bientôt disponible » comme seul état",
+        "Les routes /portal et API portail acceptent un acteur USER authentifié ; requireAdmin() n’est plus le seul garde portail",
+        "USER authentifié ne peut pas accéder à la console /admin ; ADMIN/SUPER_ADMIN conservent MFA et accès admin existants",
+        "Tests unitaires (session/garde) et au moins un scénario e2e ou intégration prouvant login USER → portail sans secret prod",
+        "Documentation ROLES_AND_PERMISSIONS.md et PRIVATE_DOCUMENTS.md mises à jour au niveau de vérité (implémenté/testé, pas live prod)"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] created: user lifecycle + DocumentGrant ops gap vs PRODUCT_GOAL §5",
+      "id": "T034",
+      "title": "Gestion utilisateurs et grants documents",
+      "objective": "Compléter la gestion utilisateurs et les droits d’accès opérationnels : surfaces admin minimales pour créer/lister/désactiver des utilisateurs non SUPER_ADMIN et créer/révoquer des DocumentGrant, testables avec le portail USER.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T033"
+      ],
+      "scope": [
+        "app/admin",
+        "app/api/admin",
+        "lib/documents",
+        "lib/auth",
+        "docs/ROLES_AND_PERMISSIONS.md",
+        "docs/PRIVATE_DOCUMENTS.md"
+      ],
+      "acceptanceCriteria": [
+        "API/UI admin authentifiée permet de lister et créer un utilisateur rôle USER ou ADMIN (hors SUPER_ADMIN) et de désactiver un compte non SUPER_ADMIN, avec audit",
+        "API/UI admin permet de créer et révoquer un DocumentGrant (canRead/canWrite) sur un document existant",
+        "Un USER authentifié (T033) avec grant peut lire le document concerné ; sans grant → refus documenté",
+        "Aucun secret réel, aucune migration production, aucun envoi email réel requis",
+        "Docs ROLES_AND_PERMISSIONS.md / PRIVATE_DOCUMENTS.md reflètent les surfaces livrées"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "À_FAIRE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] created: stale inventory docs contradict code (PRODUCT_GOAL §17)",
+      "id": "T035",
+      "title": "Resynchroniser inventaires docs avec l’état réel",
+      "objective": "Corriger les inventaires obsolètes qui contredisent le code (CMS, analytics/paiements, monitoring/timer) afin que la documentation d’exploitation et de reprise soit fiable pour PRODUCT_GOAL §17, sans inventer un PRODUCT_COMPLETE prématuré.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [],
+      "scope": [
+        "docs/CMS_AND_DOCUMENTS.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "docs/MONITORING.md",
+        "docs/CMS_INTERNAL.md",
+        "docs/ANALYTICS_FIRST_PARTY.md",
+        "docs/PAYMENTS_GATEWAY.md",
+        "PROJECT_CONTEXT.md"
+      ],
+      "acceptanceCriteria": [
+        "docs/CMS_AND_DOCUMENTS.md et docs/ANALYTICS_AND_PAYMENTS.md marqués comme inventaires historiques ou réécrits pour refléter T019–T032 (CMS, documents, analytics, gateway sandbox) sans affirmation live PSP/prod",
+        "docs/MONITORING.md aligné sur l’état réel des backups/timer documenté ailleurs (T018) et sur les alertes encore non provisionnées (gate humaine)",
+        "PROJECT_CONTEXT.md mis à jour : branche/HEAD de travail, T032 TERMINÉE, écarts restants T033–T034 et gates humaines/externes",
+        "Aucun marqueur .x200/PRODUCT_COMPLETE.json tant que T033/T034 ou critères non vérifiés restent ouverts"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 2,
+      "risk": "low",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
     }
   ],
   "history": [
@@ -3015,9 +3161,27 @@
       "taskId": "T032",
       "status": "TERMINÉE",
       "note": "quality CI SUCCESS; Playwright gateway sandbox"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: USER portal auth gap PRODUCT_GOAL §2/§5"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: depends on T033; user mgmt + DocumentGrant"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: stale inventory docs vs code PRODUCT_GOAL §17"
     }
   ],
-  "registryVersion": 82,
+  "registryVersion": 83,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
