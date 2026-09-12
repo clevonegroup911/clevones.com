@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 94
+- Registre : 96
 - Mode : single-executor
 - Mis à jour : 2026-09-12
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 3
+- EN_CONTRÔLE : 1
+- PRÊTE : 2
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
@@ -57,6 +57,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T033 | P1 | TERMINÉE | Authentification portail USER | non |
 | T034 | P1 | TERMINÉE | Gestion utilisateurs et grants documents | non |
 | T035 | P2 | TERMINÉE | Resynchroniser inventaires docs avec l’état réel | non |
-| T036 | P2 | PRÊTE | Déconnexion portail USER | non |
+| T036 | P2 | EN_CONTRÔLE | Déconnexion portail USER | non |
 | T037 | P2 | PRÊTE | E2E users + DocumentGrant portail | non |
 | T038 | P2 | PRÊTE | Endpoint santé applicatif /health | non |

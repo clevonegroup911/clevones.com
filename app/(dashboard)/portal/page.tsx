@@ -38,6 +38,10 @@ export default async function PortalPage({ searchParams }: PageProps) {
           <Link href="/portal/payments" className="text-gold-muted hover:text-gold">
             Mes paiements
           </Link>
+          {" · "}
+          <Link href="/sign-out" className="text-gold-muted hover:text-gold">
+            Déconnexion
+          </Link>
         </p>
       </div>
 

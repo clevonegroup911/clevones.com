@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   adminRoutes,
+  authRoutes,
   isAdminPath,
   isAdminProtectedPath,
   isAdminPublicPath,
@@ -61,4 +62,9 @@ test("portal callback URLs stay on portal and reject admin or open redirects", (
     safePortalCallbackUrl("https://evil.example/portal"),
     platformRoutes.portal,
   );
+});
+
+test("authRoutes expose sign-in and sign-out paths", () => {
+  assert.equal(authRoutes.signIn, "/sign-in");
+  assert.equal(authRoutes.signOut, "/sign-out");
 });

@@ -12,6 +12,7 @@ Légende : **Allow** = autorisé par un contrôle serveur ; **Deny** = refusé p
 | --- | --- | --- | --- | --- |
 | `POST` login admin (`loginAdmin`) | Allow (session ou challenge MFA) | Allow (idem) | Deny (erreur générique) | Deny |
 | `POST` login portail (`loginPortalUser` / `/sign-in`) | Deny (erreur générique) | Deny | Allow (`portal_session`) | Deny |
+| Déconnexion portail (`/sign-out`) | N/A (cookie portail seulement) | N/A | Allow (efface `portal_session`) | Allow (no-op cookie) |
 | `/admin/login`, `/admin/login/mfa` | Redirect si session admin | Redirect si session admin | Allow (public) | Allow (public, login refuse ensuite) |
 | Middleware cookie JWT → `/admin/*` protégé | Allow si `admin_session` | Allow si `admin_session` | Redirect `/admin/login` (`portal_session` ignoré) | JWT admin éventuel : middleware peut laisser passer ; `requireAdmin` refuse |
 | `GET /admin` → dashboard | Allow (`requireAdmin`) | Allow | Redirect login | Redirect login |
@@ -37,6 +38,7 @@ Défense en profondeur :
 
 - Console `/admin` : MFA admin inchangée ; cookie `admin_session` uniquement.
 - Portail `/sign-in` → `/portal` : comptes USER ; cookie `portal_session`.
+- Déconnexion `/sign-out` : efface uniquement `portal_session` (admin MFA intact).
 - Un USER authentifié qui ouvre `/admin/dashboard` est renvoyé vers `/admin/login` (pas d'élévation).
 - Un admin authentifié peut ouvrir `/portal` avec sa session admin (compatibilité e2e / ops).
 - `/admin/users` : liste/création USER|ADMIN, désactivation hors SUPER_ADMIN, create/revoke DocumentGrant.
