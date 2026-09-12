@@ -17,6 +17,11 @@ import {
   E2E_ADMIN_LAST_NAME,
   E2E_ADMIN_PASSWORD,
   E2E_TOTP_SECRET_BASE32,
+  E2E_USER_EMAIL,
+  E2E_USER_FIRST_NAME,
+  E2E_USER_ID,
+  E2E_USER_LAST_NAME,
+  E2E_USER_PASSWORD,
 } from "./fixture";
 
 const HKDF_SALT = Buffer.from("clevones-mfa-v1");
@@ -89,6 +94,7 @@ export async function seedE2eAdmin(databaseUrl: string): Promise<void> {
 
   try {
     const passwordHash = await hashPassword(E2E_ADMIN_PASSWORD);
+    const userPasswordHash = await hashPassword(E2E_USER_PASSWORD);
     const encrypted = encryptTotpSecret(E2E_TOTP_SECRET_BASE32, E2E_ADMIN_ID);
 
     await prisma.$transaction(async (tx) => {
@@ -131,6 +137,29 @@ export async function seedE2eAdmin(databaseUrl: string): Promise<void> {
           pending: false,
           pendingExpiresAt: null,
           lastUsedStep: null,
+        },
+      });
+
+      await tx.user.upsert({
+        where: { id: E2E_USER_ID },
+        update: {
+          email: E2E_USER_EMAIL,
+          passwordHash: userPasswordHash,
+          firstName: E2E_USER_FIRST_NAME,
+          lastName: E2E_USER_LAST_NAME,
+          role: "USER",
+          status: "ACTIVE",
+          mfaEnabled: false,
+        },
+        create: {
+          id: E2E_USER_ID,
+          email: E2E_USER_EMAIL,
+          passwordHash: userPasswordHash,
+          firstName: E2E_USER_FIRST_NAME,
+          lastName: E2E_USER_LAST_NAME,
+          role: "USER",
+          status: "ACTIVE",
+          mfaEnabled: false,
         },
       });
     });

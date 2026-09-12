@@ -1,85 +1,65 @@
-# Rôles et permissions administrateur
+# Rôles et permissions
 
-Audit T013 (2026-09-07). Revue du code dans `lib/auth` et `app/admin`. Aucun accès production, aucun compte modifié, aucun rôle réel changé.
+Audit initial T013 (2026-09-07). Mise à jour T033 (2026-09-12) : authentification portail USER **implémentée et testée localement / e2e**, pas live production.
 
-Source de vérité : enum Prisma `UserRole` (`SUPER_ADMIN`, `ADMIN`, `USER`) et `UserStatus` (`ACTIVE`, `DISABLED`, `PENDING`). Le type `UserRole` de `types/user.ts` (`owner` / `admin` / `member` / `viewer`) est un modèle SaaS futur, **non persisté** ; il ne gouverne pas `/admin`.
+Source de vérité : enum Prisma `UserRole` (`SUPER_ADMIN`, `ADMIN`, `USER`) et `UserStatus` (`ACTIVE`, `DISABLED`, `PENDING`). Le type `UserRole` de `types/user.ts` (`owner` / `admin` / `member` / `viewer`) est un modèle SaaS futur, **non persisté** ; il ne gouverne pas `/admin` ni `/portal`.
 
 ## Matrice des rôles
 
 Légende : **Allow** = autorisé par un contrôle serveur ; **Deny** = refusé par un contrôle serveur ; **UI deny** = masqué ou message d'interdiction côté interface, avec refus serveur sur mutation ; **N/A** = aucune API applicative.
 
-| Action / ressource | SUPER_ADMIN ACTIVE | ADMIN ACTIVE | USER / anonyme | DISABLED ou PENDING |
+| Action / ressource | SUPER_ADMIN ACTIVE | ADMIN ACTIVE | USER ACTIVE | DISABLED ou PENDING |
 | --- | --- | --- | --- | --- |
-| `POST` login (`loginAdmin`) | Allow (session ou challenge MFA) | Allow (idem) | Deny (erreur générique) | Deny (erreur générique) |
-| `/admin/login`, `/admin/login/mfa` | Redirect si session | Redirect si session | Allow (public) | Allow (public, login refuse ensuite) |
-| Middleware cookie JWT → `/admin/*` protégé | Allow si JWT admin | Allow si JWT admin | Redirect `/admin/login` | JWT éventuel : middleware peut laisser passer ; `requireAdmin` refuse |
+| `POST` login admin (`loginAdmin`) | Allow (session ou challenge MFA) | Allow (idem) | Deny (erreur générique) | Deny |
+| `POST` login portail (`loginPortalUser` / `/sign-in`) | Deny (erreur générique) | Deny | Allow (`portal_session`) | Deny |
+| `/admin/login`, `/admin/login/mfa` | Redirect si session admin | Redirect si session admin | Allow (public) | Allow (public, login refuse ensuite) |
+| Middleware cookie JWT → `/admin/*` protégé | Allow si `admin_session` | Allow si `admin_session` | Redirect `/admin/login` (`portal_session` ignoré) | JWT admin éventuel : middleware peut laisser passer ; `requireAdmin` refuse |
 | `GET /admin` → dashboard | Allow (`requireAdmin`) | Allow | Redirect login | Redirect login |
-| `GET /admin/dashboard` | Allow | Allow | Redirect login | Redirect login |
-| `GET /admin/security/mfa` | Allow | Allow page, **UI deny** | Redirect login | Redirect login |
 | MFA enroll / confirm / disable | Allow **soi uniquement** | Deny serveur | Deny | Deny |
-| Changer `User.role` / promouvoir | N/A (pas d'API) | N/A | N/A | N/A |
-| Créer un utilisateur admin | CLI `scripts/create-admin.ts` seulement | Idem (hors HTTP) | N/A | N/A |
-| `POST /api/initiative-submission` | Public (sans rôle) | Public | Public | Public |
-| `/portal` | Middleware **inactif** | Inactif | Inactif | Inactif |
+| `/portal` + API `/api/portal/*` | Allow via `admin_session` + `requirePortalActor` | Allow idem | Allow via `portal_session` + `requirePortalActor` | Deny |
+| Changer `User.role` / promouvoir | N/A (pas d'API HTTP T033) | N/A | N/A | N/A |
 
 ## Contrôles d'autorisation côté serveur
 
 Défense en profondeur :
 
-1. **Login** (`app/admin/actions.ts`) : mot de passe, puis `getAdminAccessDenialReason` + `canAccessAdminConsole` + `isAdminRole`. Un `USER` ACTIVE reçoit la même erreur générique qu'un mot de passe faux. Si `mfaEnabled`, aucun cookie de session n'est posé avant le second facteur.
-2. **JWT de session** (`lib/auth/session-token.ts`) : `role` doit être `SUPER_ADMIN` ou `ADMIN`. Un jeton `USER` est rejeté à la vérification.
-3. **Middleware** (`middleware.ts`) : sur les chemins `isAdminProtectedPath`, exige un JWT admin (ou redirige vers MFA verify si un challenge est présent). Ne relit pas la base. Ne distingue pas SUPER_ADMIN et ADMIN.
-4. **Pages et actions** (`requireAdmin` dans `lib/auth/require-admin.ts`) : relit l'utilisateur par `claims.sub` en base. L'autorisation utilise le **rôle et le statut DB**, pas la claim cookie. Échec → cookie effacé + redirect login.
-5. **Mutations MFA** (`app/admin/security/mfa/actions.ts`) : `requireAdmin` puis `actor.role !== "SUPER_ADMIN"` → forbidden ; second contrôle `user.role !== "SUPER_ADMIN" || user.id !== actor.id`. Aucun identifiant client n'est accepté.
+1. **Login admin** (`app/admin/actions.ts`) : mot de passe, puis `getAdminAccessDenialReason` + `canAccessAdminConsole` + `isAdminRole`. Un `USER` ACTIVE reçoit la même erreur générique qu'un mot de passe faux. Si `mfaEnabled`, aucun cookie de session n'est posé avant le second facteur.
+2. **Login portail** (`app/(auth)/actions.ts`) : mot de passe, puis `canSignInAsPortalUser` (rôle `USER` + `ACTIVE` uniquement). Pose `portal_session` (JWT audience `clevones-portal`). Pas de MFA portail.
+3. **JWT admin** (`lib/auth/session-token.ts`) : `role` doit être `SUPER_ADMIN` ou `ADMIN`. Un jeton `USER` / portail est rejeté.
+4. **JWT portail** (`lib/auth/portal-session-token.ts`) : `role` doit être `USER`. Un jeton admin est rejeté (audience distincte).
+5. **Middleware** (`middleware.ts`) : `/admin/*` protégé exige `admin_session` (ou challenge MFA). `/portal*` exige `portal_session` **ou** `admin_session` ; sinon redirect `/sign-in`. Ne relit pas la base.
+6. **Pages admin** (`requireAdmin`) : relit l'utilisateur DB ; refuse USER ; efface `admin_session` si invalide.
+7. **Pages / API portail** (`requirePortalActor` / `getOptionalPortalActor`) : USER ACTIVE via `portal_session`, ou ADMIN/SUPER_ADMIN ACTIVE via `admin_session`. `requireAdmin()` n'est plus le garde portail.
 
-Il n'existe pas de helper `requireSuperAdmin`. Les contrôles SUPER_ADMIN sont inline sur les trois actions MFA.
+## Accès `/admin` vs `/portal`
 
-`canAccessAdminConsole` n'exige pas la MFA. La MFA est imposée à la **connexion** lorsque `User.mfaEnabled` est vrai. Un ADMIN sans MFA peut accéder à la console si son compte n'est pas enrôlé.
+- Console `/admin` : MFA admin inchangée ; cookie `admin_session` uniquement.
+- Portail `/sign-in` → `/portal` : comptes USER ; cookie `portal_session`.
+- Un USER authentifié qui ouvre `/admin/dashboard` est renvoyé vers `/admin/login` (pas d'élévation).
+- Un admin authentifié peut ouvrir `/portal` avec sa session admin (compatibilité e2e / ops).
 
-## Accès aux routes `/admin`
+## Niveau de vérité (T033)
 
-Chemins publics : `/admin/login`, `/admin/login/*` (dont `/admin/login/mfa`).
-
-Chemins protégés : `/admin` et tout autre `/admin/*`.
-
-Pages actuelles :
-
-- `/admin` redirige vers `/admin/dashboard` (protection middleware + `requireAdmin` sur le dashboard).
-- `/admin/dashboard` : `requireAdmin`.
-- `/admin/security/mfa` : `requireAdmin` seulement ; le panneau masque les formulaires si `actor.role !== "SUPER_ADMIN"`.
-
-Aucun handler `app/api` n'est lié à l'admin. La seule route API est le formulaire public de contact.
-
-## Élévation de privilèges
-
-Recherche d'une élévation évidente : **aucune voie applicative trouvée**.
-
-- Pas d'endpoint HTTP ni d'action serveur qui écrit `User.role` ou `User.status`.
-- Les schémas Zod de login/MFA n'acceptent pas `role`.
-- Les mises à jour Prisma applicatives touchent `lastLoginAt` et les champs MFA du compte session, jamais `role`.
-- `scripts/create-admin.ts` crée un `SUPER_ADMIN` en CLI opérateur, hors web.
-- Un ADMIN qui ouvre `/admin/security/mfa` voit un message d'interdiction ; les actions refusent côté serveur.
-- Un USER ne peut pas obtenir un JWT admin (login + vérificateur JWT).
-
-Risques résiduels (pas une élévation actuelle) :
-
-- Le middleware ne revalide pas le statut DB. Un JWT encore valide après désactivation/démotion peut franchir le middleware jusqu'à `requireAdmin`, qui refuse et efface le cookie.
-- La page MFA reste joignable par URL pour un ADMIN (lecture d'un message, pas de mutation).
-- `/portal` n'est pas encore protégé (préparé, commenté).
-- `types/user.ts` réutilise le nom `UserRole` pour un modèle non persisté : ne pas le confondre avec Prisma.
+| État | Statut |
+| --- | --- |
+| Conçu | oui |
+| Implémenté | oui (branche de travail) |
+| Testé localement | oui (unitaires session/garde + e2e USER → portail) |
+| Validé CI | selon job `quality` sur le SHA de livraison |
+| Fusionné / déployé / live prod | **non** — hors périmètre automatique |
 
 ## Fichiers de contrôle
 
 | Fichier | Rôle |
 | --- | --- |
-| `prisma/schema.prisma` | Enums `UserRole`, `UserStatus` |
-| `lib/auth/admin-access.ts` | `isAdminRole`, `canAccessAdminConsole`, `getAdminAccessDenialReason` |
-| `lib/auth/require-admin.ts` | Revalidation DB + redirect |
-| `lib/auth/session-token.ts` | JWT admin HS256 |
-| `lib/auth/routes.ts` | Classification public / protégé |
-| `middleware.ts` | Gate cookie `/admin` |
-| `app/admin/actions.ts` | Login / logout |
-| `app/admin/security/mfa/actions.ts` | Mutations SUPER_ADMIN soi-même |
-| `lib/admin/role-labels.ts` | Libellés FR SUPER_ADMIN / ADMIN |
+| `lib/auth/admin-access.ts` | Accès console admin |
+| `lib/auth/portal-access.ts` | Accès / sign-in portail USER |
+| `lib/auth/require-admin.ts` | Garde admin + revalidation DB |
+| `lib/auth/require-portal.ts` | Garde portail (USER ou admin) |
+| `lib/auth/session-token.ts` | JWT admin |
+| `lib/auth/portal-session-token.ts` | JWT portail |
+| `middleware.ts` | Gate cookies |
+| `app/admin/actions.ts` | Login / logout admin |
+| `app/(auth)/actions.ts` | Login / logout portail |
 
-Voir aussi `docs/ADMIN_MFA.md` pour le flux TOTP.
+Voir aussi `docs/ADMIN_MFA.md` et `docs/PRIVATE_DOCUMENTS.md`.

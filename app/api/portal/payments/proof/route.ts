@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { getOptionalPortalActor } from "@/lib/auth/require-portal";
 import { canAccessClientPayments } from "@/lib/payments/access";
 import { createReconciliationService } from "@/lib/payments/reconciliation";
 import {
@@ -15,7 +15,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 /** Upload preuve client : stocke + rapproche ; n'élève jamais seul à VERIFIED. */
 export async function POST(request: Request) {
-  const actor = await getOptionalAdminActor();
+  const actor = await getOptionalPortalActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

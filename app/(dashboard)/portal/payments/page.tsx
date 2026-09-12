@@ -3,7 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 
 import { ProofUploadForm } from "@/app/(dashboard)/portal/payments/proof-upload-form";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePortalActor } from "@/lib/auth/require-portal";
 import { canAccessClientPayments } from "@/lib/payments/access";
 import { listClientOrdersForUser } from "@/lib/payments/catalog";
 import { platformRoutes } from "@/lib/auth/routes";
@@ -16,7 +16,7 @@ export const metadata = createPageMetadata({
 });
 
 export default async function PortalPaymentsPage() {
-  const actor = await requireAdmin();
+  const actor = await requirePortalActor();
   if (!canAccessClientPayments(actor.role)) {
     return (
       <div className="px-4 py-10 text-sm text-gray-muted">Non autorisé.</div>

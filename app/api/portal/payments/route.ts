@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { getOptionalPortalActor } from "@/lib/auth/require-portal";
 import { canAccessClientPayments } from "@/lib/payments/access";
 import { listClientOrdersForUser } from "@/lib/payments/catalog";
 
 export const runtime = "nodejs";
 
 export async function GET() {
-  const actor = await getOptionalAdminActor();
+  const actor = await getOptionalPortalActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

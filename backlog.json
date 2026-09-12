@@ -2117,10 +2117,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:59:35.769Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] created: USER portal auth gap vs PRODUCT_GOAL §2/§5",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T033",
       "title": "Authentification portail USER",
       "objective": "Rendre le rôle USER opérationnel sur le portail client : remplacer le placeholder /sign-in et cesser de gater /portal uniquement via requireAdmin(), sans ouvrir MFA admin ni production.",
@@ -2153,11 +2164,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -3179,9 +3190,21 @@
       "taskId": "T035",
       "status": "PRÊTE",
       "note": "AUTOPLAN: stale inventory docs vs code PRODUCT_GOAL §17"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 83,
+  "registryVersion": 85,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

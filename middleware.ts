@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 
 import {
   adminRoutes,
+  authRoutes,
   isAdminProtectedPath,
   isAdminPublicPath,
   isProtectedPath,
@@ -10,6 +11,8 @@ import {
 } from "@/lib/auth";
 import { ADMIN_MFA_CHALLENGE_COOKIE } from "@/lib/auth/mfa-challenge-cookie";
 import { verifyMfaChallengeToken } from "@/lib/auth/mfa-challenge-token";
+import { PORTAL_SESSION_COOKIE } from "@/lib/auth/portal-session-cookie";
+import { verifyPortalSessionToken } from "@/lib/auth/portal-session-token";
 import { ADMIN_SESSION_COOKIE } from "@/lib/auth/session-cookie";
 import { verifyAdminSessionToken } from "@/lib/auth/session-token";
 import { getLocaleFromPath } from "@/lib/i18n/routes";
@@ -47,9 +50,9 @@ function getTrustedAppOrigin(request: NextRequest): string {
 }
 
 /**
- * Locale negotiation, admin session gate, and authenticated portal gate.
- * Portal uses the admin session cookie in this phase (T020); T021 refines
- * USER document permissions.
+ * Locale negotiation, admin session gate, and portal session gate.
+ * Portal accepts portal_session (USER) or admin_session (ADMIN/SUPER_ADMIN).
+ * Admin console accepts only admin_session (MFA path unchanged).
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -58,14 +61,13 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set("x-pathname", pathname);
 
   const adminSession = await getAdminSessionFromRequest(request);
+  const portalSession = await getPortalSessionFromRequest(request);
   const mfaChallenge = await getMfaChallengeFromRequest(request);
   const origin = getTrustedAppOrigin(request);
+  const hasPortalAccess = Boolean(adminSession || portalSession);
 
-  if (isProtectedPath(pathname) && !adminSession) {
-    if (mfaChallenge) {
-      return NextResponse.redirect(new URL(adminRoutes.mfaVerify, origin));
-    }
-    const loginUrl = new URL(adminRoutes.login, origin);
+  if (isProtectedPath(pathname) && !hasPortalAccess) {
+    const loginUrl = new URL(authRoutes.signIn, origin);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
@@ -101,6 +103,15 @@ async function getAdminSessionFromRequest(request: NextRequest) {
   }
 
   return verifyAdminSessionToken(token);
+}
+
+async function getPortalSessionFromRequest(request: NextRequest) {
+  const token = request.cookies.get(PORTAL_SESSION_COOKIE)?.value;
+  if (!token) {
+    return null;
+  }
+
+  return verifyPortalSessionToken(token);
 }
 
 async function getMfaChallengeFromRequest(request: NextRequest) {

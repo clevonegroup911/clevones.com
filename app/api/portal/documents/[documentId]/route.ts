@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
-import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { getOptionalPortalActor } from "@/lib/auth/require-portal";
 import {
   DocumentAccessError,
   assertCanAccessDocument,
@@ -16,7 +16,7 @@ export const runtime = "nodejs";
 type RouteContext = { params: Promise<{ documentId: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
-  const actor = await getOptionalAdminActor();
+  const actor = await getOptionalPortalActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }
@@ -75,7 +75,7 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const actor = await getOptionalAdminActor();
+  const actor = await getOptionalPortalActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

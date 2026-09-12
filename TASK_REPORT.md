@@ -10,36 +10,52 @@ T033
 
 ## Statut
 
-PRÊTE
+EN_CONTRÔLE
 
 ## Objectif
 
-Authentification portail USER — créée par AUTOPLAN après audit PRODUCT_GOAL (écarts §2/§5). Ce cycle n’implémente pas la fonctionnalité ; il planifie uniquement.
+Authentification portail USER : `/sign-in` credentials, session `portal_session`, garde portail hors `requireAdmin()` seul, sans MFA admin ni production.
 
 ## Résultat
 
-AUTOPLAN 2026-09-12 : T033 PRÊTE, T034 À_FAIRE (dépend de T033), T035 PRÊTE. Pas de PRODUCT_COMPLETE — écarts code confirmés (`/sign-in` placeholder, portal `requireAdmin()`, pas de mutation DocumentGrant admin, inventaires docs obsolètes).
+Livré localement. Quality-gate PASS. Attente job GitHub `quality` sur le SHA poussé.
 
 ## Fichiers créés
 
-- aucun applicatif (planification)
+- `lib/auth/portal-access.ts` (+ test)
+- `lib/auth/portal-session-cookie.ts`
+- `lib/auth/portal-session-token.ts` (+ test)
+- `lib/auth/portal-session.ts`
+- `lib/auth/require-portal.ts`
+- `app/(auth)/actions.ts`
+- `app/(auth)/sign-in/sign-in-form.tsx`
+- `tests/e2e/portal-login.ts`
+- `tests/e2e/portal-user.spec.ts`
+- `reports/tasks/T033.md`
 
 ## Fichiers modifiés
 
+- `app/(auth)/sign-in/page.tsx`
+- `middleware.ts`
+- `lib/auth/routes.ts` (+ test) / `index.ts`
+- `app/(dashboard)/portal/page.tsx`
+- `app/(dashboard)/portal/payments/page.tsx`
+- `app/api/portal/**`
+- `docs/ROLES_AND_PERMISSIONS.md`
+- `docs/PRIVATE_DOCUMENTS.md`
+- `tests/e2e/fixture.ts` / `seed.ts` / `product-surfaces.spec.ts`
 - `backlog.json`
-- `BACKLOG.md`
 - `TASK_REPORT.md`
 
 ## Commandes
 
-- `npm run x200:validate`
-- `npm run x200:test`
-- `npm run x200:backlog-md`
-- `npm run x200:next -- --json`
+- `npm run x200:claim -- --json T033`
+- `npm run x200:quality-gate -- --task T033`
+- `npm run x200:claim -- --json T033 --complete`
 
 ## Tests réussis
 
-- x200:validate / x200:test (registre après planification)
+- quality-gate T033 (npm test, lint, tsc, scan-secrets, validate, diff-check)
 
 ## Tests échoués
 
@@ -47,23 +63,23 @@ AUTOPLAN 2026-09-12 : T033 PRÊTE, T034 À_FAIRE (dépend de T033), T035 PRÊTE.
 
 ## Lint
 
-- n/a planification
+- pass
 
 ## Type-check
 
-- n/a planification
+- pass
 
 ## Build
 
-- n/a
+- attendu CI
 
 ## Sécurité
 
-- aucune modification `.env` / secrets / production
+- cookies distincts admin/portail ; USER ne passe pas le middleware admin ; pas de `.env` / secrets / prod
 
 ## Commit
 
-- (planification sur `autoplan/payments-recovery-20260912`)
+- (push en cours)
 
 ## Pull Request
 
@@ -71,18 +87,17 @@ AUTOPLAN 2026-09-12 : T033 PRÊTE, T034 À_FAIRE (dépend de T033), T035 PRÊTE.
 
 ## Preuves
 
-- HEAD `def299808c8c3b0e5c60f835669c09b40baa4226` ; quality SUCCESS run 34715003806
-- Audit code : `app/(auth)/sign-in/page.tsx`, portal `requireAdmin()`, `lib/documents/service.ts` grants lecture seule
-- Registre : T033–T035 ; registryVersion 83
+- `.x200/quality-results.json` task=T033 ok
+- e2e `portal-user.spec.ts` (USER → /portal, refus /admin)
 
 ## Risques
 
-- Auth : T033/T034 séquentiels (neverParallelize authentication)
+- Auth high — CI FULL/FAST selon lane PR
 
 ## Blocage
 
-- aucun pour T033 ; gates humaines (SMTP, PSP live, alertes GCP, merge/deploy) hors auto
+- attente `quality=SUCCESS` sur SHA
 
 ## Prochaine tâche prête
 
-- T033
+- T035 (indépendante) après push ; T034 après TERMINÉE T033
