@@ -6,35 +6,35 @@
 
 ## ID
 
-T036
+T037
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Déconnexion portail USER.
+E2E Playwright users + DocumentGrant portail.
 
 ## Résultat
 
-`/sign-out` + lien portail. Quality CI SUCCESS 0a6a579 / run 34716883903. Suite : T037, T038 PRÊTE.
+Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste vide + 403) → grant UI → lecture OK. Docs E2E à jour. Quality-gate local pass. Attente job `quality` CI.
 
 ## Fichiers créés
 
-- `app/(auth)/sign-out/page.tsx`
+- `tests/e2e/users-document-grant.spec.ts`
 
 ## Fichiers modifiés
 
-- portal, routes test, docs
+- `docs/E2E_PRODUCT.md`
 
 ## Commandes
 
-- quality-gate + CI
+- `npm run x200:quality-gate -- --task T037`
 
 ## Tests réussis
 
-- quality-gate + CI quality SUCCESS
+- quality-gate local (npm test, playwright --grep users, scan-secrets, validate, diff-check)
 
 ## Tests échoués
 
@@ -42,23 +42,23 @@ Déconnexion portail USER.
 
 ## Lint
 
-- pass
+- n/a (scope e2e/docs)
 
 ## Type-check
 
-- pass
+- n/a (scope e2e/docs)
 
 ## Build
 
-- pass CI
+- via CI
 
 ## Sécurité
 
-- portal_session only ; MFA admin intact
+- fixtures `@example.test` uniquement ; cookies admin effacés avant login USER
 
 ## Commit
 
-- `0a6a57931127d4c00d3e626744c1e21e242e8347`
+- (à pousser)
 
 ## Pull Request
 
@@ -66,11 +66,12 @@ Déconnexion portail USER.
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903
+- `.x200/quality-results.json` (local)
+- CI quality : en attente
 
 ## Risques
 
-- aucun résiduel T036
+- Docker rootless local peut bloquer Postgres e2e ; CI GitHub service OK
 
 ## Blocage
 
@@ -78,4 +79,4 @@ Déconnexion portail USER.
 
 ## Prochaine tâche prête
 
-- T037
+- T038 après clôture CI T037

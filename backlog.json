@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T037",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -2417,12 +2417,23 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:42:08.371Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] e2e proof gap for T034 user+grant vs PRODUCT_GOAL §5/§15",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12",
       "owner": "cursor",
@@ -2450,7 +2461,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 4,
       "risk": "medium"
     },
@@ -3516,9 +3527,21 @@
       "taskId": "T036",
       "status": "TERMINÉE",
       "note": "quality CI SUCCESS; portal sign-out"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 97,
+  "registryVersion": 99,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
