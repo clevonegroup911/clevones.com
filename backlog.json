@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T036",
   "tasks": [
     {
       "project": "clevones.com",
@@ -2205,11 +2205,21 @@
           "version": null,
           "at": "2026-09-12T20:13:08.031Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716460777",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777",
+          "version": "d7d85950405263497ed0ee52c95d5c4d7dbc3018",
+          "at": "2026-09-12T20:17:49.630Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; users + DocumentGrant admin",
       "id": "T034",
       "title": "Gestion utilisateurs et grants documents",
       "objective": "Compléter la gestion utilisateurs et les droits d’accès opérationnels : surfaces admin minimales pour créer/lister/désactiver des utilisateurs non SUPER_ADMIN et créer/révoquer des DocumentGrant, testables avec le portail USER.",
@@ -2241,8 +2251,14 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T034 PASS",
+        "admin users UI/API + grants create/revoke + audit",
+        "commit d7d85950405263497ed0ee52c95d5c4d7dbc3018",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716460777 SUCCESS quality on d7d85950405263497ed0ee52c95d5c4d7dbc3018 https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777"
+      ],
       "estimatedCost": 5,
       "risk": "high",
       "attempts": 1,
@@ -2320,6 +2336,139 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] portal sign-out gap after T033 (auth lifecycle)",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T036",
+      "title": "Déconnexion portail USER",
+      "objective": "Exposer /sign-out (et action serveur) pour effacer portal_session et renvoyer vers /sign-in, sans toucher admin_session/MFA.",
+      "priority": "P2",
+      "dependencies": [
+        "T033"
+      ],
+      "scope": [
+        "app/(auth)",
+        "lib/auth",
+        "docs/ROLES_AND_PERMISSIONS.md"
+      ],
+      "acceptanceCriteria": [
+        "Route ou action /sign-out efface portal_session et redirige vers /sign-in",
+        "admin_session / MFA admin inchangés par la déconnexion portail",
+        "Lien ou contrôle de déconnexion accessible depuis /portal pour un USER authentifié",
+        "Test unitaire ou e2e sans secret prod"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "estimatedCost": 2,
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] e2e proof gap for T034 user+grant vs PRODUCT_GOAL §5/§15",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T037",
+      "title": "E2E users + DocumentGrant portail",
+      "objective": "Prouver en Playwright le parcours admin crée USER → grant → login USER → lecture document, et refus sans grant, sans secret prod.",
+      "priority": "P2",
+      "dependencies": [
+        "T033",
+        "T034"
+      ],
+      "scope": [
+        "tests/e2e",
+        "docs/E2E_PRODUCT.md"
+      ],
+      "acceptanceCriteria": [
+        "Spec e2e couvre création USER admin (ou seed), DocumentGrant, login /sign-in, accès document autorisé",
+        "Cas sans grant → refus documenté (403 ou absence liste)",
+        "Fixtures uniquement ; aucun secret prod ; docs E2E mises à jour"
+      ],
+      "tests": [
+        "npm test",
+        "npx playwright test tests/e2e --grep users || npx playwright test",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "estimatedCost": 4,
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-AUTOPLAN] MONITORING notes absent /health; useful ops signal without human gate",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T038",
+      "title": "Endpoint santé applicatif /health",
+      "objective": "Ajouter un endpoint /health non authentifié, sans secrets, pour les health-checks documentés dans MONITORING (loopback/CI), sans provisionner d’alertes GCP.",
+      "priority": "P2",
+      "dependencies": [],
+      "scope": [
+        "app",
+        "scripts",
+        "docs/MONITORING.md"
+      ],
+      "acceptanceCriteria": [
+        "GET /health répond 200 avec payload minimal sans secret ni dump d’env",
+        "Documenté dans docs/MONITORING.md ; scripts health-check peuvent l’utiliser en loopback",
+        "Aucun accès production ni alerte GCP créée"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "estimatedCost": 2,
+      "risk": "low"
     }
   ],
   "history": [
@@ -3298,9 +3447,33 @@
       "taskId": "T034",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; user mgmt + grants"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] portal sign-out gap after T033 (auth lifecycle)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] e2e proof gap for T034 user+grant vs PRODUCT_GOAL §5/§15"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] MONITORING notes absent /health; useful ops signal without human gate"
     }
   ],
-  "registryVersion": 92,
+  "registryVersion": 94,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

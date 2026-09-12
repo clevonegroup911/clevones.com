@@ -6,42 +6,40 @@
 
 ## ID
 
-T034
+T036
 
 ## Statut
 
-EN_CONTRÔLE
+PRÊTE
 
 ## Objectif
 
-Gestion utilisateurs et DocumentGrant admin (hors SUPER_ADMIN).
+AUTOPLAN après T033–T035 TERMINÉES : créer T036–T038 (sign-out portail, e2e users/grants, /health). Pas de PRODUCT_COMPLETE — gates humaines/externes restantes (PSP live, alertes GCP, merge/deploy, timer backup).
 
 ## Résultat
 
-UI `/admin/users` + API users/grants + helpers + audit. Quality-gate PASS. Attente CI. T035 déjà TERMINÉE.
+Registre : T033–T035 TERMINÉES ; T036–T038 PRÊTE. Validation + x200:test OK.
 
 ## Fichiers créés
 
-- `lib/auth/managed-users.ts` (+ test)
-- `lib/documents/grants.ts` (+ test)
-- `app/admin/users/**`
-- `app/api/admin/users/**`
-- `app/api/admin/documents/grants/route.ts`
-- `reports/tasks/T034.md`
+- aucun applicatif (planification)
 
 ## Fichiers modifiés
 
-- `lib/admin/audit.ts`, `lib/auth/routes.ts`, `app/admin/layout.tsx`
-- `docs/ROLES_AND_PERMISSIONS.md`, `docs/PRIVATE_DOCUMENTS.md`
-- `backlog.json` (T035 TERMINÉE, T034 EN_CONTRÔLE)
+- `backlog.json`
+- `BACKLOG.md`
+- `TASK_REPORT.md`
+- `reports/tasks/T034.md`
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T034`
+- `npm run x200:validate`
+- `npm run x200:test`
+- `npm run x200:next -- --json`
 
 ## Tests réussis
 
-- quality-gate T034
+- x200:validate / x200:test
 
 ## Tests échoués
 
@@ -49,23 +47,23 @@ UI `/admin/users` + API users/grants + helpers + audit. Quality-gate PASS. Atten
 
 ## Lint
 
-- pass
+- n/a planification
 
 ## Type-check
 
-- pass
+- n/a
 
 ## Build
 
-- attendu CI
+- n/a
 
 ## Sécurité
 
-- pas de SUPER_ADMIN via HTTP ; pas de secret/prod
+- pas de PRODUCT_COMPLETE ; pas de secrets
 
 ## Commit
 
-- (push)
+- (push AUTOPLAN + clôtures)
 
 ## Pull Request
 
@@ -73,16 +71,16 @@ UI `/admin/users` + API users/grants + helpers + audit. Quality-gate PASS. Atten
 
 ## Preuves
 
-- `.x200/quality-results.json` task=T034
+- T034 CI 34716460777 SUCCESS ; T033 CI 34715775346 SUCCESS ; T035 CI 34716069136 SUCCESS
 
 ## Risques
 
-- high
+- Auth T036 medium
 
 ## Blocage
 
-- CI quality
+- aucun pour T036
 
 ## Prochaine tâche prête
 
-- aucune auto restante après clôture (sauf AUTOPLAN)
+- T036
