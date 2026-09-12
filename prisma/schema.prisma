@@ -42,6 +42,7 @@ model User {
   documentsOwned       Document[]      @relation("DocumentOwner")
   documentsUploaded    Document[]      @relation("DocumentUploader")
   documentGrants       DocumentGrant[] @relation("DocumentGrants")
+  serviceOrders        ServiceOrder[]
 }
 
 model UserMfaSecret {
@@ -292,6 +293,7 @@ model Payment {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   attempts       PaymentAttempt[]
+  invoice        Invoice?
 
   @@index([status, createdAt])
   @@index([method])
@@ -306,4 +308,100 @@ model PaymentAttempt {
   createdAt       DateTime      @default(now())
 
   @@index([paymentId, createdAt])
+}
+
+enum ServiceOrderStatus {
+  DRAFT
+  PENDING
+  INVOICED
+  ACTIVE
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  AWAITING_PAYMENT
+  PAID
+  SETTLED
+  VOID
+}
+
+enum ReceiptStatus {
+  ISSUED
+  VOID
+}
+
+/// User → service/commande intent (CLEVONE Payment Gateway).
+model ServiceOrder {
+  id             String             @id @default(cuid())
+  userId         String?
+  user           User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  serviceCode    String
+  title          String
+  description    String             @default("")
+  amountCents    Int
+  currency       String
+  status         ServiceOrderStatus @default(DRAFT)
+  idempotencyKey String             @unique
+  metadata       Json?
+  activatedAt    DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  invoices       Invoice[]
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@index([serviceCode])
+}
+
+/// Facture liée à une commande/service.
+model Invoice {
+  id            String        @id @default(cuid())
+  orderId       String
+  order         ServiceOrder  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  invoiceNumber String        @unique
+  amountCents   Int
+  currency      String
+  status        InvoiceStatus @default(DRAFT)
+  issuedAt      DateTime?
+  settledAt     DateTime?
+  paymentId     String?       @unique
+  payment       Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  receipt       Receipt?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([status, createdAt])
+}
+
+/// Reçu / facture acquittée après activation.
+model Receipt {
+  id            String        @id @default(cuid())
+  invoiceId     String        @unique
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  paymentId     String
+  receiptNumber String        @unique
+  status        ReceiptStatus @default(ISSUED)
+  issuedAt      DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+
+  @@index([paymentId])
+}
+
+/// Événement CLEVONE gateway (idempotent ; sandbox, pas de rail PSP).
+model ClevoneGatewayEvent {
+  id             String   @id @default(cuid())
+  eventType      String
+  idempotencyKey String   @unique
+  orderId        String?
+  invoiceId      String?
+  paymentId      String?
+  payload        Json?
+  createdAt      DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([orderId])
+  @@index([paymentId])
 }

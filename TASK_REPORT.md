@@ -6,52 +6,50 @@
 
 ## ID
 
-T026
+T027
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Exécuter migrations et déploiement production de façon contrôlée après validation humaine.
+Implémenter le cœur CLEVONE Payment Gateway (sandbox) : utilisateur → commande/service → facture → paiement lié → événement CLEVONE → activation idempotente → reçu/facture acquittée → audit, sans rail réel M-PESA/RAWBANK ni clé réelle.
 
 ## Résultat
 
-T026 `TERMINÉE` après `[X200-OWNER-AUTH]`. Production sert `1c2f4f884ac1a5633a2104258dbe1babc1dda274` (detached). Dump `20260910T110552Z` checksum + `pg_restore --list` + restore-test temporaire PASS ; base temp dropped ; `clevones_prod` intacte. Cinq migrations additives appliquées une fois. `npm ci` + `next build` PASS. PM2 `clevones-com` restart unique, online, unstable=0. Nginx `-t` OK, non redémarré. Smoke HTTPS/login OK ; surfaces protégées 307→login. SUPER_ADMIN MFA actif. PR #1 reste Draft. Aucun merge `main`.
+Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/ClevoneGatewayEvent + lien Payment, API `createPaymentGateway`, tests unitaires, doc `docs/PAYMENTS_GATEWAY.md`. Aucune clé PSP, aucun appel réseau, aucune migration production. Quality-gate local PASS. Attente job GitHub `quality` sur le SHA poussé.
 
 ## Fichiers créés
 
-- `reports/tasks/T026.md`
+- `lib/payments/gateway.ts`
+- `lib/payments/gateway.test.ts`
+- `prisma/migrations/20260912030000_add_payment_gateway_chain/migration.sql`
+- `docs/PAYMENTS_GATEWAY.md`
+- `reports/tasks/T027.md`
 
 ## Fichiers modifiés
 
+- `prisma/schema.prisma`
 - `backlog.json`
-- `BACKLOG.md`
 - `TASK_REPORT.md`
-- `DEPLOYMENT.md`
 
 ## Commandes
 
-- `npm run x200:claim -- --include-human T026`
-- backup + restore-test VM
-- `git checkout --detach 1c2f4f884ac1a5633a2104258dbe1babc1dda274`
-- `npx prisma migrate status` ; `npx prisma migrate deploy` (une fois)
-- `npm ci` ; `npm run build`
-- `pm2 restart clevones-com --update-env`
-- `nginx -t`
-- `npm run x200:quality-gate -- --task T026`
+- `npm run x200:claim -- --json T027`
+- `npx prisma validate`
+- `npm test`
+- `npm run lint`
+- `npx tsc --noEmit`
+- `npm run x200:scan-secrets`
+- `npm run x200:validate`
+- `git diff --check`
+- `npm run x200:quality-gate -- --task T027`
 
 ## Tests réussis
 
-- quality-gate T026 PASS (`x200:deploy-check`)
-- checksum dump `04943daf0302847ec4e959191b446c6d7f6eaade59cf265c0d81c3ebebb687d2`
-- `pg_restore --list` TOC 38
-- restore-test `clevones_t026_restore_20260910t110552z` puis `dropdb` de cette base seulement
-- migrate status after : up to date (7/7)
-- Next.js build 64 routes
-- HTTPS `/` 200 ; `/admin/login` 200
-- PM2 online pid 1324321 restarts 7 unstable 0
+- quality-gate T027 PASS (7/7)
+- 66 unit tests pass (incl. 4 gateway)
 
 ## Tests échoués
 
@@ -59,50 +57,42 @@ T026 `TERMINÉE` après `[X200-OWNER-AUTH]`. Production sert `1c2f4f884ac1a5633a
 
 ## Lint
 
-- inclus au `next build` production
+- succès
 
 ## Type-check
 
-- inclus au `next build` production
+- succès
 
 ## Build
 
-- `npm run build` PASS sur la VM (Next.js 15.5.25)
+- CI FULL attendu (prisma/)
 
 ## Sécurité
 
-- aucun secret affiché ni commité
-- `.env` production préservé, non lu
-- restore uniquement vers base temporaire
-- pas de `DROP`/`restore` `clevones_prod`
-- pas de merge `main` ; PR #1 Draft
-- Nginx non redémarré
+- sandbox only ; aucune clé PSP ; scan-secrets blocking_hits=0 ; pas de migration production ; `.env` non touché
 
 ## Commit
 
-- déployé : `1c2f4f884ac1a5633a2104258dbe1babc1dda274`
-- métadonnées : commit local post-déploiement (ne pas redéployer)
+- (à renseigner après push)
 
 ## Pull Request
 
-- PR draft #1 : https://github.com/clevonegroup911/clevones.com/pull/1
+- PR draft #6 : https://github.com/clevonegroup911/clevones.com/pull/6
 
 ## Preuves
 
-- TARGET/DEPLOYED `1c2f4f884ac1a5633a2104258dbe1babc1dda274`
-- backup `/home/clevones/backups/clevones.com/20260910T110552Z`
-- `_prisma_migrations` : 7 rows up to date
-- quality-gate `.x200/quality-results.json`
+- quality-gate ok task=T027
+- docs/PAYMENTS_GATEWAY.md
 
 ## Risques
 
-- restauration `clevones_prod` toujours hors bande
-- `origin/admin-mfa` avancera avec le commit métadonnées ; la VM reste sur le SHA figé
+- migration additive non déployée en production (volontaire)
+- PR #4 (reconciliation) parallèle — complementary, pas doublon de la chaîne Order/Invoice
 
 ## Blocage
 
-- aucun
+- aucun local ; EN_CONTRÔLE jusqu'à quality SUCCESS
 
 ## Prochaine tâche prête
 
-- NO_READY_TASK
+T028 (après TERMINÉE T027)

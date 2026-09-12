@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T027",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1666,10 +1666,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T00:40:46.212Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] écart PRODUCT_GOAL critères 9-10 vs sandbox T024",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T027",
       "title": "Gateway paiements — chaîne commande/facture",
       "objective": "Implémenter le cœur CLEVONE Payment Gateway (sandbox) : utilisateur → commande/service → facture → paiement lié → événement CLEVONE → activation idempotente → reçu/facture acquittée → audit, sans rail réel M-PESA/RAWBANK ni clé réelle.",
@@ -1699,11 +1710,16 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "quality-gate T027 PASS (prisma validate, npm test, lint, tsc, scan-secrets, x200:validate, git diff --check)",
+        "docs/PAYMENTS_GATEWAY.md",
+        "lib/payments/gateway.ts + gateway.test.ts",
+        "prisma/migrations/20260912030000_add_payment_gateway_chain/"
+      ],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -2545,9 +2561,21 @@
       "taskId": "T029",
       "status": "À_FAIRE",
       "note": "[X200-AUTOPLAN] create admin/client payment gateway surfaces"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 59,
+  "registryVersion": 61,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
