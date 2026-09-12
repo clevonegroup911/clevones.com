@@ -60,6 +60,15 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set(localeHeaderName, getLocaleFromPath(pathname));
   requestHeaders.set("x-pathname", pathname);
 
+  // Liveness probe: no auth, no APP_ORIGIN redirect dependency.
+  if (pathname === "/health") {
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  }
+
   const adminSession = await getAdminSessionFromRequest(request);
   const portalSession = await getPortalSessionFromRequest(request);
   const mfaChallenge = await getMfaChallengeFromRequest(request);

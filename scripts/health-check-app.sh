@@ -6,13 +6,13 @@ usage() {
   cat <<'EOF'
 Usage: health-check-app.sh [--dry-run] [--url URL] [--timeout SECONDS]
 
-Probes a loopback HTTP origin (default http://127.0.0.1:3000/).
+Probes a loopback HTTP origin (default http://127.0.0.1:3000/health).
 Refuses non-loopback hosts. Does not load .env or print secrets.
 EOF
 }
 
 dry_run=0
-url="http://127.0.0.1:3000/"
+url="http://127.0.0.1:3000/health"
 timeout_seconds=5
 
 while [[ $# -gt 0 ]]; do

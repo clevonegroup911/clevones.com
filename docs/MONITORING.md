@@ -11,14 +11,14 @@ Aucun redémarrage PM2, Nginx ou PostgreSQL. Aucun accès production depuis ce d
 | Unités systemd backup | Templates dans `ops/systemd/` | préparées ; **timer production non activé** (gate humaine) |
 | Procédure backups | `docs/BACKUPS.md` + scripts dump/verify/rétention | documenté ; activation VM = gate |
 | Alertes GCP Cloud Monitoring / uptime | **Non provisionnées** par ce dépôt | gate propriétaire / externe |
-| Endpoint `/health` dédié | Absent | HTTP public + PM2 restent les signaux de dispo |
+| Endpoint `/health` dédié | Présent (`GET /health` → `{ status, service }`) | implémenté / testable local (T038) ; pas d’alerte GCP |
 | Production monitoring live | NON_ACCESSIBLE depuis le dépôt | — |
 
 ## Audit de l’existant (historique 2026-09-08, toujours pertinent)
 
 | Surface | Constat |
 |---|---|
-| Endpoint applicatif `/health` | Absent. La disponibilité se juge aujourd’hui via HTTP public + process PM2. |
+| Endpoint applicatif `/health` | `GET /health` non authentifié, payload minimal `{ status: "ok", service: "clevones-com" }`, `Cache-Control: no-store`. Aucun secret ni dump d’env. |
 | Journaux applicatifs | `AuditLog` (Prisma) : connexions admin/portail, MFA, logout, CMS, documents, paiements sandbox. Métadonnées limitées. Pas de secret TOTP, recovery, mot de passe. |
 | CI | GitHub Actions X200 CI (qualité, Playwright, audit npm). Ce n’est pas un uptime probe de production. |
 | Processus | PM2 `clevones-com` sur la VM `clevones-serveur` (voir `DEPLOYMENT.md`). |
@@ -60,11 +60,12 @@ bash scripts/health-check-app.sh --dry-run
 bash scripts/health-check-postgres.sh --dry-run
 bash scripts/health-check-system.sh --dry-run
 
-bash scripts/health-check-app.sh --url http://127.0.0.1:3000/
+bash scripts/health-check-app.sh --url http://127.0.0.1:3000/health
 bash scripts/health-check-postgres.sh --host 127.0.0.1 --port 5432
 bash scripts/health-check-system.sh --disk-path / --disk-critical 95
 ```
 
+Par défaut, `health-check-app.sh` sonde `http://127.0.0.1:3000/health` (T038).
 Garanties :
 
 - `--dry-run` : valide les arguments, n’ouvre aucune connexion

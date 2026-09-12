@@ -6,7 +6,7 @@
 
 ## ID
 
-T037
+T038
 
 ## Statut
 
@@ -14,27 +14,31 @@ EN_CONTRÔLE
 
 ## Objectif
 
-E2E Playwright users + DocumentGrant portail.
+Endpoint santé `/health` non authentifié.
 
 ## Résultat
 
-Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste vide + 403) → grant UI → lecture OK. Docs E2E à jour. Quality-gate local pass. Attente job `quality` CI.
+`GET /health` → `{ status: "ok", service: "clevones-com" }`. Scripts health-check + MONITORING mis à jour. T037 clôturée (quality SUCCESS `b35b20e` / run 34717886942). Attente CI `quality` pour T038.
 
 ## Fichiers créés
 
-- `tests/e2e/users-document-grant.spec.ts`
+- `app/health/route.ts`
+- `app/health/route.test.ts`
 
 ## Fichiers modifiés
 
-- `docs/E2E_PRODUCT.md`
+- `middleware.ts`
+- `scripts/health-check-app.sh`
+- `scripts/health-check.test.mjs`
+- `docs/MONITORING.md`
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T037`
+- `npm run x200:quality-gate -- --task T038`
 
 ## Tests réussis
 
-- quality-gate local (npm test, playwright --grep users, scan-secrets, validate, diff-check)
+- quality-gate T038 local
 
 ## Tests échoués
 
@@ -42,11 +46,11 @@ Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste
 
 ## Lint
 
-- n/a (scope e2e/docs)
+- pass
 
 ## Type-check
 
-- n/a (scope e2e/docs)
+- pass
 
 ## Build
 
@@ -54,7 +58,7 @@ Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste
 
 ## Sécurité
 
-- fixtures `@example.test` uniquement ; cookies admin effacés avant login USER
+- payload minimal ; pas de dump env/secrets ; middleware bypass auth pour `/health`
 
 ## Commit
 
@@ -66,12 +70,12 @@ Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste
 
 ## Preuves
 
-- `.x200/quality-results.json` (local)
-- CI quality : en attente
+- `.x200/quality-results.json` (T038)
+- T037 CI : https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942
 
 ## Risques
 
-- Docker rootless local peut bloquer Postgres e2e ; CI GitHub service OK
+- aucun résiduel T038 (pas d’alerte GCP)
 
 ## Blocage
 
@@ -79,4 +83,4 @@ Spec `users-document-grant.spec.ts` : admin crée USER → doc sans grant (liste
 
 ## Prochaine tâche prête
 
-- T038 après clôture CI T037
+- AUTOPLAN si plus de PRÊTE après clôture T038

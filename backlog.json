@@ -2427,12 +2427,28 @@
           "version": null,
           "at": "2026-09-12T20:42:08.371Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34717886942",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942",
+          "version": "b35b20e1f3b99be428bddddc057e5317476c13df",
+          "at": "2026-09-12T20:48:18.876Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
-      "evidence": [],
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; users+DocumentGrant e2e",
+      "evidence": [
+        "quality-gate T037 PASS",
+        "tests/e2e/users-document-grant.spec.ts + docs/E2E_PRODUCT.md",
+        "commit b35b20e1f3b99be428bddddc057e5317476c13df",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34717886942 SUCCESS quality on b35b20e1f3b99be428bddddc057e5317476c13df https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12",
@@ -2461,7 +2477,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 4,
       "risk": "medium"
     },
@@ -2472,12 +2488,23 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:48:35.867Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] MONITORING notes absent /health; useful ops signal without human gate",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12",
       "owner": "cursor",
@@ -2504,7 +2531,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 2,
       "risk": "low"
     }
@@ -3539,9 +3566,27 @@
       "taskId": "T037",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; users+DocumentGrant e2e"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 99,
+  "registryVersion": 103,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
