@@ -31,7 +31,9 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
 
   await page.goto("/admin/payments");
   await expect(page.getByRole("heading", { name: "Paiements gateway" })).toBeVisible();
-  await expect(page.getByText("File HUMAN_REVIEW")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /File HUMAN_REVIEW/ }),
+  ).toBeVisible();
   const htmlAdmin = await page.content();
   expect(htmlAdmin).not.toMatch(/sk_live|pk_live|whsec_|MPESA_CONSUMER/i);
   await captureSafeEvidence(page, `${project}-payments-admin.png`);
@@ -163,6 +165,9 @@ test("payments gateway sandbox: mismatch → HUMAN_REVIEW → approve activates"
   expect(reconciled.decisionId).toBeTruthy();
 
   await page.goto("/admin/payments");
+  await expect(
+    page.getByRole("heading", { name: /File HUMAN_REVIEW/ }),
+  ).toBeVisible();
   await expect(page.getByText(/échéance indicative/i).first()).toBeVisible();
 
   const reviewRes = await page.request.post("/api/admin/payments/review", {
