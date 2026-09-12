@@ -6,7 +6,7 @@
 
 ## ID
 
-T035
+T034
 
 ## Statut
 
@@ -14,37 +14,34 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Resynchroniser inventaires docs avec l’état réel (PRODUCT_GOAL §17).
+Gestion utilisateurs et DocumentGrant admin (hors SUPER_ADMIN).
 
 ## Résultat
 
-Inventaires T014/T015 marqués historiques + état réel T019–T033 ; MONITORING aligné backups/timer non activé + alertes GCP non provisionnées ; PROJECT_CONTEXT à jour. Pas de PRODUCT_COMPLETE. T033 TERMINÉE (CI quality SUCCESS e363418). Quality-gate T035 PASS.
+UI `/admin/users` + API users/grants + helpers + audit. Quality-gate PASS. Attente CI. T035 déjà TERMINÉE.
 
 ## Fichiers créés
 
-- `reports/tasks/T035.md`
+- `lib/auth/managed-users.ts` (+ test)
+- `lib/documents/grants.ts` (+ test)
+- `app/admin/users/**`
+- `app/api/admin/users/**`
+- `app/api/admin/documents/grants/route.ts`
+- `reports/tasks/T034.md`
 
 ## Fichiers modifiés
 
-- `docs/CMS_AND_DOCUMENTS.md`
-- `docs/ANALYTICS_AND_PAYMENTS.md`
-- `docs/MONITORING.md`
-- `docs/CMS_INTERNAL.md`
-- `docs/ANALYTICS_FIRST_PARTY.md`
-- `docs/PAYMENTS_GATEWAY.md`
-- `PROJECT_CONTEXT.md`
-- `backlog.json` / `BACKLOG.md`
-- `TASK_REPORT.md`
-- `reports/tasks/T033.md`
+- `lib/admin/audit.ts`, `lib/auth/routes.ts`, `app/admin/layout.tsx`
+- `docs/ROLES_AND_PERMISSIONS.md`, `docs/PRIVATE_DOCUMENTS.md`
+- `backlog.json` (T035 TERMINÉE, T034 EN_CONTRÔLE)
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T035`
-- `npm run x200:claim -- --json T035 --complete`
+- `npm run x200:quality-gate -- --task T034`
 
 ## Tests réussis
 
-- quality-gate T035 (validate, scan-secrets, diff-check)
+- quality-gate T034
 
 ## Tests échoués
 
@@ -52,19 +49,19 @@ Inventaires T014/T015 marqués historiques + état réel T019–T033 ; MONITORIN
 
 ## Lint
 
-- n/a
+- pass
 
 ## Type-check
 
-- n/a
+- pass
 
 ## Build
 
-- n/a METADATA
+- attendu CI
 
 ## Sécurité
 
-- docs only ; aucun secret ; pas de PRODUCT_COMPLETE
+- pas de SUPER_ADMIN via HTTP ; pas de secret/prod
 
 ## Commit
 
@@ -76,17 +73,16 @@ Inventaires T014/T015 marqués historiques + état réel T019–T033 ; MONITORIN
 
 ## Preuves
 
-- `.x200/quality-results.json` task=T035
-- T033 CI 34715775346 SUCCESS
+- `.x200/quality-results.json` task=T034
 
 ## Risques
 
-- low
+- high
 
 ## Blocage
 
-- attente quality CI sur SHA docs
+- CI quality
 
 ## Prochaine tâche prête
 
-- T034
+- aucune auto restante après clôture (sauf AUTOPLAN)

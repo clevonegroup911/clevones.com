@@ -1,6 +1,6 @@
-# Documents privés et portail (T020 + T021 + T033)
+# Documents privés et portail (T020 + T021 + T033 + T034)
 
-Livré T020 le 2026-09-09 ; permissions T021 le 2026-09-10 ; auth portail USER T033 le 2026-09-12. Aucune migration production. **Pas live prod.**
+Livré T020–T021, auth USER T033, gestion users/grants T034 (2026-09-12). Aucune migration production. **Pas live prod.**
 
 ## Modèle
 
@@ -26,23 +26,26 @@ Téléchargement sans permission → **403** + `DOCUMENT_ACCESS_DENIED` dans Aud
 
 | Élément | État |
 | --- | --- |
-| `/sign-in` credentials USER ACTIVE | **implémenté / testé** (cookie `portal_session`) |
-| Garde `/portal` + `/api/portal/*` | `requirePortalActor` / `getOptionalPortalActor` (USER ou admin session) |
-| Ancien garde `requireAdmin()` seul | **retiré** des surfaces portail |
-| MFA | réservée admin ; pas de MFA sur login USER |
-| Production | **non déployé** par cette tâche |
+| `/sign-in` credentials USER ACTIVE | **implémenté / testé** |
+| Garde `/portal` + `/api/portal/*` | `requirePortalActor` |
+| Production | **non déployé** |
 
-Les admins conservent l’accès portail via `admin_session` (sans passer par `/sign-in`).
+## Gestion users + grants (T034)
+
+| Surface | État |
+| --- | --- |
+| `/admin/users` UI | créer USER/ADMIN, désactiver hors SUPER_ADMIN, create/revoke grant |
+| `GET/POST /api/admin/users` | liste + création |
+| `POST /api/admin/users/:id/disable` | désactivation |
+| `GET/POST/DELETE /api/admin/documents/grants` | list / create / revoke |
+| Audit | `USER_CREATED`, `USER_DISABLED`, `DOCUMENT_GRANT_*` |
+| LIVE prod | **non** |
+
+Un USER avec grant peut lire le document via le portail ; sans grant → refus ACL documenté.
 
 ## Portail HTTP
 
-`/portal` authentifié. API :
-
 - `POST /api/portal/documents` upload
 - `GET /api/portal/documents/:id` téléchargement (ACL)
-- `DELETE /api/portal/documents/:id` suppression logique (ACL)
-- paiements client sandbox sous `/portal/payments` et `/api/portal/payments*`
-
-## Suite
-
-Gestion utilisateurs / grants admin mutables : T034. Inventaires docs : T035.
+- `DELETE /api/portal/documents/:id` soft-delete (ACL)
+- paiements client sandbox sous `/portal/payments`

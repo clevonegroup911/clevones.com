@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T034",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -2195,10 +2195,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:13:08.031Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "unlocked after T033 TERMINÉE",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T034",
       "title": "Gestion utilisateurs et grants documents",
       "objective": "Compléter la gestion utilisateurs et les droits d’accès opérationnels : surfaces admin minimales pour créer/lister/désactiver des utilisateurs non SUPER_ADMIN et créer/révoquer des DocumentGrant, testables avec le portail USER.",
@@ -2230,11 +2241,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -2255,11 +2266,21 @@
           "version": null,
           "at": "2026-09-12T20:05:17.884Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716069136",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136",
+          "version": "fe1384d80340038ce9258fb553cbd790b27696c1",
+          "at": "2026-09-12T20:07:34.015Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; inventory docs resynced",
       "id": "T035",
       "title": "Resynchroniser inventaires docs avec l’état réel",
       "objective": "Corriger les inventaires obsolètes qui contredisent le code (CMS, analytics/paiements, monitoring/timer) afin que la documentation d’exploitation et de reprise soit fiable pour PRODUCT_GOAL §17, sans inventer un PRODUCT_COMPLETE prématuré.",
@@ -2286,8 +2307,14 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T035 PASS",
+        "docs CMS/analytics/monitoring + PROJECT_CONTEXT aligned to T019–T033",
+        "commit fe1384d80340038ce9258fb553cbd790b27696c1",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716069136 SUCCESS quality on fe1384d80340038ce9258fb553cbd790b27696c1 https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136"
+      ],
       "estimatedCost": 2,
       "risk": "low",
       "attempts": 1,
@@ -3253,9 +3280,27 @@
       "taskId": "T035",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; docs inventory resync"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 89,
+  "registryVersion": 92,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

@@ -17,7 +17,8 @@ Légende : **Allow** = autorisé par un contrôle serveur ; **Deny** = refusé p
 | `GET /admin` → dashboard | Allow (`requireAdmin`) | Allow | Redirect login | Redirect login |
 | MFA enroll / confirm / disable | Allow **soi uniquement** | Deny serveur | Deny | Deny |
 | `/portal` + API `/api/portal/*` | Allow via `admin_session` + `requirePortalActor` | Allow idem | Allow via `portal_session` + `requirePortalActor` | Deny |
-| Changer `User.role` / promouvoir | N/A (pas d'API HTTP T033) | N/A | N/A | N/A |
+| `/admin/users` + API users/grants | Allow (créer USER/ADMIN, désactiver hors SUPER_ADMIN, grants) | Allow | Deny | Deny |
+| Changer `User.role` / promouvoir SUPER_ADMIN | N/A (pas d'API) | N/A | N/A | N/A |
 
 ## Contrôles d'autorisation côté serveur
 
@@ -30,6 +31,7 @@ Défense en profondeur :
 5. **Middleware** (`middleware.ts`) : `/admin/*` protégé exige `admin_session` (ou challenge MFA). `/portal*` exige `portal_session` **ou** `admin_session` ; sinon redirect `/sign-in`. Ne relit pas la base.
 6. **Pages admin** (`requireAdmin`) : relit l'utilisateur DB ; refuse USER ; efface `admin_session` si invalide.
 7. **Pages / API portail** (`requirePortalActor` / `getOptionalPortalActor`) : USER ACTIVE via `portal_session`, ou ADMIN/SUPER_ADMIN ACTIVE via `admin_session`. `requireAdmin()` n'est plus le garde portail.
+8. **Gestion users / grants (T034)** : `requireAdmin` + helpers `lib/auth/managed-users.ts` / `lib/documents/grants.ts`. Pas de création/désactivation SUPER_ADMIN via HTTP.
 
 ## Accès `/admin` vs `/portal`
 
@@ -37,14 +39,15 @@ Défense en profondeur :
 - Portail `/sign-in` → `/portal` : comptes USER ; cookie `portal_session`.
 - Un USER authentifié qui ouvre `/admin/dashboard` est renvoyé vers `/admin/login` (pas d'élévation).
 - Un admin authentifié peut ouvrir `/portal` avec sa session admin (compatibilité e2e / ops).
+- `/admin/users` : liste/création USER|ADMIN, désactivation hors SUPER_ADMIN, create/revoke DocumentGrant.
 
-## Niveau de vérité (T033)
+## Niveau de vérité (T033 + T034)
 
 | État | Statut |
 | --- | --- |
 | Conçu | oui |
 | Implémenté | oui (branche de travail) |
-| Testé localement | oui (unitaires session/garde + e2e USER → portail) |
+| Testé localement | oui (unitaires + e2e USER portail) |
 | Validé CI | selon job `quality` sur le SHA de livraison |
 | Fusionné / déployé / live prod | **non** — hors périmètre automatique |
 

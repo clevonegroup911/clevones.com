@@ -48,6 +48,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               >
                 Paiements
               </Link>
+              <Link
+                href={adminRoutes.users}
+                className="text-xs font-medium text-gold-muted transition-colors hover:text-gold"
+              >
+                Utilisateurs
+              </Link>
               {actor.role === "SUPER_ADMIN" ? (
                 <Link
                   href={adminRoutes.securityMfa}
