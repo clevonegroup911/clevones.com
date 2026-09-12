@@ -156,10 +156,10 @@ API domaine : `lib/payments/activation.ts` (`resolvePersistedHumanReview`, `acti
 
 | Élément | Conçu | Implémenté | Testé localement | Validé CI | Fusionné | Live rails |
 |---|---|---|---|---|---|---|
-| Approve / reject HUMAN_REVIEW | oui | oui | `activation.test.ts` | en cours | non | non |
-| VERIFIED → activation gateway + SETTLED | oui | oui | gateway + activation tests | en cours | non | non |
-| USER sans actions admin | oui | oui | ACL | en cours | non | non |
-| Bypass seed settle pour activation métier | non | **non** (chemin gateway) | tests | en cours | non | non |
+| Approve / reject HUMAN_REVIEW | oui | oui | `activation.test.ts` | **oui** run 34713602649 | non | non |
+| VERIFIED → activation gateway + SETTLED | oui | oui | gateway + activation tests | **oui** | non | non |
+| USER sans actions admin | oui | oui | ACL | **oui** | non | non |
+| Bypass seed settle pour activation métier | non | **non** (chemin gateway) | tests | **oui** | non | non |
 
 ## Tests
 

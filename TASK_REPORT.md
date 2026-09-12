@@ -10,7 +10,7 @@ T031
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la 
 
 ## Résultat
 
-Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED (`activateFromClevoneEvent` + persist), reviewDueAt visible, ACL admin. Quality-gate local PASS (6/6). Attente job `quality` CI.
+Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED (`activateFromClevoneEvent` + persist), reviewDueAt visible, ACL admin. Quality-gate local PASS (6/6). Job `quality` CI SUCCESS sur `05455331b9c27718e3b254ea6da2b5fc2d2bbaad`.
 
 ## Fichiers créés
 
@@ -72,7 +72,7 @@ Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED 
 
 ## Commit
 
-- (à renseigner après commit)
+- `05455331b9c27718e3b254ea6da2b5fc2d2bbaad`
 
 ## Pull Request
 
@@ -81,6 +81,7 @@ Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED 
 ## Preuves
 
 - quality-gate T031
+- GitHub Actions X200 CI run 34713602649 SUCCESS quality on 05455331b9c27718e3b254ea6da2b5fc2d2bbaad https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649
 - docs/PAYMENTS_GATEWAY.md § Résolution HUMAN_REVIEW + activation VERIFIED (T031)
 
 ## Risques
@@ -89,8 +90,8 @@ Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED 
 
 ## Blocage
 
-- attente `quality` CI SUCCESS sur SHA d'implémentation
+- aucun
 
 ## Prochaine tâche prête
 
-- T032 (après clôture T031)
+- T032 (PRÊTE)

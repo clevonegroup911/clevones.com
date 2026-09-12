@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T032",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1982,11 +1982,21 @@
           "version": null,
           "at": "2026-09-12T19:14:45.176Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34713602649",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649",
+          "version": "05455331b9c27718e3b254ea6da2b5fc2d2bbaad",
+          "at": "2026-09-12T19:18:59.308Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
       "id": "T031",
       "title": "Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED",
       "objective": "Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.",
@@ -2015,8 +2025,15 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T031 PASS (6/6)",
+        "docs/PAYMENTS_GATEWAY.md § Résolution HUMAN_REVIEW + activation VERIFIED (T031)",
+        "POST /api/admin/payments/{review,activate} + resolveHumanReview",
+        "commit 05455331b9c27718e3b254ea6da2b5fc2d2bbaad",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34713602649 SUCCESS quality on 05455331b9c27718e3b254ea6da2b5fc2d2bbaad https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649"
+      ],
       "estimatedCost": 4,
       "risk": "high",
       "attempts": 1,
@@ -2033,7 +2050,7 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] E2E gateway sandbox après boucle HTTP/UI opérable (T030/T031)",
+      "lastTransitionReason": "[X200-FAST] dépendances satisfaites après T031 TERMINÉE",
       "id": "T032",
       "title": "E2E Playwright — gateway paiements sandbox",
       "objective": "Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.",
@@ -2058,7 +2075,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "evidence": [],
       "estimatedCost": 4,
       "risk": "medium",
@@ -2941,9 +2958,21 @@
       "taskId": "T031",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; HUMAN_REVIEW resolve + VERIFIED activation"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "PRÊTE",
+      "note": "unlocked after T031"
     }
   ],
-  "registryVersion": 78,
+  "registryVersion": 79,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
