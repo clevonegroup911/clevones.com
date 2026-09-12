@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T037",
   "tasks": [
     {
       "project": "clevones.com",
@@ -2354,12 +2354,28 @@
           "version": null,
           "at": "2026-09-12T20:21:50.199Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716883903",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903",
+          "version": "0a6a57931127d4c00d3e626744c1e21e242e8347",
+          "at": "2026-09-12T20:26:58.916Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
-      "evidence": [],
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; portal sign-out",
+      "evidence": [
+        "quality-gate T036 PASS",
+        "/sign-out clears portal_session; portal logout link",
+        "commit 0a6a57931127d4c00d3e626744c1e21e242e8347",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716883903 SUCCESS quality on 0a6a57931127d4c00d3e626744c1e21e242e8347 https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12",
@@ -2390,7 +2406,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 2,
       "risk": "medium"
     },
@@ -3494,9 +3510,15 @@
       "taskId": "T036",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; portal sign-out"
     }
   ],
-  "registryVersion": 96,
+  "registryVersion": 97,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

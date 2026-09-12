@@ -10,7 +10,7 @@ T036
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,24 +18,23 @@ Déconnexion portail USER.
 
 ## Résultat
 
-`/sign-out` + lien portail. Quality-gate PASS. Attente CI.
+`/sign-out` + lien portail. Quality CI SUCCESS 0a6a579 / run 34716883903. Suite : T037, T038 PRÊTE.
 
 ## Fichiers créés
 
 - `app/(auth)/sign-out/page.tsx`
-- `reports/tasks/T036.md`
 
 ## Fichiers modifiés
 
-- portal page, routes test, docs rôles, backlog
+- portal, routes test, docs
 
 ## Commandes
 
-- quality-gate T036
+- quality-gate + CI
 
 ## Tests réussis
 
-- quality-gate PASS
+- quality-gate + CI quality SUCCESS
 
 ## Tests échoués
 
@@ -51,32 +50,32 @@ Déconnexion portail USER.
 
 ## Build
 
-- CI
+- pass CI
 
 ## Sécurité
 
-- portal_session only
+- portal_session only ; MFA admin intact
 
 ## Commit
 
-- (push)
+- `0a6a57931127d4c00d3e626744c1e21e242e8347`
 
 ## Pull Request
 
-- PR #7
+- PR draft #7 : https://github.com/clevonegroup911/clevones.com/pull/7
 
 ## Preuves
 
-- `.x200/quality-results.json`
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903
 
 ## Risques
 
-- medium
+- aucun résiduel T036
 
 ## Blocage
 
-- CI
+- aucun
 
 ## Prochaine tâche prête
 
-- T037 / T038
+- T037
