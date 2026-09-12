@@ -6,49 +6,40 @@
 
 ## ID
 
-T031
+T032
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.
+Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.
 
 ## Résultat
 
-Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED (`activateFromClevoneEvent` + persist), reviewDueAt visible, ACL admin. Quality-gate local PASS (6/6). Job `quality` CI SUCCESS sur `05455331b9c27718e3b254ea6da2b5fc2d2bbaad`.
+Spec `tests/e2e/payments-gateway.spec.ts` + doc `docs/E2E_PRODUCT.md`. Quality-gate local PASS (Playwright skipped sans DB loopback locale ; exécution réelle attendue en CI FULL). Attente job `quality` CI.
 
 ## Fichiers créés
 
-- `lib/payments/activation.ts`
-- `lib/payments/activation.test.ts`
-- `app/api/admin/payments/review/route.ts`
-- `app/api/admin/payments/activate/route.ts`
-- `app/admin/payments/human-review-actions.tsx`
-- `app/admin/payments/activate-verified-button.tsx`
-- `reports/tasks/T031.md`
+- `tests/e2e/payments-gateway.spec.ts`
+- `reports/tasks/T032.md`
 
 ## Fichiers modifiés
 
-- `lib/payments/reconciliation.ts`
-- `lib/payments/schemas.ts`
-- `lib/payments/catalog.ts`
-- `app/admin/payments/page.tsx`
-- `app/admin/payments/[orderId]/page.tsx`
-- `docs/PAYMENTS_GATEWAY.md`
+- `docs/E2E_PRODUCT.md`
 - `backlog.json`
 - `TASK_REPORT.md`
+- `BACKLOG.md`
 
 ## Commandes
 
-- `npm run x200:claim -- --json T031`
-- `npm run x200:quality-gate -- --task T031`
+- `npm run x200:claim -- --json T032`
+- `npm run x200:quality-gate -- --task T032`
 
 ## Tests réussis
 
-- quality-gate T031 PASS (6/6)
+- quality-gate T032 PASS
 
 ## Tests échoués
 
@@ -56,23 +47,23 @@ Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED 
 
 ## Lint
 
-- succès
+- non listé dans tests T032 (inclus unitaires via npm test)
 
 ## Type-check
 
-- succès
+- non listé dans tests T032
 
 ## Build
 
-- attendu CI
+- attendu CI FULL (Playwright)
 
 ## Sécurité
 
-- aucun rail PSP ; `.env` non touché ; USER sans actions admin
+- fixtures e2e seulement ; aucun secret PSP ; `.env` non touché
 
 ## Commit
 
-- `05455331b9c27718e3b254ea6da2b5fc2d2bbaad`
+- (à renseigner après commit)
 
 ## Pull Request
 
@@ -80,18 +71,17 @@ Approve/reject HUMAN_REVIEW (API + UI file), activation gateway après VERIFIED 
 
 ## Preuves
 
-- quality-gate T031
-- GitHub Actions X200 CI run 34713602649 SUCCESS quality on 05455331b9c27718e3b254ea6da2b5fc2d2bbaad https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649
-- docs/PAYMENTS_GATEWAY.md § Résolution HUMAN_REVIEW + activation VERIFIED (T031)
+- quality-gate T032
+- docs/E2E_PRODUCT.md § Gateway paiements (T032)
 
 ## Risques
 
-- activation hydrate gateway mémoire depuis Prisma ; E2E Playwright reste T032
+- Docker e2e PG non joignable sur cet hôte Fedora ; preuve E2E réelle = CI
 
 ## Blocage
 
-- aucun
+- attente `quality` CI SUCCESS sur SHA d'implémentation
 
 ## Prochaine tâche prête
 
-- T032 (PRÊTE)
+- AUTOPLAN si plus de tâche automatique admissible

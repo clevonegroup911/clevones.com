@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T032",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -2047,10 +2047,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:28:23.279Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] dépendances satisfaites après T031 TERMINÉE",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T032",
       "title": "E2E Playwright — gateway paiements sandbox",
       "objective": "Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.",
@@ -2075,11 +2086,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 4,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     }
@@ -2970,9 +2981,21 @@
       "taskId": "T032",
       "status": "PRÊTE",
       "note": "unlocked after T031"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 79,
+  "registryVersion": 81,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 79
+- Registre : 81
 - Mode : single-executor
 - Mis à jour : 2026-09-12
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 1
+- EN_CONTRÔLE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
@@ -53,4 +53,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T029 | P1 | TERMINÉE | Gateway paiements — surfaces admin/client | non |
 | T030 | P1 | TERMINÉE | Gateway sandbox — événements CLEVONE persistés + reconcile HTTP | non |
 | T031 | P1 | TERMINÉE | Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED | non |
-| T032 | P2 | PRÊTE | E2E Playwright — gateway paiements sandbox | non |
+| T032 | P2 | EN_CONTRÔLE | E2E Playwright — gateway paiements sandbox | non |
