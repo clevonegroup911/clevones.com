@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-10",
+  "updatedAt": "2026-09-12",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T029",
   "tasks": [
     {
       "project": "clevones.com",
@@ -546,7 +546,51 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "review",
+          "command": "[X200-OWNER-AUTH] T011",
+          "result": "authorized audit templates docs off-prod-tests commit-push admin-mfa; production timer forbidden",
+          "exitCode": 0,
+          "reference": "5594283429",
+          "version": null,
+          "at": "2026-09-09T01:17:54.000Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429"
+        },
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-09T01:52:56.181Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "GitHub Actions X100 CI",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34301070242",
+          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
+          "at": "2026-09-09T01:57:25Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34301070242"
+        },
+        {
+          "type": "control",
+          "command": "[X200-CONTROL] GitHub",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "5599211476",
+          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
+          "at": "2026-09-09T08:58:26Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5599211476"
+        }
+      ],
       "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #22 34301070242 SUCCESS on efaee51 ; T011 TERMINÉE",
       "id": "T011",
       "title": "Sauvegardes automatiques",
       "objective": "Automatiser les sauvegardes PostgreSQL après la procédure manuelle T004.",
@@ -604,51 +648,7 @@
       "risk": "medium",
       "attempts": 1,
       "requiresHuman": true,
-      "updatedAt": "2026-09-09",
-      "lastTransitionReason": "[X200-CONTROL] GitHub CI run #22 34301070242 SUCCESS on efaee51 ; T011 TERMINÉE",
-      "nextAction": null,
-      "evidenceRecords": [
-        {
-          "type": "review",
-          "command": "[X200-OWNER-AUTH] T011",
-          "result": "authorized audit templates docs off-prod-tests commit-push admin-mfa; production timer forbidden",
-          "exitCode": 0,
-          "reference": "5594283429",
-          "version": null,
-          "at": "2026-09-09T01:17:54.000Z",
-          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5594283429"
-        },
-        {
-          "type": "control",
-          "command": "npm run x200:quality-gate",
-          "result": "pass",
-          "exitCode": 0,
-          "reference": ".x200/quality-results.json",
-          "version": null,
-          "at": "2026-09-09T01:52:56.181Z",
-          "location": ".x200/quality-results.json"
-        },
-        {
-          "type": "ci",
-          "command": "GitHub Actions X100 CI",
-          "result": "success",
-          "exitCode": 0,
-          "reference": "34301070242",
-          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
-          "at": "2026-09-09T01:57:25Z",
-          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34301070242"
-        },
-        {
-          "type": "control",
-          "command": "[X200-CONTROL] GitHub",
-          "result": "success",
-          "exitCode": 0,
-          "reference": "5599211476",
-          "version": "efaee510fa4ea57c1d84a65dc881b807de33b114",
-          "at": "2026-09-09T08:58:26Z",
-          "location": "https://github.com/clevonegroup911/clevones.com/pull/1#issuecomment-5599211476"
-        }
-      ]
+      "updatedAt": "2026-09-09"
     },
     {
       "project": "clevones.com",
@@ -1658,6 +1658,207 @@
       "estimatedCost": 5,
       "risk": "high",
       "requiresHuman": true
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T00:40:46.212Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34662487636",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662487636",
+          "version": "ce6996e2da0403fa7f324dd47d65c8eb71c47308",
+          "at": "2026-09-12T00:46:20.677Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662487636"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL; close without waiting comment job",
+      "id": "T027",
+      "title": "Gateway paiements — chaîne commande/facture",
+      "objective": "Implémenter le cœur CLEVONE Payment Gateway (sandbox) : utilisateur → commande/service → facture → paiement lié → événement CLEVONE → activation idempotente → reçu/facture acquittée → audit, sans rail réel M-PESA/RAWBANK ni clé réelle.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T024"
+      ],
+      "scope": [
+        "prisma",
+        "lib/payments",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Modèles Prisma Order/ServiceIntent, Invoice, Payment link, Receipt (ou équivalent) avec relations et statuts explicites",
+        "API domaine lib/payments/gateway : créer commande→facture→paiement, émettre événement CLEVONE, activer idempotemment, produire reçu/facture acquittée, journaliser AuditLog",
+        "Sandbox uniquement : aucune clé PSP, aucun appel réseau M-PESA/RAWBANK/Stripe",
+        "Migration additive CI/local seulement ; aucune migration production",
+        "Documentation docs/PAYMENTS_GATEWAY.md décrivant la chaîne et les niveaux conçu/implémenté/testé"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T027 PASS (prisma validate, npm test, lint, tsc, scan-secrets, x200:validate, git diff --check)",
+        "docs/PAYMENTS_GATEWAY.md",
+        "lib/payments/gateway.ts + gateway.test.ts",
+        "prisma/migrations/20260912030000_add_payment_gateway_chain/",
+        "commit ce6996e2da0403fa7f324dd47d65c8eb71c47308",
+        "GitHub Actions X200 CI run 34662487636 SUCCESS quality on ce6996e2da0403fa7f324dd47d65c8eb71c47308 https://github.com/clevonegroup911/clevones.com/actions/runs/34662487636"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T00:49:40.403Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34662913027",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027",
+          "version": "c071a6341cbce61c25329324abd2d3cea15125d1",
+          "at": "2026-09-12T01:06:20.133Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL; close without waiting comment job",
+      "id": "T028",
+      "title": "Gateway paiements — preuves et rapprochement",
+      "objective": "Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T027"
+      ],
+      "scope": [
+        "prisma",
+        "lib/payments",
+        "lib/documents",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Stockage privé des preuves de paiement (hors Git ; accès contrôlé) lié au paiement/facture",
+        "Rapprochement automatique possible uniquement avec source CLEVONE authentifiée ou événement officiel sandbox ; preuve client seule → jamais CAPTURED/VERIFIED",
+        "Cas non concordants → état HUMAN_REVIEW (ou équivalent) avec délai indicatif jusqu'à 24 h et audit de décision",
+        "Anti-doublon, idempotence et protection anti-rejeu des décisions de validation",
+        "Tests unitaires couvrant refus preuve-client-seule, succès source CLEVONE, et bascule HUMAN_REVIEW"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T028 PASS",
+        "lib/payments/reconciliation.ts + reconciliation.test.ts",
+        "prisma/migrations/20260912040000_add_payment_proof_reconciliation/",
+        "docs/PAYMENTS_GATEWAY.md § T028",
+        "commit c071a6341cbce61c25329324abd2d3cea15125d1",
+        "GitHub Actions X200 CI run 34662913027 SUCCESS quality on c071a6341cbce61c25329324abd2d3cea15125d1 https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "exécuter le périmètre puis quality-gate",
+      "lastTransitionReason": "[X200-FAST] deps T027+T028 TERMINÉE; promoted PRÊTE",
+      "id": "T029",
+      "title": "Gateway paiements — surfaces admin/client",
+      "objective": "Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T027",
+        "T028"
+      ],
+      "scope": [
+        "app/admin",
+        "app/(dashboard)",
+        "app/api",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Console admin (SUPER_ADMIN/ADMIN) : liste/détail factures-paiements, décisions de rapprochement, file HUMAN_REVIEW, audit lisible",
+        "Surface client authentifiée : état de sa facture/paiement et reçu lorsque acquitté ; pas d'élévation de statut par upload de preuve seule",
+        "Routes API/actions Zod + contrôles de rôle ; USER sans accès admin paiement",
+        "Aucun secret PSP ; aucun webhook réseau réel ; documentation des écrans dans docs/PAYMENTS_GATEWAY.md"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
     }
   ],
   "history": [
@@ -2382,9 +2583,77 @@
       "status": "TERMINÉE",
       "commit": "1c2f4f884ac1a5633a2104258dbe1babc1dda274",
       "note": "[X200-OWNER-AUTH] production deployed TARGET_SHA; backup 20260910T110552Z; 5 additive migrations; PM2 restart clevones-com only"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] create gateway order/invoice chain (PRODUCT_GOAL 9-10)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "À_FAIRE",
+      "note": "[X200-AUTOPLAN] create proof/reconciliation/human-review (PRODUCT_GOAL 11-13)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "À_FAIRE",
+      "note": "[X200-AUTOPLAN] create admin/client payment gateway surfaces"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T027",
+      "status": "TERMINÉE",
+      "commit": "ce6996e2da0403fa7f324dd47d65c8eb71c47308",
+      "note": "[X200-FAST] quality SUCCESS run 34662487636 FULL; gateway chain sandbox"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] promoted after T027 TERMINÉE"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T028",
+      "status": "TERMINÉE",
+      "commit": "c071a6341cbce61c25329324abd2d3cea15125d1",
+      "note": "[X200-FAST] quality SUCCESS run 34662913027 FULL; proof/reconciliation"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] promoted after T027+T028 TERMINÉE"
     }
   ],
-  "registryVersion": 58,
+  "registryVersion": 66,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

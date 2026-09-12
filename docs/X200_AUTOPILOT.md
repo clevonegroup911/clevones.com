@@ -87,11 +87,20 @@ Après vérification d'un cycle local :
 bash scripts/install-x200-autopilot.sh
 ```
 
-Contrôle :
+Le script d'installation :
+
+- détecte `cursor-agent` ou `agent` et vérifie qu'il est exécutable ;
+- arrête proprement l'ancienne instance du service avant réinstallation ;
+- utilise le dépôt Fedora courant comme `WorkingDirectory` ;
+- conserve `Restart=on-failure` ;
+- n'installe qu'un seul service : `clevones-x200-autopilot.service` ;
+- ne supprime jamais aveuglément `.x200/autopilot.lock`.
+
+Contrôle (préférer journald pour dates et frontières de redémarrage) :
 
 ```bash
 systemctl --user status clevones-x200-autopilot.service
-tail -f .x200/logs/autopilot.log
+journalctl --user -u clevones-x200-autopilot.service -f
 ```
 
 Arrêt :
@@ -100,6 +109,27 @@ Arrêt :
 systemctl --user disable --now clevones-x200-autopilot.service
 ```
 
+Ne jamais lancer `npm run x200:autopilot:once` pendant qu'une instance daemon est active.
+Ne jamais supprimer `.x200/autopilot.lock` avant d'avoir prouvé que son PID est mort (`kill -0` / `ps`).
+
+### Événements de log
+
+Chaque démarrage émet une ligne horodatée `AUTOPILOT_BOOT` (timestamp, pid, host, mode, HEAD, branch).
+
+| Événement | Signification |
+|---|---|
+| `AUTOPILOT_BOOT` | Superviseur démarré |
+| `AUTOPILOT_AGENT_START` | Agent FAST-LANE lancé |
+| `AUTOPLAN_AGENT_START` | Agent AUTOPLAN lancé |
+| `AUTOPLAN_CREATED_WORK` | AUTOPLAN a produit du travail automatique |
+| `AUTOPLAN_COMPLETE` | Marqueur produit valide pour HEAD + hash du but |
+| `HUMAN_GATE` | Gate propriétaire réellement requis |
+| `AUTOPILOT_WAIT` | Attente entre cycles (poll), pas une fin produit |
+| `AUTOPILOT_LOCKED` | Une deuxième instance a trouvé un lock **vivant** |
+| `AUTOPILOT_STALE_LOCK_ARCHIVED` | Lock mort auto-archivé puis réacquis |
+
+Ne pas interpréter d'anciens fichiers `.x200/logs/*` comme preuve de l'état du processus courant. Préférer `journalctl`.
+`AUTOPILOT_IDLE` est un ancien libellé ambigu : il ne signifie plus « produit non terminé ».
 ## Règles AUTOPLAN
 
 AUTOPLAN :
@@ -126,6 +156,9 @@ Un gate bloque uniquement son périmètre. AUTOPLAN cherche d'abord du travail i
 ## Protection contre les boucles
 
 - verrou `.x200/autopilot.lock` contre deux superviseurs simultanés ;
+- lock STALE (PID mort, même host) : archivé puis réacquis une seule fois ;
+- lock JSON invalide : diagnostic explicite, jamais écrasé silencieusement ;
+- un processus ne libère le lock que s'il en est le propriétaire (SIGTERM/SIGINT inclus) ;
 - worktree sale : arrêt diagnostiqué ;
 - tâche `TERMINÉE` : jamais rejouée avec preuve valide ;
 - trois échecs identiques : changement de stratégie ou blocage ;

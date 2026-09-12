@@ -11,14 +11,20 @@ export type StoredObject = {
   checksumSha256: string;
 };
 
-function storageRoot(): string {
-  const configured = process.env.PRIVATE_DOCUMENT_ROOT?.trim();
-  const root = configured && configured.length > 0 ? configured : DEFAULT_ROOT;
-  const absolute = resolve(process.cwd(), root);
+function resolveStorageRoot(rootOverride?: string): string {
+  const configured =
+    rootOverride?.trim() ||
+    process.env.PRIVATE_DOCUMENT_ROOT?.trim() ||
+    DEFAULT_ROOT;
+  const absolute = resolve(process.cwd(), configured);
   if (absolute.includes(`${resolve(process.cwd(), "public")}`)) {
     throw new Error("Private document storage must not use public/.");
   }
   return absolute;
+}
+
+function storageRoot(): string {
+  return resolveStorageRoot();
 }
 
 export function buildStorageKey(fileName: string): string {
@@ -29,8 +35,9 @@ export function buildStorageKey(fileName: string): string {
 export async function putPrivateObject(
   key: string,
   bytes: Buffer,
+  options?: { root?: string },
 ): Promise<StoredObject> {
-  const absolutePath = join(storageRoot(), key);
+  const absolutePath = join(resolveStorageRoot(options?.root), key);
   await mkdir(dirname(absolutePath), { recursive: true });
   await writeFile(absolutePath, bytes, { mode: 0o600 });
   return {
@@ -41,13 +48,19 @@ export async function putPrivateObject(
   };
 }
 
-export async function readPrivateObject(key: string): Promise<Buffer> {
-  const absolutePath = join(storageRoot(), key);
+export async function readPrivateObject(
+  key: string,
+  options?: { root?: string },
+): Promise<Buffer> {
+  const absolutePath = join(resolveStorageRoot(options?.root), key);
   return readFile(absolutePath);
 }
 
-export async function deletePrivateObject(key: string): Promise<void> {
-  const absolutePath = join(storageRoot(), key);
+export async function deletePrivateObject(
+  key: string,
+  options?: { root?: string },
+): Promise<void> {
+  const absolutePath = join(resolveStorageRoot(options?.root), key);
   try {
     await unlink(absolutePath);
   } catch (error) {
@@ -56,3 +69,6 @@ export async function deletePrivateObject(key: string): Promise<void> {
     }
   }
 }
+
+/** Payment proofs stay outside Git and outside public/. */
+export const PAYMENT_PROOF_ROOT = ".data/payment-proofs";

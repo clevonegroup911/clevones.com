@@ -3,18 +3,18 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 58
+- Registre : 59
 - Mode : single-executor
-- Mis à jour : 2026-09-10
+- Mis à jour : 2026-09-12
 
 ## Compteurs
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 0
-- PRÊTE : 0
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 0
+- À_FAIRE : 2
 - TERMINÉE : 26
 - ANNULÉE : 0
 
@@ -48,3 +48,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T024 | P2 | TERMINÉE | Paiements abstraction + sandbox | non |
 | T025 | P1 | TERMINÉE | E2E sécurité/responsive nouvelles fonctions | non |
 | T026 | P0 | TERMINÉE | Déploiement/migrations production | oui |
+| T027 | P1 | PRÊTE | Gateway paiements — chaîne commande/facture | non |
+| T028 | P1 | À_FAIRE | Gateway paiements — preuves et rapprochement | non |
+| T029 | P1 | À_FAIRE | Gateway paiements — surfaces admin/client | non |
