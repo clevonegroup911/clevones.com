@@ -2,7 +2,7 @@
 
 > **Inventaire historique T015 (2026-09-09)** — « aucun tracker / aucun paiement dans le code » était vrai **à cette date**. Le code courant a des surfaces first-party et sandbox. Voir l’état réel ci-dessous.
 
-## État réel post-T022–T032 (2026-09-12)
+## État réel post-T022–T038 (2026-09-12)
 
 | Surface | État | Niveau de vérité | Doc |
 |---|---|---|---|
@@ -11,8 +11,9 @@
 | Paiements sandbox / gateway | Order → Invoice → Payment → Event → Receipt | implémenté / testé CI ; **sandbox only** | `docs/PAYMENTS_GATEWAY.md` |
 | Rails réels M-PESA / RAWBANK / Stripe | Non branchés ; aucune clé PSP dans Git | **non live** | gates humaines / externes |
 | Clés `sk_live` / `pk_live` / `whsec_` | Absentes du dépôt suivi | CONFIRMÉ (scan-secrets) | `docs/SECRETS.md` |
+| Santé applicative | `GET /health` payload minimal | implémenté / testé (T038) ; **pas d’alerte GCP** | `docs/MONITORING.md` |
 
-**Pas de PRODUCT_COMPLETE** : auth USER (T033 en cours de contrôle CI), gestion users/grants (T034), PSP live et merge/deploy restent ouverts.
+T001–T038 `TERMINÉE`. PRODUCT_COMPLETE dépôt = T039+T040. **Pas live prod** : SMTP réel, PSP live, alertes GCP, merge/deploy, migrations prod, MFA prod, timer backup restent des gates humaines.
 
 ## Inventaire historique T015 (ne plus traiter comme vérité code)
 

@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 105
+- Registre : 107
 - Mode : single-executor
 - Mis à jour : 2026-09-12
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 1
+- EN_CONTRÔLE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 1
@@ -60,5 +60,5 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T036 | P2 | TERMINÉE | Déconnexion portail USER | non |
 | T037 | P2 | TERMINÉE | E2E users + DocumentGrant portail | non |
 | T038 | P2 | TERMINÉE | Endpoint santé applicatif /health | non |
-| T039 | P2 | PRÊTE | Resynchroniser PROJECT_CONTEXT et inventaires post-T038 | non |
+| T039 | P2 | EN_CONTRÔLE | Resynchroniser PROJECT_CONTEXT et inventaires post-T038 | non |
 | T040 | P2 | À_FAIRE | Émettre .x200/PRODUCT_COMPLETE.json (niveau dépôt) | non |
