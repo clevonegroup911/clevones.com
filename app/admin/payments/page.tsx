@@ -2,6 +2,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 import Link from "next/link";
 
+import { SandboxSeedForm } from "@/app/admin/payments/sandbox-seed-form";
 import { adminRoutes } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { canAccessAdminPayments } from "@/lib/payments/access";
@@ -49,6 +50,9 @@ export default async function AdminPaymentsPage() {
           Sandbox uniquement — factures, paiements, décisions de rapprochement et
           file HUMAN_REVIEW. Aucun rail PSP réel.
         </p>
+        <div className="mt-4">
+          <SandboxSeedForm />
+        </div>
       </div>
 
       <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">

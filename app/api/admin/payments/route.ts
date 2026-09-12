@@ -7,10 +7,11 @@ import {
   listHumanReviewDecisions,
   listRecentReconciliationDecisions,
 } from "@/lib/payments/catalog";
+import { adminPaymentListQuerySchema } from "@/lib/payments/schemas";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(request: Request) {
   const actor = await getOptionalAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
@@ -19,13 +20,27 @@ export async function GET() {
     return NextResponse.json({ error: "Accès admin paiements refusé." }, { status: 403 });
   }
 
+  const url = new URL(request.url);
+  const parsed = adminPaymentListQuerySchema.safeParse({
+    status: url.searchParams.get("status") ?? "ALL",
+  });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Query invalide." }, { status: 400 });
+  }
+
   const [orders, humanReview, decisions] = await Promise.all([
     listAdminPaymentChains(),
     listHumanReviewDecisions(),
     listRecentReconciliationDecisions(),
   ]);
 
+  const filteredDecisions =
+    parsed.data.status === "ALL"
+      ? decisions
+      : decisions.filter((row) => row.status === parsed.data.status);
+
   return NextResponse.json({
+    filter: parsed.data.status,
     orders: orders.map((order) => ({
       id: order.id,
       status: order.status,
@@ -49,7 +64,7 @@ export async function GET() {
       reasons: row.reasons,
       reviewDueAt: row.reviewDueAt,
     })),
-    decisions: decisions.map((row) => ({
+    decisions: filteredDecisions.map((row) => ({
       id: row.id,
       paymentId: row.paymentId,
       status: row.status,

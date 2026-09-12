@@ -6,44 +6,50 @@
 
 ## ID
 
-T028
+T029
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.
+Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.
 
 ## Résultat
 
-Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, `PaymentProof`/`ReconciliationDecision`, invariants preuve-client-seule / CLEVONE authentifié / HUMAN_REVIEW ≤ 24 h / anti-doublon. `quality` SUCCESS run 34662913027 sur `c071a6341cbce61c25329324abd2d3cea15125d1`. T029 promue PRÊTE.
+Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions), seed sandbox Prisma, portail `/portal/payments` avec reçu et upload preuve (ownership + jamais VERIFIED seul), APIs Zod + ACL. Persistance `lib/payments/persist.ts`. Quality-gate local PASS. Attente job `quality` CI.
 
 ## Fichiers créés
 
-- `lib/payments/reconciliation.ts`
-- `lib/payments/reconciliation.test.ts`
-- `prisma/migrations/20260912040000_add_payment_proof_reconciliation/migration.sql`
-- `reports/tasks/T028.md`
+- `lib/payments/persist.ts`
+- `app/api/admin/payments/sandbox/route.ts`
+- `app/admin/payments/sandbox-seed-form.tsx`
+- `reports/tasks/T029.md`
 
 ## Fichiers modifiés
 
-- `prisma/schema.prisma`
-- `lib/documents/storage.ts`
+- `app/admin/payments/page.tsx`
+- `app/admin/payments/[orderId]/page.tsx`
+- `app/api/admin/payments/route.ts`
+- `app/api/portal/payments/proof/route.ts`
+- `app/(dashboard)/portal/payments/page.tsx`
+- `lib/payments/catalog.ts`
+- `lib/payments/schemas.ts`
+- `lib/payments/access.test.ts`
 - `docs/PAYMENTS_GATEWAY.md`
 - `backlog.json`
 - `TASK_REPORT.md`
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T028`
-- CI run 34662913027
+- `npm run x200:resume -- --json --apply`
+- `npm run x200:claim -- --json T029`
+- `npm run x200:quality-gate -- --task T029`
 
 ## Tests réussis
 
-- quality-gate T028 PASS
-- GitHub Actions run 34662913027 `quality` SUCCESS (FULL)
+- quality-gate T029 PASS (6/6)
 
 ## Tests échoués
 
@@ -59,28 +65,28 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Build
 
-- CI FULL SUCCESS
+- CI attendu après push
 
 ## Sécurité
 
-- preuves hors Git ; aucune clé PSP ; pas de migration production
+- aucun secret PSP ; aucun webhook réseau ; ownership sur upload preuve ; `.env` non touché ; pas de migration production
 
 ## Commit
 
-- `c071a6341cbce61c25329324abd2d3cea15125d1`
+- (à renseigner après push)
 
 ## Pull Request
 
-- PR draft #6 : https://github.com/clevonegroup911/clevones.com/pull/6
+- (à ouvrir/mettre à jour sur branche de travail)
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027
-- docs/PAYMENTS_GATEWAY.md § T028
+- quality-gate T029
+- docs/PAYMENTS_GATEWAY.md § Surfaces admin / client (T029)
 
 ## Risques
 
-- migration additive non déployée en production (volontaire)
+- portail client actuel via session admin (contrainte plateforme existante) ; USER ACL unit-tested sans session USER réelle
 
 ## Blocage
 
@@ -88,4 +94,4 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Prochaine tâche prête
 
-T029
+- (après clôture CI T029 → AUTOPLAN si idle)

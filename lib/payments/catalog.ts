@@ -72,3 +72,45 @@ export async function getClientInvoiceForUser(
     },
   });
 }
+
+export async function getAdminOrderDetail(
+  orderId: string,
+  client: PaymentsClient = prisma,
+) {
+  return client.serviceOrder.findUnique({
+    where: { id: orderId },
+    include: {
+      invoices: {
+        include: { payment: true, receipt: true },
+      },
+    },
+  });
+}
+
+export async function listProofsForPaymentIds(
+  paymentIds: string[],
+  client: PaymentsClient = prisma,
+) {
+  if (paymentIds.length === 0) {
+    return [];
+  }
+  return client.paymentProof.findMany({
+    where: { paymentId: { in: paymentIds } },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+}
+
+export async function listDecisionsForPaymentIds(
+  paymentIds: string[],
+  client: PaymentsClient = prisma,
+) {
+  if (paymentIds.length === 0) {
+    return [];
+  }
+  return client.reconciliationDecision.findMany({
+    where: { paymentId: { in: paymentIds } },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+}

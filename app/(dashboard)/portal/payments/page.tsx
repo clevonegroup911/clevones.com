@@ -64,9 +64,14 @@ export default async function PortalPaymentsPage() {
                       : "Pas de facture"}
                     {invoice?.payment ? ` · paiement ${invoice.payment.status}` : ""}
                     {invoice?.receipt
-                      ? ` · reçu ${invoice.receipt.receiptNumber}`
-                      : ""}
+                      ? ` · reçu ${invoice.receipt.receiptNumber} (acquitté)`
+                      : " · reçu non émis"}
                   </p>
+                  {invoice?.receipt ? (
+                    <p className="mt-1 text-xs text-gold-muted">
+                      Reçu disponible : {invoice.receipt.receiptNumber}
+                    </p>
+                  ) : null}
                   {invoice?.payment ? (
                     <div className="mt-3">
                       <ProofUploadForm

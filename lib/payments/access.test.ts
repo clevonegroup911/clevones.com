@@ -6,7 +6,11 @@ import {
   canAccessClientPayments,
 } from "@/lib/payments/access";
 import { createReconciliationService } from "@/lib/payments/reconciliation";
-import { paymentProofUploadSchema } from "@/lib/payments/schemas";
+import {
+  adminPaymentListQuerySchema,
+  adminSandboxCreateSchema,
+  paymentProofUploadSchema,
+} from "@/lib/payments/schemas";
 
 test("USER cannot access admin payments but can access client surface", () => {
   assert.equal(canAccessAdminPayments("USER"), false);
@@ -20,6 +24,30 @@ test("proof upload schema validates paymentId", () => {
   assert.equal(ok.success, true);
   const bad = paymentProofUploadSchema.safeParse({ paymentId: "" });
   assert.equal(bad.success, false);
+});
+
+test("admin payment list query schema accepts status filter", () => {
+  const all = adminPaymentListQuerySchema.safeParse({});
+  assert.equal(all.success, true);
+  if (all.success) {
+    assert.equal(all.data.status, "ALL");
+  }
+  const review = adminPaymentListQuerySchema.safeParse({
+    status: "HUMAN_REVIEW",
+  });
+  assert.equal(review.success, true);
+  const bad = adminPaymentListQuerySchema.safeParse({ status: "NOPE" });
+  assert.equal(bad.success, false);
+});
+
+test("admin sandbox create schema defaults are sandbox-safe", () => {
+  const parsed = adminSandboxCreateSchema.safeParse({});
+  assert.equal(parsed.success, true);
+  if (parsed.success) {
+    assert.equal(parsed.data.settle, false);
+    assert.equal(parsed.data.method, "CARD");
+    assert.ok(parsed.data.amountCents > 0);
+  }
 });
 
 test("portal proof upload path never elevates to VERIFIED alone", async () => {
@@ -42,4 +70,5 @@ test("portal proof upload path never elevates to VERIFIED alone", async () => {
   });
   assert.notEqual(decision.status, "VERIFIED");
   assert.equal(service.allowsCapture(decision), false);
+  assert.equal(decision.status, "PENDING");
 });

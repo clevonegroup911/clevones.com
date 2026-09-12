@@ -46,10 +46,10 @@ Migration additive : `prisma/migrations/20260912030000_add_payment_gateway_chain
 
 Journal d’audit local (`GATEWAY_*`) aligné sur le modèle `AuditLog` (action, entityType, entityId).
 
-## Hors périmètre restant (T029 / gates)
+## Hors périmètre restant (gates)
 
-- Surfaces admin/client → **T029**
 - Clés réelles, webhooks réseau, migration production → gate propriétaire
+- Rails M-PESA / RAWBANK live → gate propriétaire + accès officiel
 
 ## Preuves et rapprochement (T028)
 
@@ -92,12 +92,21 @@ Modèles Prisma additifs : `PaymentProof`, `ReconciliationDecision` — migratio
 
 | Surface | Route | Accès | Contenu |
 |---|---|---|---|
-| Console admin | `/admin/payments` (+ détail `/admin/payments/[orderId]`) | SUPER_ADMIN / ADMIN | commandes/factures/paiements, file HUMAN_REVIEW, audit décisions |
-| API admin | `GET /api/admin/payments` | SUPER_ADMIN / ADMIN (403 pour USER) | JSON listes |
+| Console admin | `/admin/payments` (+ détail `/admin/payments/[orderId]`) | SUPER_ADMIN / ADMIN | commandes/factures/paiements, preuves, décisions, file HUMAN_REVIEW, audit |
+| API admin | `GET /api/admin/payments?status=` | SUPER_ADMIN / ADMIN (403 pour USER) | JSON listes filtrables (Zod) |
+| Seed sandbox | `POST /api/admin/payments/sandbox` | SUPER_ADMIN / ADMIN | crée chaîne Prisma sandbox (option `settle`) |
 | Portail client | `/portal/payments` | session authentifiée | état facture/paiement/reçu ; upload preuve |
-| API client | `GET /api/portal/payments`, `POST /api/portal/payments/proof` | authentifié | list + upload ; **preuve seule ≠ VERIFIED** |
+| API client | `GET /api/portal/payments`, `POST …/proof` | authentifié + ownership | list + upload ; **preuve seule ≠ VERIFIED** |
 
 Zod : `lib/payments/schemas.ts`. Contrôles rôle : `lib/payments/access.ts`.
+Persistance surface : `lib/payments/persist.ts` (chaîne + preuve/décision → Prisma).
+Stockage fichier preuves : `.data/payment-proofs/` (hors Git).
+
+### Invariants UI
+
+- Upload preuve client → décision `PENDING` (jamais `VERIFIED` / jamais capture).
+- Ownership : `POST /api/portal/payments/proof` refuse un `paymentId` hors commandes de l’acteur.
+- Aucun secret PSP ; aucun webhook HTTP réseau.
 
 ## Tests
 
