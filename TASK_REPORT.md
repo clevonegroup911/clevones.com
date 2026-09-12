@@ -10,15 +10,15 @@ T038
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
-Endpoint santé `/health` non authentifié.
+Endpoint santé `/health`.
 
 ## Résultat
 
-`GET /health` → `{ status: "ok", service: "clevones-com" }`. Scripts health-check + MONITORING mis à jour. T037 clôturée (quality SUCCESS `b35b20e` / run 34717886942). Attente CI `quality` pour T038.
+Quality CI SUCCESS 8cb9c14 / run 34718190353. T037 aussi TERMINÉE. Aucune PRÊTE auto restante → AUTOPLAN suivant.
 
 ## Fichiers créés
 
@@ -27,18 +27,15 @@ Endpoint santé `/health` non authentifié.
 
 ## Fichiers modifiés
 
-- `middleware.ts`
-- `scripts/health-check-app.sh`
-- `scripts/health-check.test.mjs`
-- `docs/MONITORING.md`
+- middleware, health-check, MONITORING
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T038`
+- quality-gate + CI
 
 ## Tests réussis
 
-- quality-gate T038 local
+- quality-gate + CI quality SUCCESS
 
 ## Tests échoués
 
@@ -54,15 +51,15 @@ Endpoint santé `/health` non authentifié.
 
 ## Build
 
-- via CI
+- pass CI
 
 ## Sécurité
 
-- payload minimal ; pas de dump env/secrets ; middleware bypass auth pour `/health`
+- payload minimal sans secrets
 
 ## Commit
 
-- (à pousser)
+- `8cb9c14dde9dacacce0062bdd7f5e485ed2d3f82`
 
 ## Pull Request
 
@@ -70,12 +67,11 @@ Endpoint santé `/health` non authentifié.
 
 ## Preuves
 
-- `.x200/quality-results.json` (T038)
-- T037 CI : https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34718190353
 
 ## Risques
 
-- aucun résiduel T038 (pas d’alerte GCP)
+- aucun résiduel T038
 
 ## Blocage
 
@@ -83,4 +79,4 @@ Endpoint santé `/health` non authentifié.
 
 ## Prochaine tâche prête
 
-- AUTOPLAN si plus de PRÊTE après clôture T038
+- AUTOPLAN
