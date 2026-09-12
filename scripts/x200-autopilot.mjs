@@ -1,14 +1,20 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { hostname } from "node:os";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
-import { buildAutoplanPrompt, completionMarkerMatches, hashFileIfExists } from "./lib/x200-autoplan.mjs";
+import { buildAutoplanPrompt, hashFileIfExists } from "./lib/x200-autoplan.mjs";
+import { decideAfterAutoplan, decideSupervisorAction } from "./lib/x200-autopilot-cycle.mjs";
+import {
+  acquireLock,
+  releaseLock,
+  resolveAutopilotLockPath,
+} from "./lib/x200-autopilot-lock.mjs";
 
 const ROOT = process.cwd();
 const STATE_DIR = resolve(ROOT, ".x200");
-const LOCK = resolve(STATE_DIR, "autopilot.lock");
+const LOCK = resolveAutopilotLockPath(ROOT);
 const GATE = resolve(STATE_DIR, "HUMAN_GATE.json");
 const COMPLETE = resolve(STATE_DIR, "PRODUCT_COMPLETE.json");
 const BACKLOG = resolve(ROOT, "backlog.json");
@@ -16,6 +22,9 @@ const PRODUCT_GOAL = resolve(ROOT, "PRODUCT_GOAL.md");
 const DEFAULT_SLEEP_MS = Number(process.env.X200_AUTOPILOT_POLL_MS || 60000);
 const DEFAULT_AGENT_TIMEOUT_MS = Number(process.env.X200_AGENT_TIMEOUT_MS || 3300000);
 const MAX_STALLS = 3;
+
+let lockOwned = false;
+let shuttingDown = false;
 
 function parseArgs(argv) {
   const flags = new Set(argv.filter((arg) => arg.startsWith("--") && !arg.includes("=")));
@@ -187,19 +196,30 @@ function launchAgent(agentBin, prompt, options, label = "AUTOPILOT") {
   return result.status ?? 1;
 }
 
-function acquireLock() {
-  mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 });
-  try {
-    const fd = openSync(LOCK, "wx", 0o600);
-    writeFileSync(fd, `${JSON.stringify({ pid: process.pid, host: hostname(), startedAt: new Date().toISOString() })}\n`);
-    return fd;
-  } catch (error) {
-    if (error && error.code === "EEXIST") {
-      process.stderr.write(`AUTOPILOT_LOCKED ${LOCK}\n`);
-      process.exit(2);
-    }
-    throw error;
-  }
+function releaseOwnedLock() {
+  if (!lockOwned) return;
+  const result = releaseLock(LOCK);
+  if (result.released) lockOwned = false;
+}
+
+function installSignalHandlers() {
+  const onSignal = (signal) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    process.stdout.write(`AUTOPILOT_SIGNAL signal=${signal} pid=${process.pid}\n`);
+    releaseOwnedLock();
+    process.exit(143);
+  };
+  process.on("SIGTERM", () => onSignal("SIGTERM"));
+  process.on("SIGINT", () => onSignal("SIGINT"));
+}
+
+function writeBootLine(options, snapshot) {
+  const mode = options.daemon ? "daemon" : options.once ? "once" : "single";
+  process.stdout.write(
+    `AUTOPILOT_BOOT timestamp=${new Date().toISOString()} pid=${process.pid} host=${hostname()} `
+    + `mode=${mode} HEAD=${snapshot.head} branch=${snapshot.branch}\n`,
+  );
 }
 
 function sleep(ms) {
@@ -214,11 +234,20 @@ async function main() {
     return 2;
   }
 
-  const lockFd = acquireLock();
+  installSignalHandlers();
+
+  const lockResult = acquireLock(LOCK);
+  if (!lockResult.ok) {
+    return lockResult.code === "AUTOPILOT_LOCK_INVALID" ? 2 : 2;
+  }
+  lockOwned = true;
+
+  writeBootLine(options, statusSnapshot());
+
   let stalls = 0;
   let cycles = 0;
   try {
-    while (cycles < options.maxCycles) {
+    while (!shuttingDown && cycles < options.maxCycles) {
       cycles += 1;
       if (!existsSync(BACKLOG)) {
         process.stderr.write("backlog.json introuvable.\n");
@@ -240,8 +269,18 @@ async function main() {
       const backlog = readBacklog();
       const humanReady = backlog.tasks.filter((task) => task.status === "PRÊTE" && task.requiresHuman);
       const prompt = promptFor(backlog);
+      const snapshot = statusSnapshot();
+      const goalHash = hashFileIfExists(PRODUCT_GOAL);
+      const completion = readCompletionMarker();
+      const decision = decideSupervisorAction({
+        backlog,
+        hasFastLanePrompt: Boolean(prompt),
+        head: snapshot.head,
+        goalHash,
+        completionMarker: completion,
+      });
 
-      if (prompt) {
+      if (decision.action === "FAST_LANE") {
         clearGate();
         const before = statusSnapshot();
         if (options.dryRun) {
@@ -263,13 +302,11 @@ async function main() {
         continue;
       }
 
-      const snapshot = statusSnapshot();
-      const goalHash = hashFileIfExists(PRODUCT_GOAL);
-      const completion = readCompletionMarker();
-      if (goalHash && completionMarkerMatches(completion, { head: snapshot.head, goalHash })) {
+      if (decision.action === "AUTOPLAN_COMPLETE") {
         clearGate();
         process.stdout.write(`AUTOPLAN_COMPLETE head=${snapshot.head}\n`);
         if (!options.daemon || options.once) return 0;
+        process.stdout.write(`AUTOPILOT_WAIT reason=PRODUCT_COMPLETE_POLL ms=${options.sleepMs}\n`);
         await sleep(options.sleepMs);
         continue;
       }
@@ -294,25 +331,35 @@ async function main() {
       const newPrompt = promptFor(backlogAfterPlan);
       const completionAfterPlan = readCompletionMarker();
       const goalHashAfterPlan = hashFileIfExists(PRODUCT_GOAL);
+      const afterDecision = decideAfterAutoplan({
+        backlogAfter: backlogAfterPlan,
+        hasFastLanePrompt: Boolean(newPrompt),
+        head: afterPlan.head,
+        goalHash: goalHashAfterPlan,
+        completionMarker: completionAfterPlan,
+      });
 
-      if (goalHashAfterPlan && completionMarkerMatches(completionAfterPlan, { head: afterPlan.head, goalHash: goalHashAfterPlan })) {
+      if (afterDecision.action === "AUTOPLAN_COMPLETE") {
         stalls = 0;
         clearGate();
         process.stdout.write(`AUTOPLAN_COMPLETE head=${afterPlan.head}\n`);
         if (options.once) return 0;
+        process.stdout.write(`AUTOPILOT_WAIT reason=PRODUCT_COMPLETE_POLL ms=${options.sleepMs}\n`);
+        await sleep(options.sleepMs);
         continue;
       }
 
-      if (newPrompt) {
+      if (afterDecision.action === "AUTOPLAN_CREATED_WORK") {
         stalls = 0;
         process.stdout.write(`AUTOPLAN_CREATED_WORK cycle=${cycles} agentExit=${planExit}\n`);
         if (options.once) return planExit === 0 || planExit === 124 ? 0 : planExit;
         continue;
       }
 
-      if (humanReady.length) {
-        writeGate("OWNER_AUTHORIZATION_REQUIRED", humanReady);
+      if (afterDecision.action === "HUMAN_GATE") {
+        writeGate(afterDecision.reason, afterDecision.tasks);
         if (!options.daemon || options.once) return 10;
+        process.stdout.write(`AUTOPILOT_WAIT reason=HUMAN_GATE_POLL ms=${options.sleepMs}\n`);
         await sleep(options.sleepMs);
         continue;
       }
@@ -324,13 +371,13 @@ async function main() {
         return 5;
       }
       if (options.once) return planExit === 0 || planExit === 124 ? 0 : planExit;
+      process.stdout.write(`AUTOPILOT_WAIT reason=AUTOPLAN_RETRY_POLL ms=${options.sleepMs}\n`);
       await sleep(options.sleepMs);
     }
     writeGate("MAX_CYCLES_REACHED", []);
     return 6;
   } finally {
-    try { closeSync(lockFd); } catch {}
-    rmSync(LOCK, { force: true });
+    releaseOwnedLock();
   }
 }
 
