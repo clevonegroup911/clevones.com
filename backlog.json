@@ -1829,11 +1829,21 @@
           "version": null,
           "at": "2026-09-12T10:42:50.916Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34689204913",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913",
+          "version": "789cddfb5f30259b012337b1cff3fe0df846ff71",
+          "at": "2026-09-12T18:36:50.378Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL; close without waiting comment job",
       "id": "T029",
       "title": "Gateway paiements — surfaces admin/client",
       "objective": "Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.",
@@ -1863,8 +1873,15 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T029 PASS (6/6)",
+        "docs/PAYMENTS_GATEWAY.md § Surfaces admin / client (T029)",
+        "lib/payments/persist.ts + admin/portal payment surfaces",
+        "commit 789cddfb5f30259b012337b1cff3fe0df846ff71",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34689204913 SUCCESS quality on 789cddfb5f30259b012337b1cff3fe0df846ff71 https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913"
+      ],
       "estimatedCost": 5,
       "risk": "high",
       "attempts": 2,
@@ -2688,7 +2705,7 @@
       "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 71,
+  "registryVersion": 72,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

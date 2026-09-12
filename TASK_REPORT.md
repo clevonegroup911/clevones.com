@@ -10,7 +10,7 @@ T029
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Exposer les états gateway (facture, paiement, preuve, rapprochement, vérificat
 
 ## Résultat
 
-Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions), seed sandbox Prisma, portail `/portal/payments` avec reçu et upload preuve (ownership + jamais VERIFIED seul), APIs Zod + ACL. Persistance `lib/payments/persist.ts`. Quality-gate local PASS. Attente job `quality` CI.
+Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions), seed sandbox Prisma, portail `/portal/payments` avec reçu et upload preuve (ownership + jamais VERIFIED seul), APIs Zod + ACL. Persistance `lib/payments/persist.ts`. Quality-gate local PASS. Job `quality` CI SUCCESS sur SHA d'implémentation.
 
 ## Fichiers créés
 
@@ -50,6 +50,7 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 ## Tests réussis
 
 - quality-gate T029 PASS (6/6)
+- GitHub Actions X200 CI run 34689204913 SUCCESS (job quality SUCCESS)
 
 ## Tests échoués
 
@@ -65,7 +66,7 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Build
 
-- CI attendu après push
+- succès (CI FULL)
 
 ## Sécurité
 
@@ -73,16 +74,18 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Commit
 
-- (à renseigner après push)
+- `789cddfb5f30259b012337b1cff3fe0df846ff71`
 
 ## Pull Request
 
-- (à ouvrir/mettre à jour sur branche de travail)
+- PR draft #7 : https://github.com/clevonegroup911/clevones.com/pull/7
 
 ## Preuves
 
 - quality-gate T029
 - docs/PAYMENTS_GATEWAY.md § Surfaces admin / client (T029)
+- https://github.com/clevonegroup911/clevones.com/pull/7
+- GitHub Actions X200 CI run 34689204913 SUCCESS quality on 789cddfb5f30259b012337b1cff3fe0df846ff71 https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913
 
 ## Risques
 
@@ -94,4 +97,4 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Prochaine tâche prête
 
-- (après clôture CI T029 → AUTOPLAN si idle)
+- aucune tâche automatique PRÊTE ; laisser AUTOPLAN créer T030+ depuis PRODUCT_GOAL
