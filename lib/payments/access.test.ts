@@ -7,7 +7,9 @@ import {
 } from "@/lib/payments/access";
 import { createReconciliationService } from "@/lib/payments/reconciliation";
 import {
+  adminClevoneEventSchema,
   adminPaymentListQuerySchema,
+  adminReconcileSchema,
   adminSandboxCreateSchema,
   paymentProofUploadSchema,
 } from "@/lib/payments/schemas";
@@ -71,4 +73,19 @@ test("portal proof upload path never elevates to VERIFIED alone", async () => {
   assert.notEqual(decision.status, "VERIFIED");
   assert.equal(service.allowsCapture(decision), false);
   assert.equal(decision.status, "PENDING");
+});
+
+test("admin CLEVONE / reconcile schemas are ACL-ready and sandbox-safe", () => {
+  const event = adminClevoneEventSchema.safeParse({
+    paymentId: "pay-acl",
+    reference: "REF-ACL",
+    amountCents: 500,
+    currency: "USD",
+  });
+  assert.equal(event.success, true);
+  if (event.success) {
+    assert.equal(event.data.source, "CLEVONE_SANDBOX");
+  }
+  const reconcile = adminReconcileSchema.safeParse({ paymentId: "pay-acl" });
+  assert.equal(reconcile.success, true);
 });

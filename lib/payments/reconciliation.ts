@@ -240,6 +240,55 @@ export function createReconciliationService(options?: { store?: Store }) {
     },
 
     /**
+     * Recharge preuves, événements CLEVONE et décisions depuis un store persistant
+     * (Prisma) sans réécrire les fichiers preuve.
+     */
+    hydratePersistedState(input: {
+      proofs?: PaymentProofRecord[];
+      events?: ClevoneOfficialEvent[];
+      decisions?: ReconciliationDecisionRecord[];
+    }): void {
+      for (const proof of input.proofs ?? []) {
+        store.proofs.set(proof.id, proof);
+      }
+      for (const event of input.events ?? []) {
+        if (!event.authenticated) {
+          continue;
+        }
+        store.officialEvents.set(event.eventKey, {
+          ...event,
+          currency: event.currency.toUpperCase(),
+          authenticated: true,
+        });
+      }
+      for (const decision of input.decisions ?? []) {
+        store.decisions.set(decision.id, decision);
+        store.decisionsByIdempotency.set(decision.idempotencyKey, decision.id);
+        if (decision.status === "VERIFIED") {
+          const matched = decision.matchedEventKey
+            ? store.officialEvents.get(decision.matchedEventKey)
+            : undefined;
+          if (matched?.reference) {
+            store.verifiedReferences.add(normalize(matched.reference));
+          }
+          const proof = decision.clientProofId
+            ? store.proofs.get(decision.clientProofId)
+            : undefined;
+          if (proof?.reference) {
+            store.verifiedReferences.add(normalize(proof.reference));
+          }
+        }
+      }
+      pushAudit(
+        store,
+        "STORE_HYDRATED",
+        "ReconciliationStore",
+        "persist",
+        `proofs=${input.proofs?.length ?? 0};events=${input.events?.length ?? 0};decisions=${input.decisions?.length ?? 0}`,
+      );
+    },
+
+    /**
      * Décide du rapprochement. Idempotent sur idempotencyKey.
      * Ne marque jamais un paiement CAPTURED/VERIFIED sur preuve client seule.
      */

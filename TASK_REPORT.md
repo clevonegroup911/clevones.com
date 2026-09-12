@@ -6,51 +6,50 @@
 
 ## ID
 
-T029
+T030
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.
+Rendre opérable via API/admin la boucle preuve client → événement CLEVONE authentifié sandbox → rapprochement persisté, sans rail PSP réel ni clé réelle.
 
 ## Résultat
 
-Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions), seed sandbox Prisma, portail `/portal/payments` avec reçu et upload preuve (ownership + jamais VERIFIED seul), APIs Zod + ACL. Persistance `lib/payments/persist.ts`. Quality-gate local PASS. Job `quality` CI SUCCESS sur SHA d'implémentation.
+Événements CLEVONE de rapprochement persistés via réutilisation `ClevoneGatewayEvent` (`RECONCILE_CLEVONE_*` + payload JSON). APIs admin `POST …/clevone-event` et `POST …/reconcile` (Zod + ACL). Reconcile HTTP hydrate preuves/événements/décisions depuis Prisma. UI détail admin. Quality-gate local PASS (7/7). Attente job `quality` CI sur SHA d'implémentation.
 
 ## Fichiers créés
 
-- `lib/payments/persist.ts`
-- `app/api/admin/payments/sandbox/route.ts`
-- `app/admin/payments/sandbox-seed-form.tsx`
-- `reports/tasks/T029.md`
+- `lib/payments/clevone-events.ts`
+- `lib/payments/persist-reconcile.test.ts`
+- `app/api/admin/payments/clevone-event/route.ts`
+- `app/api/admin/payments/reconcile/route.ts`
+- `app/admin/payments/clevone-reconcile-forms.tsx`
+- `reports/tasks/T030.md`
 
 ## Fichiers modifiés
 
-- `app/admin/payments/page.tsx`
-- `app/admin/payments/[orderId]/page.tsx`
-- `app/api/admin/payments/route.ts`
-- `app/api/portal/payments/proof/route.ts`
-- `app/(dashboard)/portal/payments/page.tsx`
-- `lib/payments/catalog.ts`
+- `lib/payments/reconciliation.ts`
+- `lib/payments/persist.ts`
 - `lib/payments/schemas.ts`
+- `lib/payments/catalog.ts`
 - `lib/payments/access.test.ts`
+- `app/admin/payments/[orderId]/page.tsx`
 - `docs/PAYMENTS_GATEWAY.md`
 - `backlog.json`
 - `TASK_REPORT.md`
 
 ## Commandes
 
-- `npm run x200:resume -- --json --apply`
-- `npm run x200:claim -- --json T029`
-- `npm run x200:quality-gate -- --task T029`
+- `npm run x200:claim -- --json T030`
+- `npm run x200:quality-gate -- --task T030`
 
 ## Tests réussis
 
-- quality-gate T029 PASS (6/6)
-- GitHub Actions X200 CI run 34689204913 SUCCESS (job quality SUCCESS)
+- quality-gate T030 PASS (7/7)
+- npm test 80/80
 
 ## Tests échoués
 
@@ -66,15 +65,15 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Build
 
-- succès (CI FULL)
+- non exigé lane locale ; attendu CI
 
 ## Sécurité
 
-- aucun secret PSP ; aucun webhook réseau ; ownership sur upload preuve ; `.env` non touché ; pas de migration production
+- aucun secret PSP ; aucun webhook réseau ; `.env` non touché ; pas de migration additive T030 (réutilisation modèle)
 
 ## Commit
 
-- `789cddfb5f30259b012337b1cff3fe0df846ff71`
+- (à renseigner après commit)
 
 ## Pull Request
 
@@ -82,19 +81,18 @@ Surfaces admin/client livrées : `/admin/payments` (+ détail preuves/décisions
 
 ## Preuves
 
-- quality-gate T029
-- docs/PAYMENTS_GATEWAY.md § Surfaces admin / client (T029)
+- quality-gate T030
+- docs/PAYMENTS_GATEWAY.md § Boucle sandbox opérable HTTP (T030)
 - https://github.com/clevonegroup911/clevones.com/pull/7
-- GitHub Actions X200 CI run 34689204913 SUCCESS quality on 789cddfb5f30259b012337b1cff3fe0df846ff71 https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913
 
 ## Risques
 
-- portail client actuel via session admin (contrainte plateforme existante) ; USER ACL unit-tested sans session USER réelle
+- hydratation anti-doublon dépend des décisions VERIFIED déjà persistées ; activation VERIFIED reste T031
 
 ## Blocage
 
-- aucun
+- attente `quality` CI SUCCESS sur SHA d'implémentation
 
 ## Prochaine tâche prête
 
-- T030 (PRÊTE) — Gateway sandbox événements CLEVONE persistés + reconcile HTTP ; puis T031/T032 (À_FAIRE)
+- T031 (après clôture T030) — résolution HUMAN_REVIEW + activation VERIFIED

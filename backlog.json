@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T030",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1895,10 +1895,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:06:33.238Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] créé pour fermer la boucle gateway sandbox vs PRODUCT_GOAL 9-13/15",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T030",
       "title": "Gateway sandbox — événements CLEVONE persistés + reconcile HTTP",
       "objective": "Rendre opérable via API/admin la boucle preuve client → événement CLEVONE authentifié sandbox → rapprochement persisté, sans rail PSP réel ni clé réelle.",
@@ -1929,11 +1940,11 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
     },
@@ -2866,9 +2877,21 @@
       "taskId": "T032",
       "status": "À_FAIRE",
       "note": "AUTOPLAN: E2E Playwright gateway sandbox (dépend T031)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 73,
+  "registryVersion": 75,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

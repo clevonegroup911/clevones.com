@@ -1,6 +1,14 @@
 import type { Prisma } from "@prisma/client";
 
 import type { PaymentsClient } from "@/lib/payments/catalog";
+import {
+  isReconcileClevoneEventType,
+  parseClevoneReconcilePayload,
+  reconcileEventTypeForSource,
+  RECONCILE_EVENT_TYPES,
+  sourceFromReconcileEventType,
+  type ClevoneReconcilePayload,
+} from "@/lib/payments/clevone-events";
 import type {
   ClevoneGatewayEventRecord,
   InvoiceRecord,
@@ -9,9 +17,14 @@ import type {
   ServiceOrderRecord,
 } from "@/lib/payments/gateway";
 import type {
+  ClevoneOfficialEvent,
   PaymentProofRecord,
+  PaymentProofSource,
   ReconciliationDecisionRecord,
+  ReconciliationStatus,
+  ReconciliationService,
 } from "@/lib/payments/reconciliation";
+import { createReconciliationService } from "@/lib/payments/reconciliation";
 import type { PaymentRecord } from "@/lib/payments/types";
 import { prisma } from "@/lib/db/prisma";
 
@@ -116,6 +129,13 @@ export async function persistProofAndDecision(
     },
   });
 
+  await persistDecision(decision, client);
+}
+
+export async function persistDecision(
+  decision: ReconciliationDecisionRecord,
+  client: PaymentsClient = prisma,
+): Promise<void> {
   await client.reconciliationDecision.upsert({
     where: { idempotencyKey: decision.idempotencyKey },
     create: {
@@ -146,6 +166,195 @@ export async function persistProofAndDecision(
       decidedAt: new Date(decision.decidedAt),
     },
   });
+}
+
+/**
+ * Persiste un événement CLEVONE de rapprochement dans `ClevoneGatewayEvent`
+ * (idempotencyKey = eventKey). Aucun webhook réseau.
+ */
+export async function persistClevoneOfficialEvent(
+  event: ClevoneOfficialEvent,
+  options?: { orderId?: string; client?: PaymentsClient },
+): Promise<void> {
+  const client = options?.client ?? prisma;
+  const eventType = reconcileEventTypeForSource(event.source);
+  const payload: ClevoneReconcilePayload = {
+    reference: event.reference,
+    amountCents: event.amountCents,
+    currency: event.currency.toUpperCase(),
+    source: event.source,
+    authenticated: true,
+  };
+
+  await client.clevoneGatewayEvent.upsert({
+    where: { idempotencyKey: event.eventKey },
+    create: {
+      id: event.eventKey,
+      eventType,
+      idempotencyKey: event.eventKey,
+      orderId: options?.orderId,
+      invoiceId: event.invoiceId,
+      paymentId: event.paymentId,
+      payload: asJson(payload),
+    },
+    update: {
+      eventType,
+      orderId: options?.orderId,
+      invoiceId: event.invoiceId,
+      paymentId: event.paymentId,
+      payload: asJson(payload),
+    },
+  });
+}
+
+function mapProofRow(row: {
+  id: string;
+  paymentId: string;
+  invoiceId: string | null;
+  source: string;
+  storageKey: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  checksumSha256: string;
+  reference: string | null;
+  amountCents: number | null;
+  currency: string | null;
+  authenticated: boolean;
+  createdAt: Date;
+}): PaymentProofRecord {
+  return {
+    id: row.id,
+    paymentId: row.paymentId,
+    invoiceId: row.invoiceId ?? undefined,
+    source: row.source as PaymentProofSource,
+    storageKey: row.storageKey,
+    fileName: row.fileName,
+    mimeType: row.mimeType,
+    sizeBytes: row.sizeBytes,
+    checksumSha256: row.checksumSha256,
+    reference: row.reference ?? undefined,
+    amountCents: row.amountCents ?? undefined,
+    currency: row.currency ?? undefined,
+    authenticated: row.authenticated,
+    createdAt: row.createdAt.toISOString(),
+  };
+}
+
+function mapDecisionRow(row: {
+  id: string;
+  paymentId: string;
+  invoiceId: string | null;
+  status: string;
+  score: number;
+  reasons: Prisma.JsonValue;
+  idempotencyKey: string;
+  clientProofId: string | null;
+  matchedEventKey: string | null;
+  reviewDueAt: Date | null;
+  decidedAt: Date;
+  createdAt: Date;
+}): ReconciliationDecisionRecord {
+  const reasons = Array.isArray(row.reasons)
+    ? row.reasons.map(String)
+    : [];
+  return {
+    id: row.id,
+    paymentId: row.paymentId,
+    invoiceId: row.invoiceId ?? undefined,
+    status: row.status as ReconciliationStatus,
+    score: row.score,
+    reasons,
+    idempotencyKey: row.idempotencyKey,
+    clientProofId: row.clientProofId ?? undefined,
+    matchedEventKey: row.matchedEventKey ?? undefined,
+    reviewDueAt: row.reviewDueAt?.toISOString(),
+    decidedAt: row.decidedAt.toISOString(),
+    createdAt: row.createdAt.toISOString(),
+  };
+}
+
+function mapGatewayEventToOfficial(
+  row: {
+    idempotencyKey: string;
+    eventType: string;
+    paymentId: string | null;
+    invoiceId: string | null;
+    payload: Prisma.JsonValue;
+  },
+): ClevoneOfficialEvent | null {
+  if (!row.paymentId || !isReconcileClevoneEventType(row.eventType)) {
+    return null;
+  }
+  const payload = parseClevoneReconcilePayload(row.payload);
+  if (!payload) {
+    return null;
+  }
+  return {
+    eventKey: row.idempotencyKey,
+    paymentId: row.paymentId,
+    invoiceId: row.invoiceId ?? undefined,
+    reference: payload.reference,
+    amountCents: payload.amountCents,
+    currency: payload.currency,
+    authenticated: true,
+    source: payload.source ?? sourceFromReconcileEventType(row.eventType),
+  };
+}
+
+/** Charge preuves + événements CLEVONE rapprochement + décisions pour un paiement. */
+export async function loadPersistedReconciliationState(
+  paymentId: string,
+  client: PaymentsClient = prisma,
+): Promise<{
+  proofs: PaymentProofRecord[];
+  events: ClevoneOfficialEvent[];
+  decisions: ReconciliationDecisionRecord[];
+}> {
+  const [proofRows, eventRows, decisionRows] = await Promise.all([
+    client.paymentProof.findMany({
+      where: { paymentId },
+      orderBy: { createdAt: "asc" },
+    }),
+    client.clevoneGatewayEvent.findMany({
+      where: {
+        paymentId,
+        eventType: { in: [...RECONCILE_EVENT_TYPES] },
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+    client.reconciliationDecision.findMany({
+      where: { paymentId },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
+
+  return {
+    proofs: proofRows.map(mapProofRow),
+    events: eventRows
+      .map(mapGatewayEventToOfficial)
+      .filter((row): row is ClevoneOfficialEvent => row !== null),
+    decisions: decisionRows.map(mapDecisionRow),
+  };
+}
+
+/**
+ * Service de rapprochement hydraté depuis Prisma pour un paiement donné.
+ * Une preuve client seule ne produit jamais VERIFIED (invariant service).
+ */
+export async function createHydratedReconciliationService(
+  paymentId: string,
+  client: PaymentsClient = prisma,
+): Promise<{
+  service: ReconciliationService;
+  proofs: PaymentProofRecord[];
+  events: ClevoneOfficialEvent[];
+  decisions: ReconciliationDecisionRecord[];
+}> {
+  const state = await loadPersistedReconciliationState(paymentId, client);
+  const service = createReconciliationService();
+  service.hydratePersistedState(state);
+  return { service, ...state };
 }
 
 /**

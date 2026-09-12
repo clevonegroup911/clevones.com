@@ -108,10 +108,45 @@ Stockage fichier preuves : `.data/payment-proofs/` (hors Git).
 - Ownership : `POST /api/portal/payments/proof` refuse un `paymentId` hors commandes de l’acteur.
 - Aucun secret PSP ; aucun webhook HTTP réseau.
 
+## Boucle sandbox opérable HTTP (T030)
+
+### Persistance événements CLEVONE
+
+Réutilisation documentée du modèle Prisma **`ClevoneGatewayEvent`** (pas de modèle additif T030) :
+
+| Champ | Usage rapprochement |
+|---|---|
+| `eventType` | `RECONCILE_CLEVONE_SANDBOX` ou `RECONCILE_CLEVONE_OFFICIAL` |
+| `idempotencyKey` | = `eventKey` (anti-doublon) |
+| `paymentId` / `invoiceId` / `orderId` | lien chaîne |
+| `payload` | `{ reference, amountCents, currency, source, authenticated: true }` |
+
+Helpers : `lib/payments/clevone-events.ts`. Hydratation : `hydratePersistedState` + `createHydratedReconciliationService` (`lib/payments/persist.ts`).
+
+### API / UI
+
+| Surface | Route | Accès | Contenu |
+|---|---|---|---|
+| Enregistrer événement | `POST /api/admin/payments/clevone-event` | SUPER_ADMIN / ADMIN | Zod + ACL ; persiste événement authentifié sandbox |
+| Reconcile HTTP | `POST /api/admin/payments/reconcile` | SUPER_ADMIN / ADMIN | recharge preuves + événements Prisma → décision persistée |
+| UI détail | `/admin/payments/[orderId]` | SUPER_ADMIN / ADMIN | formulaires événement concordant / mismatch + reconcile |
+
+### Niveaux de vérité (T030)
+
+| Élément | Conçu | Implémenté | Testé localement | Validé CI | Fusionné | Live rails |
+|---|---|---|---|---|---|---|
+| Event CLEVONE persisté (`ClevoneGatewayEvent`) | oui | oui | `persist-reconcile.test.ts` | en cours (cette PR) | non | non |
+| Reconcile HTTP hydraté | oui | oui | hydrate + schemas | en cours | non | non |
+| Preuve client seule ≠ VERIFIED | oui | oui | tests + invariant route | en cours | non | non |
+| Concordant → VERIFIED ; mismatch → HUMAN_REVIEW ≤ 24 h | oui | oui | tests | en cours | non | non |
+| Webhook réseau / clé PSP | non | **non** | scan-secrets | n/a | n/a | **non** |
+| Migration production | n/a | **interdite** | aucune migration T030 (réutilisation modèle) | n/a | n/a | **non** |
+
 ## Tests
 
 - `lib/payments/gateway.test.ts`
 - `lib/payments/reconciliation.test.ts`
+- `lib/payments/persist-reconcile.test.ts` (T030)
 - `lib/payments/access.test.ts`
 - `lib/payments/sandbox.test.ts` (T024)
 - Contrôles : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`

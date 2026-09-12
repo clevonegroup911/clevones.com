@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
+import { RECONCILE_EVENT_TYPES } from "@/lib/payments/clevone-events";
 import { prisma } from "@/lib/db/prisma";
 
 export type PaymentsClient = PrismaClient | Prisma.TransactionClient;
@@ -112,5 +113,37 @@ export async function listDecisionsForPaymentIds(
     where: { paymentId: { in: paymentIds } },
     orderBy: { createdAt: "desc" },
     take: 100,
+  });
+}
+
+export async function listReconcileClevoneEventsForPaymentIds(
+  paymentIds: string[],
+  client: PaymentsClient = prisma,
+) {
+  if (paymentIds.length === 0) {
+    return [];
+  }
+  return client.clevoneGatewayEvent.findMany({
+    where: {
+      paymentId: { in: paymentIds },
+      eventType: { in: [...RECONCILE_EVENT_TYPES] },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+}
+
+/** Payment + invoice liée (admin sandbox / reconcile). */
+export async function findPaymentWithInvoice(
+  paymentId: string,
+  client: PaymentsClient = prisma,
+) {
+  return client.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      invoice: {
+        include: { order: true },
+      },
+    },
   });
 }

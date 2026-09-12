@@ -3,6 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AdminClevoneReconcileForms } from "@/app/admin/payments/clevone-reconcile-forms";
 import { adminRoutes } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { canAccessAdminPayments } from "@/lib/payments/access";
@@ -10,7 +11,9 @@ import {
   getAdminOrderDetail,
   listDecisionsForPaymentIds,
   listProofsForPaymentIds,
+  listReconcileClevoneEventsForPaymentIds,
 } from "@/lib/payments/catalog";
+import { parseClevoneReconcilePayload } from "@/lib/payments/clevone-events";
 
 export const metadata = createPageMetadata({
   title: "Détail paiement gateway",
@@ -42,10 +45,13 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
   const paymentIds = order.invoices
     .map((row) => row.paymentId)
     .filter((id): id is string => Boolean(id));
-  const [proofs, decisions] = await Promise.all([
+  const [proofs, decisions, clevoneEvents] = await Promise.all([
     listProofsForPaymentIds(paymentIds),
     listDecisionsForPaymentIds(paymentIds),
+    listReconcileClevoneEventsForPaymentIds(paymentIds),
   ]);
+
+  const latestClientProof = proofs.find((row) => row.source === "CLIENT_UPLOAD");
 
   return (
     <div className="flex w-full flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
@@ -92,6 +98,16 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
         </div>
       </dl>
 
+      {invoice?.payment ? (
+        <AdminClevoneReconcileForms
+          paymentId={invoice.payment.id}
+          invoiceId={invoice.id}
+          defaultAmountCents={invoice.payment.amountCents}
+          defaultCurrency={invoice.payment.currency}
+          defaultReference={latestClientProof?.reference ?? ""}
+        />
+      ) : null}
+
       <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
         <h2 className="text-sm font-semibold text-white">
           Preuves ({proofs.length})
@@ -116,6 +132,35 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
 
       <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
         <h2 className="text-sm font-semibold text-white">
+          Événements CLEVONE rapprochement ({clevoneEvents.length})
+        </h2>
+        {clevoneEvents.length === 0 ? (
+          <p className="mt-3 text-sm text-gray-muted">
+            Aucun événement RECONCILE_* persisté.
+          </p>
+        ) : (
+          <ul className="mt-3 divide-y divide-border-subtle">
+            {clevoneEvents.map((event) => {
+              const payload = parseClevoneReconcilePayload(event.payload);
+              return (
+                <li key={event.id} className="py-2 text-sm">
+                  <span className="text-white">{event.eventType}</span>
+                  <span className="text-gray-muted">
+                    {" "}
+                    · {event.idempotencyKey.slice(0, 18)}…
+                    {payload
+                      ? ` · ${payload.reference} · ${payload.amountCents} ${payload.currency}`
+                      : ""}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+        <h2 className="text-sm font-semibold text-white">
           Décisions de rapprochement ({decisions.length})
         </h2>
         {decisions.length === 0 ? (
@@ -129,6 +174,9 @@ export default async function AdminPaymentDetailPage({ params }: PageProps) {
                   {" "}
                   · score {row.score} ·{" "}
                   {row.decidedAt.toISOString().slice(0, 19)}
+                  {row.reviewDueAt
+                    ? ` · revue ≤ ${row.reviewDueAt.toISOString().slice(0, 16)}`
+                    : ""}
                 </span>
                 <p className="text-xs text-gray-muted">
                   {Array.isArray(row.reasons)

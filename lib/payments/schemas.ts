@@ -35,5 +35,31 @@ export const adminSandboxCreateSchema = z.object({
   userId: z.string().min(1).max(64).optional(),
 });
 
+/** Admin: enregistrer un événement CLEVONE sandbox authentifié (pas de webhook réseau). */
+export const adminClevoneEventSchema = z.object({
+  paymentId: z.string().min(1).max(64),
+  invoiceId: z.string().min(1).max(64).optional(),
+  reference: z.string().min(1).max(120),
+  amountCents: z.coerce.number().int().positive().max(100_000_000),
+  currency: z.string().min(3).max(8),
+  /** Clé d’idempotence de l’événement ; générée côté serveur si absente. */
+  eventKey: z.string().min(1).max(160).optional(),
+  source: z
+    .enum(["CLEVONE_SANDBOX", "CLEVONE_OFFICIAL"])
+    .default("CLEVONE_SANDBOX"),
+});
+
+/** Admin: rapprochement HTTP depuis le store Prisma (preuves + événements). */
+export const adminReconcileSchema = z.object({
+  paymentId: z.string().min(1).max(64),
+  invoiceId: z.string().min(1).max(64).optional(),
+  /** Preuve client ciblée ; sinon dernière CLIENT_UPLOAD du paiement. */
+  clientProofId: z.string().min(1).max(64).optional(),
+  /** Si omis : admin-reconcile:{paymentId}:{clientProofId|none}:{eventKeysHash} */
+  idempotencyKey: z.string().min(1).max(200).optional(),
+});
+
 export type PaymentProofUploadInput = z.infer<typeof paymentProofUploadSchema>;
 export type AdminSandboxCreateInput = z.infer<typeof adminSandboxCreateSchema>;
+export type AdminClevoneEventInput = z.infer<typeof adminClevoneEventSchema>;
+export type AdminReconcileInput = z.infer<typeof adminReconcileSchema>;
