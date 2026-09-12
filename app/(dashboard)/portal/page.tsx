@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { DocumentUploadForm } from "@/app/(dashboard)/portal/upload-form";
 import { SoftDeleteButton } from "@/app/(dashboard)/portal/soft-delete-button";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePortalActor } from "@/lib/auth/require-portal";
 import { listDocumentsForActor } from "@/lib/documents/service";
 
 export const metadata = createPageMetadata({
@@ -19,7 +19,7 @@ type PageProps = {
 };
 
 export default async function PortalPage({ searchParams }: PageProps) {
-  const actor = await requireAdmin();
+  const actor = await requirePortalActor();
   const query = (await searchParams).q?.trim() || "";
   const documents = await listDocumentsForActor(
     { id: actor.id, role: actor.role },
@@ -34,7 +34,14 @@ export default async function PortalPage({ searchParams }: PageProps) {
         </h1>
         <p className="mt-2 text-sm text-gray-muted">
           Espace authentifié ({actor.firstName}). Stockage privé hors{" "}
-          <code className="text-gold-muted">public/</code>.
+          <code className="text-gold-muted">public/</code>.{" "}
+          <Link href="/portal/payments" className="text-gold-muted hover:text-gold">
+            Mes paiements
+          </Link>
+          {" · "}
+          <Link href="/sign-out" className="text-gold-muted hover:text-gold">
+            Déconnexion
+          </Link>
         </p>
       </div>
 

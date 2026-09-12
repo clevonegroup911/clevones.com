@@ -1,6 +1,6 @@
 # Analytics first-party (T022)
 
-Livré le 2026-09-10. Aucune migration production. Aucun tracker tiers obligatoire.
+Livré le 2026-09-10. Aucune migration production. Aucun tracker tiers obligatoire. **Source opérationnelle analytics** (l’inventaire T015 `ANALYTICS_AND_PAYMENTS.md` est historique pour « absences »).
 
 ## Modèle
 

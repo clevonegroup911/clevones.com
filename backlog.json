@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T029",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -1819,10 +1819,31 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T10:42:50.916Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34689204913",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913",
+          "version": "789cddfb5f30259b012337b1cff3fe0df846ff71",
+          "at": "2026-09-12T18:36:50.378Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "exécuter le périmètre puis quality-gate",
-      "lastTransitionReason": "[X200-FAST] deps T027+T028 TERMINÉE; promoted PRÊTE",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL; close without waiting comment job",
       "id": "T029",
       "title": "Gateway paiements — surfaces admin/client",
       "objective": "Exposer les états gateway (facture, paiement, preuve, rapprochement, vérification humaine, reçu) aux surfaces admin et client sécurisées, sans activer de rail de paiement réel.",
@@ -1852,13 +1873,826 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "PRÊTE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T029 PASS (6/6)",
+        "docs/PAYMENTS_GATEWAY.md § Surfaces admin / client (T029)",
+        "lib/payments/persist.ts + admin/portal payment surfaces",
+        "commit 789cddfb5f30259b012337b1cff3fe0df846ff71",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34689204913 SUCCESS quality on 789cddfb5f30259b012337b1cff3fe0df846ff71 https://github.com/clevonegroup911/clevones.com/actions/runs/34689204913"
+      ],
       "estimatedCost": 5,
       "risk": "high",
-      "attempts": 0,
+      "attempts": 2,
       "requiresHuman": false,
       "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:06:33.238Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34713201776",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776",
+          "version": "8fdd90c8b01c054c876b429e060e4d59c35c860c",
+          "at": "2026-09-12T19:10:45.496Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
+      "id": "T030",
+      "title": "Gateway sandbox — événements CLEVONE persistés + reconcile HTTP",
+      "objective": "Rendre opérable via API/admin la boucle preuve client → événement CLEVONE authentifié sandbox → rapprochement persisté, sans rail PSP réel ni clé réelle.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T029"
+      ],
+      "scope": [
+        "lib/payments",
+        "app/api/admin/payments",
+        "app/admin/payments",
+        "prisma",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Admin SUPER_ADMIN/ADMIN peut enregistrer un événement CLEVONE sandbox authentifié (Zod + ACL) lié à un paiement existant ; persistance Prisma (modèle additif ou réutilisation PaymentProof/ClevoneGatewayEvent documentée)",
+        "Reconcile HTTP recharge preuves et événements depuis le store persistant ; une preuve client seule ne produit jamais VERIFIED ni capture",
+        "Avec événement CLEVONE concordant → VERIFIED possible ; mismatch → HUMAN_REVIEW avec reviewDueAt ≤ +24 h ; anti-doublon/idempotence conservés",
+        "Aucun secret PSP ; aucun webhook réseau réel ; migration additive CI/local seulement ; docs/PAYMENTS_GATEWAY.md mis à jour (niveaux de vérité)"
+      ],
+      "tests": [
+        "npx prisma validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T030 PASS (7/7)",
+        "docs/PAYMENTS_GATEWAY.md § Boucle sandbox opérable HTTP (T030)",
+        "ClevoneGatewayEvent RECONCILE_* + POST /api/admin/payments/{clevone-event,reconcile}",
+        "commit 8fdd90c8b01c054c876b429e060e4d59c35c860c",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34713201776 SUCCESS quality on 8fdd90c8b01c054c876b429e060e4d59c35c860c https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:14:45.176Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34713602649",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649",
+          "version": "05455331b9c27718e3b254ea6da2b5fc2d2bbaad",
+          "at": "2026-09-12T19:18:59.308Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
+      "id": "T031",
+      "title": "Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED",
+      "objective": "Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T030"
+      ],
+      "scope": [
+        "lib/payments",
+        "app/api/admin/payments",
+        "app/admin/payments",
+        "docs/PAYMENTS_GATEWAY.md"
+      ],
+      "acceptanceCriteria": [
+        "Actions admin approve/reject (ou équivalent) sur décisions HUMAN_REVIEW avec audit et états explicites (REJECTED utilisable)",
+        "Décision VERIFIED déclenche activation idempotente + reçu/facture SETTLED via la chaîne gateway (pas le shortcut seed settle seul)",
+        "reviewDueAt visible sur la file HUMAN_REVIEW ; USER sans accès aux actions admin",
+        "Aucun rail PSP réel ; aucun secret ; documentation des actions dans docs/PAYMENTS_GATEWAY.md"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T031 PASS (6/6)",
+        "docs/PAYMENTS_GATEWAY.md § Résolution HUMAN_REVIEW + activation VERIFIED (T031)",
+        "POST /api/admin/payments/{review,activate} + resolveHumanReview",
+        "commit 05455331b9c27718e3b254ea6da2b5fc2d2bbaad",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34713602649 SUCCESS quality on 05455331b9c27718e3b254ea6da2b5fc2d2bbaad https://github.com/clevonegroup911/clevones.com/actions/runs/34713602649"
+      ],
+      "estimatedCost": 4,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:28:23.279Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34714768811",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811",
+          "version": "9aea82089a2f310d4754bbda05682d4eb9872d3c",
+          "at": "2026-09-12T19:43:30.517Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS FULL playwright; close",
+      "id": "T032",
+      "title": "E2E Playwright — gateway paiements sandbox",
+      "objective": "Couvrir en Playwright le parcours sandbox admin/portail : seed → preuve client PENDING → événement/reconcile → éventuelle HUMAN_REVIEW → reçu, sans clés PSP.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [
+        "T031"
+      ],
+      "scope": [
+        "tests/e2e",
+        "docs/E2E_PRODUCT.md"
+      ],
+      "acceptanceCriteria": [
+        "Spec Playwright couvre seed admin, upload preuve portail (jamais VERIFIED seul), enregistrement événement CLEVONE sandbox / reconcile, et état reçu après VERIFIED",
+        "Aucun secret PSP ni appel réseau réel dans le scénario ; fixtures locales uniquement",
+        "docs/E2E_PRODUCT.md documente le parcours et ses limites"
+      ],
+      "tests": [
+        "npm test",
+        "npx playwright test tests/e2e --grep payments || npx playwright test",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T032 PASS",
+        "tests/e2e/payments-gateway.spec.ts + docs/E2E_PRODUCT.md § Gateway paiements",
+        "commit 9aea82089a2f310d4754bbda05682d4eb9872d3c",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34714768811 SUCCESS quality on 9aea82089a2f310d4754bbda05682d4eb9872d3c https://github.com/clevonegroup911/clevones.com/actions/runs/34714768811"
+      ],
+      "estimatedCost": 4,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T19:59:35.769Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34715775346",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34715775346",
+          "version": "e363418dde59f5a52fcebe4bcd1509bb2e7574c0",
+          "at": "2026-09-12T20:04:45.073Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34715775346"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; USER portal sign-in + requirePortalActor",
+      "id": "T033",
+      "title": "Authentification portail USER",
+      "objective": "Rendre le rôle USER opérationnel sur le portail client : remplacer le placeholder /sign-in et cesser de gater /portal uniquement via requireAdmin(), sans ouvrir MFA admin ni production.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T020",
+        "T021"
+      ],
+      "scope": [
+        "app/(auth)",
+        "lib/auth",
+        "app/(dashboard)/portal",
+        "app/api/portal",
+        "docs/ROLES_AND_PERMISSIONS.md",
+        "docs/PRIVATE_DOCUMENTS.md"
+      ],
+      "acceptanceCriteria": [
+        "/sign-in authentifie un utilisateur ACTIVE de rôle USER (credentials) et établit une session portail utilisable ; plus de page « Bientôt disponible » comme seul état",
+        "Les routes /portal et API portail acceptent un acteur USER authentifié ; requireAdmin() n’est plus le seul garde portail",
+        "USER authentifié ne peut pas accéder à la console /admin ; ADMIN/SUPER_ADMIN conservent MFA et accès admin existants",
+        "Tests unitaires (session/garde) et au moins un scénario e2e ou intégration prouvant login USER → portail sans secret prod",
+        "Documentation ROLES_AND_PERMISSIONS.md et PRIVATE_DOCUMENTS.md mises à jour au niveau de vérité (implémenté/testé, pas live prod)"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T033 PASS",
+        "portal_session JWT + /sign-in USER + requirePortalActor; e2e portal-user.spec.ts",
+        "commit e363418dde59f5a52fcebe4bcd1509bb2e7574c0",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34715775346 SUCCESS quality on e363418dde59f5a52fcebe4bcd1509bb2e7574c0 https://github.com/clevonegroup911/clevones.com/actions/runs/34715775346"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:13:08.031Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716460777",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777",
+          "version": "d7d85950405263497ed0ee52c95d5c4d7dbc3018",
+          "at": "2026-09-12T20:17:49.630Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; users + DocumentGrant admin",
+      "id": "T034",
+      "title": "Gestion utilisateurs et grants documents",
+      "objective": "Compléter la gestion utilisateurs et les droits d’accès opérationnels : surfaces admin minimales pour créer/lister/désactiver des utilisateurs non SUPER_ADMIN et créer/révoquer des DocumentGrant, testables avec le portail USER.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T033"
+      ],
+      "scope": [
+        "app/admin",
+        "app/api/admin",
+        "lib/documents",
+        "lib/auth",
+        "docs/ROLES_AND_PERMISSIONS.md",
+        "docs/PRIVATE_DOCUMENTS.md"
+      ],
+      "acceptanceCriteria": [
+        "API/UI admin authentifiée permet de lister et créer un utilisateur rôle USER ou ADMIN (hors SUPER_ADMIN) et de désactiver un compte non SUPER_ADMIN, avec audit",
+        "API/UI admin permet de créer et révoquer un DocumentGrant (canRead/canWrite) sur un document existant",
+        "Un USER authentifié (T033) avec grant peut lire le document concerné ; sans grant → refus documenté",
+        "Aucun secret réel, aucune migration production, aucun envoi email réel requis",
+        "Docs ROLES_AND_PERMISSIONS.md / PRIVATE_DOCUMENTS.md reflètent les surfaces livrées"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T034 PASS",
+        "admin users UI/API + grants create/revoke + audit",
+        "commit d7d85950405263497ed0ee52c95d5c4d7dbc3018",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716460777 SUCCESS quality on d7d85950405263497ed0ee52c95d5c4d7dbc3018 https://github.com/clevonegroup911/clevones.com/actions/runs/34716460777"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:05:17.884Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716069136",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136",
+          "version": "fe1384d80340038ce9258fb553cbd790b27696c1",
+          "at": "2026-09-12T20:07:34.015Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; inventory docs resynced",
+      "id": "T035",
+      "title": "Resynchroniser inventaires docs avec l’état réel",
+      "objective": "Corriger les inventaires obsolètes qui contredisent le code (CMS, analytics/paiements, monitoring/timer) afin que la documentation d’exploitation et de reprise soit fiable pour PRODUCT_GOAL §17, sans inventer un PRODUCT_COMPLETE prématuré.",
+      "priority": "P2",
+      "owner": "cursor",
+      "dependencies": [],
+      "scope": [
+        "docs/CMS_AND_DOCUMENTS.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "docs/MONITORING.md",
+        "docs/CMS_INTERNAL.md",
+        "docs/ANALYTICS_FIRST_PARTY.md",
+        "docs/PAYMENTS_GATEWAY.md",
+        "PROJECT_CONTEXT.md"
+      ],
+      "acceptanceCriteria": [
+        "docs/CMS_AND_DOCUMENTS.md et docs/ANALYTICS_AND_PAYMENTS.md marqués comme inventaires historiques ou réécrits pour refléter T019–T032 (CMS, documents, analytics, gateway sandbox) sans affirmation live PSP/prod",
+        "docs/MONITORING.md aligné sur l’état réel des backups/timer documenté ailleurs (T018) et sur les alertes encore non provisionnées (gate humaine)",
+        "PROJECT_CONTEXT.md mis à jour : branche/HEAD de travail, T032 TERMINÉE, écarts restants T033–T034 et gates humaines/externes",
+        "Aucun marqueur .x200/PRODUCT_COMPLETE.json tant que T033/T034 ou critères non vérifiés restent ouverts"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T035 PASS",
+        "docs CMS/analytics/monitoring + PROJECT_CONTEXT aligned to T019–T033",
+        "commit fe1384d80340038ce9258fb553cbd790b27696c1",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716069136 SUCCESS quality on fe1384d80340038ce9258fb553cbd790b27696c1 https://github.com/clevonegroup911/clevones.com/actions/runs/34716069136"
+      ],
+      "estimatedCost": 2,
+      "risk": "low",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:21:50.199Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34716883903",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903",
+          "version": "0a6a57931127d4c00d3e626744c1e21e242e8347",
+          "at": "2026-09-12T20:26:58.916Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; portal sign-out",
+      "evidence": [
+        "quality-gate T036 PASS",
+        "/sign-out clears portal_session; portal logout link",
+        "commit 0a6a57931127d4c00d3e626744c1e21e242e8347",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34716883903 SUCCESS quality on 0a6a57931127d4c00d3e626744c1e21e242e8347 https://github.com/clevonegroup911/clevones.com/actions/runs/34716883903"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T036",
+      "title": "Déconnexion portail USER",
+      "objective": "Exposer /sign-out (et action serveur) pour effacer portal_session et renvoyer vers /sign-in, sans toucher admin_session/MFA.",
+      "priority": "P2",
+      "dependencies": [
+        "T033"
+      ],
+      "scope": [
+        "app/(auth)",
+        "lib/auth",
+        "docs/ROLES_AND_PERMISSIONS.md"
+      ],
+      "acceptanceCriteria": [
+        "Route ou action /sign-out efface portal_session et redirige vers /sign-in",
+        "admin_session / MFA admin inchangés par la déconnexion portail",
+        "Lien ou contrôle de déconnexion accessible depuis /portal pour un USER authentifié",
+        "Test unitaire ou e2e sans secret prod"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 2,
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:42:08.371Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34717886942",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942",
+          "version": "b35b20e1f3b99be428bddddc057e5317476c13df",
+          "at": "2026-09-12T20:48:18.876Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; users+DocumentGrant e2e",
+      "evidence": [
+        "quality-gate T037 PASS",
+        "tests/e2e/users-document-grant.spec.ts + docs/E2E_PRODUCT.md",
+        "commit b35b20e1f3b99be428bddddc057e5317476c13df",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34717886942 SUCCESS quality on b35b20e1f3b99be428bddddc057e5317476c13df https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T037",
+      "title": "E2E users + DocumentGrant portail",
+      "objective": "Prouver en Playwright le parcours admin crée USER → grant → login USER → lecture document, et refus sans grant, sans secret prod.",
+      "priority": "P2",
+      "dependencies": [
+        "T033",
+        "T034"
+      ],
+      "scope": [
+        "tests/e2e",
+        "docs/E2E_PRODUCT.md"
+      ],
+      "acceptanceCriteria": [
+        "Spec e2e couvre création USER admin (ou seed), DocumentGrant, login /sign-in, accès document autorisé",
+        "Cas sans grant → refus documenté (403 ou absence liste)",
+        "Fixtures uniquement ; aucun secret prod ; docs E2E mises à jour"
+      ],
+      "tests": [
+        "npm test",
+        "npx playwright test tests/e2e --grep users || npx playwright test",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 4,
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:48:35.867Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34718190353",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34718190353",
+          "version": "8cb9c14dde9dacacce0062bdd7f5e485ed2d3f82",
+          "at": "2026-09-12T20:53:31.730Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34718190353"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; /health endpoint",
+      "evidence": [
+        "quality-gate T038 PASS",
+        "GET /health minimal payload; health-check-app.sh default /health",
+        "commit 8cb9c14dde9dacacce0062bdd7f5e485ed2d3f82",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34718190353 SUCCESS quality on 8cb9c14dde9dacacce0062bdd7f5e485ed2d3f82 https://github.com/clevonegroup911/clevones.com/actions/runs/34718190353"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T038",
+      "title": "Endpoint santé applicatif /health",
+      "objective": "Ajouter un endpoint /health non authentifié, sans secrets, pour les health-checks documentés dans MONITORING (loopback/CI), sans provisionner d’alertes GCP.",
+      "priority": "P2",
+      "dependencies": [],
+      "scope": [
+        "app",
+        "scripts",
+        "docs/MONITORING.md"
+      ],
+      "acceptanceCriteria": [
+        "GET /health répond 200 avec payload minimal sans secret ni dump d’env",
+        "Documenté dans docs/MONITORING.md ; scripts health-check peuvent l’utiliser en loopback",
+        "Aucun accès production ni alerte GCP créée"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run x200:scan-secrets",
+        "npm run x200:validate",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 2,
+      "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T20:59:09.386Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34718663027",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34718663027",
+          "version": "569c6e0df42947fd3860f03719c87ee47009cbb1",
+          "at": "2026-09-12T21:02:13.686Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34718663027"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; docs resync",
+      "evidence": [
+        "quality-gate T039 PASS",
+        "PROJECT_CONTEXT + inventaires alignés T001–T038",
+        "commit 569c6e0df42947fd3860f03719c87ee47009cbb1",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34718663027 SUCCESS quality on 569c6e0df42947fd3860f03719c87ee47009cbb1 https://github.com/clevonegroup911/clevones.com/actions/runs/34718663027"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T039",
+      "title": "Resynchroniser PROJECT_CONTEXT et inventaires post-T038",
+      "objective": "Aligner les docs de reprise sur le registre (T001–T038 TERMINÉE) et lister explicitement les gates humaines restantes, sans inventer de preuve live.",
+      "priority": "P2",
+      "dependencies": [
+        "T035",
+        "T036",
+        "T037",
+        "T038"
+      ],
+      "scope": [
+        "PROJECT_CONTEXT.md",
+        "docs/CMS_AND_DOCUMENTS.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md"
+      ],
+      "acceptanceCriteria": [
+        "PROJECT_CONTEXT reflète T001–T038 TERMINÉE et les écarts restants = gates humaines/externes",
+        "Inventaires CMS/analytics/paiements n’affirment plus T033/T034 ouvertes ni PRODUCT_COMPLETE bloqué sur elles",
+        "Liste explicite des gates humaines restantes (SMTP, PSP, GCP, merge/deploy, migrations prod, MFA prod, timer backup)"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 1,
+      "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-12T21:09:30.047Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34719158060",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34719158060",
+          "version": "c4bb3b8812350c13859ea02b9dd9200fc2a4e995",
+          "at": "2026-09-12T21:10:37.890Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34719158060"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS; PRODUCT_COMPLETE marker",
+      "evidence": [
+        "quality-gate T040 PASS",
+        ".x200/PRODUCT_COMPLETE.json (local, gitignored) version=1 head+goalHash+evidence",
+        "commit c4bb3b8812350c13859ea02b9dd9200fc2a4e995",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34719158060 SUCCESS quality on c4bb3b8812350c13859ea02b9dd9200fc2a4e995 https://github.com/clevonegroup911/clevones.com/actions/runs/34719158060"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-12",
+      "owner": "cursor",
+      "id": "T040",
+      "title": "Émettre .x200/PRODUCT_COMPLETE.json (niveau dépôt)",
+      "objective": "Fermer les critères 18–20 : marqueur PRODUCT_COMPLETE aligné HEAD + hash PRODUCT_GOAL.md avec preuves CI concrètes, sans revendiquer live production.",
+      "priority": "P2",
+      "dependencies": [
+        "T039"
+      ],
+      "scope": [
+        ".x200",
+        "PRODUCT_GOAL.md",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Fichier .x200/PRODUCT_COMPLETE.json avec version, head, goalHash, generatedAt, summary, evidence[]",
+        "Preuves citent CI/tâches réelles (T037/T038) et chemins docs ; aucune revendication deploy/live inventée",
+        "x200:validate vert ; pas de nouvelles tâches PRÊTE de remplissage"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "npm run x200:scan-secrets"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 1,
+      "risk": "medium"
     }
   ],
   "history": [
@@ -2651,9 +3485,327 @@
       "taskId": "T029",
       "status": "PRÊTE",
       "note": "[X200-FAST] promoted after T027+T028 TERMINÉE"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T029",
+      "status": "TERMINÉE",
+      "note": "AUTOPLAN: écart restant = boucle reconcile HTTP/UI non opérable (critères PRODUCT_GOAL 9-13/15)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: événements CLEVONE persistés + reconcile HTTP"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: résolution HUMAN_REVIEW + activation VERIFIED (dépend T030)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: E2E Playwright gateway sandbox (dépend T031)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; CLEVONE events + reconcile HTTP"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "PRÊTE",
+      "note": "unlocked after T030"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; HUMAN_REVIEW resolve + VERIFIED activation"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "PRÊTE",
+      "note": "unlocked after T031"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T032",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; Playwright gateway sandbox"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: USER portal auth gap PRODUCT_GOAL §2/§5"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "À_FAIRE",
+      "note": "AUTOPLAN: depends on T033; user mgmt + DocumentGrant"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "PRÊTE",
+      "note": "AUTOPLAN: stale inventory docs vs code PRODUCT_GOAL §17"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "PRÊTE",
+      "note": "unlocked after T033"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T033",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; USER portal auth"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T035",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; docs inventory resync"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T034",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; user mgmt + grants"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] portal sign-out gap after T033 (auth lifecycle)"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] e2e proof gap for T034 user+grant vs PRODUCT_GOAL §5/§15"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] MONITORING notes absent /health; useful ops signal without human gate"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T036",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; portal sign-out"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T037",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; users+DocumentGrant e2e"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T038",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; /health endpoint"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T039",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] resume docs stale vs TERMINÉE T036–T038"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T040",
+      "status": "À_FAIRE",
+      "note": "[X200-AUTOPLAN] PRODUCT_COMPLETE after docs resync"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T039",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T039",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T039",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; docs resync"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T040",
+      "status": "PRÊTE",
+      "note": "dépendance T039 TERMINÉE"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T040",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T040",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T040",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; PRODUCT_COMPLETE marker"
     }
   ],
-  "registryVersion": 66,
+  "registryVersion": 111,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

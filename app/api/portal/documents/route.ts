@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { getRequestAuditContext } from "@/lib/auth/request-context";
-import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { getOptionalPortalActor } from "@/lib/auth/require-portal";
 import { uploadDocument } from "@/lib/documents/service";
 
 export const runtime = "nodejs";
@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  const actor = await getOptionalAdminActor();
+  const actor = await getOptionalPortalActor();
   if (!actor) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

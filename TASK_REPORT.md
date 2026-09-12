@@ -6,7 +6,7 @@
 
 ## ID
 
-T028
+T040
 
 ## Statut
 
@@ -14,36 +14,27 @@ TERMINÉE
 
 ## Objectif
 
-Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.
+PRODUCT_COMPLETE dépôt.
 
 ## Résultat
 
-Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, `PaymentProof`/`ReconciliationDecision`, invariants preuve-client-seule / CLEVONE authentifié / HUMAN_REVIEW ≤ 24 h / anti-doublon. `quality` SUCCESS run 34662913027 sur `c071a6341cbce61c25329324abd2d3cea15125d1`. T029 promue PRÊTE.
+Quality CI SUCCESS c4bb3b8 / run 34719158060. Marqueur local `.x200/PRODUCT_COMPLETE.json` à rafraîchir sur le HEAD de clôture. Aucune tâche auto PRÊTE restante. Gates humaines hors auto.
 
 ## Fichiers créés
 
-- `lib/payments/reconciliation.ts`
-- `lib/payments/reconciliation.test.ts`
-- `prisma/migrations/20260912040000_add_payment_proof_reconciliation/migration.sql`
-- `reports/tasks/T028.md`
+- `.x200/PRODUCT_COMPLETE.json` (local)
 
 ## Fichiers modifiés
 
-- `prisma/schema.prisma`
-- `lib/documents/storage.ts`
-- `docs/PAYMENTS_GATEWAY.md`
-- `backlog.json`
-- `TASK_REPORT.md`
+- backlog / rapports
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T028`
-- CI run 34662913027
+- quality-gate + CI
 
 ## Tests réussis
 
-- quality-gate T028 PASS
-- GitHub Actions run 34662913027 `quality` SUCCESS (FULL)
+- CI quality SUCCESS
 
 ## Tests échoués
 
@@ -51,36 +42,35 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Lint
 
-- succès
+- n/a
 
 ## Type-check
 
-- succès
+- n/a
 
 ## Build
 
-- CI FULL SUCCESS
+- n/a
 
 ## Sécurité
 
-- preuves hors Git ; aucune clé PSP ; pas de migration production
+- not-live explicite
 
 ## Commit
 
-- `c071a6341cbce61c25329324abd2d3cea15125d1`
+- `c4bb3b8812350c13859ea02b9dd9200fc2a4e995` (+ close metadata)
 
 ## Pull Request
 
-- PR draft #6 : https://github.com/clevonegroup911/clevones.com/pull/6
+- PR #7
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027
-- docs/PAYMENTS_GATEWAY.md § T028
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34719158060
 
 ## Risques
 
-- migration additive non déployée en production (volontaire)
+- marqueur invalidé si HEAD ou PRODUCT_GOAL change
 
 ## Blocage
 
@@ -88,4 +78,4 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Prochaine tâche prête
 
-T029
+- aucune (gates humaines)
