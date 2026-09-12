@@ -113,8 +113,8 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
   expect(activated.receiptNumber).toBeTruthy();
 
   await page.goto("/portal/payments");
-  await expect(page.getByText(activated.receiptNumber!)).toBeVisible();
-  await expect(page.getByText(/acquitté|Reçu disponible/i)).toBeVisible();
+  await expect(page.getByText(activated.receiptNumber!).first()).toBeVisible();
+  await expect(page.getByText(/Reçu disponible/i).first()).toBeVisible();
   await captureSafeEvidence(page, `${project}-payments-receipt.png`);
 });
 
