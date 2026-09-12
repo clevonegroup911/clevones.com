@@ -135,10 +135,10 @@ Helpers : `lib/payments/clevone-events.ts`. Hydratation : `hydratePersistedState
 
 | Élément | Conçu | Implémenté | Testé localement | Validé CI | Fusionné | Live rails |
 |---|---|---|---|---|---|---|
-| Event CLEVONE persisté (`ClevoneGatewayEvent`) | oui | oui | `persist-reconcile.test.ts` | en cours (cette PR) | non | non |
-| Reconcile HTTP hydraté | oui | oui | hydrate + schemas | en cours | non | non |
-| Preuve client seule ≠ VERIFIED | oui | oui | tests + invariant route | en cours | non | non |
-| Concordant → VERIFIED ; mismatch → HUMAN_REVIEW ≤ 24 h | oui | oui | tests | en cours | non | non |
+| Event CLEVONE persisté (`ClevoneGatewayEvent`) | oui | oui | `persist-reconcile.test.ts` | **oui** run 34713201776 | non | non |
+| Reconcile HTTP hydraté | oui | oui | hydrate + schemas | **oui** | non | non |
+| Preuve client seule ≠ VERIFIED | oui | oui | tests + invariant route | **oui** | non | non |
+| Concordant → VERIFIED ; mismatch → HUMAN_REVIEW ≤ 24 h | oui | oui | tests | **oui** | non | non |
 | Webhook réseau / clé PSP | non | **non** | scan-secrets | n/a | n/a | **non** |
 | Migration production | n/a | **interdite** | aucune migration T030 (réutilisation modèle) | n/a | n/a | **non** |
 

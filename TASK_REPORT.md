@@ -10,7 +10,7 @@ T030
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Rendre opérable via API/admin la boucle preuve client → événement CLEVONE a
 
 ## Résultat
 
-Événements CLEVONE de rapprochement persistés via réutilisation `ClevoneGatewayEvent` (`RECONCILE_CLEVONE_*` + payload JSON). APIs admin `POST …/clevone-event` et `POST …/reconcile` (Zod + ACL). Reconcile HTTP hydrate preuves/événements/décisions depuis Prisma. UI détail admin. Quality-gate local PASS (7/7). Attente job `quality` CI sur SHA d'implémentation.
+Événements CLEVONE de rapprochement persistés via réutilisation `ClevoneGatewayEvent` (`RECONCILE_CLEVONE_*` + payload JSON). APIs admin `POST …/clevone-event` et `POST …/reconcile` (Zod + ACL). Reconcile HTTP hydrate preuves/événements/décisions depuis Prisma. UI détail admin. Quality-gate local PASS (7/7). Job `quality` CI SUCCESS sur `8fdd90c8b01c054c876b429e060e4d59c35c860c`.
 
 ## Fichiers créés
 
@@ -73,7 +73,7 @@ Rendre opérable via API/admin la boucle preuve client → événement CLEVONE a
 
 ## Commit
 
-- (à renseigner après commit)
+- `8fdd90c8b01c054c876b429e060e4d59c35c860c`
 
 ## Pull Request
 
@@ -82,6 +82,7 @@ Rendre opérable via API/admin la boucle preuve client → événement CLEVONE a
 ## Preuves
 
 - quality-gate T030
+- GitHub Actions X200 CI run 34713201776 SUCCESS quality on 8fdd90c8b01c054c876b429e060e4d59c35c860c https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776
 - docs/PAYMENTS_GATEWAY.md § Boucle sandbox opérable HTTP (T030)
 - https://github.com/clevonegroup911/clevones.com/pull/7
 
@@ -91,8 +92,8 @@ Rendre opérable via API/admin la boucle preuve client → événement CLEVONE a
 
 ## Blocage
 
-- attente `quality` CI SUCCESS sur SHA d'implémentation
+- aucun
 
 ## Prochaine tâche prête
 
-- T031 (après clôture T030) — résolution HUMAN_REVIEW + activation VERIFIED
+- T031 (PRÊTE) — résolution HUMAN_REVIEW + activation VERIFIED

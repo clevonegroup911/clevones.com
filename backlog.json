@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T031",
   "tasks": [
     {
       "project": "clevones.com",
@@ -1905,11 +1905,21 @@
           "version": null,
           "at": "2026-09-12T19:06:33.238Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34713201776",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776",
+          "version": "8fdd90c8b01c054c876b429e060e4d59c35c860c",
+          "at": "2026-09-12T19:10:45.496Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] quality CI SUCCESS; close without waiting comment job",
       "id": "T030",
       "title": "Gateway sandbox — événements CLEVONE persistés + reconcile HTTP",
       "objective": "Rendre opérable via API/admin la boucle preuve client → événement CLEVONE authentifié sandbox → rapprochement persisté, sans rail PSP réel ni clé réelle.",
@@ -1940,8 +1950,15 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "quality-gate T030 PASS (7/7)",
+        "docs/PAYMENTS_GATEWAY.md § Boucle sandbox opérable HTTP (T030)",
+        "ClevoneGatewayEvent RECONCILE_* + POST /api/admin/payments/{clevone-event,reconcile}",
+        "commit 8fdd90c8b01c054c876b429e060e4d59c35c860c",
+        "PR #7: https://github.com/clevonegroup911/clevones.com/pull/7",
+        "GitHub Actions X200 CI run 34713201776 SUCCESS quality on 8fdd90c8b01c054c876b429e060e4d59c35c860c https://github.com/clevonegroup911/clevones.com/actions/runs/34713201776"
+      ],
       "estimatedCost": 5,
       "risk": "high",
       "attempts": 1,
@@ -1958,7 +1975,7 @@
       "evidenceRecords": [],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-AUTOPLAN] dépend de T030 ; résolution HUMAN_REVIEW + activation sur VERIFIED",
+      "lastTransitionReason": "[X200-FAST] dépendances satisfaites après T030 TERMINÉE",
       "id": "T031",
       "title": "Gateway sandbox — résolution HUMAN_REVIEW + activation VERIFIED",
       "objective": "Permettre à un admin de résoudre HUMAN_REVIEW et d’activer idempotemment la commande/facture/reçu uniquement après décision VERIFIED sandbox, sans bypass de rapprochement.",
@@ -1987,7 +2004,7 @@
         "npm run x200:validate",
         "git diff --check"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "evidence": [],
       "estimatedCost": 4,
       "risk": "high",
@@ -2889,9 +2906,21 @@
       "taskId": "T030",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T030",
+      "status": "TERMINÉE",
+      "note": "quality CI SUCCESS; CLEVONE events + reconcile HTTP"
+    },
+    {
+      "at": "2026-09-12",
+      "taskId": "T031",
+      "status": "PRÊTE",
+      "note": "unlocked after T030"
     }
   ],
-  "registryVersion": 75,
+  "registryVersion": 76,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
