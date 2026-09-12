@@ -6,39 +6,39 @@
 
 ## ID
 
-T039
+T040
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Resync docs reprise post-T038.
+Émettre `.x200/PRODUCT_COMPLETE.json` (niveau dépôt).
 
 ## Résultat
 
-Quality CI SUCCESS 569c6e0 / run 34718663027. Suite : T040 PRÊTE.
+Marqueur local écrit (gitignoré). Quality-gate local pass. Attente CI `quality`. Pas de revendication live prod.
 
 ## Fichiers créés
 
-- aucun
+- `.x200/PRODUCT_COMPLETE.json` (local, hors Git)
 
 ## Fichiers modifiés
 
-- PROJECT_CONTEXT, inventaires
+- rapports / backlog
 
 ## Commandes
 
-- quality-gate + CI
+- `npm run x200:quality-gate -- --task T040`
 
 ## Tests réussis
 
-- CI quality SUCCESS
+- quality-gate local (validate, x200:test, scan-secrets)
 
 ## Tests échoués
 
-- aucun
+- aucun (retry après image postgres:18 pour backup test)
 
 ## Lint
 
@@ -54,11 +54,11 @@ Quality CI SUCCESS 569c6e0 / run 34718663027. Suite : T040 PRÊTE.
 
 ## Sécurité
 
-- ok
+- marqueur sans secrets ; distinctions not-live explicites
 
 ## Commit
 
-- `569c6e0df42947fd3860f03719c87ee47009cbb1`
+- pending
 
 ## Pull Request
 
@@ -66,11 +66,12 @@ Quality CI SUCCESS 569c6e0 / run 34718663027. Suite : T040 PRÊTE.
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34718663027
+- `.x200/PRODUCT_COMPLETE.json`
+- `.x200/quality-results.json`
 
 ## Risques
 
-- aucun
+- medium (marqueur invalide si HEAD/goal change)
 
 ## Blocage
 
@@ -78,4 +79,4 @@ Quality CI SUCCESS 569c6e0 / run 34718663027. Suite : T040 PRÊTE.
 
 ## Prochaine tâche prête
 
-- T040
+- aucune auto ; gates humaines restantes
