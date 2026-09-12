@@ -19,9 +19,9 @@ utilisateur
 
 | Élément | Conçu | Implémenté | Testé localement | Validé CI | Fusionné | Déployé / live rails |
 |---|---|---|---|---|---|---|
-| Modèles Prisma Order/Invoice/Payment/Receipt/Event | oui | oui | `prisma validate` | (à confirmer) | non | non |
-| API `lib/payments/gateway` | oui | oui | `gateway.test.ts` | (à confirmer) | non | non |
-| Sandbox sans clé PSP | oui | oui | tests + scan-secrets | (à confirmer) | non | non |
+| Modèles Prisma Order/Invoice/Payment/Receipt/Event | oui | oui | `prisma validate` | **oui** run 34662487636 | non | non |
+| API `lib/payments/gateway` | oui | oui | `gateway.test.ts` | **oui** | non | non |
+| Sandbox sans clé PSP | oui | oui | tests + scan-secrets | **oui** | non | non |
 | Rails réels M-PESA/RAWBANK | conçu (futur) | non | n/a | n/a | n/a | **non** |
 | Migration production | n/a | **interdite** ici | migration additive CI/local | n/a | n/a | **non** |
 

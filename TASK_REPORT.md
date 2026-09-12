@@ -10,7 +10,7 @@ T027
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Implémenter le cœur CLEVONE Payment Gateway (sandbox) : utilisateur → comman
 
 ## Résultat
 
-Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/ClevoneGatewayEvent + lien Payment, API `createPaymentGateway`, tests unitaires, doc `docs/PAYMENTS_GATEWAY.md`. Aucune clé PSP, aucun appel réseau, aucune migration production. Quality-gate local PASS. Attente job GitHub `quality` sur le SHA poussé.
+Chaîne gateway sandbox livrée et validée CI FULL. Modèles Prisma ServiceOrder/Invoice/Receipt/ClevoneGatewayEvent + lien Payment ; API `createPaymentGateway` ; tests ; `docs/PAYMENTS_GATEWAY.md`. Aucune clé PSP, aucun rail réel, aucune migration production. `quality` SUCCESS run 34662487636 sur `ce6996e2da0403fa7f324dd47d65c8eb71c47308`. T028 promue PRÊTE.
 
 ## Fichiers créés
 
@@ -37,19 +37,13 @@ Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/C
 ## Commandes
 
 - `npm run x200:claim -- --json T027`
-- `npx prisma validate`
-- `npm test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run x200:scan-secrets`
-- `npm run x200:validate`
-- `git diff --check`
 - `npm run x200:quality-gate -- --task T027`
+- `git push` → CI run 34662487636
 
 ## Tests réussis
 
 - quality-gate T027 PASS (7/7)
-- 66 unit tests pass (incl. 4 gateway)
+- GitHub Actions run 34662487636 `quality` SUCCESS (lane FULL : prisma, build, Playwright)
 
 ## Tests échoués
 
@@ -65,7 +59,7 @@ Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/C
 
 ## Build
 
-- CI FULL attendu (prisma/)
+- CI FULL SUCCESS
 
 ## Sécurité
 
@@ -73,7 +67,7 @@ Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/C
 
 ## Commit
 
-- (à renseigner après push)
+- `ce6996e2da0403fa7f324dd47d65c8eb71c47308` — feat(payments): add CLEVONE gateway order/invoice/receipt chain (T027)
 
 ## Pull Request
 
@@ -81,18 +75,19 @@ Chaîne gateway sandbox livrée : modèles Prisma ServiceOrder/Invoice/Receipt/C
 
 ## Preuves
 
-- quality-gate ok task=T027
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34662487636
 - docs/PAYMENTS_GATEWAY.md
+- quality-gate T027
 
 ## Risques
 
 - migration additive non déployée en production (volontaire)
-- PR #4 (reconciliation) parallèle — complementary, pas doublon de la chaîne Order/Invoice
+- PR #4 reconciliation parallèle — complementary
 
 ## Blocage
 
-- aucun local ; EN_CONTRÔLE jusqu'à quality SUCCESS
+- aucun
 
 ## Prochaine tâche prête
 
-T028 (après TERMINÉE T027)
+T028
