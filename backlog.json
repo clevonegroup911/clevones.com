@@ -3121,6 +3121,63 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-13"
+    },
+    {
+      "id": "T046",
+      "title": "X200 Human Action Center — approvals, release, deploy and recovery",
+      "objective": "Transformer /admin/x200 en centre de commande unique où le SUPER_ADMIN autorise et exécute des actions humaines X200 (gate approval, merge, deploy, migration, backup/restore, rollback, incident, emergency stop) via adapters fixes, MFA et audit — sans bypass Human Gate ni shell libre.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T045"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200",
+        "lib/http",
+        ".env.example",
+        "tests/e2e/x200-control-center.spec.ts",
+        "docs/X200_AUTOPILOT.md",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "CSRF: APP_ORIGIN canonique; en development seulement X200_LOCAL_ALLOWED_ORIGINS localhost/127.0.0.1 explicite; production strict; CSRF STATUS UI",
+        "HUMAN ACTIONS inbox + APPROVE HUMAN GATE (jamais bypass) avec approvals courtes non réutilisables",
+        "Actions MERGE/READY_FOR_REVIEW/DEPLOY/MIGRATION/BACKUP/RESTORE/ROLLBACK/INCIDENT/EMERGENCY_STOP via enum+adapters; pas de shell libre",
+        "Policy LOW/MEDIUM/HIGH/CRITICAL avec MFA/re-auth et typed confirmation pour CRITICAL; idempotency + receipts + audit redacté",
+        "Tabs OVERVIEW/TASKS/AUTOMATION/HUMAN ACTIONS/RELEASE/DEPLOY/DATABASE/INCIDENTS/AUDIT; flags defaults false; SECRET_VALUES_EXPOSED=NO; MERGED=NO; DEPLOYED=NO",
+        "Health: telemetry stale => DEGRADED; tests unit + Playwright; CI n'exécute pas merge/deploy/migrate/restore réels"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "Human Action Center implemented: CSRF local allow-list, inbox, approvals+MFA, adapters, tabs UI",
+        "Flags default false; SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO",
+        "unit human-actions 19 PASS; lint/tsc/build PASS; playwright unauth PASS (auth needs CI DB)",
+        "reports/tasks/T046.md",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "estimatedCost": 8,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-13",
+      "lastTransitionReason": "réservation par local:fedora",
+      "nextAction": "exécuter le périmètre puis quality-gate"
     }
   ],
   "history": [
@@ -4357,9 +4414,27 @@
       "taskId": "T045",
       "status": "TERMINÉE",
       "note": "quality CI FULL SUCCESS run 34771780343 on 42fecbe; interactive safe control plane"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T046",
+      "status": "PRÊTE",
+      "note": "[X200] Human Action Center after T045; owner request"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T046",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T046",
+      "status": "EN_CONTRÔLE",
+      "note": "Human Action Center implemented; awaiting CI quality"
     }
   ],
-  "registryVersion": 133,
+  "registryVersion": 136,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

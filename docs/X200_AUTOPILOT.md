@@ -172,6 +172,20 @@ Conditions :
 
 Merge / Deploy restent affichés comme **Human approval required**.
 
+### Human Action Center (T046)
+
+`POST /api/admin/x200/human-actions` exécute des actions humaines **énumérées** (approvals, ready-for-review, merge, deploy, migration, backup/restore, rollback, incident, emergency stop) via adapters fixes.
+
+Conditions :
+
+- `X200_HUMAN_ACTIONS_ENABLED=true` (défaut `false`)
+- production adapters : `X200_PRODUCTION_ACTIONS_ENABLED=true` (défaut `false`)
+- CSRF : `APP_ORIGIN` + en development seulement `X200_LOCAL_ALLOWED_ORIGINS` (localhost/127.0.0.1 explicites)
+- SUPER_ADMIN + policy LOW/MEDIUM/HIGH/CRITICAL (MFA / typed phrase pour HIGH/CRITICAL)
+- approvals courtes non réutilisables (`.x200/human-approvals.jsonl`, 0600)
+- jamais de shell/SQL/rm libre ; jamais de bypass Human Gate
+- CI/mocks refusent merge/deploy/migrate/restore réels
+
 ## Règles AUTOPLAN
 
 AUTOPLAN :

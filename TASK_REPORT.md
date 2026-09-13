@@ -6,59 +6,69 @@
 
 ## ID
 
-T045
+T046
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Transformer `/admin/x200` en Control Center interactif (live refresh, drawers, COMMAND CENTER) avec actions sûres AUTOPILOT/RUN_ONE_CYCLE, sans merge/deploy/shell libre ni bypass Human Gate.
+Transformer /admin/x200 en centre de commande unique où le SUPER_ADMIN autorise et exécute des actions humaines X200 (gate approval, merge, deploy, migration, backup/restore, rollback, incident, emergency stop) via adapters fixes, MFA et audit — sans bypass Human Gate ni shell libre.
 
 ## Résultat
 
-Control plane sûr livré et validé CI FULL. Live refresh, drawers, COMMAND CENTER, progress, Human Gate banner, audit jsonl. Mutations SUPER_ADMIN seulement via enum + `execFile` fixes. Pas de merge/deploy/shell libre.
+Human Action Center livré : CSRF localhost allow-list, inbox HUMAN ACTIONS, approvals MFA non-bypass, adapters fixes, tabs UI, drift/secrets/incident/emergency stop, receipts/idempotency. Flags defaults false. CI mocks refusent merge/deploy/migrate/restore réels.
 
 ## Fichiers créés
 
-- `lib/x200/control-actions.ts`
-- `lib/x200/control-actions.test.ts`
-- `lib/x200/control-audit.ts`
-- `lib/http/same-origin.ts`
-- `app/api/admin/x200/actions/route.ts`
-- `reports/tasks/T045.md`
+- `lib/x200/actions/*`
+- `app/api/admin/x200/human-actions/route.ts`
+- `app/admin/x200/human-action-panels.tsx`
+- `scripts/deploy-production.mjs`
+- `lib/http/same-origin.test.ts`
+- `lib/x200/actions/human-actions.test.ts`
+- `reports/tasks/T046.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/types.ts` / `control-center.ts` / `derive.ts` / `activity.ts`
-- `app/admin/x200/*`
-- `app/api/admin/x200/status/route.ts`
-- `.env.example`
-- `docs/X200_AUTOPILOT.md`
+- `lib/http/same-origin.ts`
+- `lib/x200/derive.ts` / `types.ts` / `control-center.ts`
+- `app/admin/x200/control-center-client.tsx`
+- `.env.example` / `package.json`
 - `tests/e2e/x200-control-center.spec.ts`
-- `playwright.config.ts` (retry CI 1×)
-- backlog / TASK_REPORT / BACKLOG.md / PROJECT_CONTEXT.md
+- `docs/X200_AUTOPILOT.md`
+- backlog / TASK_REPORT / PROJECT_CONTEXT / reports
 
 ## Commandes
 
-- `npm run x200:validate`
-- `npm test` / `npm run x200:test`
-- `npm run lint` / `npx tsc --noEmit` / `npm run build`
-- `npx playwright test`
-- `npm run x200:scan-secrets` / `git diff --check`
-- `npm run x200:quality-gate -- --task T045`
+- npm run x200:validate
+- npm test
+- npm run x200:test
+- npm run lint
+- npx tsc --noEmit
+- npx prisma validate
+- npm run build
+- npx playwright test tests/e2e/x200-control-center.spec.ts
+- npm run x200:scan-secrets
+- git diff --check
 
 ## Tests réussis
 
-- unit control-actions + control-center
-- npm test / x200:test / lint / tsc / build / secrets
-- Playwright CI FULL (x200 + suite)
-- quality CI FULL SUCCESS run 34771780343
+- human-actions unit 19 PASS
+- lib/x200 unit 34 PASS
+- npm run x200:test PASS
+- lint PASS
+- tsc PASS
+- prisma validate PASS
+- build PASS
+- playwright: unauth PASS; auth skipped locally (no e2e DB) — CI FULL required
+- scan-secrets PASS (fixtures only)
+- git diff --check PASS
 
 ## Tests échoués
 
-- aucun (CI FINAL)
+- aucun bloquant local
 
 ## Lint
 
@@ -74,30 +84,35 @@ Control plane sûr livré et validé CI FULL. Live refresh, drawers, COMMAND CEN
 
 ## Sécurité
 
-- `X200_CONTROL_ACTIONS_ENABLED=false` ; HUMAN_GATE_BYPASS=NO ; ARBITRARY_SHELL=NO ; MERGED=NO ; DEPLOYED=NO
+- SECRET_VALUES_EXPOSED=NO
+- ARBITRARY_SHELL=NO
+- HUMAN_GATE_BYPASS=NO
+- MERGED=NO
+- DEPLOYED=NO
+- X200_HUMAN_ACTIONS_ENABLED=false / X200_PRODUCTION_ACTIONS_ENABLED=false defaults
 
 ## Commit
 
-- `16db0a4` feat + follow-up fixes `286cd96` `42c3850` `42fecbe`
+- à pousser sur feat/x200-human-action-center
 
 ## Pull Request
 
-- draft PR #9 https://github.com/clevonegroup911/clevones.com/pull/9
+- Draft vs feat/x200-interactive-control-center (à créer)
 
 ## Preuves
 
-- reports/tasks/T045.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343
-- head `42fecbe5ccfb23a012cd299bb1f6be8979768a54`
+- reports/tasks/T046.md
+- unit + build locaux
 
 ## Risques
 
-- aucun restant pour le scope T045
+- Playwright auth e2e nécessite DB CI
+- Adapters prod volontairement non exécutés (runbook)
 
 ## Blocage
 
-- aucun
+- aucun pour l'implémentation ; preuve CI quality en attente
 
 ## Prochaine tâche prête
 
-- aucune (AUTOPLAN)
+- aucune (après clôture T046 → AUTOPLAN)

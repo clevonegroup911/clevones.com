@@ -17,6 +17,11 @@ import type {
   PipelineStep,
   SystemHealth,
 } from "@/lib/x200/types";
+import {
+  HumanActionPanels,
+  X200TabBar,
+  type TabId,
+} from "@/app/admin/x200/human-action-panels";
 
 type FilterId =
   | "all"
@@ -199,6 +204,7 @@ export function ControlCenterClient({
     message: string;
   } | null>(null);
   const [nowTick, setNowTick] = useState(() => Date.now());
+  const [activeTab, setActiveTab] = useState<TabId>("OVERVIEW");
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -419,6 +425,15 @@ export function ControlCenterClient({
               Latency: {latencyMs == null ? "N/A" : `${latencyMs} ms`}
             </span>
             <span className="text-gray-muted">Status: {connectionDisplay}</span>
+            <span className="text-gray-muted">
+              env=LOCAL · branch={display(snapshot.git.branch)} · HEAD=
+              {display(snapshot.git.head?.slice(0, 7))} · health=
+              {snapshot.systemHealth.status}
+              {snapshot.humanGate.present ? " · GATE" : ""}
+            </span>
+            <span data-testid="x200-csrf-chip" className="text-gray-muted">
+              CSRF: {snapshot.humanActions?.csrf.status ?? "N/A"}
+            </span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -460,6 +475,8 @@ export function ControlCenterClient({
         </div>
       </header>
 
+      <X200TabBar active={activeTab} onChange={setActiveTab} />
+
       {snapshot.humanGate.present ? (
         <div
           data-testid="x200-human-gate-banner"
@@ -498,6 +515,25 @@ export function ControlCenterClient({
         </div>
       ) : null}
 
+      {(
+        [
+          "HUMAN_ACTIONS",
+          "RELEASE",
+          "DEPLOY",
+          "DATABASE",
+          "INCIDENTS",
+          "AUDIT",
+        ] as TabId[]
+      ).includes(activeTab) ? (
+        <HumanActionPanels
+          snapshot={snapshot}
+          actorRole={actorRole}
+          activeTab={activeTab}
+          onRefresh={() => void refresh()}
+        />
+      ) : null}
+
+      {activeTab === "AUTOMATION" || activeTab === "OVERVIEW" ? (
       <Card title="COMMAND CENTER" testId="x200-command-center">
         <div className="mb-3 flex flex-wrap items-center gap-3 text-xs">
           <span data-testid="x200-control-mode" className="text-white">
@@ -559,7 +595,10 @@ export function ControlCenterClient({
           </p>
         ) : null}
       </Card>
+      ) : null}
 
+      {activeTab === "OVERVIEW" ? (
+      <>
       <div
         className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
         data-testid="x200-overview-cards"
@@ -815,7 +854,10 @@ export function ControlCenterClient({
           )}
         </Card>
       </div>
+      </>
+      ) : null}
 
+      {activeTab === "TASKS" || activeTab === "OVERVIEW" ? (
       <Card title="Registre des tâches" testId="x200-task-registry">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2">
@@ -884,7 +926,9 @@ export function ControlCenterClient({
           ) : null}
         </div>
       </Card>
+      ) : null}
 
+      {activeTab === "OVERVIEW" || activeTab === "AUTOMATION" ? (
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Efficacité & temps" testId="x200-efficiency">
           <div className="grid grid-cols-2 gap-3">
@@ -934,7 +978,10 @@ export function ControlCenterClient({
           )}
         </Card>
       </div>
+      ) : null}
 
+      {activeTab === "OVERVIEW" ? (
+      <>
       <Card title="Activité récente" testId="x200-activity">
         <ul className="max-h-96 space-y-2 overflow-y-auto">
           {snapshot.activity.map((item: ActivityItem) => (
@@ -999,6 +1046,8 @@ export function ControlCenterClient({
           </div>
         </div>
       </Card>
+      </>
+      ) : null}
 
       {selectedTask ? (
         <div

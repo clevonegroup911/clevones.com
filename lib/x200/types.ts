@@ -318,4 +318,6 @@ export type ControlCenterSnapshot = {
   control: ControlPlaneSnapshot;
   progress: ProjectProgressSnapshot;
   lastUpdate: string;
+  /** T046 Human Action Center plane — optional for fatal snapshots. */
+  humanActions?: import("@/lib/x200/actions/types").HumanActionPlaneSnapshot | null;
 };

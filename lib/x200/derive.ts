@@ -41,6 +41,9 @@ export function computeSystemHealth(input: {
     "status" | "ciLatestConclusion" | "ciLatestStatus"
   >;
   humanGate: Pick<HumanGateSnapshot, "present" | "status">;
+  /** When true, critical Fedora telemetry is stale → at least DEGRADED. */
+  telemetryStale?: boolean | null;
+  telemetryStatus?: SourceStatus;
 }): SystemHealth {
   const criteria: HealthCriterion[] = [];
 
@@ -129,6 +132,31 @@ export function computeSystemHealth(input: {
           : "absent",
   });
 
+  const telemetryStale =
+    input.telemetryStale === true
+      ? true
+      : input.telemetryStale === false
+        ? false
+        : null;
+  const telemetryApplicable =
+    telemetryStale !== null ||
+    (input.telemetryStatus != null &&
+      input.telemetryStatus !== "MISSING" &&
+      input.telemetryStatus !== "UNKNOWN");
+  if (telemetryApplicable) {
+    criteria.push({
+      id: "telemetry_fresh",
+      label: "Télémétrie AUTOPILOT fraîche",
+      passed: telemetryStale === null ? null : telemetryStale === false,
+      detail:
+        telemetryStale === true
+          ? "STALE — heartbeat critique périmé"
+          : telemetryStale === false
+            ? "fresh"
+            : `telemetry=${input.telemetryStatus ?? "N/A"}`,
+    });
+  }
+
   const applicable = criteria.filter((c) => c.passed !== null);
   const passed = applicable.filter((c) => c.passed === true);
   const scorePercent =
@@ -157,7 +185,10 @@ export function computeSystemHealth(input: {
     rationale = `All ${applicable.length} applicable criteria passed`;
   } else {
     status = "DEGRADED";
-    rationale = `${passed.length}/${applicable.length} applicable criteria passed`;
+    rationale =
+      telemetryStale === true
+        ? "DEGRADED — telemetry stale (critical heartbeat)"
+        : `${passed.length}/${applicable.length} applicable criteria passed`;
   }
 
   return { status, scorePercent, criteria, rationale };

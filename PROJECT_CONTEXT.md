@@ -8,8 +8,8 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-control-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `feat/x200-control-center` tip (T044 TERMINÉE; see `.x200/PRODUCT_COMPLETE.json`) | CONFIRMÉ |
+| Workspace local | branche `feat/x200-human-action-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
+| HEAD travail | `feat/x200-human-action-center` tip (T046 EN_CONTRÔLE) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -42,7 +42,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | T001–T044 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| Control Center | `/admin/x200` interactif + actions sûres locales (T045) ; télémétrie Fedora (T043) | CONFIRMÉ dépôt |
+| Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) ; télémétrie Fedora | CONFIRMÉ dépôt |
 | PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
