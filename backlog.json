@@ -3039,10 +3039,31 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T045",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T16:59:47.000Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34771780343",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343",
+          "version": "42fecbe5ccfb23a012cd299bb1f6be8979768a54",
+          "at": "2026-09-13T17:30:00.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "Attendre FULL CI quality SUCCESS sur SHA d'implémentation puis clôturer",
-      "lastTransitionReason": "implémentation interactive control plane + contrôles locaux PASS ; Playwright local bloqué docker0 ; EN_CONTRÔLE",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34771780343 on 42fecbe; T045 closed",
       "id": "T045",
       "title": "Interactive X200 Control Center — safe operations",
       "objective": "Transformer /admin/x200 en Control Center interactif (live refresh, drawer tâches, pipeline, COMMAND CENTER) avec actions sûres AUTOPILOT/RUN_ONE_CYCLE, sans merge/deploy/shell libre ni bypass Human Gate.",
@@ -3082,13 +3103,16 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
-        "POST /api/admin/x200/actions enum strict + execFile fixed argv",
-        "LIVE refresh + COMMAND CENTER + task/pipeline drawers",
-        "X200_CONTROL_ACTIONS_ENABLED=false in .env.example",
-        "unit tests control-actions PASS",
-        "lint/tsc/build/x200:validate PASS",
+        "Interactive Control Center: live refresh, drawers, COMMAND CENTER, progress, Human Gate banner",
+        "POST /api/admin/x200/actions enum strict + execFile fixed argv; no arbitrary shell",
+        "SUPER_ADMIN mutations; ADMIN/CSRF/Human Gate/dirty/agentBusy protections",
+        "X200_CONTROL_ACTIONS_ENABLED=false in .env.example; MERGE/DEPLOY human-only",
+        "unit tests control-actions PASS; quality-gate local PASS",
+        "CI FULL quality SUCCESS run 34771780343 head 42fecbe5ccfb23a012cd299bb1f6be8979768a54",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343",
+        "Draft PR #9 https://github.com/clevonegroup911/clevones.com/pull/9",
         "reports/tasks/T045.md",
         "MERGED=NO DEPLOYED=NO HUMAN_GATE_BYPASS=NO ARBITRARY_SHELL=NO"
       ],
@@ -4327,9 +4351,15 @@
       "taskId": "T045",
       "status": "EN_CONTRÔLE",
       "note": "safe control plane implemented; awaiting CI quality FULL"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T045",
+      "status": "TERMINÉE",
+      "note": "quality CI FULL SUCCESS run 34771780343 on 42fecbe; interactive safe control plane"
     }
   ],
-  "registryVersion": 132,
+  "registryVersion": 133,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

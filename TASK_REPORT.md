@@ -10,7 +10,7 @@ T045
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Transformer `/admin/x200` en Control Center interactif (live refresh, drawers, C
 
 ## Résultat
 
-Control plane sûr livré localement : GET status live + POST actions enum strict (`execFile` fixes), UI COMMAND CENTER, task/pipeline drawers, progress, Human Gate banner, audit jsonl redacté. Contrôles locaux verts. Playwright local bloqué (docker0 DOWN) — preuve e2e attendue en CI FULL. Pas de TERMINÉE avant `quality` SUCCESS sur le SHA.
+Control plane sûr livré et validé CI FULL. Live refresh, drawers, COMMAND CENTER, progress, Human Gate banner, audit jsonl. Mutations SUPER_ADMIN seulement via enum + `execFile` fixes. Pas de merge/deploy/shell libre.
 
 ## Fichiers créés
 
@@ -31,41 +31,34 @@ Control plane sûr livré localement : GET status live + POST actions enum stric
 
 ## Fichiers modifiés
 
-- `lib/x200/types.ts`
-- `lib/x200/control-center.ts`
-- `lib/x200/derive.ts`
-- `lib/x200/activity.ts`
+- `lib/x200/types.ts` / `control-center.ts` / `derive.ts` / `activity.ts`
 - `app/admin/x200/*`
 - `app/api/admin/x200/status/route.ts`
 - `.env.example`
 - `docs/X200_AUTOPILOT.md`
 - `tests/e2e/x200-control-center.spec.ts`
-- backlog / TASK_REPORT / BACKLOG.md
+- `playwright.config.ts` (retry CI 1×)
+- backlog / TASK_REPORT / BACKLOG.md / PROJECT_CONTEXT.md
 
 ## Commandes
 
 - `npm run x200:validate`
-- `npm test`
-- `npm run x200:test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npx prisma validate`
-- `npm run build`
-- `npm run x200:scan-secrets`
-- `git diff --check`
+- `npm test` / `npm run x200:test`
+- `npm run lint` / `npx tsc --noEmit` / `npm run build`
+- `npx playwright test`
+- `npm run x200:scan-secrets` / `git diff --check`
+- `npm run x200:quality-gate -- --task T045`
 
 ## Tests réussis
 
-- unit control-actions (enum, roles, dirty, gate, agentBusy, redact, timeout, audit)
-- x200 control-center / resilience
-- npm test 148 pass
-- x200:test 75 pass
-- lint / tsc / prisma / build / secrets / diff-check
+- unit control-actions + control-center
+- npm test / x200:test / lint / tsc / build / secrets
+- Playwright CI FULL (x200 + suite)
+- quality CI FULL SUCCESS run 34771780343
 
 ## Tests échoués
 
-- aucun échec bloquant local
-- Playwright authentifié : 8 skipped localement (PostgreSQL e2e indisponible / docker0) ; 2 passed (unauth redirect). CI FULL doit rejouer le fichier complet.
+- aucun (CI FINAL)
 
 ## Lint
 
@@ -81,30 +74,30 @@ Control plane sûr livré localement : GET status live + POST actions enum stric
 
 ## Sécurité
 
-- pas de secrets commités ; `X200_CONTROL_ACTIONS_ENABLED=false` ; HUMAN_GATE_BYPASS=NO ; ARBITRARY_SHELL=NO ; MERGED=NO ; DEPLOYED=NO
+- `X200_CONTROL_ACTIONS_ENABLED=false` ; HUMAN_GATE_BYPASS=NO ; ARBITRARY_SHELL=NO ; MERGED=NO ; DEPLOYED=NO
 
 ## Commit
 
-- `feat(x200): add interactive safe control plane (T045)`
+- `16db0a4` feat + follow-up fixes `286cd96` `42c3850` `42fecbe`
 
 ## Pull Request
 
-- Draft contre `feat/x200-control-center` (à créer)
+- draft PR #9 https://github.com/clevonegroup911/clevones.com/pull/9
 
 ## Preuves
 
 - reports/tasks/T045.md
-- contrôles locaux listés ci-dessus
-- CI FULL quality (à compléter)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343
+- head `42fecbe5ccfb23a012cd299bb1f6be8979768a54`
 
 ## Risques
 
-- Playwright local non rejoué ici ; CI obligatoire avant TERMINÉE
+- aucun restant pour le scope T045
 
 ## Blocage
 
-- aucun gate humain produit ; attente CI seulement
+- aucun
 
 ## Prochaine tâche prête
 
-- aucune jusqu'à clôture T045 / AUTOPLAN
+- aucune (AUTOPLAN)
