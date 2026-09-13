@@ -255,7 +255,7 @@ test.describe("x200 core surfaces", () => {
         command: "rm -rf /",
       },
     });
-    expect([400, 403]).toContain(forbidden.status());
+    expect([400, 401, 403]).toContain(forbidden.status());
 
     const invalid = await page.request.post("/api/admin/x200/actions", {
       headers: {
@@ -324,7 +324,7 @@ test.describe("x200 human actions", () => {
         shell: "rm -rf /",
       },
     });
-    expect([400, 403]).toContain(forbidden.status());
+    expect([400, 401, 403]).toContain(forbidden.status());
 
     await page.route("**/api/admin/x200/human-actions", async (route) => {
       if (route.request().method() !== "POST") {

@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { spawn } from "node:child_process";
-import { existsSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -16,7 +16,6 @@ const FALLBACK_DATABASE_URL =
   "postgresql://e2e:e2e@127.0.0.1:5432/clevones_e2e?schema=public";
 const PRISMA_BIN = join(process.cwd(), "node_modules/.bin/prisma");
 const NEXT_BIN = join(process.cwd(), "node_modules/.bin/next");
-const BUILD_ID = join(process.cwd(), ".next", "BUILD_ID");
 
 function migrateWithRetry(env: NodeJS.ProcessEnv) {
   let lastError: unknown;
