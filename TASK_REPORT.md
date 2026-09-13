@@ -18,7 +18,7 @@ Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Un
 
 ## Résultat
 
-Livré et prouvé en CI FULL. AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
+Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -57,7 +57,8 @@ Livré et prouvé en CI FULL. AUTOPLAN : aucun écart automatique restant vs PRO
 
 - mirror unit 8 PASS
 - quality-gate local PASS
-- CI FULL quality SUCCESS run 34782004736
+- CI FULL quality SUCCESS run 34782004736 (feature close `7de8fd1`)
+- CI FULL quality SUCCESS run 34782911788 (recovery tip `8c873db`)
 
 ## Tests échoués
 
@@ -85,7 +86,7 @@ Livré et prouvé en CI FULL. AUTOPLAN : aucun écart automatique restant vs PRO
 
 ## Commit
 
-- feat/x200-operational-mirror @ fdf8f8b (+ PRODUCT_COMPLETE local)
+- feat/x200-operational-mirror @ 8c873db (+ PRODUCT_COMPLETE local after AUTOPLAN)
 
 ## Pull Request
 
@@ -94,8 +95,9 @@ Livré et prouvé en CI FULL. AUTOPLAN : aucun écart automatique restant vs PRO
 ## Preuves
 
 - reports/tasks/T047.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736
-- mode=FULL headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788
+- mode=FULL headSha=8c873db96fd66880feb0e8ecba4bee064b86ff58
+- prior FULL https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736 headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
 - .x200/PRODUCT_COMPLETE.json valid for current HEAD + PRODUCT_GOAL hash
 
 ## Risques
