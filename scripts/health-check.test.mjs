@@ -50,6 +50,7 @@ test("health-check scripts are valid bash, dry-run locally, and refuse productio
   assert.equal(appDry.status, 0, appDry.stderr);
   assert.match(appDry.stdout, /DRY_RUN_OK/);
   assert.match(appDry.stdout, /127\.0\.0\.1/);
+  assert.match(appDry.stdout, /\/health/);
 
   const appRefused = run(APP, ["--dry-run", "--url", "https://clevones.com/"]);
   assert.equal(appRefused.status, 2);

@@ -25,10 +25,13 @@ test("unauthenticated users cannot open CMS, analytics, or the document portal",
 }, testInfo) => {
   const project = testInfo.project.name;
 
-  for (const path of ["/admin/cms", "/admin/analytics", "/portal"]) {
+  for (const path of ["/admin/cms", "/admin/analytics"]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/admin\/login/);
   }
+
+  await page.goto("/portal");
+  await expect(page).toHaveURL(/\/sign-in/);
 
   await captureSafeEvidence(page, `${project}-product-unauth-login.png`);
 });

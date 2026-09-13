@@ -6,7 +6,7 @@
 
 ## ID
 
-T028
+T041
 
 ## Statut
 
@@ -14,36 +14,36 @@ TERMINÉE
 
 ## Objectif
 
-Ajouter preuves, rapprochement, anti-rejeu et file de vérification humaine : une preuve client seule ne valide jamais un paiement ; les cas non concordants passent en vérification humaine avec délai indicatif ≤ 24 h.
+Corriger 4 défauts sécurité/cohérence revue finale PR #7 : anti-rejeu global, eventKey immuable, audit durable, atomicité VERIFIED→activation.
 
 ## Résultat
 
-Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, `PaymentProof`/`ReconciliationDecision`, invariants preuve-client-seule / CLEVONE authentifié / HUMAN_REVIEW ≤ 24 h / anti-doublon. `quality` SUCCESS run 34662913027 sur `c071a6341cbce61c25329324abd2d3cea15125d1`. T029 promue PRÊTE.
+Quality CI FULL SUCCESS cce6605 / run 34745429341. Quatre corrections présentes. Pas de merge, pas de deploy.
 
 ## Fichiers créés
 
-- `lib/payments/reconciliation.ts`
-- `lib/payments/reconciliation.test.ts`
-- `prisma/migrations/20260912040000_add_payment_proof_reconciliation/migration.sql`
-- `reports/tasks/T028.md`
+- `lib/payments/reference-claims.ts` (+ tests)
+- `lib/payments/clevone-event-immutable.test.ts`
+- `lib/payments/security-hardening.test.ts`
+- `prisma/migrations/20260913090000_add_verified_payment_reference_claim/`
+- `reports/tasks/T041.md`
 
 ## Fichiers modifiés
 
+- `lib/payments/persist.ts`, `activation.ts`, `reconciliation.ts`
+- `lib/admin/audit.ts`
+- routes admin paiements
 - `prisma/schema.prisma`
-- `lib/documents/storage.ts`
 - `docs/PAYMENTS_GATEWAY.md`
-- `backlog.json`
-- `TASK_REPORT.md`
+- backlog / rapports
 
 ## Commandes
 
-- `npm run x200:quality-gate -- --task T028`
-- CI run 34662913027
+- quality-gate local + CI FULL #105
 
 ## Tests réussis
 
-- quality-gate T028 PASS
-- GitHub Actions run 34662913027 `quality` SUCCESS (FULL)
+- CI quality SUCCESS (FULL) run 34745429341
 
 ## Tests échoués
 
@@ -51,36 +51,35 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Lint
 
-- succès
+- pass (CI)
 
 ## Type-check
 
-- succès
+- pass (CI)
 
 ## Build
 
-- CI FULL SUCCESS
+- pass (CI FULL)
 
 ## Sécurité
 
-- preuves hors Git ; aucune clé PSP ; pas de migration production
+- scan-secrets + security audit pass ; migration additive only
 
 ## Commit
 
-- `c071a6341cbce61c25329324abd2d3cea15125d1`
+- `cce66054402108ec71f71048c0958fb64198eecb` (implementation HEAD)
 
 ## Pull Request
 
-- PR draft #6 : https://github.com/clevonegroup911/clevones.com/pull/6
+- PR #7
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34662913027
-- docs/PAYMENTS_GATEWAY.md § T028
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34745429341
 
 ## Risques
 
-- migration additive non déployée en production (volontaire)
+- none remaining for T041 ; merge/deploy remain human gates
 
 ## Blocage
 
@@ -88,4 +87,4 @@ Rapprochement sandbox validé CI FULL. Preuves privées `.data/payment-proofs`, 
 
 ## Prochaine tâche prête
 
-T029
+- aucune auto (attendre validation humaine PR #7)

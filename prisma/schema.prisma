@@ -465,3 +465,16 @@ model ReconciliationDecision {
   @@index([status, createdAt])
   @@index([invoiceId])
 }
+
+/// Réservation globale d'une référence déjà VERIFIED (anti-rejeu cross-payment).
+model VerifiedPaymentReferenceClaim {
+  id                  String   @id @default(cuid())
+  normalizedReference String   @unique
+  paymentId           String
+  decisionId          String?
+  eventKey            String?
+  createdAt           DateTime @default(now())
+
+  @@index([paymentId])
+  @@index([decisionId])
+}

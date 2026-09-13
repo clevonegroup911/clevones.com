@@ -8,4 +8,5 @@ export {
   platformRoutes,
   protectedPaths,
   safeAdminCallbackUrl,
+  safePortalCallbackUrl,
 } from "./routes";

@@ -3,11 +3,14 @@ import { test } from "node:test";
 
 import {
   adminRoutes,
+  authRoutes,
   isAdminPath,
   isAdminProtectedPath,
   isAdminPublicPath,
   isProtectedPath,
+  platformRoutes,
   safeAdminCallbackUrl,
+  safePortalCallbackUrl,
 } from "@/lib/auth/routes";
 
 test("admin login paths stay public while the console is protected", () => {
@@ -21,6 +24,7 @@ test("admin login paths stay public while the console is protected", () => {
   assert.equal(isAdminProtectedPath(adminRoutes.securityMfa), true);
   assert.equal(isAdminProtectedPath(adminRoutes.cms), true);
   assert.equal(isAdminProtectedPath(adminRoutes.analytics), true);
+  assert.equal(isAdminProtectedPath(adminRoutes.users), true);
   assert.equal(isAdminPublicPath(adminRoutes.dashboard), false);
   assert.equal(isAdminPublicPath(adminRoutes.securityMfa), false);
   assert.equal(isAdminPublicPath(adminRoutes.cms), false);
@@ -47,4 +51,20 @@ test("admin callback URLs reject open redirects and non-admin paths", () => {
   );
   assert.equal(safeAdminCallbackUrl("/portal"), "/portal");
   assert.equal(safeAdminCallbackUrl("/admin/login"), adminRoutes.dashboard);
+});
+
+test("portal callback URLs stay on portal and reject admin or open redirects", () => {
+  assert.equal(safePortalCallbackUrl(null), platformRoutes.portal);
+  assert.equal(safePortalCallbackUrl("/portal/payments"), "/portal/payments");
+  assert.equal(safePortalCallbackUrl("/admin/dashboard"), platformRoutes.portal);
+  assert.equal(safePortalCallbackUrl("//evil.example"), platformRoutes.portal);
+  assert.equal(
+    safePortalCallbackUrl("https://evil.example/portal"),
+    platformRoutes.portal,
+  );
+});
+
+test("authRoutes expose sign-in and sign-out paths", () => {
+  assert.equal(authRoutes.signIn, "/sign-in");
+  assert.equal(authRoutes.signOut, "/sign-out");
 });

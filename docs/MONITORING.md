@@ -1,18 +1,29 @@
 # Monitoring et alertes — Clevones.com
 
-Socle T012. Aucun secret, aucune alerte payante, aucune ressource Cloud Monitoring créée ici.
+Socle T012 ; alignement backups T011/T018 (2026-09-12). Aucun secret, aucune alerte payante, aucune ressource Cloud Monitoring créée ici.
 Aucun redémarrage PM2, Nginx ou PostgreSQL. Aucun accès production depuis ce dépôt.
 
-## Audit de l’existant (2026-09-08)
+## État réel (2026-09-12)
+
+| Surface | Constat | Niveau |
+|---|---|---|
+| Scripts health-check loopback | Présents (`scripts/health-check-*.sh`) | implémenté / testable local |
+| Unités systemd backup | Templates dans `ops/systemd/` | préparées ; **timer production non activé** (gate humaine) |
+| Procédure backups | `docs/BACKUPS.md` + scripts dump/verify/rétention | documenté ; activation VM = gate |
+| Alertes GCP Cloud Monitoring / uptime | **Non provisionnées** par ce dépôt | gate propriétaire / externe |
+| Endpoint `/health` dédié | Présent (`GET /health` → `{ status, service }`) | implémenté / testable local (T038) ; pas d’alerte GCP |
+| Production monitoring live | NON_ACCESSIBLE depuis le dépôt | — |
+
+## Audit de l’existant (historique 2026-09-08, toujours pertinent)
 
 | Surface | Constat |
 |---|---|
-| Endpoint applicatif `/health` | Absent. La disponibilité se juge aujourd’hui via HTTP public + process PM2. |
-| Journaux applicatifs | `AuditLog` (Prisma) : connexions admin, MFA, logout. Métadonnées limitées (`reason`, `role`, `method`). Pas de secret TOTP, recovery, mot de passe. |
-| CI | GitHub Actions `X100 CI` (qualité, Playwright, audit npm). Ce n’est pas un uptime probe de production. |
+| Endpoint applicatif `/health` | `GET /health` non authentifié, payload minimal `{ status: "ok", service: "clevones-com" }`, `Cache-Control: no-store`. Aucun secret ni dump d’env. |
+| Journaux applicatifs | `AuditLog` (Prisma) : connexions admin/portail, MFA, logout, CMS, documents, paiements sandbox. Métadonnées limitées. Pas de secret TOTP, recovery, mot de passe. |
+| CI | GitHub Actions X200 CI (qualité, Playwright, audit npm). Ce n’est pas un uptime probe de production. |
 | Processus | PM2 `clevones-com` sur la VM `clevones-serveur` (voir `DEPLOYMENT.md`). |
 | Reverse proxy | Nginx devant l’application. Aucun export Prometheus dans ce dépôt. |
-| PostgreSQL | 15.x sur la VM. Sauvegardes manuelles T004. Planification T011 **préparée** (`docs/BACKUPS.md`), timer production **non activé**. |
+| PostgreSQL | 15.x sur la VM. Sauvegardes manuelles T004. Planification timer **préparée** (`docs/BACKUPS.md`), **non activée** en production. |
 | GCP Cloud Monitoring | Non provisionné par ce dépôt. Projet `clevonegroup`. Toute création d’uptime check / alerting policy exige une décision humaine. |
 
 Signaux d’authentification déjà émis (sans secrets) :
@@ -36,6 +47,7 @@ Helpers : `isCriticalAuthAuditAction` et `countAuthAuditSignals` dans `lib/admin
 | Espace disque | `df -P /` | ≥ 90 % warning, ≥ 95 % critique |
 | Mémoire / CPU | `/proc/meminfo`, `/proc/loadavg` | MemAvailable < 10 % ; load15 > nombre de CPU |
 | Erreurs applicatives critiques | `AuditLog.action` uniquement | voir alertes MFA ci-dessous |
+| Sauvegarde planifiée | timer systemd + `docs/BACKUPS.md` | échec job / dump manquant (après activation humaine) |
 
 Ne jamais exporter `DATABASE_URL`, `AUTH_SECRET`, `MFA_ENCRYPTION_KEY`, codes TOTP, recovery, ni dump `printenv` / `pm2 pretty`.
 
@@ -48,11 +60,12 @@ bash scripts/health-check-app.sh --dry-run
 bash scripts/health-check-postgres.sh --dry-run
 bash scripts/health-check-system.sh --dry-run
 
-bash scripts/health-check-app.sh --url http://127.0.0.1:3000/
+bash scripts/health-check-app.sh --url http://127.0.0.1:3000/health
 bash scripts/health-check-postgres.sh --host 127.0.0.1 --port 5432
 bash scripts/health-check-system.sh --disk-path / --disk-critical 95
 ```
 
+Par défaut, `health-check-app.sh` sonde `http://127.0.0.1:3000/health` (T038).
 Garanties :
 
 - `--dry-run` : valide les arguments, n’ouvre aucune connexion

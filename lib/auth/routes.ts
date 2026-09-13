@@ -17,6 +17,8 @@ export const adminRoutes = {
   securityMfa: "/admin/security/mfa",
   cms: "/admin/cms",
   analytics: "/admin/analytics",
+  payments: "/admin/payments",
+  users: "/admin/users",
 } as const;
 
 /** Paths that will require a session once auth is integrated. */
@@ -64,4 +66,26 @@ export function safeAdminCallbackUrl(value: string | null | undefined): string {
   }
 
   return adminRoutes.dashboard;
+}
+
+/** Portal post-login redirects: only /portal* (never /admin*). */
+export function safePortalCallbackUrl(value: string | null | undefined): string {
+  if (!value) {
+    return platformRoutes.portal;
+  }
+
+  if (!value.startsWith("/") || value.startsWith("//") || value.includes("://")) {
+    return platformRoutes.portal;
+  }
+
+  const [pathname] = value.split("?");
+  if (!pathname) {
+    return platformRoutes.portal;
+  }
+
+  if (isProtectedPath(pathname) && !isAdminPath(pathname)) {
+    return value;
+  }
+
+  return platformRoutes.portal;
 }
