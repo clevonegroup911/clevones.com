@@ -84,16 +84,17 @@ Implémentation locale complète : miroir branché sur Control Center snapshot, 
 
 ## Commit
 
-- (pending) feat(x200): add operational mirror and universal action console (T047)
+- feat/x200-operational-mirror @ 81cd86e
 
 ## Pull Request
 
-- (pending) Draft PR base feat/x200-human-action-center
+- Draft PR #11 https://github.com/clevonegroup911/clevones.com/pull/11 (base feat/x200-human-action-center)
 
 ## Preuves
 
 - reports/tasks/T047.md
-- CI pending
+- quality-gate local PASS
+- CI pending on 81cd86e
 
 ## Risques
 
