@@ -10,8 +10,7 @@ import type {
   SourceStatus,
 } from "@/lib/x200/types";
 
-const ROOT = process.cwd();
-const TELEMETRY_PATH = path.join(ROOT, ".x200", "telemetry.json");
+const TELEMETRY_PATH = () => path.join(process.cwd(), ".x200", "telemetry.json");
 
 /** Default: 3 minutes — longer than default poll (60s) but short enough to detect death. */
 export const DEFAULT_TELEMETRY_STALE_MS = Number(
@@ -119,7 +118,7 @@ export async function readFedoraTelemetrySnapshot(
   options: { nowMs?: number; staleMs?: number } = {},
 ): Promise<AutopilotLiveState> {
   try {
-    await access(TELEMETRY_PATH, constants.R_OK);
+    await access(TELEMETRY_PATH(), constants.R_OK);
   } catch {
     return {
       fedoraTelemetry: "NOT_CONNECTED",
@@ -141,12 +140,31 @@ export async function readFedoraTelemetrySnapshot(
 
   let raw: string;
   try {
-    raw = await readFile(TELEMETRY_PATH, "utf8");
+    raw = await readFile(TELEMETRY_PATH(), "utf8");
   } catch (error) {
     return {
       fedoraTelemetry: "ERROR",
       autopilotLiveState: "WAITING_FOR_TELEMETRY",
       note: `Failed to read telemetry.json: ${error instanceof Error ? error.message : "unknown"}`,
+      updatedAt: null,
+      ageMs: null,
+      pid: null,
+      host: null,
+      mode: null,
+      head: null,
+      branch: null,
+      lastEvent: null,
+      cycle: null,
+      agentRunning: null,
+      taskId: null,
+    };
+  }
+
+  if (!raw.trim()) {
+    return {
+      fedoraTelemetry: "INVALID",
+      autopilotLiveState: "WAITING_FOR_TELEMETRY",
+      note: "telemetry.json is empty (possible mid-write race avoided by atomic rename)",
       updatedAt: null,
       ageMs: null,
       pid: null,
@@ -184,7 +202,7 @@ export async function readFedoraTelemetrySnapshot(
   const derived = deriveLiveStateFromTelemetry(parsed.data, options);
   // Touch mtime only for diagnostics — content updatedAt is authoritative.
   try {
-    await stat(TELEMETRY_PATH);
+    await stat(TELEMETRY_PATH());
   } catch {
     // ignore
   }

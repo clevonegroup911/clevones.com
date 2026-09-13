@@ -15,7 +15,9 @@ import type {
   TaskStatus,
 } from "@/lib/x200/types";
 
-const ROOT = process.cwd();
+export function repoPath(...segments: string[]): string {
+  return path.join(process.cwd(), ...segments);
+}
 
 const TASK_STATUSES: TaskStatus[] = [
   "À_FAIRE",
@@ -27,10 +29,6 @@ const TASK_STATUSES: TaskStatus[] = [
   "TERMINÉE",
   "ANNULÉE",
 ];
-
-export function repoPath(...segments: string[]): string {
-  return path.join(ROOT, ...segments);
-}
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -339,7 +337,33 @@ export async function readProductCompleteSnapshot(options: {
 
   try {
     const raw = await readFile(filePath, "utf8");
+    if (!raw.trim()) {
+      return {
+        status: "INVALID",
+        present: true,
+        head: null,
+        goalHash: null,
+        generatedAt: null,
+        matchesCurrentHead: null,
+        matchesCurrentGoalHash: null,
+        summary: null,
+        warning: "PRODUCT_COMPLETE.json is empty",
+      };
+    }
     const data = JSON.parse(raw) as Record<string, unknown>;
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return {
+        status: "INVALID",
+        present: true,
+        head: null,
+        goalHash: null,
+        generatedAt: null,
+        matchesCurrentHead: null,
+        matchesCurrentGoalHash: null,
+        summary: null,
+        warning: "PRODUCT_COMPLETE.json root must be an object",
+      };
+    }
     const head = typeof data.head === "string" ? data.head : null;
     const goalHash = typeof data.goalHash === "string" ? data.goalHash : null;
 

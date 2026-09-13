@@ -1,17 +1,9 @@
-/**
- * Fedora AUTOPILOT → Control Center telemetry writer (T043).
- * Writes `.x200/telemetry.json` mode 0600 without secrets.
- */
-
-import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
+import { chmodSync, fsyncSync, mkdirSync, openSync, closeSync, renameSync, writeFileSync } from "node:fs";
 import { hostname } from "node:os";
 import { resolve } from "node:path";
 
 export const TELEMETRY_FILE_NAME = "telemetry.json";
 export const TELEMETRY_VERSION = 1;
-
-/** @typedef {"daemon"|"once"|"single"} TelemetryMode */
-/** @typedef {"BOOT"|"FAST_LANE"|"AUTOPLAN"|"AUTOPLAN_COMPLETE"|"HUMAN_GATE"|"WAIT"|"IDLE"|"SHUTDOWN"} TelemetryEvent */
 
 /**
  * @param {string} [root]
@@ -26,10 +18,10 @@ export function resolveTelemetryPath(root = process.cwd()) {
  * @param {string} [input.root]
  * @param {number} [input.pid]
  * @param {string} [input.host]
- * @param {TelemetryMode} input.mode
+ * @param {string} input.mode
  * @param {string|null} input.head
  * @param {string|null} input.branch
- * @param {TelemetryEvent} input.lastEvent
+ * @param {string} input.lastEvent
  * @param {number} [input.cycle]
  * @param {boolean} [input.agentRunning]
  * @param {string|null} [input.taskId]
@@ -52,6 +44,9 @@ export function buildTelemetryPayload(input) {
 }
 
 /**
+ * Atomic write: temp file → fsync → chmod 0600 → rename over telemetry.json.
+ * Readers never observe a truncated JSON body mid-write.
+ *
  * @param {ReturnType<typeof buildTelemetryPayload>} payload
  * @param {{ root?: string }} [options]
  */
@@ -60,8 +55,17 @@ export function writeTelemetryFile(payload, options = {}) {
   const stateDir = resolve(root, ".x200");
   mkdirSync(stateDir, { recursive: true, mode: 0o700 });
   const path = resolveTelemetryPath(root);
-  writeFileSync(path, `${JSON.stringify(payload, null, 2)}\n`, { mode: 0o600 });
-  // mode on writeFileSync only applies at create-time; force 0600 on updates too.
+  const tmp = `${path}.${process.pid}.${Date.now()}.tmp`;
+  const body = `${JSON.stringify(payload, null, 2)}\n`;
+  const fd = openSync(tmp, "w", 0o600);
+  try {
+    writeFileSync(fd, body);
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
+  chmodSync(tmp, 0o600);
+  renameSync(tmp, path);
   chmodSync(path, 0o600);
   return path;
 }

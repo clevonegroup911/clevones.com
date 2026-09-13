@@ -7,17 +7,30 @@ import type {
   ProductCompleteSnapshot,
 } from "@/lib/x200/types";
 
-function redactActivityText(value: string): string {
+/** Shared monitoring redaction — never leave env-key names that trip the scanner. */
+export function redactMonitoringText(value: string, max = 280): string {
   return value
     .replace(
       /(authorization|bearer|token|password|secret|cookie|session)[=:\s]+[^\s,;]+/gi,
       "$1=[REDACTED]",
     )
+    .replace(/\bAUTH_SECRET\b/gi, "[REDACTED_ENV]")
+    .replace(/\bMFA_ENCRYPTION_KEY\b/gi, "[REDACTED_ENV]")
+    .replace(/\bDATABASE_URL\s*=/gi, "DATABASE_URL=[REDACTED]")
     .replace(/recovery\s*codes?/gi, "[REDACTED_RECOVERY]")
     .replace(/otpauth:\/\/\S+/gi, "[REDACTED_OTP]")
     .replace(/ghp_[A-Za-z0-9]{20,}/g, "[REDACTED_TOKEN]")
     .replace(/github_pat_[A-Za-z0-9_]{20,}/g, "[REDACTED_TOKEN]")
-    .slice(0, 280);
+    .replace(/Bearer\s+[A-Za-z0-9._\-]{20,}/gi, "Bearer [REDACTED]")
+    .replace(
+      /-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |OPENSSH |EC )?PRIVATE KEY-----/g,
+      "[REDACTED_PRIVATE_KEY]",
+    )
+    .slice(0, max);
+}
+
+function redactActivityText(value: string): string {
+  return redactMonitoringText(value, 280);
 }
 
 export function buildActivityFeed(input: {

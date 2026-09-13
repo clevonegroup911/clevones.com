@@ -1,6 +1,10 @@
 import "server-only";
 
-import { buildActivityFeed, assertNoSecretsInPayload } from "@/lib/x200/activity";
+import {
+  buildActivityFeed,
+  assertNoSecretsInPayload,
+  redactMonitoringText,
+} from "@/lib/x200/activity";
 import {
   computeEfficiency,
   computeSystemHealth,
@@ -15,6 +19,7 @@ import {
   readHumanGateSnapshot,
   readProductCompleteSnapshot,
   readProductGoalSnapshot,
+  emptyTaskCounts,
 } from "@/lib/x200/sources";
 import { readFedoraTelemetrySnapshot } from "@/lib/x200/telemetry";
 import type {
@@ -25,15 +30,7 @@ import type {
 } from "@/lib/x200/types";
 
 function sanitizeDisplayText(value: string): string {
-  return value
-    .replace(/recovery\s*codes?/gi, "[REDACTED_RECOVERY]")
-    .replace(/otpauth:\/\/\S+/gi, "[REDACTED_OTP]")
-    .replace(
-      /(authorization|bearer|token|password|secret|cookie|session)[=:\s]+[^\s,;]+/gi,
-      "$1=[REDACTED]",
-    )
-    .replace(/ghp_[A-Za-z0-9]{20,}/g, "[REDACTED_TOKEN]")
-    .replace(/github_pat_[A-Za-z0-9_]{20,}/g, "[REDACTED_TOKEN]");
+  return redactMonitoringText(value, 2000);
 }
 
 function sanitizeTask(task: ControlCenterTask): ControlCenterTask {
@@ -54,7 +51,180 @@ function sanitizeTask(task: ControlCenterTask): ControlCenterTask {
   };
 }
 
+function deepRedactStrings(value: unknown): unknown {
+  if (typeof value === "string") {
+    return sanitizeDisplayText(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => deepRedactStrings(item));
+  }
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+      out[key] = deepRedactStrings(child);
+    }
+    return out;
+  }
+  return value;
+}
+
+/** Last-resort snapshot when an unexpected exception escapes source readers. */
+export function buildControlCenterFatalSnapshot(
+  error: unknown,
+): ControlCenterSnapshot {
+  const generatedAt = new Date().toISOString();
+  const message =
+    error instanceof Error ? error.message : "unexpected control-center failure";
+  const emptyCounts = emptyTaskCounts();
+  const sources: ControlCenterSources = {
+    backlog: "ERROR",
+    productGoal: "ERROR",
+    humanGate: "ERROR",
+    productComplete: "ERROR",
+    git: "ERROR",
+    github: "ERROR",
+    fedoraTelemetry: "ERROR",
+  };
+  const freshness = Object.fromEntries(
+    Object.keys(sources).map((key) => [key, "unavailable"]),
+  ) as Record<keyof ControlCenterSources, Freshness>;
+
+  return {
+    generatedAt,
+    sources,
+    freshness,
+    warnings: [
+      sanitizeDisplayText(
+        `Control Center degraded: ${message}. Monitoring sources marked ERROR; auth still required.`,
+      ),
+    ],
+    systemHealth: {
+      status: "UNKNOWN",
+      scorePercent: null,
+      criteria: [],
+      rationale: "Control Center snapshot assembly failed; criteria unavailable.",
+    },
+    pipeline: [],
+    backlog: {
+      status: "ERROR",
+      counts: emptyCounts,
+      currentTask: null,
+      tasks: [],
+    },
+    productGoal: {
+      status: "ERROR",
+      exists: false,
+      hash: null,
+      byteLength: null,
+      detectableCriteriaCount: null,
+      warning: sanitizeDisplayText(message),
+    },
+    humanGate: {
+      status: "ERROR",
+      present: false,
+      createdAt: null,
+      reason: null,
+      taskId: null,
+      requiredAction: null,
+      blocking: [],
+      merged: null,
+      deployed: null,
+      warning: sanitizeDisplayText(message),
+    },
+    productComplete: {
+      status: "ERROR",
+      present: false,
+      head: null,
+      goalHash: null,
+      generatedAt: null,
+      matchesCurrentHead: null,
+      matchesCurrentGoalHash: null,
+      summary: null,
+      warning: sanitizeDisplayText(message),
+    },
+    git: {
+      head: null,
+      branch: null,
+      dirty: null,
+      dirtyFileCount: null,
+      recentCommits: [],
+      status: "ERROR",
+      warning: sanitizeDisplayText(message),
+    },
+    github: {
+      status: "ERROR",
+      warning: sanitizeDisplayText(message),
+      repository: "UNKNOWN",
+      prNumber: null,
+      prTitle: null,
+      prState: null,
+      prDraft: null,
+      prMergeable: null,
+      prHeadSha: null,
+      prUrl: null,
+      ciLatestRunId: null,
+      ciLatestRunNumber: null,
+      ciLatestConclusion: null,
+      ciLatestStatus: null,
+      ciLatestUrl: null,
+      ciLatestName: null,
+    },
+    fedora: {
+      fedoraTelemetry: "ERROR",
+      autopilotLiveState: "WAITING_FOR_TELEMETRY",
+      note: sanitizeDisplayText(message),
+      updatedAt: null,
+      ageMs: null,
+      pid: null,
+      host: null,
+      mode: null,
+      head: null,
+      branch: null,
+      lastEvent: null,
+      cycle: null,
+      agentRunning: null,
+      taskId: null,
+    },
+    efficiency: {
+      completedTasks: 0,
+      successRatePercent: null,
+      totalAttempts: 0,
+      blockedTasks: 0,
+      failedTasks: 0,
+      averageAttemptsOnCompleted: null,
+      averageCycleDays: null,
+      humanWaitHint: null,
+      notes: ["N/A — snapshot degraded"],
+    },
+    blockers: [
+      {
+        id: "control_center_degraded",
+        severity: "HIGH",
+        title: "Control Center degraded",
+        detail: sanitizeDisplayText(message),
+        source: "backlog",
+      },
+    ],
+    activity: [],
+    roles: CONTROL_CENTER_ROLES.map((role) => ({
+      id: role.id,
+      name: role.name,
+      responsibilities: [...role.responsibilities],
+    })),
+    lastUpdate: generatedAt,
+  };
+}
+
 export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
+  try {
+    return await assembleControlCenterSnapshot();
+  } catch (error) {
+    // Monitoring must never 500 the dashboard for source/assembly failures.
+    return buildControlCenterFatalSnapshot(error);
+  }
+}
+
+async function assembleControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
   const generatedAt = new Date().toISOString();
   const warnings: string[] = [];
 
@@ -182,7 +352,7 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
     productComplete,
   });
 
-  const snapshot: ControlCenterSnapshot = {
+  let snapshot: ControlCenterSnapshot = {
     generatedAt,
     sources,
     freshness,
@@ -220,9 +390,40 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
 
   const secretHits = assertNoSecretsInPayload(snapshot);
   if (secretHits.length > 0) {
-    throw new Error(
-      `Refusing Control Center payload: forbidden pattern(s) ${secretHits.join(", ")}`,
-    );
+    snapshot = deepRedactStrings(snapshot) as ControlCenterSnapshot;
+    snapshot.warnings = [
+      ...snapshot.warnings,
+      `Redacted forbidden monitoring patterns (${secretHits.length}) instead of crashing.`,
+    ];
+    const stillHit = assertNoSecretsInPayload(snapshot);
+    if (stillHit.length > 0) {
+      // Strip offending activity/evidence rather than HTTP 500.
+      snapshot.activity = [];
+      snapshot.backlog = {
+        ...snapshot.backlog,
+        tasks: snapshot.backlog.tasks.map((task) => ({
+          ...task,
+          evidence: [],
+          objective: "[REDACTED]",
+          nextAction: null,
+          blockedReason: null,
+          lastTransitionReason: null,
+        })),
+        currentTask: snapshot.backlog.currentTask
+          ? {
+              ...snapshot.backlog.currentTask,
+              evidence: [],
+              objective: "[REDACTED]",
+              nextAction: null,
+              blockedReason: null,
+              lastTransitionReason: null,
+            }
+          : null,
+      };
+      snapshot.warnings.push(
+        "Cleared activity/evidence after residual secret-pattern hits.",
+      );
+    }
   }
 
   return snapshot;

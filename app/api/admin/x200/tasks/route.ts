@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
-import { getControlCenterSnapshot } from "@/lib/x200/control-center";
+import {
+  buildControlCenterFatalSnapshot,
+  getControlCenterSnapshot,
+} from "@/lib/x200/control-center";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,58 +48,53 @@ export async function GET(request: Request) {
     return noStoreJson({ error: "Query invalide." }, { status: 400 });
   }
 
-  try {
-    const snapshot = await getControlCenterSnapshot();
-    let tasks = snapshot.backlog.tasks;
+  const snapshot = await getControlCenterSnapshot().catch((error) =>
+    buildControlCenterFatalSnapshot(error),
+  );
+  let tasks = snapshot.backlog.tasks;
 
-    switch (parsed.data.filter) {
-      case "en_cours":
-        tasks = tasks.filter(
-          (task) =>
-            task.status === "EN_COURS" || task.status === "EN_CONTRÔLE",
-        );
-        break;
-      case "pretes":
-        tasks = tasks.filter((task) => task.status === "PRÊTE");
-        break;
-      case "terminees":
-        tasks = tasks.filter((task) => task.status === "TERMINÉE");
-        break;
-      case "bloquees":
-        tasks = tasks.filter((task) => task.status === "BLOQUÉE");
-        break;
-      case "echouees":
-        tasks = tasks.filter((task) => task.status === "ÉCHOUÉE");
-        break;
-      default:
-        break;
-    }
-
-    const q = parsed.data.q?.trim().toLowerCase();
-    if (q) {
+  switch (parsed.data.filter) {
+    case "en_cours":
       tasks = tasks.filter(
         (task) =>
-          task.id.toLowerCase().includes(q) ||
-          task.title.toLowerCase().includes(q),
+          task.status === "EN_COURS" || task.status === "EN_CONTRÔLE",
       );
-    }
+      break;
+    case "pretes":
+      tasks = tasks.filter((task) => task.status === "PRÊTE");
+      break;
+    case "terminees":
+      tasks = tasks.filter((task) => task.status === "TERMINÉE");
+      break;
+    case "bloquees":
+      tasks = tasks.filter((task) => task.status === "BLOQUÉE");
+      break;
+    case "echouees":
+      tasks = tasks.filter((task) => task.status === "ÉCHOUÉE");
+      break;
+    default:
+      break;
+  }
 
-    return noStoreJson({
-      generatedAt: snapshot.generatedAt,
-      sources: { backlog: snapshot.sources.backlog },
-      freshness: { backlog: snapshot.freshness.backlog },
-      warnings: snapshot.warnings.filter((w) =>
-        w.toLowerCase().includes("backlog"),
-      ),
-      counts: snapshot.backlog.counts,
-      filter: parsed.data.filter,
-      q: parsed.data.q ?? null,
-      tasks,
-    });
-  } catch {
-    return noStoreJson(
-      { error: "Impossible de charger les tâches X200." },
-      { status: 500 },
+  const q = parsed.data.q?.trim().toLowerCase();
+  if (q) {
+    tasks = tasks.filter(
+      (task) =>
+        task.id.toLowerCase().includes(q) ||
+        task.title.toLowerCase().includes(q),
     );
   }
+
+  return noStoreJson({
+    generatedAt: snapshot.generatedAt,
+    sources: { backlog: snapshot.sources.backlog },
+    freshness: { backlog: snapshot.freshness.backlog },
+    warnings: snapshot.warnings.filter((w) =>
+      w.toLowerCase().includes("backlog"),
+    ),
+    counts: snapshot.backlog.counts,
+    filter: parsed.data.filter,
+    q: parsed.data.q ?? null,
+    tasks,
+  });
 }

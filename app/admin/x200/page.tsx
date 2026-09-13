@@ -2,7 +2,10 @@ import { createPageMetadata } from "@/lib/metadata";
 
 import { ControlCenterClient } from "@/app/admin/x200/control-center-client";
 import { requireAdmin } from "@/lib/auth/require-admin";
-import { getControlCenterSnapshot } from "@/lib/x200/control-center";
+import {
+  buildControlCenterFatalSnapshot,
+  getControlCenterSnapshot,
+} from "@/lib/x200/control-center";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +19,13 @@ export const metadata = createPageMetadata({
 
 export default async function AdminX200ControlCenterPage() {
   await requireAdmin();
-  const snapshot = await getControlCenterSnapshot();
+  let snapshot;
+  try {
+    snapshot = await getControlCenterSnapshot();
+  } catch (error) {
+    // Auth succeeded; monitoring assembly must not become HTTP 500.
+    snapshot = buildControlCenterFatalSnapshot(error);
+  }
 
   return <ControlCenterClient snapshot={snapshot} />;
 }
