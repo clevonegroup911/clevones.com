@@ -37,7 +37,7 @@ test("portal USER cannot open /admin/x200", async ({ page }, testInfo) => {
   );
 });
 
-test("admin Control Center shows real cards, registry, gate, telemetry placeholders", async ({
+test("admin Control Center shows real cards, registry, gate, telemetry status", async ({
   page,
 }, testInfo) => {
   skipWithoutDb();
@@ -59,10 +59,8 @@ test("admin Control Center shows real cards, registry, gate, telemetry placehold
   await expect(page.getByTestId("x200-task-registry")).toBeVisible();
   await expect(page.getByTestId("x200-pipeline")).toBeVisible();
 
-  await expect(page.getByText("FEDORA TELEMETRY = NOT_CONNECTED")).toBeVisible();
-  await expect(
-    page.getByText("AUTOPILOT LIVE STATE = WAITING_FOR_TELEMETRY"),
-  ).toBeVisible();
+  await expect(page.getByText(/FEDORA TELEMETRY = /)).toBeVisible();
+  await expect(page.getByText(/AUTOPILOT LIVE STATE = /)).toBeVisible();
 
   await expect(page.getByRole("button", { name: "Toutes" })).toBeVisible();
   await expect(page.getByRole("button", { name: "En cours" })).toBeVisible();
@@ -72,10 +70,29 @@ test("admin Control Center shows real cards, registry, gate, telemetry placehold
   expect(status.ok()).toBeTruthy();
   const body = (await status.json()) as {
     sources?: { fedoraTelemetry?: string; github?: string };
+    fedora?: { autopilotLiveState?: string; fedoraTelemetry?: string };
     systemHealth?: { status?: string; scorePercent?: number | null };
     github?: { ciLatestConclusion?: string | null };
   };
-  expect(body.sources?.fedoraTelemetry).toBe("NOT_CONNECTED");
+  expect([
+    "OK",
+    "NOT_CONNECTED",
+    "INVALID",
+    "ERROR",
+    "MISSING",
+    "UNKNOWN",
+  ]).toContain(body.sources?.fedoraTelemetry ?? "");
+  expect([
+    "WAITING_FOR_TELEMETRY",
+    "STALE",
+    "RUNNING",
+    "IDLE",
+    "AUTOPLAN",
+    "COMPLETE",
+  ]).toContain(body.fedora?.autopilotLiveState ?? "");
+  if (body.sources?.fedoraTelemetry === "NOT_CONNECTED") {
+    expect(body.fedora?.autopilotLiveState).toBe("WAITING_FOR_TELEMETRY");
+  }
   expect(["OK", "UNKNOWN", "ERROR", "MISSING"]).toContain(
     body.sources?.github ?? "",
   );

@@ -16,6 +16,7 @@ import {
   readProductCompleteSnapshot,
   readProductGoalSnapshot,
 } from "@/lib/x200/sources";
+import { readFedoraTelemetrySnapshot } from "@/lib/x200/telemetry";
 import type {
   ControlCenterSnapshot,
   ControlCenterSources,
@@ -57,17 +58,21 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
   const generatedAt = new Date().toISOString();
   const warnings: string[] = [];
 
-  const [backlog, productGoal, humanGate, git] = await Promise.all([
+  const [backlog, productGoal, humanGate, git, fedora] = await Promise.all([
     readBacklogSnapshot(),
     readProductGoalSnapshot(),
     readHumanGateSnapshot(),
     readGitSnapshot(),
+    readFedoraTelemetrySnapshot(),
   ]);
 
   if (backlog.warning) warnings.push(backlog.warning);
   if (productGoal.warning) warnings.push(productGoal.warning);
   if (humanGate.warning) warnings.push(humanGate.warning);
   if (git.warning) warnings.push(git.warning);
+  if (fedora.note && fedora.fedoraTelemetry !== "OK") {
+    warnings.push(fedora.note);
+  }
 
   const productComplete = await readProductCompleteSnapshot({
     currentHead: git.head,
@@ -105,7 +110,7 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
         : productComplete.status,
     git: git.status,
     github: github.status,
-    fedoraTelemetry: "NOT_CONNECTED",
+    fedoraTelemetry: fedora.fedoraTelemetry,
   };
 
   const freshness: Record<keyof ControlCenterSources, Freshness> = {
@@ -115,7 +120,12 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
     productComplete: productComplete.present ? "file" : "unavailable",
     git: git.status === "OK" ? "live" : "unavailable",
     github: github.status === "OK" ? "live" : "unavailable",
-    fedoraTelemetry: "unavailable",
+    fedoraTelemetry:
+      fedora.fedoraTelemetry === "OK" && fedora.autopilotLiveState !== "STALE"
+        ? "live"
+        : fedora.fedoraTelemetry === "OK"
+          ? "cached"
+          : "unavailable",
   };
 
   const systemHealth = computeSystemHealth({
@@ -146,7 +156,9 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
     git,
     counts: backlog.counts,
     backlogStatus: backlog.status,
-    fedoraConnected: false,
+    fedoraConnected:
+      fedora.fedoraTelemetry === "OK" && fedora.autopilotLiveState !== "STALE",
+    fedoraLiveState: fedora.autopilotLiveState,
   }).map((blocker) => ({
     ...blocker,
     title: sanitizeDisplayText(blocker.title),
@@ -189,9 +201,11 @@ export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot>
     git,
     github,
     fedora: {
-      fedoraTelemetry: "NOT_CONNECTED",
-      autopilotLiveState: "WAITING_FOR_TELEMETRY",
-      note: "T043 will introduce the real Fedora heartbeat. T042 does not invent live agent state.",
+      ...fedora,
+      note: sanitizeDisplayText(fedora.note),
+      host: fedora.host ? sanitizeDisplayText(fedora.host) : null,
+      lastEvent: fedora.lastEvent ? sanitizeDisplayText(fedora.lastEvent) : null,
+      taskId: fedora.taskId ? sanitizeDisplayText(fedora.taskId) : null,
     },
     efficiency,
     blockers,

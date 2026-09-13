@@ -264,7 +264,9 @@ export function ControlCenterClient({
 
         <Card title="ACTIVE AGENT" testId="card-active-agent">
           <p className="text-sm text-white">
-            {current?.claimWorkerId ?? "WAITING_FOR_TELEMETRY"}
+            {snapshot.fedora.host
+              ? `${snapshot.fedora.host} · pid ${snapshot.fedora.pid ?? "N/A"}`
+              : (current?.claimWorkerId ?? "WAITING_FOR_TELEMETRY")}
           </p>
           <p className="mt-2 text-xs text-gray-muted">
             FEDORA TELEMETRY = {snapshot.fedora.fedoraTelemetry}
@@ -272,6 +274,13 @@ export function ControlCenterClient({
           <p className="mt-1 text-xs text-gray-muted">
             AUTOPILOT LIVE STATE = {snapshot.fedora.autopilotLiveState}
           </p>
+          {snapshot.fedora.lastEvent ? (
+            <p className="mt-1 text-xs text-gray-muted">
+              lastEvent={snapshot.fedora.lastEvent}
+              {snapshot.fedora.taskId ? ` · task=${snapshot.fedora.taskId}` : ""}
+            </p>
+          ) : null}
+          <p className="mt-1 text-xs text-gray-muted">{snapshot.fedora.note}</p>
         </Card>
 
         <Card title="CI STATUS" testId="card-ci-status">

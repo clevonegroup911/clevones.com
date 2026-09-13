@@ -2,6 +2,7 @@ import type {
   Blocker,
   ControlCenterTask,
   EfficiencyMetrics,
+  FedoraLiveState,
   GitSnapshot,
   GithubSnapshot,
   HealthCriterion,
@@ -404,6 +405,7 @@ export function deriveBlockers(input: {
   counts: TaskCounts | null;
   backlogStatus: SourceStatus;
   fedoraConnected: boolean;
+  fedoraLiveState?: FedoraLiveState;
 }): Blocker[] {
   const blockers: Blocker[] = [];
 
@@ -470,12 +472,20 @@ export function deriveBlockers(input: {
     });
   }
 
-  if (!input.fedoraConnected) {
+  if (input.fedoraLiveState === "STALE") {
+    blockers.push({
+      id: "telemetry_stale",
+      severity: "WARNING",
+      title: "Telemetry stale",
+      detail: "Fedora AUTOPILOT heartbeat is STALE — supervisor may be stopped",
+      source: "fedoraTelemetry",
+    });
+  } else if (!input.fedoraConnected) {
     blockers.push({
       id: "telemetry_unavailable",
       severity: "INFO",
       title: "Telemetry unavailable",
-      detail: "Fedora AUTOPILOT live state WAITING_FOR_TELEMETRY (T043)",
+      detail: "Fedora AUTOPILOT live state WAITING_FOR_TELEMETRY",
       source: "fedoraTelemetry",
     });
   }

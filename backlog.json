@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": "T043",
+  "nextTaskId": null,
   "tasks": [
     {
       "project": "clevones.com",
@@ -2916,21 +2916,26 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 2,
       "risk": "medium",
       "requiresHuman": false,
       "owner": "cursor",
       "updatedAt": "2026-09-13",
-      "attempts": 0,
-      "lastTransitionReason": "[X200-AUTOPLAN] created after T042 TERMINÉE; Fedora telemetry gap",
-      "nextAction": "réserver et implémenter le heartbeat Fedora → Control Center",
+      "attempts": 1,
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality FULL",
+      "nextAction": "réconcilier le job quality FULL puis clôturer et continuer dans le même cycle",
       "blockedReason": null,
       "claim": null,
       "regressionOf": null,
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
-      "evidence": [],
+      "evidence": [
+        "telemetry writer/reader + Control Center wired",
+        "readJsonBody 4xx for empty/malformed JSON on payment admin routes",
+        "payments-gateway e2e uses browser fetch for complete JSON body",
+        "local validate/test/lint/tsc/build/secrets/diff-check PASS"
+      ],
       "evidenceRecords": []
     },
     {
@@ -4139,9 +4144,33 @@
       "taskId": "T044",
       "status": "À_FAIRE",
       "note": "[X200-AUTOPLAN] docs + PRODUCT_COMPLETE after T043; not dangerous commands"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente quality FULL (CI #112 Playwright recovery included)"
     }
   ],
-  "registryVersion": 121,
+  "registryVersion": 125,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

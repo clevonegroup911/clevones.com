@@ -130,6 +130,28 @@ Chaque démarrage émet une ligne horodatée `AUTOPILOT_BOOT` (timestamp, pid, h
 
 Ne pas interpréter d'anciens fichiers `.x200/logs/*` comme preuve de l'état du processus courant. Préférer `journalctl`.
 `AUTOPILOT_IDLE` est un ancien libellé ambigu : il ne signifie plus « produit non terminé ».
+
+### Télémétrie Control Center (T043)
+
+Le superviseur écrit `.x200/telemetry.json` (mode `0600`, dossier `.x200` en `0700`) à chaque boot/cycle :
+
+| Champ | Rôle |
+|---|---|
+| `pid` / `host` / `mode` | Identité du superviseur |
+| `head` / `branch` | Git observé au moment du heartbeat |
+| `lastEvent` | `BOOT`, `FAST_LANE`, `AUTOPLAN`, `WAIT`, `HUMAN_GATE`, `AUTOPLAN_COMPLETE`, `SHUTDOWN` |
+| `agentRunning` | `true` seulement pendant un agent Cursor |
+| `updatedAt` | Horodatage ISO du heartbeat |
+| `taskId` | Tâche EN_COURS/EN_CONTRÔLE si connue (jamais de token/secret) |
+
+`/admin/x200` lit ce fichier côté serveur :
+
+- fichier absent → `fedoraTelemetry=NOT_CONNECTED`, `WAITING_FOR_TELEMETRY`
+- JSON invalide → `INVALID` / `WAITING_FOR_TELEMETRY`
+- `updatedAt` trop vieux (défaut 180s, `X200_TELEMETRY_STALE_MS`) → live state `STALE` (jamais de faux `RUNNING`)
+- frais → `OK` + `RUNNING` / `IDLE` / `AUTOPLAN` / `COMPLETE` selon `lastEvent` / `agentRunning`
+
+Aucune commande shell n'est exposée au navigateur.
 ## Règles AUTOPLAN
 
 AUTOPLAN :

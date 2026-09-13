@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { readJsonBody } from "@/lib/http/read-json-body";
 import { resolvePersistedHumanReview } from "@/lib/payments/activation";
 import { canAccessAdminPayments } from "@/lib/payments/access";
 import { adminReviewResolveSchema } from "@/lib/payments/schemas";
@@ -20,14 +21,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Accès admin paiements refusé." }, { status: 403 });
   }
 
-  let body: unknown = {};
-  try {
-    body = await request.json();
-  } catch {
-    body = {};
+  const json = await readJsonBody(request);
+  if (!json.ok) {
+    return json.response;
   }
 
-  const parsed = adminReviewResolveSchema.safeParse(body);
+  const parsed = adminReviewResolveSchema.safeParse(json.body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Corps invalide." }, { status: 400 });
   }

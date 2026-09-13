@@ -195,10 +195,29 @@ export type RoleCard = {
   responsibilities: string[];
 };
 
+export type FedoraLiveState =
+  | "WAITING_FOR_TELEMETRY"
+  | "STALE"
+  | "RUNNING"
+  | "IDLE"
+  | "AUTOPLAN"
+  | "COMPLETE";
+
 export type AutopilotLiveState = {
-  fedoraTelemetry: "NOT_CONNECTED";
-  autopilotLiveState: "WAITING_FOR_TELEMETRY";
+  fedoraTelemetry: SourceStatus;
+  autopilotLiveState: FedoraLiveState;
   note: string;
+  updatedAt: string | null;
+  ageMs: number | null;
+  pid: number | null;
+  host: string | null;
+  mode: string | null;
+  head: string | null;
+  branch: string | null;
+  lastEvent: string | null;
+  cycle: number | null;
+  agentRunning: boolean | null;
+  taskId: string | null;
 };
 
 export type ControlCenterSnapshot = {

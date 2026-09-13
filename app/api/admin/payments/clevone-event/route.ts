@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { auditActions, writeAuditLog } from "@/lib/admin/audit";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { readJsonBody } from "@/lib/http/read-json-body";
 import { canAccessAdminPayments } from "@/lib/payments/access";
 import { findPaymentWithInvoice } from "@/lib/payments/catalog";
 import {
@@ -28,14 +29,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Accès admin paiements refusé." }, { status: 403 });
   }
 
-  let body: unknown = {};
-  try {
-    body = await request.json();
-  } catch {
-    body = {};
+  const json = await readJsonBody(request);
+  if (!json.ok) {
+    return json.response;
   }
 
-  const parsed = adminClevoneEventSchema.safeParse(body);
+  const parsed = adminClevoneEventSchema.safeParse(json.body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Corps invalide." }, { status: 400 });
   }
