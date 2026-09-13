@@ -2985,15 +2985,15 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 1,
       "risk": "medium",
       "requiresHuman": false,
       "owner": "cursor",
       "updatedAt": "2026-09-13",
       "attempts": 1,
-      "lastTransitionReason": "docs + inventaires resyncés ; quality-gate local PASS ; attente quality CI",
-      "nextAction": "réconcilier quality puis émettre PRODUCT_COMPLETE et clôturer",
+      "lastTransitionReason": "quality CI FAST SUCCESS run 34763905161 on 424a842; T044 closed + PRODUCT_COMPLETE local",
+      "nextAction": null,
       "blockedReason": null,
       "claim": null,
       "regressionOf": null,
@@ -3002,7 +3002,12 @@
       "evidence": [
         "PROJECT_CONTEXT + CMS/analytics inventaires alignés T001–T043 TERMINÉE",
         "X200_AUTOPILOT telemetry section preserved; inventaires no longer claim T039/T040 open",
-        "quality-gate T044 PASS (validate/x200:test/secrets/diff-check)"
+        "quality-gate T044 PASS (validate/x200:test/secrets/diff-check)",
+        "CI FAST quality SUCCESS run 34763905161 head 424a84280589c7f4663519ebc852d8fe5724385d",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161",
+        "reports/tasks/T044.md",
+        ".x200/PRODUCT_COMPLETE.json local (head+goalHash aligned; no merge/deploy/PSP live claim)",
+        "MERGED=NO DEPLOYED=NO"
       ],
       "evidenceRecords": [
         {
@@ -3014,6 +3019,16 @@
           "version": null,
           "at": "2026-09-13T14:51:08.000Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34763905161",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161",
+          "version": "424a84280589c7f4663519ebc852d8fe5724385d",
+          "at": "2026-09-13T14:53:41.000Z",
+          "location": "github-actions:quality FAST"
         }
       ]
     }
@@ -4222,9 +4237,15 @@
       "taskId": "T044",
       "status": "EN_CONTRÔLE",
       "note": "docs resync + quality-gate local PASS ; attente quality CI"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "TERMINÉE",
+      "note": "quality CI FAST SUCCESS run 34763905161 on 424a842; PRODUCT_COMPLETE local reissued"
     }
   ],
-  "registryVersion": 128,
+  "registryVersion": 129,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

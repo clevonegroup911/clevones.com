@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-control-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `2b644e9391321c32b86f4a60cf3fd5f954766a92` (T043 close ; T044 en cours) | CONFIRMÉ |
+| HEAD travail | (mis à jour au commit de clôture T044) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -39,8 +39,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T043 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
-| T044 | resync docs + PRODUCT_COMPLETE post-T041–T043 | CONFIRMÉ cette session |
+| T001–T044 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` lecture seule + télémétrie Fedora réelle (T042/T043) | CONFIRMÉ dépôt |
@@ -48,13 +47,13 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 
 Preuves CI récentes (CONFIRMÉ) :
 
-- T041 quality SUCCESS — hardening paiements (référence dans `reports/tasks/T041.md`)
 - T042 FULL quality SUCCESS `31af13b` / run [34759082358](https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358)
 - T043 FULL quality SUCCESS `9317276` / run [34763250287](https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287)
+- T044 FAST quality SUCCESS `424a842` / run [34763905161](https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161)
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Aucun écart **automatique** restant au registre après T044 (docs + marqueur). Les écarts restants sont des **gates humaines / externes**.
+Aucun écart **automatique** restant au registre. Les écarts restants sont des **gates humaines / externes**.
 
 ### Gates humaines / externes (obligatoires hors auto)
 

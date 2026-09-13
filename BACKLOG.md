@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 128
+- Registre : 129
 - Mode : single-executor
 - Mis à jour : 2026-09-13
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 43
+- TERMINÉE : 44
 - ANNULÉE : 0
 
 ## Tâches
@@ -65,4 +65,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T041 | P0 | TERMINÉE | Final pre-merge payment security hardening | non |
 | T042 | P0 | TERMINÉE | X200 Control Center — observabilité et supervision | non |
 | T043 | P1 | TERMINÉE | Pont télémétrie Fedora AUTOPILOT → /admin/x200 | non |
-| T044 | P1 | EN_CONTRÔLE | Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043 | non |
+| T044 | P1 | TERMINÉE | Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043 | non |
