@@ -86,25 +86,18 @@ async function main() {
     `${JSON.stringify({ databaseUrl, startedDocker, dbReady }, null, 2)}\n`,
   );
 
-  // Prefer production server when a build already exists (CI FULL runs build first).
-  // `next dev` can flake with loadManifest "Unexpected end of JSON input" under load.
-  const useProdServer = existsSync(BUILD_ID);
-  const serverEnv: NodeJS.ProcessEnv = useProdServer
-    ? { ...env, NODE_ENV: "production" }
-    : env;
+  // Keep `next dev` for Playwright: `next start` + NODE_ENV=production forces Secure
+  // cookies that break http://127.0.0.1 e2e sessions. X200_E2E skips costly remote
+  // mirror fetches to reduce next-dev flake under FULL CI load.
   const child = spawn(
     NEXT_BIN,
-    useProdServer
-      ? ["start", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)]
-      : ["dev", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)],
+    ["dev", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)],
     {
-      env: serverEnv,
+      env,
       stdio: "inherit",
     },
   );
-  process.stderr.write(
-    `e2e webServer mode=${useProdServer ? "next start" : "next dev"}\n`,
-  );
+  process.stderr.write("e2e webServer mode=next dev (X200_E2E remote skip enabled)\n");
 
   child.on("exit", (code) => {
     process.exit(code ?? 1);
