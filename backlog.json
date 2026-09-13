@@ -48,7 +48,7 @@
       "idAsc"
     ]
   },
-  "nextTaskId": null,
+  "nextTaskId": "T043",
   "tasks": [
     {
       "project": "clevones.com",
@@ -2876,6 +2876,111 @@
           "location": "github-actions:quality FULL"
         }
       ]
+    },
+    {
+      "id": "T043",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL crit.8 monitoring / T042 Fedora stub",
+      "title": "Pont télémétrie Fedora AUTOPILOT → /admin/x200",
+      "objective": "Remplacer les stubs T042 (NOT_CONNECTED / WAITING_FOR_TELEMETRY) par un heartbeat réel écrit par le superviseur Fedora et lu serveur-side par le Control Center, sans inventer d'état agent ni exposer de secrets.",
+      "priority": "P1",
+      "dependencies": [
+        "T042"
+      ],
+      "scope": [
+        "scripts/x200-autopilot.mjs",
+        "scripts/lib",
+        "lib/x200",
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "docs/X200_AUTOPILOT.md",
+        "tests/e2e",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Autopilot écrit un fichier local versionné (ex. .x200/telemetry.json) : pid/host/mode/HEAD/branch/lastEvent/updatedAt, mode 0600, sans secrets",
+        "Control Center lit ce fichier ; frais → fedoraTelemetry=OK + état live dérivé ; absent/stale → NOT_CONNECTED/WAITING_FOR_TELEMETRY/STALE (jamais de faux RUNNING)",
+        "Cartes ACTIVE AGENT / blockers utilisent la télémétrie réelle",
+        "Aucune commande shell depuis le navigateur ; pas de Pause/Resume/Merge/Deploy",
+        "Tests unitaires + Playwright mis à jour ; pas de données inventées"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "PRÊTE",
+      "estimatedCost": 2,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 0,
+      "lastTransitionReason": "[X200-AUTOPLAN] created after T042 TERMINÉE; Fedora telemetry gap",
+      "nextAction": "réserver et implémenter le heartbeat Fedora → Control Center",
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [],
+      "evidenceRecords": []
+    },
+    {
+      "id": "T044",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL crit.17–20 docs + PRODUCT_COMPLETE",
+      "title": "Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043",
+      "objective": "Aligner PROJECT_CONTEXT/inventaires sur T001–T043 TERMINÉE, documenter les gates humaines restantes, et réémettre .x200/PRODUCT_COMPLETE.json aligné HEAD + hash PRODUCT_GOAL.md avec preuves concrètes (sans claim live prod/merge/deploy).",
+      "priority": "P1",
+      "dependencies": [
+        "T043"
+      ],
+      "scope": [
+        "PROJECT_CONTEXT.md",
+        "docs/CMS_AND_DOCUMENTS.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "docs/X200_AUTOPILOT.md",
+        ".x200/PRODUCT_COMPLETE.json",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "PROJECT_CONTEXT reflète T041–T043 fermés, Control Center + télémétrie, écarts = gates humaines/externes seulement",
+        "Inventaires n'affirment plus T039/T040 ouverts à tort",
+        "PRODUCT_COMPLETE version=1, head=HEAD courant, goalHash=hash courant PRODUCT_GOAL.md, evidence[] non vide ; aucune revendication merge/deploy/PSP live",
+        "x200:validate vert ; pas de tâches PRÊTE de remplissage créées dans ce cycle"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "À_FAIRE",
+      "estimatedCost": 1,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 0,
+      "lastTransitionReason": "[X200-AUTOPLAN] created; waits T043 TERMINÉE",
+      "nextAction": "attendre T043 puis resync docs + PRODUCT_COMPLETE",
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [],
+      "evidenceRecords": []
     }
   ],
   "history": [
@@ -4022,9 +4127,21 @@
       "taskId": "T042",
       "status": "TERMINÉE",
       "note": "quality CI FULL SUCCESS run 34759082358 on 31af13b; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] Fedora telemetry bridge after T042"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "À_FAIRE",
+      "note": "[X200-AUTOPLAN] docs + PRODUCT_COMPLETE after T043; not dangerous commands"
     }
   ],
-  "registryVersion": 120,
+  "registryVersion": 121,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

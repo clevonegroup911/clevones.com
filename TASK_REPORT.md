@@ -6,50 +6,38 @@
 
 ## ID
 
-T042
+T043
 
 ## Statut
 
-TERMINÉE
+PRÊTE
 
 ## Objectif
 
-X200 Control Center — observabilité et supervision réelle sur `/admin/x200`.
+Pont télémétrie Fedora AUTOPILOT → `/admin/x200` (remplacer stubs T042).
 
 ## Résultat
 
-Dashboard réel livré et validé CI FULL : sources backlog/git/GitHub/gates, health déterministe, pipeline dérivé, registre filtrable, telemetry Fedora NOT_CONNECTED. MERGED=NO ; DEPLOYED=NO.
+AUTOPLAN post-T042 : T043 PRÊTE créée ; T044 À_FAIRE (docs + PRODUCT_COMPLETE, pas de Merge/Deploy). T042 TERMINÉE avec CI FULL 34759082358.
 
 ## Fichiers créés
 
-- `lib/x200/*`
-- `app/admin/x200/*`
-- `app/api/admin/x200/*`
-- `tests/e2e/x200-control-center.spec.ts`
-- `reports/tasks/T042.md`
+- (planification) entrées backlog T043/T044
 
 ## Fichiers modifiés
 
-- `lib/auth/routes.ts` (+ tests)
-- `app/admin/layout.tsx`
-- `package.json` (npm test inclut lib/x200)
-- backlog / BACKLOG.md / TASK_REPORT.md
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
 
 ## Commandes
 
 - `npm run x200:validate`
-- `npm test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
-- `npx playwright test tests/e2e/x200-control-center.spec.ts`
-- `npm run x200:scan-secrets`
+- `npm run x200:test`
+- `npm run x200:next -- --json`
 
 ## Tests réussis
 
-- unitaires x200 (parse, health, UNKNOWN fallbacks, secret scan)
-- Playwright 6/6 (desktop+mobile, unauth, USER denied, cards/registry/telemetry)
-- CI FULL quality SUCCESS run 34759082358
+- validate backlog/report
+- x200:test 74 pass / 1 skipped
 
 ## Tests échoués
 
@@ -57,41 +45,36 @@ Dashboard réel livré et validé CI FULL : sources backlog/git/GitHub/gates, he
 
 ## Lint
 
-- pass
+- N/A (metadata AUTOPLAN)
 
 ## Type-check
 
-- pass
+- N/A
 
 ## Build
 
-- pass
+- N/A
 
 ## Sécurité
 
-- admin auth required ; USER → login ; no-store APIs ; pas de shell navigateur ; redaction recovery/tokens ; Fedora non simulé
+- T043/T044 requiresHuman=false ; Merge/Deploy hors scope (gates humaines)
 
 ## Commit
 
-- `45d475eff98a4ce827bde4f09c86fa087b819a55` (implémentation)
-- CI HEAD `31af13b15988a707047a6f28293b6561501fb270`
+- pending AUTOPLAN commit
 
 ## Pull Request
 
-- draft stacked PR #8 vs `autoplan/payments-recovery-20260912`
-- https://github.com/clevonegroup911/clevones.com/pull/8
+- draft PR #8 https://github.com/clevonegroup911/clevones.com/pull/8
 
 ## Preuves
 
-- `tests/e2e/evidence/desktop-x200-control-center.png`
-- `tests/e2e/evidence/mobile-x200-control-center.png`
-- `reports/tasks/T042.md`
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358 (quality FULL SUCCESS)
+- T042 CI FULL https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358
+- PRODUCT_COMPLETE actuel invalide (head ≠ HEAD) → T044
 
 ## Risques
 
-- GitHub public API rate limits → UNKNOWN affiché
-- `.x200/*` local seulement (gitignored)
+- aucun pour planification
 
 ## Blocage
 
@@ -99,4 +82,4 @@ Dashboard réel livré et validé CI FULL : sources backlog/git/GitHub/gates, he
 
 ## Prochaine tâche prête
 
-- aucune tâche automatique PRÊTE ; AUTOPLAN pour T043/T044 si écarts produit
+- T043
