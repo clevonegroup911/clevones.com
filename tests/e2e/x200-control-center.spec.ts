@@ -205,15 +205,24 @@ test("SUPER_ADMIN confirmation modal and mocked action success/failure", async (
   await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
   await page.getByTestId("x200-confirm-action").click();
   await expect(page.getByTestId("x200-action-result")).toContainText("FAILED");
+
+  await page.unrouteAll({ behavior: "ignoreErrors" });
 });
 
-test("ADMIN role cannot mutate via actions API", async ({ page, request }) => {
+test("actions API rejects arbitrary command payloads for authenticated admin", async ({
+  page,
+}) => {
   skipWithoutDb();
   await loginE2eAdmin(page);
+  await page.goto("/admin/x200");
+  const origin = new URL(page.url()).origin;
 
-  // Seeded e2e admin is SUPER_ADMIN — verify arbitrary command body rejected,
-  // and CSRF/body validation remains strict for the session.
-  const forbidden = await request.post("/api/admin/x200/actions", {
+  const forbidden = await page.request.post("/api/admin/x200/actions", {
+    headers: {
+      Origin: origin,
+      Referer: `${origin}/admin/x200`,
+      "Content-Type": "application/json",
+    },
     data: {
       action: "AUTOPILOT_START",
       command: "rm -rf /",
@@ -221,7 +230,12 @@ test("ADMIN role cannot mutate via actions API", async ({ page, request }) => {
   });
   expect([400, 403]).toContain(forbidden.status());
 
-  const invalid = await request.post("/api/admin/x200/actions", {
+  const invalid = await page.request.post("/api/admin/x200/actions", {
+    headers: {
+      Origin: origin,
+      Referer: `${origin}/admin/x200`,
+      "Content-Type": "application/json",
+    },
     data: { action: "NOT_A_REAL_ACTION" },
   });
   expect([400, 403]).toContain(invalid.status());
