@@ -8,9 +8,9 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `autoplan/payments-recovery-20260912`, remote `origin` | CONFIRMÉ (session 2026-09-12) |
-| HEAD travail | `182c9f5ca62888cf991f9859ecdc8a16fe21b814` (T038 close + AUTOPLAN T039–T040) | CONFIRMÉ |
-| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` | CONFIRMÉ dans le dépôt |
+| Workspace local | branche `feat/x200-control-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
+| HEAD travail | `2b644e9391321c32b86f4a60cf3fd5f954766a92` (T043 close ; T044 en cours) | CONFIRMÉ |
+| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
 | Hébergement | VM GCP `clevones-serveur` (`europe-west1-b`), projet `clevonegroup` | INDIQUÉ (`DEPLOYMENT.md`) — non revérifié cette session |
@@ -18,13 +18,14 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Atteindre un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines.
+Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
 - Next.js 15, React 19, TypeScript 5.8, Tailwind 4, Prisma 6, PostgreSQL, Zod, Playwright
 - Node `>=20.9.0`, npm
 - Scripts gouvernance : `scripts/*.mjs` et `scripts/lib/`
+- Control Center : `lib/x200/*`, `/admin/x200`, télémétrie Fedora `.x200/telemetry.json`
 
 ## Authentification et rôles (CONFIRMÉ dans le code)
 
@@ -34,25 +35,26 @@ Atteindre un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 - Gestion users + DocumentGrant admin (T034) ; e2e ACL (T037)
 - Matrice : `docs/ROLES_AND_PERMISSIONS.md`
 
-## Gouvernance — état au 2026-09-12
+## Gouvernance — état au 2026-09-13
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T038 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
-| T039 | `EN_CONTRÔLE` — resync docs reprise | CONFIRMÉ cette session |
-| T040 | `À_FAIRE` — PRODUCT_COMPLETE (dépend T039) | CONFIRMÉ registre |
+| T001–T043 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
+| T044 | resync docs + PRODUCT_COMPLETE post-T041–T043 | CONFIRMÉ cette session |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| PRODUCT_COMPLETE | **absent** jusqu’à T040 ; ne revendique pas live prod | CONFIRMÉ règle X200 |
+| Control Center | `/admin/x200` lecture seule + télémétrie Fedora réelle (T042/T043) | CONFIRMÉ dépôt |
+| PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
 
-- T037 quality SUCCESS `b35b20e` / run [34717886942](https://github.com/clevonegroup911/clevones.com/actions/runs/34717886942)
-- T038 quality SUCCESS `8cb9c14` / run [34718190353](https://github.com/clevonegroup911/clevones.com/actions/runs/34718190353)
+- T041 quality SUCCESS — hardening paiements (référence dans `reports/tasks/T041.md`)
+- T042 FULL quality SUCCESS `31af13b` / run [34759082358](https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358)
+- T043 FULL quality SUCCESS `9317276` / run [34763250287](https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287)
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Écarts **automatiques** restants : T039 (docs) puis T040 (marqueur dépôt).
+Aucun écart **automatique** restant au registre après T044 (docs + marqueur). Les écarts restants sont des **gates humaines / externes**.
 
 ### Gates humaines / externes (obligatoires hors auto)
 
@@ -62,7 +64,7 @@ Preuves CI récentes (CONFIRMÉ) :
 | PSP live (M-PESA / RAWBANK / Stripe) | Gateway sandbox complète ; pas de webhooks/clés réseau |
 | Alertes GCP / uptime | Documentées ; non provisionnées |
 | Timer backup production | Unités `ops/systemd/` préparées ; **non activées** |
-| Merge `main` / PR ready | PR draft #7 ; pas de merge auto |
+| Merge `main` / PR ready | PR draft #8 ; pas de merge auto |
 | Deploy + migrations production | Migrations CI/éphémères seulement |
 | MFA / secrets production | Enrollment et `.env` VM = gate |
 | SMS | Seulement si canal réel autorisé |
@@ -77,7 +79,7 @@ npm run x200:resume -- --json
 npm run x200:next -- --json
 ```
 
-Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieurs machines.
+Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieurs machines. Télémétrie Autopilot : `.x200/telemetry.json` (mode `0600`).
 
 ## Intégration
 
@@ -87,8 +89,9 @@ Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieu
 | CI GitHub | workflow `.github/workflows/ci.yml`, job requis `quality` |
 | Relais ChatGPT | NON CONFIGURÉ |
 | Gouvernance | `docs/X200_GOVERNANCE.md` / `docs/X200_AUTOPILOT.md` |
+| Observabilité | `/admin/x200` + télémétrie Fedora (T042/T043) |
 | Production | hors périmètre automatique |
 
 ## Interdit
 
-Secrets dans Git, push `main`, merge automatique, déploiement automatique, API payante, reset destructeur, tâches de remplissage, rejeu d’une `TERMINÉE` encore valable, `PRODUCT_COMPLETE` prématuré (avant T039/T040 et preuves HEAD/goalHash).
+Secrets dans Git, push `main`, merge automatique, déploiement automatique, API payante, reset destructeur, tâches de remplissage, rejeu d’une `TERMINÉE` encore valable, `PRODUCT_COMPLETE` prématuré (head/goalHash non alignés, preuves vides, ou claim merge/deploy/PSP live).

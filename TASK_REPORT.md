@@ -6,83 +6,72 @@
 
 ## ID
 
-T043
+T044
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Pont télémétrie Fedora AUTOPILOT → `/admin/x200` (remplacer stubs T042).
+Aligner PROJECT_CONTEXT/inventaires sur T001–T043 TERMINÉE, documenter les gates humaines restantes, et réémettre `.x200/PRODUCT_COMPLETE.json` aligné HEAD + hash `PRODUCT_GOAL.md`.
 
 ## Résultat
 
-Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secrets) ; Control Center lit le fichier et dérive NOT_CONNECTED/STALE/RUNNING/IDLE/AUTOPLAN/COMPLETE sans inventer d'état. Fix CI #112 : parsing JSON sûr sur routes paiements admin (4xx déterministe) + e2e mobile via `fetch` navigateur. CI FULL quality SUCCESS.
+Docs reprise et inventaires resynchronisés (T041–T043 fermés, Control Center + télémétrie, écarts = gates humaines). Quality-gate local PASS. Attente CI `quality` puis émission PRODUCT_COMPLETE sur le HEAD final.
 
 ## Fichiers créés
 
-- `scripts/lib/x200-telemetry.mjs`
-- `lib/x200/telemetry.ts`
-- `lib/x200/telemetry.test.ts`
-- `lib/http/read-json-body.ts`
-- `lib/http/read-json-body.test.ts`
-- `reports/tasks/T043.md`
+- `reports/tasks/T044.md`
 
 ## Fichiers modifiés
 
-- `scripts/x200-autopilot.mjs`
-- `lib/x200/{types,control-center,derive}.ts`
-- `app/admin/x200/control-center-client.tsx`
-- `app/api/admin/payments/{clevone-event,sandbox,reconcile,activate,review}/route.ts`
+- `PROJECT_CONTEXT.md`
+- `docs/CMS_AND_DOCUMENTS.md`
+- `docs/ANALYTICS_AND_PAYMENTS.md`
 - `docs/X200_AUTOPILOT.md`
-- `tests/e2e/{x200-control-center,payments-gateway}.spec.ts`
-- `package.json`
+- `BACKLOG.md`
 - backlog / TASK_REPORT
 
 ## Commandes
 
 - `npm run x200:validate`
-- `npm test`
 - `npm run x200:test`
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
 - `npm run x200:scan-secrets`
 - `git diff --check`
+- `npm run x200:quality-gate -- --task T044`
 
 ## Tests réussis
 
 - x200:validate
-- npm test (128 pass)
-- x200:test (74 pass / 1 skipped)
-- lint / tsc / build / secrets / diff-check
-- CI Playwright FULL (run 34763250287)
+- x200:test (75 pass)
+- scan-secrets
+- diff-check
+- quality-gate T044
 
 ## Tests échoués
 
-- aucun (Playwright prouvé en CI FULL)
+- aucun
 
 ## Lint
 
-- PASS
+- n/a (hors tests tâche)
 
 ## Type-check
 
-- PASS
+- n/a (hors tests tâche)
 
 ## Build
 
-- PASS
+- n/a
 
 ## Sécurité
 
-- telemetry 0600 ; pas de secrets/tokens ; pas de shell navigateur ; pas de Pause/Merge/Deploy
-- JSON malformé → 400 (pas 500)
+- pas de secrets ; pas de claim merge/deploy/PSP live
 
 ## Commit
 
-- `931727619b396319a5c093ccd5ec51142b261d06` feat/x200-control-center
+- pending push feat/x200-control-center (T044 docs resync)
 
 ## Pull Request
 
@@ -90,19 +79,18 @@ Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secr
 
 ## Preuves
 
-- reports/tasks/T043.md
-- CI FULL quality SUCCESS run 34763250287 head 931727619b396319a5c093ccd5ec51142b261d06
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287
-- MERGED=NO ; DEPLOYED=NO
+- reports/tasks/T044.md
+- `.x200/quality-results.json` ok=true task=T044
+- PRODUCT_COMPLETE émis après SUCCESS CI sur HEAD final
 
 ## Risques
 
-- aucun gate humain pour cette tâche
+- aucun gate humain pour cette tâche docs
 
 ## Blocage
 
-- aucun
+- aucun (attente CI uniquement)
 
 ## Prochaine tâche prête
 
-- T044
+- aucune automatique après T044 ; AUTOPLAN / PRODUCT_COMPLETE

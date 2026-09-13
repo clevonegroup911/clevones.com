@@ -152,6 +152,7 @@ Le superviseur écrit `.x200/telemetry.json` (mode `0600`, dossier `.x200` en `0
 - frais → `OK` + `RUNNING` / `IDLE` / `AUTOPLAN` / `COMPLETE` selon `lastEvent` / `agentRunning`
 
 Aucune commande shell n'est exposée au navigateur.
+
 ## Règles AUTOPLAN
 
 AUTOPLAN :

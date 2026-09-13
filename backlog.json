@@ -2985,22 +2985,37 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "estimatedCost": 1,
       "risk": "medium",
       "requiresHuman": false,
       "owner": "cursor",
       "updatedAt": "2026-09-13",
-      "attempts": 0,
-      "lastTransitionReason": "[X200-FAST] À_FAIRE→PRÊTE after T043 TERMINÉE",
-      "nextAction": "resync docs + PRODUCT_COMPLETE aligné HEAD/goalHash",
+      "attempts": 1,
+      "lastTransitionReason": "docs + inventaires resyncés ; quality-gate local PASS ; attente quality CI",
+      "nextAction": "réconcilier quality puis émettre PRODUCT_COMPLETE et clôturer",
       "blockedReason": null,
       "claim": null,
       "regressionOf": null,
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
-      "evidence": [],
-      "evidenceRecords": []
+      "evidence": [
+        "PROJECT_CONTEXT + CMS/analytics inventaires alignés T001–T043 TERMINÉE",
+        "X200_AUTOPILOT telemetry section preserved; inventaires no longer claim T039/T040 open",
+        "quality-gate T044 PASS (validate/x200:test/secrets/diff-check)"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T044",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T14:51:08.000Z",
+          "location": ".x200/quality-results.json"
+        }
+      ]
     }
   ],
   "history": [
@@ -4195,9 +4210,21 @@
       "taskId": "T044",
       "status": "PRÊTE",
       "note": "[X200-FAST] À_FAIRE→PRÊTE after T043 TERMINÉE"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "EN_CONTRÔLE",
+      "note": "docs resync + quality-gate local PASS ; attente quality CI"
     }
   ],
-  "registryVersion": 126,
+  "registryVersion": 128,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
