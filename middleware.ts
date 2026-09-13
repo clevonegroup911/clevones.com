@@ -18,6 +18,14 @@ import { verifyAdminSessionToken } from "@/lib/auth/session-token";
 import { getLocaleFromPath } from "@/lib/i18n/routes";
 import { localeHeaderName } from "@/lib/i18n/request";
 
+function isE2eLoopbackOrigin(parsed: URL): boolean {
+  if (!["1", "true", "yes", "on"].includes(String(process.env.X200_E2E || "").toLowerCase())) {
+    return false;
+  }
+  const host = parsed.hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  return host === "localhost" || host === "127.0.0.1" || host === "::1";
+}
+
 /**
  * Trusted absolute origin for middleware redirects.
  * Never derived from Host or X-Forwarded-* — those remain client-controlled
@@ -35,7 +43,11 @@ function getTrustedAppOrigin(request: NextRequest): string {
       throw new Error("APP_ORIGIN must be a valid absolute URL.");
     }
 
-    if (isProduction && parsed.protocol !== "https:") {
+    if (
+      isProduction &&
+      parsed.protocol !== "https:" &&
+      !isE2eLoopbackOrigin(parsed)
+    ) {
       throw new Error("APP_ORIGIN must use https: in production.");
     }
 
