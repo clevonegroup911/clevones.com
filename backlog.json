@@ -2734,29 +2734,27 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "estimatedCost": 3,
       "risk": "high",
       "requiresHuman": false,
       "owner": "cursor",
       "updatedAt": "2026-09-13",
       "attempts": 1,
-      "lastTransitionReason": "implementation complete; awaiting FULL CI on PR #7",
-      "nextAction": "wait quality FULL SUCCESS then close",
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34745429341 on cce6605; T041 closed",
+      "nextAction": null,
       "blockedReason": null,
-      "claim": {
-        "workerId": "local:fedora",
-        "token": "39e6e3a40075199d7aa3f151bf2e96e7",
-        "claimedAt": "2026-09-13T06:55:09.116Z",
-        "expiresAt": "2026-09-13T08:55:09.116Z",
-        "leaseSeconds": 7200
-      },
+      "claim": null,
       "regressionOf": null,
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "evidence": [
         "quality-gate local PASS",
-        "migration additive VerifiedPaymentReferenceClaim"
+        "migration additive VerifiedPaymentReferenceClaim",
+        "CI FULL quality SUCCESS run 34745429341 head cce66054402108ec71f71048c0958fb64198eecb",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34745429341",
+        "VerifiedPaymentReferenceClaim + immutable eventKey + AuditLog + atomic activation",
+        "MERGED=NO DEPLOYED=NO PRODUCTION_MIGRATION_RUN=NO"
       ],
       "evidenceRecords": [
         {
@@ -2767,6 +2765,26 @@
           "reference": ".x200/quality-results.json",
           "version": null,
           "at": "2026-09-13T07:10:00.000Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI #105 / actions run 34745429341",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34745429341",
+          "version": "cce66054402108ec71f71048c0958fb64198eecb",
+          "at": "2026-09-13T08:09:39.707Z",
+          "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T041",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T08:09:39.707Z",
           "location": ".x200/quality-results.json"
         }
       ]
@@ -3888,7 +3906,7 @@
       "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 114,
+  "registryVersion": 115,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
