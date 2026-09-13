@@ -10,7 +10,7 @@ T042
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ X200 Control Center — observabilité et supervision réelle sur `/admin/x200`.
 
 ## Résultat
 
-Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe, pipeline dérivé, registre filtrable, telemetry Fedora NOT_CONNECTED. Tests unitaires + Playwright desktop/mobile OK localement. En attente CI quality.
+Dashboard réel livré et validé CI FULL : sources backlog/git/GitHub/gates, health déterministe, pipeline dérivé, registre filtrable, telemetry Fedora NOT_CONNECTED. MERGED=NO ; DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -49,6 +49,7 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 
 - unitaires x200 (parse, health, UNKNOWN fallbacks, secret scan)
 - Playwright 6/6 (desktop+mobile, unauth, USER denied, cards/registry/telemetry)
+- CI FULL quality SUCCESS run 34759082358
 
 ## Tests échoués
 
@@ -72,7 +73,8 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 
 ## Commit
 
-- `45d475eff98a4ce827bde4f09c86fa087b819a55`
+- `45d475eff98a4ce827bde4f09c86fa087b819a55` (implémentation)
+- CI HEAD `31af13b15988a707047a6f28293b6561501fb270`
 
 ## Pull Request
 
@@ -84,6 +86,7 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 - `tests/e2e/evidence/desktop-x200-control-center.png`
 - `tests/e2e/evidence/mobile-x200-control-center.png`
 - `reports/tasks/T042.md`
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358 (quality FULL SUCCESS)
 
 ## Risques
 
@@ -92,8 +95,8 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 
 ## Blocage
 
-- aucun local ; CI quality attendue
+- aucun
 
 ## Prochaine tâche prête
 
-- T043 (telemetry bridge) après clôture T042 — ne pas démarrer ici
+- aucune tâche automatique PRÊTE ; AUTOPLAN pour T043/T044 si écarts produit

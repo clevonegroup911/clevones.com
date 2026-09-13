@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 119
+- Registre : 120
 - Mode : single-executor
 - Mis à jour : 2026-09-13
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 41
+- TERMINÉE : 42
 - ANNULÉE : 0
 
 ## Tâches
@@ -63,4 +63,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T039 | P2 | TERMINÉE | Resynchroniser PROJECT_CONTEXT et inventaires post-T038 | non |
 | T040 | P2 | TERMINÉE | Émettre .x200/PRODUCT_COMPLETE.json (niveau dépôt) | non |
 | T041 | P0 | TERMINÉE | Final pre-merge payment security hardening | non |
-| T042 | P0 | EN_CONTRÔLE | X200 Control Center — observabilité et supervision | non |
+| T042 | P0 | TERMINÉE | X200 Control Center — observabilité et supervision | non |
