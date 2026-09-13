@@ -101,6 +101,20 @@ export function buildGlobalCommandCenterFacts(input: {
       verification: input.mainHead ? "VERIFIED" : "NOT_CONNECTED",
     }),
     fact({
+      id: "github_source",
+      label: "GITHUB_SOURCE",
+      value: input.github.githubSource ?? "NOT_CONNECTED",
+      source: "GitHub transport",
+      timestamp: input.generatedAt,
+      ageMs: genAge,
+      freshness: input.github.githubSource === "NOT_CONNECTED" ? "unavailable" : githubFresh,
+      verification:
+        input.github.githubSource === "REST_AUTHENTICATED" ||
+        input.github.githubSource === "GH_CLI_AUTHENTICATED"
+          ? "VERIFIED"
+          : "NOT_CONNECTED",
+    }),
+    fact({
       id: "pr_head",
       label: "PR HEAD",
       value: input.github.prHeadSha,

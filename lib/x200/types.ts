@@ -205,6 +205,11 @@ export type GithubSnapshot = {
   ciLatestStatus: string | null;
   ciLatestUrl: string | null;
   ciLatestName: string | null;
+  /** How remote GitHub truth was obtained (never invent credentials). */
+  githubSource?:
+    | "REST_AUTHENTICATED"
+    | "GH_CLI_AUTHENTICATED"
+    | "NOT_CONNECTED";
 };
 
 export type ProductGoalSnapshot = {
@@ -288,8 +293,20 @@ export type AutopilotLiveState = {
   branch: string | null;
   lastEvent: string | null;
   cycle: number | null;
+  /**
+   * Control-plane liveness. Stale telemetry never forces true —
+   * systemd reconciliation may clear historical agentRunning claims.
+   */
   agentRunning: boolean | null;
   taskId: string | null;
+  /** systemd --user ActiveState */
+  serviceActiveState?: string | null;
+  serviceSubState?: string | null;
+  serviceMainPid?: number | null;
+  serviceNRestarts?: number | null;
+  telemetryState?: "FRESH" | "STALE" | "MISSING";
+  agentRunningVerified?: boolean | null;
+  serviceReconcileCode?: string | null;
 };
 
 export type ControlCenterSnapshot = {

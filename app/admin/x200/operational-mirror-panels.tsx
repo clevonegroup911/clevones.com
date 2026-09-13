@@ -236,6 +236,12 @@ export function OperationalMirrorPanels({
         <Card title="GITHUB CENTER" testId="x200-github-center">
           <dl className="grid gap-2 text-xs sm:grid-cols-2">
             <div>
+              <dt className="text-gray-muted">GITHUB_SOURCE</dt>
+              <dd className="text-white" data-testid="x200-github-source">
+                {display(g.githubSource ?? "NOT_CONNECTED")}
+              </dd>
+            </div>
+            <div>
               <dt className="text-gray-muted">repository</dt>
               <dd className="text-white">{display(g.repository)}</dd>
             </div>
@@ -650,6 +656,12 @@ export function AutopilotLivePanel({
         <dl className="grid grid-cols-2 gap-2 text-xs">
           {(
             [
+              ["AUTOPILOT_SERVICE_STATE", live.autopilotServiceState],
+              ["AUTOPILOT_PID", live.autopilotPid],
+              ["TELEMETRY_STATE", live.telemetryState],
+              ["TELEMETRY_AGE", live.telemetryAge],
+              ["AGENT_RUNNING_VERIFIED", live.agentRunningVerified],
+              ["reconcile", live.serviceReconcileCode],
               ["service state", live.serviceState],
               ["PID", live.pid],
               ["mode", live.mode],
@@ -672,9 +684,14 @@ export function AutopilotLivePanel({
             </div>
           ))}
         </dl>
-        {live.agentRunning ? (
+        {live.agentRunningVerified === true ? (
           <p className="mt-3 text-[11px] text-gold">
-            agentRunning=true — no arbitrary kill from Control Center
+            AGENT_RUNNING_VERIFIED=true — no arbitrary kill from Control Center
+          </p>
+        ) : null}
+        {live.serviceReconcileCode === "SERVICE_ACTIVE_TELEMETRY_STALE" ? (
+          <p className="mt-2 text-[11px] text-gold">
+            DEGRADED — SERVICE_ACTIVE_TELEMETRY_STALE (Refresh / Collect diagnostics)
           </p>
         ) : null}
       </Card>

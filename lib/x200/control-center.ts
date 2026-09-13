@@ -261,6 +261,7 @@ export function buildControlCenterFatalSnapshot(
       ciLatestStatus: null,
       ciLatestUrl: null,
       ciLatestName: null,
+      githubSource: "NOT_CONNECTED",
     },
     fedora: {
       fedoraTelemetry: "ERROR",
@@ -277,6 +278,13 @@ export function buildControlCenterFatalSnapshot(
       cycle: null,
       agentRunning: null,
       taskId: null,
+      serviceActiveState: null,
+      serviceSubState: null,
+      serviceMainPid: null,
+      serviceNRestarts: null,
+      telemetryState: "MISSING",
+      agentRunningVerified: null,
+      serviceReconcileCode: null,
     },
     efficiency: {
       completedTasks: 0,

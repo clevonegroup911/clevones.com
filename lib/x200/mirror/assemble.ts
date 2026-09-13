@@ -100,22 +100,24 @@ export async function assembleOperationalMirror(input: {
         ? Promise.resolve({
             sha: null as string | null,
             warning: "e2e: remote main HEAD skipped",
+            source: "NOT_CONNECTED" as const,
           })
         : withTimeout(
             fetchMainHead(input.repository),
             10_000,
-            { sha: null, warning: "main HEAD timeout" },
+            { sha: null, warning: "main HEAD timeout", source: "NOT_CONNECTED" as const },
             () => markDegraded("main HEAD fetch timeout/degraded"),
           ),
       e2eFast
         ? Promise.resolve({
             prs: [] as Awaited<ReturnType<typeof fetchOpenPrs>>["prs"],
             warning: "e2e: remote open PRs skipped",
+            source: "NOT_CONNECTED" as const,
           })
         : withTimeout(
             fetchOpenPrs(input.repository),
             10_000,
-            { prs: [], warning: "open PRs timeout" },
+            { prs: [], warning: "open PRs timeout", source: "NOT_CONNECTED" as const },
             () => markDegraded("open PRs fetch timeout/degraded"),
           ),
       e2eFast
@@ -123,6 +125,7 @@ export async function assembleOperationalMirror(input: {
             jobs: [] as Awaited<ReturnType<typeof fetchCiJobs>>["jobs"],
             durationMs: null as number | null,
             warning: "e2e: remote CI jobs skipped",
+            source: "NOT_CONNECTED" as const,
           })
         : withTimeout(
             fetchCiJobs({
@@ -130,7 +133,12 @@ export async function assembleOperationalMirror(input: {
               runId: input.github.ciLatestRunId,
             }),
             12_000,
-            { jobs: [], durationMs: null, warning: "CI jobs timeout" },
+            {
+              jobs: [],
+              durationMs: null,
+              warning: "CI jobs timeout",
+              source: "NOT_CONNECTED" as const,
+            },
             () => markDegraded("CI jobs fetch timeout/degraded"),
           ),
       withTimeout(
@@ -435,6 +443,12 @@ export function emptyOperationalMirror(
       dirtyWorktree: null,
       source: "unavailable",
       note,
+      autopilotServiceState: null,
+      autopilotPid: null,
+      telemetryState: null,
+      telemetryAge: null,
+      agentRunningVerified: null,
+      serviceReconcileCode: null,
     },
     taskControl: [],
     humanDecisions: [],

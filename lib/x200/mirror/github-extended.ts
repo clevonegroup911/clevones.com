@@ -5,80 +5,72 @@ import { promisify } from "node:util";
 
 import type { CiJobDetail } from "@/lib/x200/mirror/types";
 import type { OpenPrLite } from "@/lib/x200/mirror/release-stack";
+import {
+  githubApiGet,
+  isValidGithubRepository,
+  isValidPositiveInt,
+  type GithubTransportSource,
+} from "@/lib/x200/github-client";
 
 const execFileAsync = promisify(execFile);
-const USER_AGENT = "clevones-x200-operational-mirror/T047";
 const DEFAULT_REPO = "clevonegroup911/clevones.com";
 
-function optionalGithubToken(): string | null {
-  const token =
-    process.env.GITHUB_TOKEN?.trim() || process.env.GH_TOKEN?.trim() || null;
-  return token && token.length > 0 ? token : null;
-}
-
-function githubHeaders(): HeadersInit {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": USER_AGENT,
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-  const token = optionalGithubToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
-  return headers;
-}
-
-async function githubGet(
-  url: string,
-  timeoutMs = 10_000,
-): Promise<
-  | { ok: true; json: unknown }
-  | { ok: false; error: string; status: number | null }
-> {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: githubHeaders(),
-      cache: "no-store",
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-    if (!response.ok) {
-      return { ok: false, error: `GitHub HTTP ${response.status}`, status: response.status };
-    }
-    return { ok: true, json: await response.json() };
-  } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : "GitHub unreachable",
-      status: null,
-    };
-  }
-}
+export type GithubFetchMeta = {
+  source: GithubTransportSource;
+  warning: string | null;
+};
 
 export async function fetchMainHead(
   repository = DEFAULT_REPO,
-): Promise<{ sha: string | null; warning: string | null }> {
-  const res = await githubGet(
+): Promise<{ sha: string | null } & GithubFetchMeta> {
+  if (!isValidGithubRepository(repository)) {
+    return {
+      sha: null,
+      source: "NOT_CONNECTED",
+      warning: "Invalid repository identifier",
+    };
+  }
+  const res = await githubApiGet(
     `https://api.github.com/repos/${repository}/commits/main`,
   );
   if (!res.ok) {
-    return { sha: null, warning: `main HEAD unavailable: ${res.error}` };
+    return {
+      sha: null,
+      source: res.source,
+      warning: `main HEAD unavailable: ${res.error}`,
+    };
   }
   const body =
     res.json && typeof res.json === "object" && !Array.isArray(res.json)
       ? (res.json as Record<string, unknown>)
       : null;
   const sha = typeof body?.sha === "string" ? body.sha : null;
-  return { sha, warning: sha ? null : "main HEAD missing sha" };
+  return {
+    sha,
+    source: res.source,
+    warning: sha ? null : "main HEAD missing sha",
+  };
 }
 
 export async function fetchOpenPrs(
   repository = DEFAULT_REPO,
-): Promise<{ prs: OpenPrLite[]; warning: string | null }> {
-  const res = await githubGet(
+): Promise<{ prs: OpenPrLite[] } & GithubFetchMeta> {
+  if (!isValidGithubRepository(repository)) {
+    return {
+      prs: [],
+      source: "NOT_CONNECTED",
+      warning: "Invalid repository identifier",
+    };
+  }
+  const res = await githubApiGet(
     `https://api.github.com/repos/${repository}/pulls?state=open&per_page=20`,
   );
   if (!res.ok) {
-    return { prs: [], warning: `open PRs unavailable: ${res.error}` };
+    return {
+      prs: [],
+      source: res.source,
+      warning: `open PRs unavailable: ${res.error}`,
+    };
   }
   const list = Array.isArray(res.json) ? res.json : [];
   const prs: OpenPrLite[] = [];
@@ -93,7 +85,7 @@ export async function fetchOpenPrs(
       pr.head && typeof pr.head === "object" && !Array.isArray(pr.head)
         ? (pr.head as Record<string, unknown>)
         : null;
-    if (typeof pr.number !== "number") continue;
+    if (typeof pr.number !== "number" || !isValidPositiveInt(pr.number)) continue;
     prs.push({
       number: pr.number,
       title: typeof pr.title === "string" ? pr.title.slice(0, 200) : `PR #${pr.number}`,
@@ -111,7 +103,7 @@ export async function fetchOpenPrs(
       url: typeof pr.html_url === "string" ? pr.html_url : null,
     });
   }
-  return { prs, warning: null };
+  return { prs, source: res.source, warning: null };
 }
 
 export async function fetchCiJobs(input: {
@@ -120,17 +112,34 @@ export async function fetchCiJobs(input: {
 }): Promise<{
   jobs: CiJobDetail[];
   durationMs: number | null;
-  warning: string | null;
-}> {
-  if (input.runId == null) {
-    return { jobs: [], durationMs: null, warning: "No CI run id" };
+} & GithubFetchMeta> {
+  if (input.runId == null || !isValidPositiveInt(input.runId)) {
+    return {
+      jobs: [],
+      durationMs: null,
+      source: "NOT_CONNECTED",
+      warning: "No CI run id",
+    };
   }
   const repository = input.repository ?? DEFAULT_REPO;
-  const res = await githubGet(
+  if (!isValidGithubRepository(repository)) {
+    return {
+      jobs: [],
+      durationMs: null,
+      source: "NOT_CONNECTED",
+      warning: "Invalid repository identifier",
+    };
+  }
+  const res = await githubApiGet(
     `https://api.github.com/repos/${repository}/actions/runs/${input.runId}/jobs?per_page=50`,
   );
   if (!res.ok) {
-    return { jobs: [], durationMs: null, warning: `CI jobs unavailable: ${res.error}` };
+    return {
+      jobs: [],
+      durationMs: null,
+      source: res.source,
+      warning: `CI jobs unavailable: ${res.error}`,
+    };
   }
   const body =
     res.json && typeof res.json === "object" && !Array.isArray(res.json)
@@ -177,7 +186,7 @@ export async function fetchCiJobs(input: {
     });
   }
 
-  return { jobs, durationMs, warning: null };
+  return { jobs, durationMs, source: res.source, warning: null };
 }
 
 /** Fixed argv only — never caller-controlled shell. */
@@ -199,8 +208,6 @@ export async function readLocalDiffNameStatus(): Promise<{
         maxBuffer: 512 * 1024,
       }),
     ]);
-    // Also include staged if present via status porcelain already handled elsewhere;
-    // for unstaged+staged combined view use --name-status without commit range when dirty.
     return {
       nameStatus: nameStatus.stdout,
       numstat: numstat.stdout,

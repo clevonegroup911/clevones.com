@@ -4,6 +4,10 @@ import { readFile, access, stat } from "node:fs/promises";
 import { constants } from "node:fs";
 import path from "node:path";
 
+import {
+  readAutopilotServiceSnapshot,
+  reconcileAutopilotLiveness,
+} from "@/lib/x200/autopilot-service";
 import type {
   AutopilotLiveState,
   FedoraLiveState,
@@ -114,115 +118,200 @@ export function deriveLiveStateFromTelemetry(
   return { liveState: "IDLE", ageMs, stale: false };
 }
 
+function emptyServiceFields(): Pick<
+  AutopilotLiveState,
+  | "serviceActiveState"
+  | "serviceSubState"
+  | "serviceMainPid"
+  | "serviceNRestarts"
+  | "telemetryState"
+  | "agentRunningVerified"
+  | "serviceReconcileCode"
+> {
+  return {
+    serviceActiveState: null,
+    serviceSubState: null,
+    serviceMainPid: null,
+    serviceNRestarts: null,
+    telemetryState: "MISSING",
+    agentRunningVerified: null,
+    serviceReconcileCode: null,
+  };
+}
+
 export async function readFedoraTelemetrySnapshot(
   options: { nowMs?: number; staleMs?: number } = {},
 ): Promise<AutopilotLiveState> {
+  const service = await readAutopilotServiceSnapshot();
+
+  const attachService = (
+    base: AutopilotLiveState,
+  ): AutopilotLiveState => ({
+    ...base,
+    serviceActiveState: service.activeState,
+    serviceSubState: service.subState,
+    serviceMainPid: service.mainPid,
+    serviceNRestarts: service.nRestarts,
+  });
+
   try {
     await access(TELEMETRY_PATH(), constants.R_OK);
   } catch {
-    return {
+    const reconciled = reconcileAutopilotLiveness({
+      telemetryStale: true,
+      telemetryAgentRunning: null,
+      telemetryPid: null,
+      service,
+    });
+    return attachService({
       fedoraTelemetry: "NOT_CONNECTED",
       autopilotLiveState: "WAITING_FOR_TELEMETRY",
-      note: "No .x200/telemetry.json — Fedora AUTOPILOT heartbeat not connected.",
+      note: [
+        "No .x200/telemetry.json — Fedora AUTOPILOT heartbeat not connected.",
+        reconciled.noteSuffix,
+        service.warning,
+      ]
+        .filter(Boolean)
+        .join(" · "),
       updatedAt: null,
       ageMs: null,
-      pid: null,
+      pid: service.mainPid,
       host: null,
       mode: null,
       head: null,
       branch: null,
       lastEvent: null,
       cycle: null,
-      agentRunning: null,
+      agentRunning: reconciled.agentRunningForControl,
       taskId: null,
-    };
+      ...emptyServiceFields(),
+      telemetryState: "MISSING",
+      agentRunningVerified: reconciled.agentRunningVerified,
+      serviceReconcileCode: reconciled.code,
+    });
   }
 
   let raw: string;
   try {
     raw = await readFile(TELEMETRY_PATH(), "utf8");
   } catch (error) {
-    return {
+    return attachService({
       fedoraTelemetry: "ERROR",
       autopilotLiveState: "WAITING_FOR_TELEMETRY",
       note: `Failed to read telemetry.json: ${error instanceof Error ? error.message : "unknown"}`,
       updatedAt: null,
       ageMs: null,
-      pid: null,
+      pid: service.mainPid,
       host: null,
       mode: null,
       head: null,
       branch: null,
       lastEvent: null,
       cycle: null,
-      agentRunning: null,
+      agentRunning: false,
       taskId: null,
-    };
+      ...emptyServiceFields(),
+      telemetryState: "MISSING",
+      agentRunningVerified: service.serviceActive === false ? false : null,
+      serviceReconcileCode: "TELEMETRY_READ_ERROR",
+    });
   }
 
   if (!raw.trim()) {
-    return {
+    return attachService({
       fedoraTelemetry: "INVALID",
       autopilotLiveState: "WAITING_FOR_TELEMETRY",
       note: "telemetry.json is empty (possible mid-write race avoided by atomic rename)",
       updatedAt: null,
       ageMs: null,
-      pid: null,
+      pid: service.mainPid,
       host: null,
       mode: null,
       head: null,
       branch: null,
       lastEvent: null,
       cycle: null,
-      agentRunning: null,
+      agentRunning: false,
       taskId: null,
-    };
+      ...emptyServiceFields(),
+      telemetryState: "MISSING",
+      agentRunningVerified: service.serviceActive === false ? false : null,
+      serviceReconcileCode: "TELEMETRY_EMPTY",
+    });
   }
 
   const parsed = parseTelemetryJson(raw);
   if (!parsed.data) {
-    return {
+    return attachService({
       fedoraTelemetry: parsed.status,
       autopilotLiveState: "WAITING_FOR_TELEMETRY",
       note: parsed.warning ?? "Invalid telemetry payload",
       updatedAt: null,
       ageMs: null,
-      pid: null,
+      pid: service.mainPid,
       host: null,
       mode: null,
       head: null,
       branch: null,
       lastEvent: null,
       cycle: null,
-      agentRunning: null,
+      agentRunning: false,
       taskId: null,
-    };
+      ...emptyServiceFields(),
+      telemetryState: "MISSING",
+      agentRunningVerified: service.serviceActive === false ? false : null,
+      serviceReconcileCode: "TELEMETRY_INVALID",
+    });
   }
 
   const derived = deriveLiveStateFromTelemetry(parsed.data, options);
-  // Touch mtime only for diagnostics — content updatedAt is authoritative.
   try {
     await stat(TELEMETRY_PATH());
   } catch {
     // ignore
   }
 
-  return {
-    fedoraTelemetry: "OK",
-    autopilotLiveState: derived.liveState,
-    note: derived.stale
+  const reconciled = reconcileAutopilotLiveness({
+    telemetryStale: derived.stale,
+    telemetryAgentRunning: parsed.data.agentRunning,
+    telemetryPid: parsed.data.pid,
+    service,
+  });
+
+  const liveState: FedoraLiveState = derived.stale
+    ? "STALE"
+    : derived.liveState;
+
+  const notes = [
+    derived.stale
       ? `Telemetry stale (ageMs=${derived.ageMs} > ${options.staleMs ?? DEFAULT_TELEMETRY_STALE_MS})`
       : `Telemetry live from host=${parsed.data.host} pid=${parsed.data.pid}`,
+    reconciled.noteSuffix,
+    service.status === "OK"
+      ? `systemd ActiveState=${service.activeState} MainPID=${service.mainPid}`
+      : service.warning,
+  ].filter(Boolean);
+
+  return attachService({
+    fedoraTelemetry: "OK",
+    autopilotLiveState: liveState,
+    note: notes.join(" · "),
     updatedAt: parsed.data.updatedAt,
     ageMs: derived.ageMs,
-    pid: parsed.data.pid,
+    pid: derived.stale
+      ? (service.mainPid ?? parsed.data.pid)
+      : parsed.data.pid,
     host: parsed.data.host,
     mode: parsed.data.mode,
     head: parsed.data.head,
     branch: parsed.data.branch,
     lastEvent: parsed.data.lastEvent,
     cycle: parsed.data.cycle,
-    agentRunning: parsed.data.agentRunning,
-    taskId: parsed.data.taskId,
-  };
+    agentRunning: reconciled.agentRunningForControl,
+    taskId: derived.stale ? null : parsed.data.taskId,
+    ...emptyServiceFields(),
+    telemetryState: reconciled.telemetryState,
+    agentRunningVerified: reconciled.agentRunningVerified,
+    serviceReconcileCode: reconciled.code,
+  });
 }

@@ -199,6 +199,18 @@ Règles :
 - pas de shell libre, pas de bypass Human Gate
 - `error.tsx` / `loading.tsx` pour résilience hot-reload / 404 transient
 
+GitHub remote transport :
+
+- `GITHUB_SOURCE=REST_AUTHENTICATED` si `GITHUB_TOKEN`/`GH_TOKEN` explicite
+- sinon localement `GITHUB_SOURCE=GH_CLI_AUTHENTICATED` via `gh api` (execFile argv fixes, jamais `gh auth token`, jamais shell)
+- sinon `NOT_CONNECTED` — jamais de vérité inventée après un HTTP 403 anonymisé
+
+AUTOPILOT liveness :
+
+- télémétrie fraîche + `systemctl --user show clevones-x200-autopilot.service`
+- télémétrie stale → le service systemd est autoritatif pour la liveness ; `agentRunning` historique ne verrouille pas Start/Stop/Run
+- `SERVICE_ACTIVE_TELEMETRY_STALE` = DEGRADED, pas de progrès agent inventé
+
 ## Règles AUTOPLAN
 
 AUTOPLAN :

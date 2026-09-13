@@ -76,11 +76,19 @@ export function buildAutopilotLiveExtended(input: {
     taskClaimed: input.fedora.taskId,
     taskRuntime: formatAgeLabel(input.fedora.ageMs),
     lastExit: null,
-    restartCount: null,
+    restartCount: input.fedora.serviceNRestarts ?? null,
     lockState: null,
     dirtyWorktree: input.git.dirty,
-    source: ".x200/telemetry.json",
+    source: ".x200/telemetry.json + systemd",
     note: input.fedora.note,
+    autopilotServiceState: input.fedora.serviceActiveState
+      ? `${input.fedora.serviceActiveState}/${input.fedora.serviceSubState ?? "?"}`
+      : null,
+    autopilotPid: input.fedora.serviceMainPid ?? input.fedora.pid,
+    telemetryState: input.fedora.telemetryState ?? null,
+    telemetryAge: formatAgeLabel(input.fedora.ageMs),
+    agentRunningVerified: input.fedora.agentRunningVerified ?? null,
+    serviceReconcileCode: input.fedora.serviceReconcileCode ?? null,
   };
 }
 

@@ -257,6 +257,12 @@ export type AutopilotLiveExtended = {
   dirtyWorktree: boolean | null;
   source: string;
   note: string | null;
+  autopilotServiceState: string | null;
+  autopilotPid: number | null;
+  telemetryState: string | null;
+  telemetryAge: string | null;
+  agentRunningVerified: boolean | null;
+  serviceReconcileCode: string | null;
 };
 
 export type TaskControlRow = {
