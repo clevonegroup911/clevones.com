@@ -8,9 +8,9 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-human-action-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `feat/x200-human-action-center` @ `49d0c36` (T046 TERMINÉE) | CONFIRMÉ |
-| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` | CONFIRMÉ dans le dépôt |
+| Workspace local | branche `feat/x200-operational-mirror`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
+| HEAD travail | `feat/x200-operational-mirror` (T047 EN_COURS — Operational Mirror) | CONFIRMÉ |
+| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
 | Hébergement | VM GCP `clevones-serveur` (`europe-west1-b`), projet `clevonegroup` | INDIQUÉ (`DEPLOYMENT.md`) — non revérifié cette session |
@@ -40,9 +40,10 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | ID | État | Classe |
 |---|---|---|
 | T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
+| T047 | `EN_COURS` Operational Mirror + Universal Action Console | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) ; télémétrie Fedora | CONFIRMÉ dépôt |
+| Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
 | PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :

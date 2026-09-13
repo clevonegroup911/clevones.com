@@ -3204,6 +3204,91 @@
       "lastTransitionReason": "quality CI FULL SUCCESS run 34775412790 on 49d0c36; T046 closed",
       "nextAction": null,
       "claim": null
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": {
+        "workerId": "local:fedora",
+        "token": "843dff689433a0084107329e5509d8d5",
+        "claimedAt": "2026-09-13T19:53:53.764Z",
+        "expiresAt": "2026-09-13T21:53:53.764Z",
+        "leaseSeconds": 7200
+      },
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T047",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T20:10:58.874Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "Await CI quality SUCCESS then close T047",
+      "lastTransitionReason": "Local quality-gate PASS; awaiting CI FULL quality on draft PR",
+      "id": "T047",
+      "title": "X200 Operational Mirror + Universal Action Console",
+      "objective": "Faire de /admin/x200 le cockpit opérationnel principal: miroir de vérité (facts+sources+freshness), inspecteurs GitHub/CI/diff, AUTOPILOT live, décisions humaines, merge/release stack, deploy/DB/incident, operator view, next-safe-action, palette Ctrl+K, notifications, audit — sans données inventées, faux SUCCESS, shell libre ni bypass Human Gate.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T046"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200",
+        "lib/http",
+        ".env.example",
+        "tests/e2e/x200-control-center.spec.ts",
+        "docs/X200_AUTOPILOT.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "PROJECT_CONTEXT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Global Command Center: chaque fait opérationnel a VALUE/SOURCE/TIMESTAMP/FRESHNESS/VERIFICATION; aucune donnée inventée",
+        "SOURCES matrix Domain×Local/Remote/Production avec VERIFIED/STALE/CONFLICT/UNKNOWN/NOT_CONNECTED; conflits affichés SOURCE_CONFLICT sans choix silencieux",
+        "GitHub Center + CI Inspector + Diff Inspector (redaction secrets) + AUTOPILOT Live + Cursor status UNKNOWN si non exposé",
+        "Task Control + Human Decision Center + Merge Control (SUCCESS seulement si merged=true distant) + Release Stack NEXT SAFE MERGE sans auto-exec",
+        "Deployment/Database/Incident centers: NOT_AVAILABLE/NOT_CONNECTED si adapter absent; production = CRITICAL gate",
+        "Operator View + NEXT SAFE ACTION déterministe + Command Palette Ctrl+K + Notifications + Action History receipts + audit append-only",
+        "Freshness age + remote verification obligatoire; 404 resilience error/loading; parallel fetches DEGRADED; tests unit+Playwright; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "Operational Mirror: Global Command Center facts + SOURCES matrix + GitHub/CI/Diff/Operator/Logs/Notify/Errors",
+        "NEXT SAFE ACTION engine + Command Palette Ctrl+K + error/loading resilience",
+        "lib/x200/mirror/* parallel DEGRADED assembly; no invented data; no arbitrary shell",
+        "unit mirror 8 PASS; quality-gate local PASS",
+        "SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO MERGED=NO DEPLOYED=NO"
+      ],
+      "estimatedCost": 8,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-13"
     }
   ],
   "history": [
@@ -4464,9 +4549,31 @@
       "taskId": "T046",
       "status": "TERMINÉE",
       "note": "quality CI FULL SUCCESS run 34775412790 on 49d0c36; Human Action Center"
+    },
+    {
+      "at": "2026-09-13T19:53:50.967Z",
+      "taskId": "T047",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "Created T047 Operational Mirror from owner request / PRODUCT_GOAL ops cockpit gap"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T047",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13T20:10:58.874Z",
+      "taskId": "T047",
+      "from": "EN_COURS",
+      "to": "EN_CONTRÔLE",
+      "by": "cursor",
+      "note": "Local quality-gate PASS; push draft PR for CI FULL"
     }
   ],
-  "registryVersion": 137,
+  "registryVersion": 140,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

@@ -320,4 +320,6 @@ export type ControlCenterSnapshot = {
   lastUpdate: string;
   /** T046 Human Action Center plane — optional for fatal snapshots. */
   humanActions?: import("@/lib/x200/actions/types").HumanActionPlaneSnapshot | null;
+  /** T047 Operational Mirror — optional for fatal snapshots. */
+  mirror?: import("@/lib/x200/mirror/types").OperationalMirrorSnapshot | null;
 };

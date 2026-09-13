@@ -30,6 +30,10 @@ import {
   buildHumanActionPlaneSnapshot,
   loadHumanActionPlaneExtras,
 } from "@/lib/x200/actions/plane";
+import {
+  assembleOperationalMirror,
+  emptyOperationalMirror,
+} from "@/lib/x200/mirror/assemble";
 import type {
   ControlCenterSnapshot,
   ControlCenterSources,
@@ -304,6 +308,10 @@ export function buildControlCenterFatalSnapshot(
     progress: emptyProgress(),
     lastUpdate: generatedAt,
     humanActions: null,
+    mirror: emptyOperationalMirror(
+      generatedAt,
+      sanitizeDisplayText(message),
+    ),
   };
 }
 
@@ -498,6 +506,35 @@ async function assembleControlCenterSnapshot(options?: {
     activeIncident: extras.activeIncident,
   });
 
+  const mirror = await assembleOperationalMirror({
+    generatedAt,
+    repository: backlog.repository || github.repository || "UNKNOWN",
+    git,
+    github,
+    fedora,
+    humanGate,
+    productComplete,
+    backlogStatus: backlog.status,
+    currentTask: sanitizedCurrent,
+    nextTaskId: sanitizedTasks.find((t) => t.status === "PRÊTE")?.id ?? null,
+    tasks: sanitizedTasks,
+    blockers,
+    warnings,
+    control,
+    humanActions,
+  }).catch((error) =>
+    emptyOperationalMirror(
+      generatedAt,
+      error instanceof Error ? error.message : "mirror assembly failed",
+    ),
+  );
+
+  if (mirror.degraded) {
+    warnings.push(
+      ...mirror.degradationNotes.map((note) => `DEGRADED: ${note}`),
+    );
+  }
+
   let snapshot: ControlCenterSnapshot = {
     generatedAt,
     sources,
@@ -535,6 +572,7 @@ async function assembleControlCenterSnapshot(options?: {
     progress,
     lastUpdate: generatedAt,
     humanActions,
+    mirror,
   };
 
   const secretHits = assertNoSecretsInPayload(snapshot);

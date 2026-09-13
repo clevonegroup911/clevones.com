@@ -186,6 +186,19 @@ Conditions :
 - jamais de shell/SQL/rm libre ; jamais de bypass Human Gate
 - CI/mocks refusent merge/deploy/migrate/restore réels
 
+### Operational Mirror (T047)
+
+`/admin/x200` expose un **miroir opérationnel** : Global Command Center (VALUE/SOURCE/TIMESTAMP/FRESHNESS/VERIFICATION), matrice SOURCES, GitHub/CI/Diff inspectors, AUTOPILOT live, Operator View, NEXT SAFE ACTION déterministe, palette Ctrl+K, notifications, error intelligence, logs contrôlés.
+
+Règles :
+
+- aucune donnée inventée ; UNKNOWN / NOT_CONNECTED / NOT_AVAILABLE explicites
+- conflits = `SOURCE_CONFLICT` (jamais de choix silencieux)
+- SUCCESS distant seulement après vérification remote (merge `merged=true`, etc.)
+- fetches parallèles avec timeout ; une source en échec → DEGRADED, pas de crash
+- pas de shell libre, pas de bypass Human Gate
+- `error.tsx` / `loading.tsx` pour résilience hot-reload / 404 transient
+
 ## Règles AUTOPLAN
 
 AUTOPLAN :

@@ -22,6 +22,14 @@ import {
   X200TabBar,
   type TabId,
 } from "@/app/admin/x200/human-action-panels";
+import {
+  AutopilotLivePanel,
+  CommandPalette,
+  GlobalCommandCenter,
+  HumanDecisionCenter,
+  NextSafeActionBanner,
+  OperationalMirrorPanels,
+} from "@/app/admin/x200/operational-mirror-panels";
 
 type FilterId =
   | "all"
@@ -205,6 +213,7 @@ export function ControlCenterClient({
   } | null>(null);
   const [nowTick, setNowTick] = useState(() => Date.now());
   const [activeTab, setActiveTab] = useState<TabId>("OVERVIEW");
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -279,6 +288,18 @@ export function ControlCenterClient({
       // Keep last valid snapshot — never destroy it on failure.
       setConnection("DEGRADED");
     }
+  }, []);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen(true);
+      }
+      if (event.key === "Escape") setPaletteOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
@@ -394,8 +415,8 @@ export function ControlCenterClient({
           CLEVONE X200 CONTROL CENTER
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-gray-muted">
-          Supervision temps réel et contrôle local sûr — Human Gates protégés,
-          aucune commande shell libre depuis le navigateur.
+          Operational mirror + universal action console — Human Gates protégés,
+          aucune commande shell libre. Ctrl+K pour la palette.
         </p>
 
         <div
@@ -477,6 +498,12 @@ export function ControlCenterClient({
 
       <X200TabBar active={activeTab} onChange={setActiveTab} />
 
+      <NextSafeActionBanner snapshot={snapshot} />
+
+      {activeTab === "OVERVIEW" ? (
+        <GlobalCommandCenter snapshot={snapshot} />
+      ) : null}
+
       {snapshot.humanGate.present ? (
         <div
           data-testid="x200-human-gate-banner"
@@ -531,6 +558,34 @@ export function ControlCenterClient({
           activeTab={activeTab}
           onRefresh={() => void refresh()}
         />
+      ) : null}
+
+      {(
+        [
+          "SOURCES",
+          "GITHUB",
+          "CI",
+          "CHANGES",
+          "OPERATOR",
+          "LOGS",
+          "NOTIFICATIONS",
+          "ERRORS",
+        ] as TabId[]
+      ).includes(activeTab) ? (
+        <OperationalMirrorPanels
+          snapshot={snapshot}
+          activeTab={activeTab}
+          onRefresh={() => void refresh()}
+          onOpenTab={(tab) => setActiveTab(tab as TabId)}
+        />
+      ) : null}
+
+      {activeTab === "OVERVIEW" || activeTab === "HUMAN_ACTIONS" ? (
+        <HumanDecisionCenter snapshot={snapshot} />
+      ) : null}
+
+      {activeTab === "AUTOMATION" || activeTab === "OVERVIEW" ? (
+        <AutopilotLivePanel snapshot={snapshot} />
       ) : null}
 
       {activeTab === "AUTOMATION" || activeTab === "OVERVIEW" ? (
@@ -1284,6 +1339,25 @@ export function ControlCenterClient({
           </div>
         </div>
       ) : null}
+
+      <CommandPalette
+        snapshot={snapshot}
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        onAction={(id) => {
+          if (id === "refresh_all") void refresh();
+          else if (id === "inspect_pr") setActiveTab("GITHUB");
+          else if (id === "inspect_ci") setActiveTab("CI");
+          else if (id === "start_autopilot") setConfirmAction("AUTOPILOT_START");
+          else if (id === "stop_autopilot") setConfirmAction("AUTOPILOT_STOP");
+          else if (id === "run_cycle") setConfirmAction("RUN_ONE_CYCLE");
+          else if (id === "mark_pr_ready" || id === "review_merge")
+            setActiveTab("HUMAN_ACTIONS");
+          else if (id === "create_backup") setActiveTab("DATABASE");
+          else if (id === "run_health_check") setHealthOpen(true);
+          else if (id === "open_incident") setActiveTab("INCIDENTS");
+        }}
+      />
     </div>
   );
 }

@@ -437,3 +437,83 @@ test("Human Action MARK_READY remote mismatch shows FAILED not false success", a
 
   await page.unrouteAll({ behavior: "ignoreErrors" });
 });
+
+test("Operational Mirror journey — facts, sources, operator, palette, resilience", async ({
+  page,
+}, testInfo) => {
+  skipWithoutDb();
+  await loginE2eAdmin(page);
+  await page.goto("/admin/x200");
+
+  await expect(
+    page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
+  await expect(page.getByTestId("x200-next-safe-action")).toBeVisible();
+  await expect(page.getByTestId("x200-fact-branch_local")).toBeVisible();
+  await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
+
+  await page.getByTestId("x200-tab-SOURCES").click();
+  await expect(page.getByTestId("x200-sources-matrix")).toBeVisible();
+
+  await page.getByTestId("x200-tab-GITHUB").click();
+  await expect(page.getByTestId("x200-github-center")).toBeVisible();
+  await expect(page.getByTestId("x200-release-stack")).toBeVisible();
+
+  await page.getByTestId("x200-tab-CI").click();
+  await expect(page.getByTestId("x200-ci-inspector")).toBeVisible();
+
+  await page.getByTestId("x200-tab-CHANGES").click();
+  await expect(page.getByTestId("x200-diff-inspector")).toBeVisible();
+
+  await page.getByTestId("x200-tab-OPERATOR").click();
+  await expect(page.getByTestId("x200-operator-view")).toBeVisible();
+  await expect(page.getByText("CURRENT FACTS")).toBeVisible();
+  await expect(page.getByText("NEXT SAFE ACTION").first()).toBeVisible();
+
+  await page.getByTestId("x200-tab-LOGS").click();
+  await expect(page.getByTestId("x200-log-viewer")).toBeVisible();
+  await expect(page.getByText("no free terminal", { exact: false })).toBeVisible();
+
+  await page.getByTestId("x200-tab-NOTIFICATIONS").click();
+  await expect(page.getByTestId("x200-notification-center")).toBeVisible();
+  await expect(page.getByTestId("x200-notify-badge")).toBeVisible();
+
+  await page.getByTestId("x200-tab-ERRORS").click();
+  await expect(page.getByTestId("x200-error-intelligence")).toBeVisible();
+
+  await page.getByTestId("x200-tab-OVERVIEW").click();
+  await expect(page.getByTestId("x200-autopilot-live")).toBeVisible();
+  await expect(page.getByTestId("x200-cursor-agent")).toBeVisible();
+  await expect(page.getByTestId("x200-human-decision-center")).toBeVisible();
+
+  await page.keyboard.press("Control+KeyK");
+  await expect(page.getByTestId("x200-command-palette")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByTestId("x200-command-palette")).toHaveCount(0);
+
+  // Hard reload resilience — route must remain available.
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+  ).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
+
+  const status = await page.request.get("/api/admin/x200/status");
+  expect(status.ok()).toBeTruthy();
+  const body = (await status.json()) as {
+    mirror?: {
+      nextSafeAction?: { code?: string; destructive?: boolean };
+      sourcesMatrix?: Array<{ conflict?: boolean }>;
+      cursorAgent?: { status?: string };
+    };
+  };
+  expect(body.mirror?.nextSafeAction?.code).toBeTruthy();
+  expect(body.mirror?.nextSafeAction?.destructive).toBe(false);
+  expect(body.mirror?.cursorAgent?.status).toBeTruthy();
+
+  await captureSafeEvidence(
+    page,
+    `${testInfo.project.name}-x200-operational-mirror.png`,
+  );
+});
