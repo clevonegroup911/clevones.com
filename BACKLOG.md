@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 140
+- Registre : 141
 - Mode : single-executor
 - Mis à jour : 2026-09-13
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 46
+- TERMINÉE : 47
 - ANNULÉE : 0
 
 ## Tâches
@@ -68,4 +68,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T044 | P1 | TERMINÉE | Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043 | non |
 | T045 | P0 | TERMINÉE | Interactive X200 Control Center — safe operations | non |
 | T046 | P0 | TERMINÉE | X200 Human Action Center — approvals, release, deploy and recovery | non |
-| T047 | P0 | EN_CONTRÔLE | X200 Operational Mirror + Universal Action Console | non |
+| T047 | P0 | TERMINÉE | X200 Operational Mirror + Universal Action Console | non |

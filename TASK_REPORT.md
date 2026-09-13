@@ -10,7 +10,7 @@ T047
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Un
 
 ## Résultat
 
-Implémentation locale complète. Draft PR #11. CI FULL précédent échoué sur Playwright (next dev loadManifest + mock status) — correctifs e2e (`next start` si build, X200_E2E skip remote, mocks robustes). Re-run FULL en cours. MERGED=NO DEPLOYED=NO.
+Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -35,6 +35,8 @@ Implémentation locale complète. Draft PR #11. CI FULL précédent échoué sur
 - `app/admin/x200/human-action-panels.tsx`
 - `app/admin/x200/page.tsx`
 - `tests/e2e/x200-control-center.spec.ts`
+- `tests/e2e/dev-server.ts` / `env.ts`
+- `middleware.ts` (e2e loopback http allow under X200_E2E)
 - `package.json`
 - `docs/X200_AUTOPILOT.md`
 - `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
@@ -55,8 +57,8 @@ Implémentation locale complète. Draft PR #11. CI FULL précédent échoué sur
 ## Tests réussis
 
 - mirror unit 8 PASS
-- quality-gate local (en cours / à confirmer)
-- playwright unauthenticated PASS ; authenticated skipped sans Docker PG local
+- quality-gate local PASS
+- CI FULL quality SUCCESS run 34782004736 (playwright 33 passed)
 
 ## Tests échoués
 
@@ -84,27 +86,27 @@ Implémentation locale complète. Draft PR #11. CI FULL précédent échoué sur
 
 ## Commit
 
-- feat/x200-operational-mirror (Playwright FULL stabilization pending push)
+- feat/x200-operational-mirror @ 7de8fd1
 
 ## Pull Request
 
-- Draft PR #11 https://github.com/clevonegroup911/clevones.com/pull/11 (base feat/x200-human-action-center)
+- PR #11 https://github.com/clevonegroup911/clevones.com/pull/11
 
 ## Preuves
 
 - reports/tasks/T047.md
-- quality-gate local PASS
-- CI METADATA SUCCESS run 34780034783 insufficient (lane ≠ FULL)
-- CI FULL fail run 34780182921 playwright — fix pending re-run
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736
+- mode=FULL ; playwright + build + db_integration inclus
+- headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
 
 ## Risques
 
-- aucun bloquant automatique après fix e2e
+- aucun
 
 ## Blocage
 
-- await CI FULL quality SUCCESS
+- aucun
 
 ## Prochaine tâche prête
 
-- après clôture CI T047 → AUTOPLAN
+- AUTOPLAN si NO_READY_TASK
