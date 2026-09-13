@@ -18,7 +18,7 @@ Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Un
 
 ## Résultat
 
-Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
+Livré et prouvé en CI FULL. AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -36,8 +36,7 @@ Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 - `app/admin/x200/page.tsx`
 - `tests/e2e/x200-control-center.spec.ts`
 - `tests/e2e/dev-server.ts` / `env.ts`
-- `middleware.ts` (e2e loopback http allow under X200_E2E)
-- `package.json`
+- `middleware.ts`
 - `docs/X200_AUTOPILOT.md`
 - `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
 
@@ -50,7 +49,7 @@ Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 - npx tsc --noEmit
 - npx prisma validate
 - npm run build
-- npx playwright test tests/e2e/x200-control-center.spec.ts
+- npx playwright test
 - npm run x200:scan-secrets
 - git diff --check
 
@@ -58,7 +57,7 @@ Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 
 - mirror unit 8 PASS
 - quality-gate local PASS
-- CI FULL quality SUCCESS run 34782004736 (playwright 33 passed)
+- CI FULL quality SUCCESS run 34782004736
 
 ## Tests échoués
 
@@ -86,7 +85,7 @@ Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 
 ## Commit
 
-- feat/x200-operational-mirror @ 7de8fd1
+- feat/x200-operational-mirror @ fdf8f8b (+ PRODUCT_COMPLETE local)
 
 ## Pull Request
 
@@ -96,17 +95,17 @@ Livré et prouvé en CI FULL. MERGED=NO DEPLOYED=NO.
 
 - reports/tasks/T047.md
 - https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736
-- mode=FULL ; playwright + build + db_integration inclus
-- headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
+- mode=FULL headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
+- .x200/PRODUCT_COMPLETE.json valid for current HEAD + PRODUCT_GOAL hash
 
 ## Risques
 
-- aucun
+- aucun automatique
 
 ## Blocage
 
-- aucun
+- aucun automatique — gates humains/externes seulement
 
 ## Prochaine tâche prête
 
-- AUTOPLAN si NO_READY_TASK
+- aucune (PRODUCT_COMPLETE)
