@@ -3031,6 +3031,72 @@
           "location": "github-actions:quality FAST"
         }
       ]
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL crit.14–15 Control Center interactive / T044",
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "Attendre FULL CI quality SUCCESS sur SHA d'implémentation puis clôturer",
+      "lastTransitionReason": "implémentation interactive control plane + contrôles locaux PASS ; Playwright local bloqué docker0 ; EN_CONTRÔLE",
+      "id": "T045",
+      "title": "Interactive X200 Control Center — safe operations",
+      "objective": "Transformer /admin/x200 en Control Center interactif (live refresh, drawer tâches, pipeline, COMMAND CENTER) avec actions sûres AUTOPILOT/RUN_ONE_CYCLE, sans merge/deploy/shell libre ni bypass Human Gate.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T044"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200",
+        "lib/http",
+        ".env.example",
+        "tests/e2e/x200-control-center.spec.ts",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Live auto-refresh GET /api/admin/x200/status (no-store) avec AbortController + pause onglet caché; CONNECTION DEGRADED sans perdre snapshot",
+        "Task drawer + pipeline cliquables; COMMAND CENTER Start/Stop/Restart/Run-one-cycle avec confirmation",
+        "POST /api/admin/x200/actions enum strict uniquement; execFile/spawn fixes; pas de shell libre",
+        "SUPER_ADMIN only mutations; ADMIN read-only; Human Gate / dirty / agentBusy / CONTROL_DISABLED respectés",
+        "Audit .x200/control-actions.jsonl 0600 redacté; Merge/Deploy = Human approval required (jamais actifs)",
+        "Tests unitaires + Playwright verts; CI ne lance pas systemctl réel (executor injectable)"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "POST /api/admin/x200/actions enum strict + execFile fixed argv",
+        "LIVE refresh + COMMAND CENTER + task/pipeline drawers",
+        "X200_CONTROL_ACTIONS_ENABLED=false in .env.example",
+        "unit tests control-actions PASS",
+        "lint/tsc/build/x200:validate PASS",
+        "reports/tasks/T045.md",
+        "MERGED=NO DEPLOYED=NO HUMAN_GATE_BYPASS=NO ARBITRARY_SHELL=NO"
+      ],
+      "estimatedCost": 5,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-13"
     }
   ],
   "history": [
@@ -4243,9 +4309,27 @@
       "taskId": "T044",
       "status": "TERMINÉE",
       "note": "quality CI FAST SUCCESS run 34763905161 on 424a842; PRODUCT_COMPLETE local reissued"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T045",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] Interactive safe control plane after T044; owner request"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T045",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T045",
+      "status": "EN_CONTRÔLE",
+      "note": "safe control plane implemented; awaiting CI quality FULL"
     }
   ],
-  "registryVersion": 129,
+  "registryVersion": 132,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

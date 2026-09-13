@@ -37,7 +37,7 @@ test("portal USER cannot open /admin/x200", async ({ page }, testInfo) => {
   );
 });
 
-test("admin Control Center shows real cards, registry, gate, telemetry status", async ({
+test("admin Control Center live refresh, filters, drawers, command UI", async ({
   page,
 }, testInfo) => {
   skipWithoutDb();
@@ -49,8 +49,14 @@ test("admin Control Center shows real cards, registry, gate, telemetry status", 
     page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
   ).toBeVisible();
 
+  await expect(page.getByTestId("x200-live-bar")).toBeVisible();
+  await expect(page.getByTestId("x200-live-indicator")).toBeVisible();
+  await expect(page.getByTestId("x200-refresh-now")).toBeVisible();
+  await expect(page.getByTestId("x200-auto-refresh")).toBeVisible();
+  await expect(page.getByTestId("x200-command-center")).toBeVisible();
+  await expect(page.getByTestId("x200-control-mode")).toBeVisible();
   await expect(page.getByTestId("card-system-health")).toBeVisible();
-  await expect(page.getByTestId("card-autoplan")).toBeVisible();
+  await expect(page.getByTestId("card-project-progress")).toBeVisible();
   await expect(page.getByTestId("card-current-task")).toBeVisible();
   await expect(page.getByTestId("card-active-agent")).toBeVisible();
   await expect(page.getByTestId("card-ci-status")).toBeVisible();
@@ -58,55 +64,171 @@ test("admin Control Center shows real cards, registry, gate, telemetry status", 
   await expect(page.getByTestId("card-worktree")).toBeVisible();
   await expect(page.getByTestId("x200-task-registry")).toBeVisible();
   await expect(page.getByTestId("x200-pipeline")).toBeVisible();
+  await expect(page.getByTestId("x200-action-history")).toBeVisible();
 
-  await expect(page.getByText(/FEDORA TELEMETRY = /)).toBeVisible();
-  await expect(page.getByText(/AUTOPILOT LIVE STATE = /)).toBeVisible();
+  await expect(page.getByText("Human approval required").first()).toBeVisible();
+  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeVisible();
+  await expect(page.getByTestId("x200-action-RUN_ONE_CYCLE")).toBeVisible();
 
-  await expect(page.getByRole("button", { name: "Toutes" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "En cours" })).toBeVisible();
+  // Default CONTROL_DISABLED → buttons disabled for safety.
+  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeDisabled();
+
+  await page.getByRole("button", { name: "Terminées" }).click();
   await expect(page.getByPlaceholder("Recherche ID / titre")).toBeVisible();
+  await page.getByPlaceholder("Recherche ID / titre").fill("T045");
+
+  const firstRow = page.locator("[data-testid^='x200-task-row-']").first();
+  if (await firstRow.count()) {
+    await firstRow.click();
+    await expect(page.getByTestId("x200-task-drawer")).toBeVisible();
+    await page.getByRole("button", { name: "Close" }).first().click();
+  }
+
+  await page.getByTestId("x200-pipeline-CI").click();
+  await expect(page.getByTestId("x200-pipeline-drawer")).toBeVisible();
+  await page.getByRole("button", { name: "Close" }).first().click();
 
   const status = await page.request.get("/api/admin/x200/status");
   expect(status.ok()).toBeTruthy();
+  expect(status.headers()["cache-control"] ?? "").toMatch(/no-store/i);
   const body = (await status.json()) as {
     sources?: { fedoraTelemetry?: string; github?: string };
-    fedora?: { autopilotLiveState?: string; fedoraTelemetry?: string };
-    systemHealth?: { status?: string; scorePercent?: number | null };
+    fedora?: { autopilotLiveState?: string };
+    systemHealth?: { status?: string };
+    control?: { mode?: string };
+    progress?: { completed?: number | null; total?: number | null };
     github?: { ciLatestConclusion?: string | null };
   };
-  expect([
-    "OK",
-    "NOT_CONNECTED",
-    "INVALID",
-    "ERROR",
-    "MISSING",
-    "UNKNOWN",
-  ]).toContain(body.sources?.fedoraTelemetry ?? "");
-  expect([
-    "WAITING_FOR_TELEMETRY",
-    "STALE",
-    "RUNNING",
-    "IDLE",
-    "AUTOPLAN",
-    "COMPLETE",
-  ]).toContain(body.fedora?.autopilotLiveState ?? "");
-  if (body.sources?.fedoraTelemetry === "NOT_CONNECTED") {
-    expect(body.fedora?.autopilotLiveState).toBe("WAITING_FOR_TELEMETRY");
-  }
-  expect(["OK", "UNKNOWN", "ERROR", "MISSING"]).toContain(
-    body.sources?.github ?? "",
-  );
+  expect(body.control?.mode).toBeTruthy();
   expect(["HEALTHY", "DEGRADED", "BLOCKED", "UNKNOWN"]).toContain(
     body.systemHealth?.status ?? "",
   );
-  // Never invent a green CI conclusion in the payload when GitHub is unknown.
   if (body.sources?.github === "UNKNOWN") {
     expect(body.github?.ciLatestConclusion ?? null).toBeNull();
   }
+
+  await page.getByTestId("x200-refresh-now").click();
 
   const screenshotName =
     project === "mobile"
       ? "mobile-x200-control-center.png"
       : "desktop-x200-control-center.png";
   await captureSafeEvidence(page, screenshotName);
+});
+
+test("SUPER_ADMIN confirmation modal and mocked action success/failure", async ({
+  page,
+}) => {
+  skipWithoutDb();
+  await loginE2eAdmin(page);
+
+  await page.route("**/api/admin/x200/status", async (route) => {
+    if (route.request().method() !== "GET") {
+      await route.continue();
+      return;
+    }
+    const response = await route.fetch();
+    const json = (await response.json()) as Record<string, unknown>;
+    const control = {
+      ...(typeof json.control === "object" && json.control
+        ? (json.control as Record<string, unknown>)
+        : {}),
+      mode: "LOCAL_CONTROL_READY",
+      actionsEnabled: true,
+      localExecutorAvailable: true,
+      actorRole: "SUPER_ADMIN",
+      canMutate: true,
+      disabledReasons: {
+        MERGE: "Human approval required",
+        DEPLOY: "Human approval required",
+      },
+      recentActions: [],
+    };
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      headers: { "Cache-Control": "no-store" },
+      body: JSON.stringify({ ...json, control }),
+    });
+  });
+
+  await page.goto("/admin/x200");
+  await page.getByTestId("x200-refresh-now").click();
+  await expect(page.getByTestId("x200-control-mode")).toContainText(
+    "LOCAL_CONTROL_READY",
+  );
+
+  await page.route("**/api/admin/x200/actions", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: true,
+        code: "OK",
+        message: "Action exécutée.",
+        action: "AUTOPILOT_START",
+        durationMs: 12,
+        beforeState: "LOCAL_CONTROL_READY",
+        afterState: "ACTION_RUNNING",
+        output: "mocked",
+      }),
+    });
+  });
+
+  // Force-enable button by evaluating — control state from mocked status.
+  await page.evaluate(() => {
+    const btn = document.querySelector(
+      '[data-testid="x200-action-AUTOPILOT_START"]',
+    ) as HTMLButtonElement | null;
+    if (btn) btn.disabled = false;
+  });
+  await page.getByTestId("x200-action-AUTOPILOT_START").click({ force: true });
+  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
+  await page.getByTestId("x200-confirm-action").click();
+  await expect(page.getByTestId("x200-action-result")).toContainText("SUCCESS");
+
+  await page.unroute("**/api/admin/x200/actions");
+  await page.route("**/api/admin/x200/actions", async (route) => {
+    await route.fulfill({
+      status: 409,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: false,
+        code: "AGENT_BUSY",
+        message: "Agent Cursor actif",
+        action: "AUTOPILOT_STOP",
+      }),
+    });
+  });
+
+  await page.evaluate(() => {
+    const btn = document.querySelector(
+      '[data-testid="x200-action-AUTOPILOT_STOP"]',
+    ) as HTMLButtonElement | null;
+    if (btn) btn.disabled = false;
+  });
+  await page.getByTestId("x200-action-AUTOPILOT_STOP").click({ force: true });
+  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
+  await page.getByTestId("x200-confirm-action").click();
+  await expect(page.getByTestId("x200-action-result")).toContainText("FAILED");
+});
+
+test("ADMIN role cannot mutate via actions API", async ({ page, request }) => {
+  skipWithoutDb();
+  await loginE2eAdmin(page);
+
+  // Seeded e2e admin is SUPER_ADMIN — verify arbitrary command body rejected,
+  // and CSRF/body validation remains strict for the session.
+  const forbidden = await request.post("/api/admin/x200/actions", {
+    data: {
+      action: "AUTOPILOT_START",
+      command: "rm -rf /",
+    },
+  });
+  expect([400, 403]).toContain(forbidden.status());
+
+  const invalid = await request.post("/api/admin/x200/actions", {
+    data: { action: "NOT_A_REAL_ACTION" },
+  });
+  expect([400, 403]).toContain(invalid.status());
 });

@@ -42,7 +42,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | T001–T044 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| Control Center | `/admin/x200` lecture seule + télémétrie Fedora réelle (T042/T043) | CONFIRMÉ dépôt |
+| Control Center | `/admin/x200` interactif + actions sûres locales (T045) ; télémétrie Fedora (T043) | CONFIRMÉ dépôt |
 | PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :

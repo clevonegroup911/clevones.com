@@ -151,7 +151,26 @@ Le superviseur écrit `.x200/telemetry.json` (mode `0600`, dossier `.x200` en `0
 - `updatedAt` trop vieux (défaut 180s, `X200_TELEMETRY_STALE_MS`) → live state `STALE` (jamais de faux `RUNNING`)
 - frais → `OK` + `RUNNING` / `IDLE` / `AUTOPLAN` / `COMPLETE` selon `lastEvent` / `agentRunning`
 
-Aucune commande shell n'est exposée au navigateur.
+Aucune commande shell libre n'est exposée au navigateur.
+
+### Control plane sûr (T045)
+
+`POST /api/admin/x200/actions` accepte uniquement l'enum :
+
+- `AUTOPILOT_START` / `STOP` / `RESTART` → `systemctl --user … clevones-x200-autopilot.service`
+- `RUN_ONE_CYCLE` → `node scripts/x200-autopilot.mjs --once`
+
+Conditions :
+
+- `X200_CONTROL_ACTIONS_ENABLED=true` (défaut `false` dans `.env.example`)
+- rôle `SUPER_ADMIN` (ADMIN = lecture seule)
+- same-origin / CSRF
+- pas de Human Gate actif ; worktree clean pour `RUN_ONE_CYCLE`
+- `agentRunning=true` bloque STOP/RESTART (pas de FORCE STOP)
+- exécution via `execFile` argv fixes uniquement (jamais `exec`, `shell:true`, ni commande fournie par le navigateur)
+- audit append-only `.x200/control-actions.jsonl` (mode `0600`, sortie redactée)
+
+Merge / Deploy restent affichés comme **Human approval required**.
 
 ## Règles AUTOPLAN
 

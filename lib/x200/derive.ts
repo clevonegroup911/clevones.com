@@ -174,6 +174,7 @@ export function derivePipeline(input: {
     | "prState"
     | "ciLatestConclusion"
     | "ciLatestStatus"
+    | "ciLatestUrl"
   >;
   productComplete: Pick<
     ProductCompleteSnapshot,
@@ -182,6 +183,11 @@ export function derivePipeline(input: {
 }): PipelineStep[] {
   const task = input.currentTask;
   const status = task?.status ?? null;
+
+  const relatedCommit =
+    input.git.status === "OK" && input.git.head ? input.git.head : null;
+  const relatedCiUrl = input.github.ciLatestUrl ?? null;
+  const taskUpdatedAt = task?.updatedAt ?? null;
 
   const plan: PipelineStep = {
     id: "PLAN",
@@ -194,6 +200,16 @@ export function derivePipeline(input: {
       : input.productComplete.present
         ? "PRODUCT_COMPLETE marker present (historical plan)"
         : "No current task",
+    source: "backlog/productComplete",
+    evidence: task
+      ? `task=${task.id}`
+      : input.productComplete.present
+        ? "PRODUCT_COMPLETE present"
+        : null,
+    timestamp: taskUpdatedAt,
+    reason: null,
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   const claim: PipelineStep = {
@@ -209,6 +225,14 @@ export function derivePipeline(input: {
     detail: task
       ? `status=${task.status}; worker=${task.claimWorkerId ?? "N/A"}`
       : "N/A",
+    source: "backlog.claim",
+    evidence: task?.claimWorkerId
+      ? `worker=${task.claimWorkerId}; expires=${task.claimExpiresAt ?? "N/A"}`
+      : null,
+    timestamp: taskUpdatedAt,
+    reason: task?.lastTransitionReason ?? null,
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   const build: PipelineStep = {
@@ -224,6 +248,12 @@ export function derivePipeline(input: {
               ? "WAITING"
               : "UNKNOWN",
     detail: task?.nextAction ?? "Derived from task status only",
+    source: "backlog.status",
+    evidence: task?.nextAction ?? null,
+    timestamp: taskUpdatedAt,
+    reason: task?.blockedReason ?? null,
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   const test: PipelineStep = {
@@ -239,6 +269,15 @@ export function derivePipeline(input: {
               ? "WAITING"
               : "UNKNOWN",
     detail: "Inferred from EN_CONTRÔLE/TERMINÉE transitions when present",
+    source: "backlog.status",
+    evidence:
+      status === "EN_CONTRÔLE" || status === "TERMINÉE"
+        ? `status=${status}`
+        : null,
+    timestamp: taskUpdatedAt,
+    reason: null,
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   const hasLocalHead =
@@ -258,6 +297,12 @@ export function derivePipeline(input: {
         : hasLocalHead
           ? `Local HEAD ${input.git.head?.slice(0, 7) ?? "N/A"}; remote PR not confirmed`
           : "UNKNOWN",
+    source: "git/github",
+    evidence: relatedCommit ? `head=${relatedCommit.slice(0, 12)}` : null,
+    timestamp: input.git.recentCommits[0]?.at ?? null,
+    reason: null,
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   const ciConclusion = input.github.ciLatestConclusion;
@@ -281,6 +326,16 @@ export function derivePipeline(input: {
       : ciStatus
         ? `status=${ciStatus}`
         : "CI not available",
+    source: "github.actions",
+    evidence: ciConclusion
+      ? `conclusion=${ciConclusion}`
+      : ciStatus
+        ? `status=${ciStatus}`
+        : null,
+    timestamp: null,
+    reason: null,
+    relatedCommit,
+    relatedCiUrl,
   };
 
   const review: PipelineStep = {
@@ -299,6 +354,15 @@ export function derivePipeline(input: {
       input.github.prNumber != null
         ? `PR #${input.github.prNumber} draft=${String(input.github.prDraft)}`
         : "No PR",
+    source: "github.pr",
+    evidence:
+      input.github.prNumber != null
+        ? `PR #${input.github.prNumber}`
+        : null,
+    timestamp: null,
+    reason: null,
+    relatedCommit,
+    relatedCiUrl,
   };
 
   const merge: PipelineStep = {
@@ -311,6 +375,12 @@ export function derivePipeline(input: {
           ? "WAITING"
           : "WAITING",
     detail: "Merge remains a human gate — never auto-derived as production done",
+    source: "human-gate",
+    evidence: "Human approval required",
+    timestamp: null,
+    reason: "HUMAN_GATE",
+    relatedCommit,
+    relatedCiUrl: null,
   };
 
   return [plan, claim, build, test, pushFixed, ci, review, merge];
