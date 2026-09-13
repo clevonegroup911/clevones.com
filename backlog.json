@@ -3236,7 +3236,7 @@
       ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "quality CI FULL SUCCESS run 34782004736 on 7de8fd1; T047 closed",
+      "lastTransitionReason": "Recovery CI FULL SUCCESS on 8c873db; PRODUCT_COMPLETE refreshed",
       "id": "T047",
       "title": "X200 Operational Mirror + Universal Action Console",
       "objective": "Faire de /admin/x200 le cockpit opérationnel principal: miroir de vérité (facts+sources+freshness), inspecteurs GitHub/CI/diff, AUTOPILOT live, décisions humaines, merge/release stack, deploy/DB/incident, operator view, next-safe-action, palette Ctrl+K, notifications, audit — sans données inventées, faux SUCCESS, shell libre ni bypass Human Gate.",
@@ -3291,7 +3291,10 @@
         "https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736",
         "Draft/open PR #11 https://github.com/clevonegroup911/clevones.com/pull/11",
         "reports/tasks/T047.md",
-        "Playwright FULL PASS (next dev + X200_E2E); MERGED=NO DEPLOYED=NO"
+        "Playwright FULL PASS (next dev + X200_E2E); MERGED=NO DEPLOYED=NO",
+        "Recovery: GitHub gh-cli fallback + systemd telemetry reconcile + e2e fixtures",
+        "CI FULL quality SUCCESS run 34782911788 head 8c873db96fd66880feb0e8ecba4bee064b86ff58",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788"
       ],
       "estimatedCost": 8,
       "risk": "high",
@@ -4586,9 +4589,17 @@
       "taskId": "T047",
       "status": "TERMINÉE",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34782004736 head 7de8fd117d696f92f52da19906a5a1ad8999d674; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-13T21:14:54.444Z",
+      "taskId": "T047",
+      "from": "TERMINÉE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "Recovery push CI #141 SUCCESS; PRODUCT_COMPLETE re-pinned to 8c873db"
     }
   ],
-  "registryVersion": 141,
+  "registryVersion": 142,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

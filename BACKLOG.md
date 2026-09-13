@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 141
+- Registre : 142
 - Mode : single-executor
 - Mis à jour : 2026-09-13
 
