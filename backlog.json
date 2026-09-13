@@ -3163,21 +3163,47 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
-        "Human Action Center implemented: CSRF local allow-list, inbox, approvals+MFA, adapters, tabs UI",
+        "Human Action Center: CSRF local allow-list, inbox, approvals+MFA, adapters, tabs UI",
         "Flags default false; SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO",
-        "unit human-actions 19 PASS; lint/tsc/build PASS; playwright unauth PASS (auth needs CI DB)",
+        "unit human-actions 19 PASS; quality-gate local PASS; playwright CI FULL PASS",
+        "CI FULL quality SUCCESS run 34775412790 head 49d0c36aeb27b308bc7d5c82f11e5a620daf5510",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790",
+        "Draft PR #10 https://github.com/clevonegroup911/clevones.com/pull/10",
         "reports/tasks/T046.md",
         "MERGED=NO DEPLOYED=NO"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T046",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T18:37:09.511Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34775412790",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790",
+          "version": "49d0c36aeb27b308bc7d5c82f11e5a620daf5510",
+          "at": "2026-09-13T18:46:07.000Z",
+          "location": "github-actions:quality FULL"
+        }
       ],
       "estimatedCost": 8,
       "risk": "high",
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-13",
-      "lastTransitionReason": "réservation par local:fedora",
-      "nextAction": "exécuter le périmètre puis quality-gate"
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34775412790 on 49d0c36; T046 closed",
+      "nextAction": null,
+      "claim": null
     }
   ],
   "history": [
@@ -4432,9 +4458,15 @@
       "taskId": "T046",
       "status": "EN_CONTRÔLE",
       "note": "Human Action Center implemented; awaiting CI quality"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T046",
+      "status": "TERMINÉE",
+      "note": "quality CI FULL SUCCESS run 34775412790 on 49d0c36; Human Action Center"
     }
   ],
-  "registryVersion": 136,
+  "registryVersion": 137,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
