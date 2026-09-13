@@ -30,7 +30,15 @@ export {
 } from "@/lib/x200/actions/plane";
 export { computeDrift } from "@/lib/x200/actions/drift";
 export { buildHumanActionInbox } from "@/lib/x200/actions/inbox";
-export { preflightMerge } from "@/lib/x200/actions/merge";
+export {
+  preflightMerge,
+  markPrReadyForReview,
+  resolveGithubActionAdapterMode,
+  createRealReadyForReviewAdapter,
+  createMockReadyForReviewAdapter,
+  verifyReadyRemoteState,
+  parsePrViewJson,
+} from "@/lib/x200/actions/merge";
 export { preflightDeploy } from "@/lib/x200/actions/deploy";
 export { preflightMigration } from "@/lib/x200/actions/migration";
 export { preflightRestore } from "@/lib/x200/actions/backup";

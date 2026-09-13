@@ -8,6 +8,7 @@ import {
   executeHumanAction,
   humanActionRequestSchema,
 } from "@/lib/x200/actions/executor";
+import { resolveGithubActionAdapterMode } from "@/lib/x200/actions/merge";
 import {
   buildControlCenterFatalSnapshot,
   getControlCenterSnapshot,
@@ -78,6 +79,20 @@ export async function POST(request: Request) {
     );
   }
 
+  const adapterMode = resolveGithubActionAdapterMode();
+  if (!parsed.data.previewOnly && adapterMode === "MOCK") {
+    return noStoreJson(
+      {
+        ok: false,
+        code: "ADAPTER_MOCK",
+        message:
+          "GITHUB ACTION ADAPTER = MOCK — mutations disabled outside injected tests",
+        adapterMode,
+      },
+      { status: 403 },
+    );
+  }
+
   const snapshot = await getControlCenterSnapshot({
     actorRole: actor.role,
   }).catch((error) => buildControlCenterFatalSnapshot(error));
@@ -94,6 +109,11 @@ export async function POST(request: Request) {
     backupVerified: false,
   });
 
+  // Invalidate pre-action GitHub snapshot — always re-read remote truth after mutation.
+  const refreshed = await getControlCenterSnapshot({
+    actorRole: actor.role,
+  }).catch((error) => buildControlCenterFatalSnapshot(error));
+
   return noStoreJson(
     {
       ok: outcome.ok,
@@ -105,6 +125,17 @@ export async function POST(request: Request) {
       challengeId: outcome.challengeId,
       expectedSha: outcome.expectedSha,
       currentSha: outcome.currentSha,
+      adapterMode:
+        refreshed.humanActions?.githubActionAdapter ?? adapterMode,
+      github: {
+        prNumber: refreshed.github.prNumber,
+        prDraft: refreshed.github.prDraft,
+        prState: refreshed.github.prState,
+        prHeadSha: refreshed.github.prHeadSha,
+        prUrl: refreshed.github.prUrl,
+        status: refreshed.github.status,
+      },
+      snapshot: refreshed,
     },
     { status: outcome.status },
   );

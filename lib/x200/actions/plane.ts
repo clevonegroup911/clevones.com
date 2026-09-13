@@ -9,6 +9,7 @@ import {
   isHumanActionsEnvEnabled,
   isProductionActionsEnvEnabled,
 } from "@/lib/x200/actions/policy";
+import { resolveGithubActionAdapterMode } from "@/lib/x200/actions/merge";
 import { buildSecretsStatus } from "@/lib/x200/actions/secrets-status";
 import { detectAutopilotStall } from "@/lib/x200/actions/stall";
 import type { HumanActionPlaneSnapshot } from "@/lib/x200/actions/types";
@@ -43,6 +44,7 @@ export function buildHumanActionPlaneSnapshot(input: {
   const env = input.env ?? process.env;
   const enabled = isHumanActionsEnvEnabled(env);
   const productionEnabled = isProductionActionsEnvEnabled(env);
+  const githubActionAdapter = resolveGithubActionAdapterMode(env);
 
   const drift = computeDrift({
     localHead: input.git.head,
@@ -65,11 +67,15 @@ export function buildHumanActionPlaneSnapshot(input: {
     git: input.git,
   });
 
-  const controlLocal = enabled && input.actorRole === "SUPER_ADMIN";
+  const controlLocal =
+    enabled &&
+    input.actorRole === "SUPER_ADMIN" &&
+    githubActionAdapter === "REAL";
 
   return {
     enabled,
     productionEnabled,
+    githubActionAdapter,
     csrf: {
       status: input.csrfStatus,
       appOriginConfigured: input.appOriginConfigured,

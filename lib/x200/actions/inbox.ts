@@ -79,9 +79,10 @@ export function buildHumanActionInbox(input: {
   if (
     input.github.status === "OK" &&
     input.github.prNumber != null &&
-    input.github.prDraft === true &&
-    input.github.ciLatestConclusion === "success"
+    input.github.prDraft === true
   ) {
+    // Remote truth only: draft=true keeps MARK_READY visible regardless of local receipts.
+    const ciOk = input.github.ciLatestConclusion === "success";
     const taskOk =
       !input.currentTask ||
       input.currentTask.status === "EN_CONTRÔLE" ||
@@ -91,17 +92,17 @@ export function buildHumanActionInbox(input: {
         id: `ready-pr-${input.github.prNumber}`,
         type: "MARK_READY_FOR_REVIEW",
         environment: "LOCAL",
-        reason: `Draft PR #${input.github.prNumber} with CI success`,
+        reason: `Remote draft PR #${input.github.prNumber} (draft=true)`,
         blockingTaskId: input.currentTask?.id ?? null,
         requestedBy: "system",
         createdAt: now,
         preconditions: [
-          "Draft PR",
-          "CI SUCCESS",
+          "Remote draft=true",
+          ciOk ? "CI SUCCESS" : "CI not success yet",
           taskOk ? "Task EN_CONTRÔLE/TERMINÉE or none" : "Task status blocker",
-          "No blockers",
+          "Remote verification after gh pr ready",
         ],
-        status: taskOk ? "READY" : "WAITING",
+        status: ciOk && taskOk ? "READY" : "WAITING",
       }),
     );
   }

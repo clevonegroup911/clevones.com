@@ -229,6 +229,8 @@ export type ActionPreview = {
 export type HumanActionPlaneSnapshot = {
   enabled: boolean;
   productionEnabled: boolean;
+  /** REAL | MOCK | UNAVAILABLE — mutations disabled unless REAL. */
+  githubActionAdapter: "REAL" | "MOCK" | "UNAVAILABLE";
   csrf: {
     status: "OK" | "ORIGIN_MISMATCH" | "CONFIG_MISSING";
     appOriginConfigured: boolean;

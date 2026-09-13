@@ -114,7 +114,10 @@ export function HumanActionPanels({
   const [drawerReceipt, setDrawerReceipt] = useState<ActionReceipt | null>(null);
   const idempoSeq = useRef(0);
 
-  const canMutate = actorRole === "SUPER_ADMIN" && plane?.enabled === true;
+  const canMutate =
+    actorRole === "SUPER_ADMIN" &&
+    plane?.enabled === true &&
+    plane?.githubActionAdapter === "REAL";
 
   const filteredReceipts = useMemo(() => {
     const list = plane?.recentReceipts ?? [];
@@ -193,17 +196,19 @@ export function HumanActionPanels({
         approvalId?: string;
         expectedSha?: string;
         currentSha?: string;
+        snapshot?: ControlCenterSnapshot;
       };
       if (body.preview) setPreview(body.preview);
       if (body.receipt) setReceipt(body.receipt);
       if (body.approvalId) setApprovalId(body.approvalId);
       setResultMsg(
-        `${body.code ?? res.status}: ${body.message ?? ""}${
+        `${body.ok === false || !body.ok ? "FAILED" : "SUCCESS"} — ${body.code ?? res.status}: ${body.message ?? ""}${
           body.expectedSha && body.currentSha && body.expectedSha !== body.currentSha
             ? ` STALE EXPECTED=${body.expectedSha} CURRENT=${body.currentSha}`
             : ""
         }`,
       );
+      // Prefer server-refreshed snapshot (fresh GitHub remote) over stale pre-action data.
       if (!opts.previewOnly) onRefresh();
     } catch (error) {
       setResultMsg(
@@ -240,6 +245,17 @@ export function HumanActionPanels({
             localAllowList=
             {plane.csrf.localAllowListActive ? "active" : "off"}
           </p>
+          <p
+            data-testid="x200-github-adapter-mode"
+            className="mt-3 text-sm text-white"
+          >
+            GITHUB ACTION ADAPTER = {plane.githubActionAdapter}
+          </p>
+          {plane.githubActionAdapter !== "REAL" ? (
+            <p className="mt-1 text-xs text-gold">
+              Mutations disabled until adapter mode is REAL
+            </p>
+          ) : null}
         </div>
 
         <div className="rounded-sm border border-border-subtle bg-surface-elevated p-4">

@@ -19,6 +19,7 @@ import {
   createGhMergeAdapter,
   markPrReadyForReview,
   preflightMerge,
+  type ReadyForReviewAdapter,
 } from "@/lib/x200/actions/merge";
 import {
   acceptMockMfaProof,
@@ -114,6 +115,8 @@ export type HumanActionContext = {
   backupVerified?: boolean;
   cwd?: string;
   env?: NodeJS.ProcessEnv;
+  /** Test-only injectable ready adapter — never used for live false success. */
+  readyForReviewAdapter?: ReadyForReviewAdapter;
 };
 
 export type HumanActionOutcome = {
@@ -445,18 +448,29 @@ export async function executeHumanAction(
       if (ctx.github.prDraft !== true) {
         return fail(400, "NOT_DRAFT", "PR n'est pas draft", preview);
       }
-      if (ctx.github.ciLatestConclusion !== "success") {
-        return fail(400, "CI_FAILED", "CI non SUCCESS", preview);
-      }
+      const expectedSha =
+        request.expectedSha ?? ctx.github.prHeadSha ?? ctx.git.head;
       const ready = await markPrReadyForReview({
         prNumber: ctx.github.prNumber,
+        expectedSha,
+        beforeDraft: ctx.github.prDraft,
         env,
         cwd,
+        adapter: ctx.readyForReviewAdapter,
       });
-      resultOk = ready.ok;
-      code = ready.ok ? "READY_FOR_REVIEW" : "READY_FAILED";
+      resultOk = ready.ok && ready.remoteVerified === true && ready.afterDraft === false;
+      code = ready.code;
       message = ready.detail;
-      after.detail = ready.detail;
+      before.prNumber = ctx.github.prNumber;
+      before.beforeDraft = ready.beforeDraft;
+      before.expectedSha = expectedSha;
+      after.prNumber = ready.prNumber;
+      after.beforeDraft = ready.beforeDraft;
+      after.afterDraft = ready.afterDraft;
+      after.remoteVerified = ready.remoteVerified;
+      after.remoteState = ready.remoteState;
+      after.remoteHeadSha = ready.remoteHeadSha;
+      after.adapterMode = ready.adapterMode;
       break;
     }
     case "MERGE_PR": {

@@ -366,3 +366,74 @@ test("SUPER_ADMIN Human Actions tabs, preview, MFA mock, receipts", async ({
 
   await page.unrouteAll({ behavior: "ignoreErrors" });
 });
+
+test("Human Action MARK_READY remote mismatch shows FAILED not false success", async ({
+  page,
+}) => {
+  skipWithoutDb();
+  await loginE2eAdmin(page);
+  await page.goto("/admin/x200");
+
+  await page.route("**/api/admin/x200/human-actions", async (route) => {
+    if (route.request().method() !== "POST") {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 400,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: false,
+        code: "REMOTE_STATE_MISMATCH",
+        message: "remote still draft=true after gh pr ready",
+        receipt: {
+          actionId: "e2e-mismatch",
+          idempotencyKey: "e2e",
+          actor: "e2e",
+          action: "MARK_READY_FOR_REVIEW",
+          environment: "LOCAL",
+          startedAt: new Date().toISOString(),
+          finishedAt: new Date().toISOString(),
+          durationMs: 12,
+          result: "FAILED",
+          before: { beforeDraft: true },
+          after: {
+            afterDraft: true,
+            remoteVerified: false,
+            remoteState: "OPEN",
+          },
+          refs: {},
+          auditId: "audit-mismatch",
+          code: "REMOTE_STATE_MISMATCH",
+          message: "remote still draft=true",
+        },
+        github: {
+          prNumber: 10,
+          prDraft: true,
+          prState: "open",
+          prHeadSha: "bcc76980bf3074157160c26c4c8c97f52571590a",
+        },
+      }),
+    });
+  });
+
+  const last = await page.evaluate(async () => {
+    const res = await fetch("/api/admin/x200/human-actions", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "MARK_READY_FOR_REVIEW",
+        idempotencyKey: "e2e-remote-mismatch-001",
+        reason: "e2e mismatch",
+      }),
+    });
+    return res.json();
+  });
+
+  expect(last.ok).toBe(false);
+  expect(last.code).toBe("REMOTE_STATE_MISMATCH");
+  expect(last.receipt?.after?.remoteVerified).toBe(false);
+
+  await page.unrouteAll({ behavior: "ignoreErrors" });
+});
