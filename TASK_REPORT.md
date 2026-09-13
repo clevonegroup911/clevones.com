@@ -72,7 +72,7 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 
 ## Commit
 
-- (à renseigner après commit)
+- `45d475eff98a4ce827bde4f09c86fa087b819a55`
 
 ## Pull Request
 
