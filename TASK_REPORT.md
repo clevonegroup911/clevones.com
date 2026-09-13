@@ -83,8 +83,8 @@ Quality-gate local PASS. En attente CI FULL sur PR #7.
 
 ## Blocage
 
-- aucun
+- Push/CI bloqués : `gh` token invalide (`gh auth status` → invalid) ; commit local `c0c7135` ahead of origin. HUMAN_GATE credentials requis pour push PR #7.
 
 ## Prochaine tâche prête
 
-- aucune (attendre CI puis clôture T041)
+- aucune (après push : CI FULL → clôturer T041)
