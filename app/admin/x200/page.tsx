@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata = createPageMetadata({
   title: "X200 Control Center",
   description:
-    "Supervision et contrôle sûr X200 — live refresh, actions locales AUTOPILOT, Human Gates protégés.",
+    "Operational mirror + universal action console X200 — faits vérifiés, Human Gates, pas de shell libre.",
   path: "/admin/x200",
   robots: { index: false, follow: false },
 });

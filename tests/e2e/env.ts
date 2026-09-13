@@ -83,11 +83,16 @@ export function e2eAppEnv(databaseUrl: string): NodeJS.ProcessEnv {
       env[key] = value;
     }
   }
+  // Prevent Actions/runner tokens from driving live GitHub calls during Playwright.
+  // Mirror remote fetches would otherwise add latency/flakes under next dev.
+  delete env.GITHUB_TOKEN;
+  delete env.GH_TOKEN;
   env.DATABASE_URL = databaseUrl;
   env.AUTH_SECRET = E2E_AUTH_SECRET;
   env.MFA_ENCRYPTION_KEY = E2E_MFA_ENCRYPTION_KEY;
   env.MFA_ISSUER = "CLEVONES-E2E";
   env.APP_ORIGIN = E2E_ORIGIN;
+  env.X200_E2E = "1";
   if (process.env.CI) {
     env.CI = process.env.CI;
   }

@@ -1,61 +1,19 @@
 import "server-only";
 
+import {
+  githubApiGet,
+  isValidGithubRepository,
+  type GithubTransportSource,
+} from "@/lib/x200/github-client";
 import type { GithubSnapshot, SourceStatus } from "@/lib/x200/types";
 
 const DEFAULT_REPO = "clevonegroup911/clevones.com";
-const USER_AGENT = "clevones-x200-control-center/T042";
-
-function optionalGithubToken(): string | null {
-  const token =
-    process.env.GITHUB_TOKEN?.trim() || process.env.GH_TOKEN?.trim() || null;
-  return token && token.length > 0 ? token : null;
-}
-
-function githubHeaders(): HeadersInit {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": USER_AGENT,
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-  const token = optionalGithubToken();
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  return headers;
-}
-
-async function githubGet(url: string): Promise<
-  | { ok: true; status: number; json: unknown }
-  | { ok: false; status: number | null; error: string }
-> {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: githubHeaders(),
-      cache: "no-store",
-      signal: AbortSignal.timeout(12_000),
-    });
-    if (!response.ok) {
-      return {
-        ok: false,
-        status: response.status,
-        error: `GitHub HTTP ${response.status}`,
-      };
-    }
-    return { ok: true, status: response.status, json: await response.json() };
-  } catch (error) {
-    return {
-      ok: false,
-      status: null,
-      error: error instanceof Error ? error.message : "GitHub unreachable",
-    };
-  }
-}
 
 function emptyGithub(
   repository: string,
   status: SourceStatus,
   warning: string | null,
+  source: GithubTransportSource = "NOT_CONNECTED",
 ): GithubSnapshot {
   return {
     status,
@@ -74,6 +32,7 @@ function emptyGithub(
     ciLatestStatus: null,
     ciLatestUrl: null,
     ciLatestName: null,
+    githubSource: source,
   };
 }
 
@@ -84,6 +43,15 @@ export async function readGithubSnapshot(options: {
   const repository = options.repository?.trim() || DEFAULT_REPO;
   const branch = options.branch?.trim() || null;
 
+  if (!isValidGithubRepository(repository)) {
+    return emptyGithub(
+      repository,
+      "ERROR",
+      "Invalid repository identifier",
+      "NOT_CONNECTED",
+    );
+  }
+
   if (!branch) {
     return emptyGithub(
       repository,
@@ -92,16 +60,18 @@ export async function readGithubSnapshot(options: {
     );
   }
 
+  const owner = repository.split("/")[0]!;
   const prUrl = `https://api.github.com/repos/${repository}/pulls?head=${encodeURIComponent(
-    `${repository.split("/")[0]}:${branch}`,
+    `${owner}:${branch}`,
   )}&state=all&per_page=5`;
 
-  const prRes = await githubGet(prUrl);
+  const prRes = await githubApiGet(prUrl);
   if (!prRes.ok) {
     return emptyGithub(
       repository,
-      "UNKNOWN",
+      "NOT_CONNECTED",
       `GitHub PR lookup unavailable: ${prRes.error}`,
+      prRes.source,
     );
   }
 
@@ -112,7 +82,7 @@ export async function readGithubSnapshot(options: {
         Boolean(item && typeof item === "object" && !Array.isArray(item)),
     ) ?? null;
 
-  let snapshot = emptyGithub(repository, "OK", null);
+  let snapshot = emptyGithub(repository, "OK", null, prRes.source);
 
   if (pr) {
     const head =
@@ -144,16 +114,19 @@ export async function readGithubSnapshot(options: {
   const runsUrl = `https://api.github.com/repos/${repository}/actions/runs?branch=${encodeURIComponent(
     branch,
   )}&per_page=5`;
-  const runsRes = await githubGet(runsUrl);
+  const runsRes = await githubApiGet(runsUrl);
   if (!runsRes.ok) {
     return {
       ...snapshot,
-      status: snapshot.prNumber ? "OK" : "UNKNOWN",
+      status: snapshot.prNumber ? "OK" : "NOT_CONNECTED",
+      githubSource: snapshot.prNumber ? snapshot.githubSource : runsRes.source,
       warning: [snapshot.warning, `CI lookup unavailable: ${runsRes.error}`]
         .filter(Boolean)
         .join("; "),
     };
   }
+
+  snapshot = { ...snapshot, githubSource: runsRes.source };
 
   const runsBody =
     runsRes.json && typeof runsRes.json === "object" && !Array.isArray(runsRes.json)
