@@ -96,6 +96,10 @@ Le script d'installation :
 - n'installe qu'un seul service : `clevones-x200-autopilot.service` ;
 - ne supprime jamais aveuglément `.x200/autopilot.lock`.
 
+Pour le démarrage machine + Control Center + linger + navigateur, voir
+[`docs/X200_BOOT_AUTOSTART.md`](./X200_BOOT_AUTOSTART.md) et
+`npm run x200:autostart:install`.
+
 Contrôle (préférer journald pour dates et frontières de redémarrage) :
 
 ```bash

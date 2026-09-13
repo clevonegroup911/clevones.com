@@ -1,0 +1,27 @@
+[Unit]
+Description=CLEVONE X200 Control Center (127.0.0.1:3001)
+Documentation=file://{{REPO_ROOT}}/docs/X200_BOOT_AUTOSTART.md
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory={{REPO_ROOT}}
+Environment=X200_CONTROL_CENTER=1
+Environment=HOST=127.0.0.1
+Environment=PORT=3001
+ExecStart={{NODE_BIN}} {{REPO_ROOT}}/scripts/x200-control-center-serve.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+SendSIGKILL=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=clevones-x200-control-center
+# No EnvironmentFile=.env — no GitHub tokens — no arbitrary shell.
+
+[Install]
+WantedBy=default.target

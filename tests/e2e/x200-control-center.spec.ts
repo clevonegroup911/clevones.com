@@ -859,6 +859,11 @@ test.describe("x200 operational mirror", () => {
     await expect(page.getByTestId("x200-next-safe-action")).toBeVisible();
     await expect(page.getByTestId("x200-fact-branch_local")).toBeVisible();
     await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
+    await expect(page.getByTestId("x200-boot-badge")).toBeVisible();
+
+    await page.getByTestId("x200-tab-STARTUP").click();
+    await expect(page.getByTestId("x200-startup-panel")).toBeVisible();
+    await expect(page.getByTestId("x200-boot-overall")).toBeVisible();
 
     await page.getByTestId("x200-tab-SOURCES").click();
     await expect(page.getByTestId("x200-sources-matrix")).toBeVisible();

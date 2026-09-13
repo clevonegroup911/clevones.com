@@ -6,39 +6,40 @@
 
 ## ID
 
-T047
+T048
 
 ## Statut
 
-TERMINÉE
+EN_COURS
 
 ## Objectif
 
-Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Universal Action Console) avec faits vérifiés, sources, freshness, inspecteurs, operator view, next-safe-action et Human Gates — sans données inventées, faux SUCCESS, shell libre ni bypass.
+Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.
 
 ## Résultat
 
-Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
+Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, linger, browser XDG, STARTUP tab, watchdog, installer npm). Acceptation locale partielle en cours ; MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/mirror/*`
-- `app/admin/x200/operational-mirror-panels.tsx`
-- `app/admin/x200/error.tsx`
-- `app/admin/x200/loading.tsx`
-- `reports/tasks/T047.md`
+- `lib/x200/boot/*`
+- `scripts/x200-autostart.mjs` / `x200-control-center-serve.mjs` / `x200-browser-autostart.mjs` / `x200-boot-watchdog.mjs`
+- `scripts/lib/x200-autostart-core.mjs`
+- `ops/systemd/clevones-x200-*.template`
+- `ops/xdg/clevones-x200-open-control-center.desktop.template`
+- `app/admin/x200/startup-panels.tsx`
+- `app/api/admin/x200/boot-actions/route.ts`
+- `docs/X200_BOOT_AUTOSTART.md`
+- `reports/tasks/T048.md`
 
 ## Fichiers modifiés
 
 - `lib/x200/control-center.ts` / `types.ts`
-- `app/admin/x200/control-center-client.tsx`
-- `app/admin/x200/human-action-panels.tsx`
-- `app/admin/x200/page.tsx`
+- `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
+- `package.json`
 - `tests/e2e/x200-control-center.spec.ts`
-- `tests/e2e/dev-server.ts` / `env.ts`
-- `middleware.ts`
 - `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
+- `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
 
 ## Commandes
 
@@ -52,13 +53,15 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 - npx playwright test
 - npm run x200:scan-secrets
 - git diff --check
+- npm run x200:autostart:install / status
 
 ## Tests réussis
 
-- mirror unit 8 PASS
-- quality-gate local PASS
-- CI FULL quality SUCCESS run 34782004736 (feature close `7de8fd1`)
-- CI FULL quality SUCCESS run 34782911788 (recovery tip `8c873db`)
+- boot unit 9 PASS
+- autostart installer 4 PASS
+- npm test PASS
+- x200:test PASS
+- lint / tsc / prisma / build / playwright / secrets PASS
 
 ## Tests échoués
 
@@ -81,33 +84,32 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 - SECRET_VALUES_EXPOSED=NO
 - ARBITRARY_SHELL=NO
 - HUMAN_GATE_BYPASS=NO
+- UNKNOWN_PROCESS_KILLED=NO
 - MERGED=NO
 - DEPLOYED=NO
 
 ## Commit
 
-- feat/x200-operational-mirror @ 8c873db (+ PRODUCT_COMPLETE local after AUTOPLAN)
+- feat/x200-boot-autostart (pending push)
 
 ## Pull Request
 
-- PR #11 https://github.com/clevonegroup911/clevones.com/pull/11
+- pending draft PR → feat/x200-operational-mirror
 
 ## Preuves
 
-- reports/tasks/T047.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788
-- mode=FULL headSha=8c873db96fd66880feb0e8ecba4bee064b86ff58
-- prior FULL https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736 headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
-- .x200/PRODUCT_COMPLETE.json valid for current HEAD + PRODUCT_GOAL hash
+- reports/tasks/T048.md
+- local install: units enabled, DB unless-stopped, linger YES, browser desktop installed, HTTP 307 OK
+- PORT_3001_OWNER=X200 (supervised; no duplicate; no kill)
 
 ## Risques
 
-- aucun automatique
+- Autopilot refuse worktree dirty pendant l'implémentation (attendu)
 
 ## Blocage
 
-- aucun automatique — gates humains/externes seulement
+- aucun gate humain pour le code ; linger déjà YES sur la machine locale
 
 ## Prochaine tâche prête
 
-- aucune (PRODUCT_COMPLETE)
+- clôturer T048 après CI FULL SUCCESS sur HEAD exact

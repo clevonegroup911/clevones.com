@@ -30,6 +30,7 @@ import {
   NextSafeActionBanner,
   OperationalMirrorPanels,
 } from "@/app/admin/x200/operational-mirror-panels";
+import { BootBadge, StartupPanels } from "@/app/admin/x200/startup-panels";
 
 type FilterId =
   | "all"
@@ -455,6 +456,10 @@ export function ControlCenterClient({
             <span data-testid="x200-csrf-chip" className="text-gray-muted">
               CSRF: {snapshot.humanActions?.csrf.status ?? "N/A"}
             </span>
+            <BootBadge
+              snapshot={snapshot}
+              onOpenStartup={() => setActiveTab("STARTUP")}
+            />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -499,6 +504,14 @@ export function ControlCenterClient({
       <X200TabBar active={activeTab} onChange={setActiveTab} />
 
       <NextSafeActionBanner snapshot={snapshot} />
+
+      {activeTab === "STARTUP" ? (
+        <StartupPanels
+          snapshot={snapshot}
+          actorRole={actorRole}
+          onRefresh={() => void refresh()}
+        />
+      ) : null}
 
       {activeTab === "OVERVIEW" ? (
         <GlobalCommandCenter snapshot={snapshot} />

@@ -8,8 +8,8 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-operational-mirror`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `feat/x200-operational-mirror` @ `8c873db` (T047 TERMINÉE — Operational Mirror + recovery tip CI) | CONFIRMÉ |
+| Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-13) |
+| HEAD travail | `feat/x200-boot-autostart` (T048 EN_COURS — Boot Orchestrator) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -40,7 +40,8 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | ID | État | Classe |
 |---|---|---|
 | T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
-| T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL run 34782004736 | CONFIRMÉ registre |
+| T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL | CONFIRMÉ registre |
+| T048 | `EN_COURS` Boot Orchestrator — autostart + self-recovery | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |

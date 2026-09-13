@@ -10,6 +10,7 @@ import type {
 
 export type TabId =
   | "OVERVIEW"
+  | "STARTUP"
   | "TASKS"
   | "AUTOMATION"
   | "HUMAN_ACTIONS"
@@ -29,6 +30,7 @@ export type TabId =
 
 export const X200_TABS: Array<{ id: TabId; label: string }> = [
   { id: "OVERVIEW", label: "OVERVIEW" },
+  { id: "STARTUP", label: "STARTUP" },
   { id: "OPERATOR", label: "OPERATOR" },
   { id: "SOURCES", label: "SOURCES" },
   { id: "GITHUB", label: "GITHUB" },
