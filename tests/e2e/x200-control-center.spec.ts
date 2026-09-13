@@ -152,43 +152,26 @@ test("SUPER_ADMIN confirmation modal and mocked action success/failure", async (
     });
   });
 
-  await page.goto("/admin/x200");
-  await page.getByTestId("x200-refresh-now").click();
-  await expect(page.getByTestId("x200-control-mode")).toContainText(
-    "LOCAL_CONTROL_READY",
-  );
-
+  let actionCalls = 0;
   await page.route("**/api/admin/x200/actions", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        ok: true,
-        code: "OK",
-        message: "Action exécutée.",
-        action: "AUTOPILOT_START",
-        durationMs: 12,
-        beforeState: "LOCAL_CONTROL_READY",
-        afterState: "ACTION_RUNNING",
-        output: "mocked",
-      }),
-    });
-  });
-
-  // Force-enable button by evaluating — control state from mocked status.
-  await page.evaluate(() => {
-    const btn = document.querySelector(
-      '[data-testid="x200-action-AUTOPILOT_START"]',
-    ) as HTMLButtonElement | null;
-    if (btn) btn.disabled = false;
-  });
-  await page.getByTestId("x200-action-AUTOPILOT_START").click({ force: true });
-  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
-  await page.getByTestId("x200-confirm-action").click();
-  await expect(page.getByTestId("x200-action-result")).toContainText("SUCCESS");
-
-  await page.unroute("**/api/admin/x200/actions");
-  await page.route("**/api/admin/x200/actions", async (route) => {
+    actionCalls += 1;
+    if (actionCalls === 1) {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          code: "OK",
+          message: "Action exécutée.",
+          action: "AUTOPILOT_START",
+          durationMs: 12,
+          beforeState: "LOCAL_CONTROL_READY",
+          afterState: "ACTION_RUNNING",
+          output: "mocked",
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 409,
       contentType: "application/json",
@@ -201,13 +184,24 @@ test("SUPER_ADMIN confirmation modal and mocked action success/failure", async (
     });
   });
 
-  await page.evaluate(() => {
-    const btn = document.querySelector(
-      '[data-testid="x200-action-AUTOPILOT_STOP"]',
-    ) as HTMLButtonElement | null;
-    if (btn) btn.disabled = false;
+  await page.goto("/admin/x200");
+  await page.getByTestId("x200-refresh-now").click();
+  await expect(page.getByTestId("x200-control-mode")).toContainText(
+    "LOCAL_CONTROL_READY",
+  );
+  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeEnabled({
+    timeout: 10_000,
   });
-  await page.getByTestId("x200-action-AUTOPILOT_STOP").click({ force: true });
+
+  await page.getByTestId("x200-action-AUTOPILOT_START").click();
+  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
+  await page.getByTestId("x200-confirm-action").click();
+  await expect(page.getByTestId("x200-action-result")).toContainText("SUCCESS");
+
+  await expect(page.getByTestId("x200-action-AUTOPILOT_STOP")).toBeEnabled({
+    timeout: 10_000,
+  });
+  await page.getByTestId("x200-action-AUTOPILOT_STOP").click();
   await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
   await page.getByTestId("x200-confirm-action").click();
   await expect(page.getByTestId("x200-action-result")).toContainText("FAILED");

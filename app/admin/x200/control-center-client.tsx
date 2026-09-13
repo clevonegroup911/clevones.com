@@ -1215,15 +1215,18 @@ export function ControlCenterClient({
               <button
                 type="button"
                 data-testid="x200-confirm-action"
-                disabled={actionBusy}
-                className="rounded-sm border border-gold/50 bg-gold/10 px-3 py-2 text-sm text-gold"
-                onClick={() => void runAction(confirmAction)}
+                className="rounded-sm border border-gold/50 bg-gold/10 px-3 py-2 text-sm text-gold disabled:opacity-60"
+                onClick={() => {
+                  if (actionBusy) return;
+                  void runAction(confirmAction);
+                }}
               >
-                Confirm
+                {actionBusy ? "Running…" : "Confirm"}
               </button>
               <button
                 type="button"
                 className="rounded-sm border border-border-subtle px-3 py-2 text-sm text-gray-muted"
+                disabled={actionBusy}
                 onClick={() => setConfirmAction(null)}
               >
                 Cancel
