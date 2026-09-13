@@ -50,6 +50,19 @@ export default async function AdminDashboardPage() {
         </Link>
       </div>
 
+      <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
+        <h2 className="text-sm font-semibold text-white">X200 Control Center</h2>
+        <p className="mt-2 text-sm text-gray-muted">
+          Observabilité réelle du backlog, Git, CI et Human Gates (lecture seule).
+        </p>
+        <Link
+          href={adminRoutes.x200}
+          className="mt-4 inline-flex text-sm font-medium text-gold-muted transition-colors hover:text-gold"
+        >
+          Ouvrir le Control Center
+        </Link>
+      </div>
+
       {actor.role === "SUPER_ADMIN" ? (
         <div className="rounded-sm border border-border-subtle bg-surface-elevated p-5">
           <h2 className="text-sm font-semibold text-white">Sécurité / MFA</h2>

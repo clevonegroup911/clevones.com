@@ -6,44 +6,49 @@
 
 ## ID
 
-T041
+T042
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Corriger 4 défauts sécurité/cohérence revue finale PR #7 : anti-rejeu global, eventKey immuable, audit durable, atomicité VERIFIED→activation.
+X200 Control Center — observabilité et supervision réelle sur `/admin/x200`.
 
 ## Résultat
 
-Quality CI FULL SUCCESS cce6605 / run 34745429341. Quatre corrections présentes. Pas de merge, pas de deploy.
+Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe, pipeline dérivé, registre filtrable, telemetry Fedora NOT_CONNECTED. Tests unitaires + Playwright desktop/mobile OK localement. En attente CI quality.
 
 ## Fichiers créés
 
-- `lib/payments/reference-claims.ts` (+ tests)
-- `lib/payments/clevone-event-immutable.test.ts`
-- `lib/payments/security-hardening.test.ts`
-- `prisma/migrations/20260913090000_add_verified_payment_reference_claim/`
-- `reports/tasks/T041.md`
+- `lib/x200/*`
+- `app/admin/x200/*`
+- `app/api/admin/x200/*`
+- `tests/e2e/x200-control-center.spec.ts`
+- `reports/tasks/T042.md`
 
 ## Fichiers modifiés
 
-- `lib/payments/persist.ts`, `activation.ts`, `reconciliation.ts`
-- `lib/admin/audit.ts`
-- routes admin paiements
-- `prisma/schema.prisma`
-- `docs/PAYMENTS_GATEWAY.md`
-- backlog / rapports
+- `lib/auth/routes.ts` (+ tests)
+- `app/admin/layout.tsx`
+- `package.json` (npm test inclut lib/x200)
+- backlog / BACKLOG.md / TASK_REPORT.md
 
 ## Commandes
 
-- quality-gate local + CI FULL #105
+- `npm run x200:validate`
+- `npm test`
+- `npm run lint`
+- `npx tsc --noEmit`
+- `npm run build`
+- `npx playwright test tests/e2e/x200-control-center.spec.ts`
+- `npm run x200:scan-secrets`
 
 ## Tests réussis
 
-- CI quality SUCCESS (FULL) run 34745429341
+- unitaires x200 (parse, health, UNKNOWN fallbacks, secret scan)
+- Playwright 6/6 (desktop+mobile, unauth, USER denied, cards/registry/telemetry)
 
 ## Tests échoués
 
@@ -51,40 +56,43 @@ Quality CI FULL SUCCESS cce6605 / run 34745429341. Quatre corrections présentes
 
 ## Lint
 
-- pass (CI)
+- pass
 
 ## Type-check
 
-- pass (CI)
+- pass
 
 ## Build
 
-- pass (CI FULL)
+- pass
 
 ## Sécurité
 
-- scan-secrets + security audit pass ; migration additive only
+- admin auth required ; USER → login ; no-store APIs ; pas de shell navigateur ; redaction recovery/tokens ; Fedora non simulé
 
 ## Commit
 
-- `cce66054402108ec71f71048c0958fb64198eecb` (implementation HEAD)
+- (à renseigner après commit)
 
 ## Pull Request
 
-- PR #7
+- draft stacked vs autoplan/payments-recovery-20260912
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34745429341
+- `tests/e2e/evidence/desktop-x200-control-center.png`
+- `tests/e2e/evidence/mobile-x200-control-center.png`
+- `reports/tasks/T042.md`
 
 ## Risques
 
-- none remaining for T041 ; merge/deploy remain human gates
+- GitHub public API rate limits → UNKNOWN affiché
+- `.x200/*` local seulement (gitignored)
 
 ## Blocage
 
-- aucun
+- aucun local ; CI quality attendue
 
 ## Prochaine tâche prête
 
-- aucune auto (attendre validation humaine PR #7)
+- T043 (telemetry bridge) après clôture T042 — ne pas démarrer ici

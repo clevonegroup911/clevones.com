@@ -2788,6 +2788,81 @@
           "location": ".x200/quality-results.json"
         }
       ]
+    },
+    {
+      "id": "T042",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL observability / X200 Control Center",
+      "title": "X200 Control Center — observabilité et supervision",
+      "objective": "Créer le vrai tableau de bord sécurisé /admin/x200 permettant de contrôler visuellement l'état réel du système X200 (progression, backlog, tâche actuelle, AUTOPLAN/AUTOPILOT, Git, PR, CI, Human Gates, PRODUCT_GOAL, efficacité, blockers) en lecture seule, sans données inventées et sans commandes dangereuses (T044).",
+      "priority": "P0",
+      "dependencies": [
+        "T041"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200",
+        "lib/auth/routes.ts",
+        "tests/e2e",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Route /admin/x200 réelle, protégée admin, utilisable (pas une maquette)",
+        "Chaque valeur affichée provient d’une source réelle ou UNKNOWN/NOT_CONNECTED/N/A/WAITING_FOR_TELEMETRY",
+        "Sources: backlog.json, PRODUCT_GOAL.md, .x200/HUMAN_GATE.json, .x200/PRODUCT_COMPLETE.json, git local fixe, GitHub server-side",
+        "Fedora telemetry = NOT_CONNECTED / WAITING_FOR_TELEMETRY avant T043",
+        "System health déterministe HEALTHY|DEGRADED|BLOCKED|UNKNOWN (pas de % inventé)",
+        "Pipeline PLAN→MERGE dérivé des preuves; task registry filtrable; activité récente sans secrets",
+        "API admin JSON typées Cache-Control:no-store; USER refusé; pas de shell navigateur",
+        "Tests unitaires + Playwright desktop/mobile + screenshots evidence",
+        "Pas de Pause/Resume/Retry/Merge/Deploy (T044); pas de heartbeat Fedora (T043)"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "git diff --check",
+        "npm run x200:scan-secrets",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts"
+      ],
+      "status": "EN_CONTRÔLE",
+      "estimatedCost": 3,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 1,
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [
+        "local quality-gate steps pass (validate/test/lint/tsc/build/playwright)",
+        "tests/e2e/evidence/desktop-x200-control-center.png",
+        "tests/e2e/evidence/mobile-x200-control-center.png",
+        "reports/tasks/T042.md"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T10:04:15.412Z",
+          "location": ".x200/quality-results.json"
+        }
+      ]
     }
   ],
   "history": [
@@ -3904,9 +3979,33 @@
       "taskId": "T041",
       "status": "EN_COURS",
       "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "PRÊTE",
+      "note": "created on feat/x200-control-center for real Control Center dashboard"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 115,
+  "registryVersion": 119,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
