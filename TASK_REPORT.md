@@ -18,7 +18,7 @@ Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Un
 
 ## Résultat
 
-Implémentation locale complète : miroir branché sur Control Center snapshot, UI tabs + Global Command Center + Ctrl+K, tests unitaires verts, build/lint/typecheck PASS. Draft PR à ouvrir ; CI FULL `quality` en attente. MERGED=NO DEPLOYED=NO.
+Implémentation locale complète. Draft PR #11. CI FULL précédent échoué sur Playwright (next dev loadManifest + mock status) — correctifs e2e (`next start` si build, X200_E2E skip remote, mocks robustes). Re-run FULL en cours. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -84,7 +84,7 @@ Implémentation locale complète : miroir branché sur Control Center snapshot, 
 
 ## Commit
 
-- feat/x200-operational-mirror @ 81cd86e
+- feat/x200-operational-mirror (Playwright FULL stabilization pending push)
 
 ## Pull Request
 
@@ -94,15 +94,16 @@ Implémentation locale complète : miroir branché sur Control Center snapshot, 
 
 - reports/tasks/T047.md
 - quality-gate local PASS
-- CI pending on 81cd86e
+- CI METADATA SUCCESS run 34780034783 insufficient (lane ≠ FULL)
+- CI FULL fail run 34780182921 playwright — fix pending re-run
 
 ## Risques
 
-- e2e auth non exécuté localement (Docker PG absent) — CI FULL requis
+- aucun bloquant automatique après fix e2e
 
 ## Blocage
 
-- aucun automatique
+- await CI FULL quality SUCCESS
 
 ## Prochaine tâche prête
 

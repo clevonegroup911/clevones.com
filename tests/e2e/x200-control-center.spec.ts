@@ -4,8 +4,6 @@ import { loginE2eAdmin, readE2eRuntimeState } from "./admin-login";
 import { loginE2ePortalUser } from "./portal-login";
 import { captureSafeEvidence } from "./safe-screenshot";
 
-test.describe.configure({ mode: "serial" });
-
 function skipWithoutDb() {
   const state = readE2eRuntimeState();
   const dbReady = state.dbReady === true && typeof state.databaseUrl === "string";
@@ -21,499 +19,541 @@ function skipWithoutDb() {
   }
 }
 
-test("unauthenticated users cannot open /admin/x200", async ({ page }) => {
-  await page.goto("/admin/x200");
-  await expect(page).toHaveURL(/\/admin\/login/);
-});
+test.describe("x200 core surfaces", () => {
+  test.describe.configure({ mode: "serial" });
 
-test("portal USER cannot open /admin/x200", async ({ page }, testInfo) => {
-  skipWithoutDb();
-  await loginE2ePortalUser(page);
-  await page.goto("/admin/x200");
-  await expect(page).toHaveURL(/\/admin\/login/);
-  await captureSafeEvidence(
+  test("unauthenticated users cannot open /admin/x200", async ({ page }) => {
+    await page.goto("/admin/x200");
+    await expect(page).toHaveURL(/\/admin\/login/);
+  });
+
+  test("portal USER cannot open /admin/x200", async ({ page }, testInfo) => {
+    skipWithoutDb();
+    await loginE2ePortalUser(page);
+    await page.goto("/admin/x200");
+    await expect(page).toHaveURL(/\/admin\/login/);
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-user-denied.png`,
+    );
+  });
+
+  test("admin Control Center live refresh, filters, drawers, command UI", async ({
     page,
-    `${testInfo.project.name}-x200-user-denied.png`,
-  );
-});
+  }, testInfo) => {
+    skipWithoutDb();
+    const project = testInfo.project.name;
+    await loginE2eAdmin(page);
 
-test("admin Control Center live refresh, filters, drawers, command UI", async ({
-  page,
-}, testInfo) => {
-  skipWithoutDb();
-  const project = testInfo.project.name;
-  await loginE2eAdmin(page);
+    await page.goto("/admin/x200");
+    await expect(
+      page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+    ).toBeVisible();
 
-  await page.goto("/admin/x200");
-  await expect(
-    page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
-  ).toBeVisible();
+    await expect(page.getByTestId("x200-live-bar")).toBeVisible();
+    await expect(page.getByTestId("x200-live-indicator")).toBeVisible();
+    await expect(page.getByTestId("x200-refresh-now")).toBeVisible();
+    await expect(page.getByTestId("x200-auto-refresh")).toBeVisible();
+    await expect(page.getByTestId("x200-command-center")).toBeVisible();
+    await expect(page.getByTestId("x200-control-mode")).toBeVisible();
+    await expect(page.getByTestId("card-system-health")).toBeVisible();
+    await expect(page.getByTestId("card-project-progress")).toBeVisible();
+    await expect(page.getByTestId("card-current-task")).toBeVisible();
+    await expect(page.getByTestId("card-active-agent")).toBeVisible();
+    await expect(page.getByTestId("card-ci-status")).toBeVisible();
+    await expect(page.getByTestId("card-human-gate")).toBeVisible();
+    await expect(page.getByTestId("card-worktree")).toBeVisible();
+    await expect(page.getByTestId("x200-task-registry")).toBeVisible();
+    await expect(page.getByTestId("x200-pipeline")).toBeVisible();
+    await expect(page.getByTestId("x200-action-history")).toBeVisible();
 
-  await expect(page.getByTestId("x200-live-bar")).toBeVisible();
-  await expect(page.getByTestId("x200-live-indicator")).toBeVisible();
-  await expect(page.getByTestId("x200-refresh-now")).toBeVisible();
-  await expect(page.getByTestId("x200-auto-refresh")).toBeVisible();
-  await expect(page.getByTestId("x200-command-center")).toBeVisible();
-  await expect(page.getByTestId("x200-control-mode")).toBeVisible();
-  await expect(page.getByTestId("card-system-health")).toBeVisible();
-  await expect(page.getByTestId("card-project-progress")).toBeVisible();
-  await expect(page.getByTestId("card-current-task")).toBeVisible();
-  await expect(page.getByTestId("card-active-agent")).toBeVisible();
-  await expect(page.getByTestId("card-ci-status")).toBeVisible();
-  await expect(page.getByTestId("card-human-gate")).toBeVisible();
-  await expect(page.getByTestId("card-worktree")).toBeVisible();
-  await expect(page.getByTestId("x200-task-registry")).toBeVisible();
-  await expect(page.getByTestId("x200-pipeline")).toBeVisible();
-  await expect(page.getByTestId("x200-action-history")).toBeVisible();
+    await expect(page.getByText("Human approval required").first()).toBeVisible();
+    await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeVisible();
+    await expect(page.getByTestId("x200-action-RUN_ONE_CYCLE")).toBeVisible();
 
-  await expect(page.getByText("Human approval required").first()).toBeVisible();
-  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeVisible();
-  await expect(page.getByTestId("x200-action-RUN_ONE_CYCLE")).toBeVisible();
+    // Default CONTROL_DISABLED → buttons disabled for safety.
+    await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeDisabled();
 
-  // Default CONTROL_DISABLED → buttons disabled for safety.
-  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeDisabled();
+    await page.getByRole("button", { name: "Terminées" }).click();
+    await expect(page.getByPlaceholder("Recherche ID / titre")).toBeVisible();
+    await page.getByPlaceholder("Recherche ID / titre").fill("T045");
 
-  await page.getByRole("button", { name: "Terminées" }).click();
-  await expect(page.getByPlaceholder("Recherche ID / titre")).toBeVisible();
-  await page.getByPlaceholder("Recherche ID / titre").fill("T045");
+    const firstRow = page.locator("[data-testid^='x200-task-row-']").first();
+    if (await firstRow.count()) {
+      await firstRow.click();
+      await expect(page.getByTestId("x200-task-drawer")).toBeVisible();
+      await page.getByRole("button", { name: "Close" }).first().click();
+    }
 
-  const firstRow = page.locator("[data-testid^='x200-task-row-']").first();
-  if (await firstRow.count()) {
-    await firstRow.click();
-    await expect(page.getByTestId("x200-task-drawer")).toBeVisible();
+    await page.getByTestId("x200-pipeline-CI").click();
+    await expect(page.getByTestId("x200-pipeline-drawer")).toBeVisible();
     await page.getByRole("button", { name: "Close" }).first().click();
-  }
 
-  await page.getByTestId("x200-pipeline-CI").click();
-  await expect(page.getByTestId("x200-pipeline-drawer")).toBeVisible();
-  await page.getByRole("button", { name: "Close" }).first().click();
-
-  const status = await page.request.get("/api/admin/x200/status");
-  expect(status.ok()).toBeTruthy();
-  expect(status.headers()["cache-control"] ?? "").toMatch(/no-store/i);
-  const body = (await status.json()) as {
-    sources?: { fedoraTelemetry?: string; github?: string };
-    fedora?: { autopilotLiveState?: string };
-    systemHealth?: { status?: string };
-    control?: { mode?: string };
-    progress?: { completed?: number | null; total?: number | null };
-    github?: { ciLatestConclusion?: string | null };
-  };
-  expect(body.control?.mode).toBeTruthy();
-  expect(["HEALTHY", "DEGRADED", "BLOCKED", "UNKNOWN"]).toContain(
-    body.systemHealth?.status ?? "",
-  );
-  if (body.sources?.github === "UNKNOWN") {
-    expect(body.github?.ciLatestConclusion ?? null).toBeNull();
-  }
-
-  await page.getByTestId("x200-refresh-now").click();
-
-  const screenshotName =
-    project === "mobile"
-      ? "mobile-x200-control-center.png"
-      : "desktop-x200-control-center.png";
-  await captureSafeEvidence(page, screenshotName);
-});
-
-test("SUPER_ADMIN confirmation modal and mocked action success/failure", async ({
-  page,
-}) => {
-  skipWithoutDb();
-  await loginE2eAdmin(page);
-
-  await page.route("**/api/admin/x200/status", async (route) => {
-    if (route.request().method() !== "GET") {
-      await route.continue();
-      return;
+    const status = await page.request.get("/api/admin/x200/status");
+    expect(status.ok()).toBeTruthy();
+    expect(status.headers()["cache-control"] ?? "").toMatch(/no-store/i);
+    const body = (await status.json()) as {
+      sources?: { fedoraTelemetry?: string; github?: string };
+      fedora?: { autopilotLiveState?: string };
+      systemHealth?: { status?: string };
+      control?: { mode?: string };
+      progress?: { completed?: number | null; total?: number | null };
+      github?: { ciLatestConclusion?: string | null };
+      humanActions?: { csrf?: { status?: string } } | null;
+    };
+    expect(body.control?.mode).toBeTruthy();
+    expect(body.humanActions?.csrf?.status).toBeTruthy();
+    expect(["HEALTHY", "DEGRADED", "BLOCKED", "UNKNOWN"]).toContain(
+      body.systemHealth?.status ?? "",
+    );
+    if (body.sources?.github === "UNKNOWN") {
+      expect(body.github?.ciLatestConclusion ?? null).toBeNull();
     }
-    const response = await route.fetch();
-    const json = (await response.json()) as Record<string, unknown>;
-    const control = {
-      ...(typeof json.control === "object" && json.control
-        ? (json.control as Record<string, unknown>)
-        : {}),
-      mode: "LOCAL_CONTROL_READY",
-      actionsEnabled: true,
-      localExecutorAvailable: true,
-      actorRole: "SUPER_ADMIN",
-      canMutate: true,
-      disabledReasons: {
-        MERGE: "Human approval required",
-        DEPLOY: "Human approval required",
+
+    await page.getByTestId("x200-refresh-now").click();
+
+    const screenshotName =
+      project === "mobile"
+        ? "mobile-x200-control-center.png"
+        : "desktop-x200-control-center.png";
+    await captureSafeEvidence(page, screenshotName);
+  });
+
+  test("SUPER_ADMIN confirmation modal and mocked action success/failure", async ({
+    page,
+  }) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+
+    await page.route("**/api/admin/x200/status", async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      let json: Record<string, unknown> = {};
+      try {
+        const response = await route.fetch();
+        json = (await response.json()) as Record<string, unknown>;
+      } catch {
+        // Aborted refresh or upstream flake — still fulfill a valid mocked plane.
+      }
+      const control = {
+        ...(typeof json.control === "object" && json.control
+          ? (json.control as Record<string, unknown>)
+          : {}),
+        mode: "LOCAL_CONTROL_READY",
+        actionsEnabled: true,
+        localExecutorAvailable: true,
+        actorRole: "SUPER_ADMIN",
+        canMutate: true,
+        disabledReasons: {
+          MERGE: "Human approval required",
+          DEPLOY: "Human approval required",
+        },
+        recentActions: [],
+      };
+      const sources =
+        typeof json.sources === "object" && json.sources
+          ? json.sources
+          : {
+              backlog: "OK",
+              productGoal: "OK",
+              humanGate: "OK",
+              git: "OK",
+              github: "UNKNOWN",
+              fedoraTelemetry: "UNKNOWN",
+            };
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "Cache-Control": "no-store" },
+        body: JSON.stringify({
+          ...json,
+          generatedAt:
+            typeof json.generatedAt === "string"
+              ? json.generatedAt
+              : new Date().toISOString(),
+          sources,
+          control,
+        }),
+      });
+    });
+
+    let actionCalls = 0;
+    await page.route("**/api/admin/x200/actions", async (route) => {
+      actionCalls += 1;
+      if (actionCalls === 1) {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            code: "OK",
+            message: "Action exécutée.",
+            action: "AUTOPILOT_START",
+            durationMs: 12,
+            beforeState: "LOCAL_CONTROL_READY",
+            afterState: "ACTION_RUNNING",
+            output: "mocked",
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 409,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
+          code: "AGENT_BUSY",
+          message: "Agent Cursor actif",
+          action: "AUTOPILOT_STOP",
+        }),
+      });
+    });
+
+    await page.goto("/admin/x200");
+    await page.getByTestId("x200-refresh-now").click();
+    await expect(page.getByTestId("x200-control-mode")).toContainText(
+      "LOCAL_CONTROL_READY",
+    );
+    await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeEnabled({
+      timeout: 10_000,
+    });
+
+    await page.getByTestId("x200-action-AUTOPILOT_START").click();
+    await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
+    await page.getByTestId("x200-confirm-action").click();
+    await expect(page.getByTestId("x200-action-result")).toContainText("SUCCESS");
+
+    await expect(page.getByTestId("x200-action-AUTOPILOT_STOP")).toBeEnabled({
+      timeout: 10_000,
+    });
+    await page.getByTestId("x200-action-AUTOPILOT_STOP").click();
+    await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
+    await page.getByTestId("x200-confirm-action").click();
+    await expect(page.getByTestId("x200-action-result")).toContainText("FAILED");
+
+    await page.unrouteAll({ behavior: "ignoreErrors" });
+  });
+
+  test("actions API rejects arbitrary command payloads for authenticated admin", async ({
+    page,
+  }) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+    await page.goto("/admin/x200");
+    const origin = new URL(page.url()).origin;
+
+    const forbidden = await page.request.post("/api/admin/x200/actions", {
+      headers: {
+        Origin: origin,
+        Referer: `${origin}/admin/x200`,
+        "Content-Type": "application/json",
       },
-      recentActions: [],
-    };
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      headers: { "Cache-Control": "no-store" },
-      body: JSON.stringify({ ...json, control }),
+      data: {
+        action: "AUTOPILOT_START",
+        command: "rm -rf /",
+      },
     });
-  });
+    expect([400, 403]).toContain(forbidden.status());
 
-  let actionCalls = 0;
-  await page.route("**/api/admin/x200/actions", async (route) => {
-    actionCalls += 1;
-    if (actionCalls === 1) {
+    const invalid = await page.request.post("/api/admin/x200/actions", {
+      headers: {
+        Origin: origin,
+        Referer: `${origin}/admin/x200`,
+        "Content-Type": "application/json",
+      },
+      data: { action: "NOT_A_REAL_ACTION" },
+    });
+    expect([400, 403]).toContain(invalid.status());
+  });
+});
+
+test.describe("x200 human actions", () => {
+  test.describe.configure({ mode: "serial" });
+
+  test("SUPER_ADMIN Human Actions tabs, preview, MFA mock, receipts", async ({
+    page,
+  }, testInfo) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+    await page.goto("/admin/x200");
+
+    await expect(page.getByTestId("x200-tabs")).toBeVisible();
+    await expect(page.getByTestId("x200-csrf-chip")).toBeVisible();
+    await expect(page.getByTestId("x200-error-boundary")).toHaveCount(0);
+
+    await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
+    await expect(page.getByTestId("x200-human-actions")).toBeVisible();
+    await expect(page.getByTestId("x200-human-plane-missing")).toHaveCount(0);
+    await expect(page.getByTestId("x200-csrf-status")).toBeVisible();
+
+    await page.getByTestId("x200-tab-RELEASE").click();
+    await expect(page.getByTestId("x200-release-center")).toBeVisible();
+    await expect(page.getByTestId("x200-drift-state")).toBeVisible();
+
+    await page.getByTestId("x200-tab-DEPLOY").click();
+    await expect(page.getByTestId("x200-deploy-center")).toBeVisible();
+    await expect(page.getByTestId("x200-env-LOCAL")).toBeVisible();
+    await expect(page.getByTestId("x200-env-PRODUCTION")).toBeVisible();
+
+    await page.getByTestId("x200-tab-DATABASE").click();
+    await expect(page.getByTestId("x200-database-center")).toBeVisible();
+    await expect(page.getByTestId("x200-payments-live")).toContainText(
+      "NOT_AVAILABLE",
+    );
+
+    await page.getByTestId("x200-tab-INCIDENTS").click();
+    await expect(page.getByTestId("x200-incident-mode")).toBeVisible();
+    await expect(page.getByTestId("x200-stall-state")).toBeVisible();
+
+    await page.getByTestId("x200-tab-AUDIT").click();
+    await expect(page.getByTestId("x200-action-history-enhanced")).toBeVisible();
+
+    // Human actions API rejects arbitrary shell and supports preview mock.
+    const origin = new URL(page.url()).origin;
+    const forbidden = await page.request.post("/api/admin/x200/human-actions", {
+      headers: {
+        Origin: origin,
+        Referer: `${origin}/admin/x200`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        action: "MERGE_PR",
+        idempotencyKey: "e2e-forbid-0001",
+        shell: "rm -rf /",
+      },
+    });
+    expect([400, 403]).toContain(forbidden.status());
+
+    await page.route("**/api/admin/x200/human-actions", async (route) => {
+      if (route.request().method() !== "POST") {
+        await route.continue();
+        return;
+      }
+      const body = route.request().postDataJSON() as {
+        previewOnly?: boolean;
+        action?: string;
+      };
+      if (body.previewOnly) {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            code: "PREVIEW",
+            message: "WHAT WILL HAPPEN",
+            preview: {
+              action: body.action,
+              environment: "PRODUCTION",
+              risks: ["CRITICAL"],
+              typedPhrase: "DEPLOY PRODUCTION abcdef1",
+            },
+          }),
+        });
+        return;
+      }
       await route.fulfill({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
           ok: true,
-          code: "OK",
-          message: "Action exécutée.",
-          action: "AUTOPILOT_START",
-          durationMs: 12,
-          beforeState: "LOCAL_CONTROL_READY",
-          afterState: "ACTION_RUNNING",
-          output: "mocked",
-        }),
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 409,
-      contentType: "application/json",
-      body: JSON.stringify({
-        ok: false,
-        code: "AGENT_BUSY",
-        message: "Agent Cursor actif",
-        action: "AUTOPILOT_STOP",
-      }),
-    });
-  });
-
-  await page.goto("/admin/x200");
-  await page.getByTestId("x200-refresh-now").click();
-  await expect(page.getByTestId("x200-control-mode")).toContainText(
-    "LOCAL_CONTROL_READY",
-  );
-  await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeEnabled({
-    timeout: 10_000,
-  });
-
-  await page.getByTestId("x200-action-AUTOPILOT_START").click();
-  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
-  await page.getByTestId("x200-confirm-action").click();
-  await expect(page.getByTestId("x200-action-result")).toContainText("SUCCESS");
-
-  await expect(page.getByTestId("x200-action-AUTOPILOT_STOP")).toBeEnabled({
-    timeout: 10_000,
-  });
-  await page.getByTestId("x200-action-AUTOPILOT_STOP").click();
-  await expect(page.getByTestId("x200-confirm-modal")).toBeVisible();
-  await page.getByTestId("x200-confirm-action").click();
-  await expect(page.getByTestId("x200-action-result")).toContainText("FAILED");
-
-  await page.unrouteAll({ behavior: "ignoreErrors" });
-});
-
-test("actions API rejects arbitrary command payloads for authenticated admin", async ({
-  page,
-}) => {
-  skipWithoutDb();
-  await loginE2eAdmin(page);
-  await page.goto("/admin/x200");
-  const origin = new URL(page.url()).origin;
-
-  const forbidden = await page.request.post("/api/admin/x200/actions", {
-    headers: {
-      Origin: origin,
-      Referer: `${origin}/admin/x200`,
-      "Content-Type": "application/json",
-    },
-    data: {
-      action: "AUTOPILOT_START",
-      command: "rm -rf /",
-    },
-  });
-  expect([400, 403]).toContain(forbidden.status());
-
-  const invalid = await page.request.post("/api/admin/x200/actions", {
-    headers: {
-      Origin: origin,
-      Referer: `${origin}/admin/x200`,
-      "Content-Type": "application/json",
-    },
-    data: { action: "NOT_A_REAL_ACTION" },
-  });
-  expect([400, 403]).toContain(invalid.status());
-});
-
-test("SUPER_ADMIN Human Actions tabs, preview, MFA mock, receipts", async ({
-  page,
-}, testInfo) => {
-  skipWithoutDb();
-  await loginE2eAdmin(page);
-  await page.goto("/admin/x200");
-
-  await expect(page.getByTestId("x200-tabs")).toBeVisible();
-  await expect(page.getByTestId("x200-csrf-chip")).toBeVisible();
-
-  await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
-  await expect(page.getByTestId("x200-human-actions")).toBeVisible();
-  await expect(page.getByTestId("x200-csrf-status")).toBeVisible();
-
-  await page.getByTestId("x200-tab-RELEASE").click();
-  await expect(page.getByTestId("x200-release-center")).toBeVisible();
-  await expect(page.getByTestId("x200-drift-state")).toBeVisible();
-
-  await page.getByTestId("x200-tab-DEPLOY").click();
-  await expect(page.getByTestId("x200-deploy-center")).toBeVisible();
-  await expect(page.getByTestId("x200-env-LOCAL")).toBeVisible();
-  await expect(page.getByTestId("x200-env-PRODUCTION")).toBeVisible();
-
-  await page.getByTestId("x200-tab-DATABASE").click();
-  await expect(page.getByTestId("x200-database-center")).toBeVisible();
-  await expect(page.getByTestId("x200-payments-live")).toContainText(
-    "NOT_AVAILABLE",
-  );
-
-  await page.getByTestId("x200-tab-INCIDENTS").click();
-  await expect(page.getByTestId("x200-incident-mode")).toBeVisible();
-  await expect(page.getByTestId("x200-stall-state")).toBeVisible();
-
-  await page.getByTestId("x200-tab-AUDIT").click();
-  await expect(page.getByTestId("x200-action-history-enhanced")).toBeVisible();
-
-  // Human actions API rejects arbitrary shell and supports preview mock.
-  const origin = new URL(page.url()).origin;
-  const forbidden = await page.request.post("/api/admin/x200/human-actions", {
-    headers: {
-      Origin: origin,
-      Referer: `${origin}/admin/x200`,
-      "Content-Type": "application/json",
-    },
-    data: {
-      action: "MERGE_PR",
-      idempotencyKey: "e2e-forbid-0001",
-      shell: "rm -rf /",
-    },
-  });
-  expect([400, 403]).toContain(forbidden.status());
-
-  await page.route("**/api/admin/x200/human-actions", async (route) => {
-    if (route.request().method() !== "POST") {
-      await route.continue();
-      return;
-    }
-    const body = route.request().postDataJSON() as {
-      previewOnly?: boolean;
-      action?: string;
-    };
-    if (body.previewOnly) {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          ok: true,
-          code: "PREVIEW",
-          message: "WHAT WILL HAPPEN",
-          preview: {
-            action: body.action,
-            environment: "PRODUCTION",
-            risks: ["CRITICAL"],
-            typedPhrase: "DEPLOY PRODUCTION abcdef1",
-          },
-        }),
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        ok: true,
-        code: "RECORDED",
-        message: "mocked",
-        receipt: {
-          actionId: "e2e-receipt",
-          idempotencyKey: "e2e",
-          actor: "e2e",
-          action: body.action,
-          environment: "LOCAL",
-          startedAt: new Date().toISOString(),
-          finishedAt: new Date().toISOString(),
-          durationMs: 1,
-          result: "SUCCESS",
-          before: {},
-          after: {},
-          refs: {},
-          auditId: "audit-e2e",
           code: "RECORDED",
           message: "mocked",
-        },
-      }),
-    });
-  });
-
-  await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
-  // Force enable UI path via mocked plane is hard; exercise deploy preview button if present.
-  await page.getByTestId("x200-tab-DEPLOY").click();
-  const deployPreview = page.getByTestId("x200-deploy-preview");
-  if (await deployPreview.isVisible().catch(() => false)) {
-    await deployPreview.click();
-    await expect(page.getByTestId("x200-deploy-preview-body")).toBeVisible();
-  }
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByTestId("x200-tabs")).toBeVisible();
-  await captureSafeEvidence(
-    page,
-    `${testInfo.project.name}-x200-human-actions-mobile.png`,
-  );
-
-  await page.unrouteAll({ behavior: "ignoreErrors" });
-});
-
-test("Human Action MARK_READY remote mismatch shows FAILED not false success", async ({
-  page,
-}) => {
-  skipWithoutDb();
-  await loginE2eAdmin(page);
-  await page.goto("/admin/x200");
-
-  await page.route("**/api/admin/x200/human-actions", async (route) => {
-    if (route.request().method() !== "POST") {
-      await route.continue();
-      return;
-    }
-    await route.fulfill({
-      status: 400,
-      contentType: "application/json",
-      body: JSON.stringify({
-        ok: false,
-        code: "REMOTE_STATE_MISMATCH",
-        message: "remote still draft=true after gh pr ready",
-        receipt: {
-          actionId: "e2e-mismatch",
-          idempotencyKey: "e2e",
-          actor: "e2e",
-          action: "MARK_READY_FOR_REVIEW",
-          environment: "LOCAL",
-          startedAt: new Date().toISOString(),
-          finishedAt: new Date().toISOString(),
-          durationMs: 12,
-          result: "FAILED",
-          before: { beforeDraft: true },
-          after: {
-            afterDraft: true,
-            remoteVerified: false,
-            remoteState: "OPEN",
+          receipt: {
+            actionId: "e2e-receipt",
+            idempotencyKey: "e2e",
+            actor: "e2e",
+            action: body.action,
+            environment: "LOCAL",
+            startedAt: new Date().toISOString(),
+            finishedAt: new Date().toISOString(),
+            durationMs: 1,
+            result: "SUCCESS",
+            before: {},
+            after: {},
+            refs: {},
+            auditId: "audit-e2e",
+            code: "RECORDED",
+            message: "mocked",
           },
-          refs: {},
-          auditId: "audit-mismatch",
+        }),
+      });
+    });
+
+    await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
+    // Force enable UI path via mocked plane is hard; exercise deploy preview button if present.
+    await page.getByTestId("x200-tab-DEPLOY").click();
+    const deployPreview = page.getByTestId("x200-deploy-preview");
+    if (await deployPreview.isVisible().catch(() => false)) {
+      await deployPreview.click();
+      await expect(page.getByTestId("x200-deploy-preview-body")).toBeVisible();
+    }
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByTestId("x200-tabs")).toBeVisible();
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-human-actions-mobile.png`,
+    );
+
+    await page.unrouteAll({ behavior: "ignoreErrors" });
+  });
+
+  test("Human Action MARK_READY remote mismatch shows FAILED not false success", async ({
+    page,
+  }) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+    await page.goto("/admin/x200");
+
+    await page.route("**/api/admin/x200/human-actions", async (route) => {
+      if (route.request().method() !== "POST") {
+        await route.continue();
+        return;
+      }
+      await route.fulfill({
+        status: 400,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
           code: "REMOTE_STATE_MISMATCH",
-          message: "remote still draft=true",
-        },
-        github: {
-          prNumber: 10,
-          prDraft: true,
-          prState: "open",
-          prHeadSha: "bcc76980bf3074157160c26c4c8c97f52571590a",
-        },
-      }),
+          message: "remote still draft=true after gh pr ready",
+          receipt: {
+            actionId: "e2e-mismatch",
+            idempotencyKey: "e2e",
+            actor: "e2e",
+            action: "MARK_READY_FOR_REVIEW",
+            environment: "LOCAL",
+            startedAt: new Date().toISOString(),
+            finishedAt: new Date().toISOString(),
+            durationMs: 12,
+            result: "FAILED",
+            before: { beforeDraft: true },
+            after: {
+              afterDraft: true,
+              remoteVerified: false,
+              remoteState: "OPEN",
+            },
+            refs: {},
+            auditId: "audit-mismatch",
+            code: "REMOTE_STATE_MISMATCH",
+            message: "remote still draft=true",
+          },
+          github: {
+            prNumber: 10,
+            prDraft: true,
+            prState: "open",
+            prHeadSha: "bcc76980bf3074157160c26c4c8c97f52571590a",
+          },
+        }),
+      });
     });
-  });
 
-  const last = await page.evaluate(async () => {
-    const res = await fetch("/api/admin/x200/human-actions", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "MARK_READY_FOR_REVIEW",
-        idempotencyKey: "e2e-remote-mismatch-001",
-        reason: "e2e mismatch",
-      }),
+    const last = await page.evaluate(async () => {
+      const res = await fetch("/api/admin/x200/human-actions", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "MARK_READY_FOR_REVIEW",
+          idempotencyKey: "e2e-remote-mismatch-001",
+          reason: "e2e mismatch",
+        }),
+      });
+      return res.json();
     });
-    return res.json();
+
+    expect(last.ok).toBe(false);
+    expect(last.code).toBe("REMOTE_STATE_MISMATCH");
+    expect(last.receipt?.after?.remoteVerified).toBe(false);
+
+    await page.unrouteAll({ behavior: "ignoreErrors" });
   });
-
-  expect(last.ok).toBe(false);
-  expect(last.code).toBe("REMOTE_STATE_MISMATCH");
-  expect(last.receipt?.after?.remoteVerified).toBe(false);
-
-  await page.unrouteAll({ behavior: "ignoreErrors" });
 });
 
-test("Operational Mirror journey — facts, sources, operator, palette, resilience", async ({
-  page,
-}, testInfo) => {
-  skipWithoutDb();
-  await loginE2eAdmin(page);
-  await page.goto("/admin/x200");
+test.describe("x200 operational mirror", () => {
+  test.describe.configure({ mode: "serial" });
 
-  await expect(
-    page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
-  ).toBeVisible();
-  await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
-  await expect(page.getByTestId("x200-next-safe-action")).toBeVisible();
-  await expect(page.getByTestId("x200-fact-branch_local")).toBeVisible();
-  await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
-
-  await page.getByTestId("x200-tab-SOURCES").click();
-  await expect(page.getByTestId("x200-sources-matrix")).toBeVisible();
-
-  await page.getByTestId("x200-tab-GITHUB").click();
-  await expect(page.getByTestId("x200-github-center")).toBeVisible();
-  await expect(page.getByTestId("x200-release-stack")).toBeVisible();
-
-  await page.getByTestId("x200-tab-CI").click();
-  await expect(page.getByTestId("x200-ci-inspector")).toBeVisible();
-
-  await page.getByTestId("x200-tab-CHANGES").click();
-  await expect(page.getByTestId("x200-diff-inspector")).toBeVisible();
-
-  await page.getByTestId("x200-tab-OPERATOR").click();
-  await expect(page.getByTestId("x200-operator-view")).toBeVisible();
-  await expect(page.getByText("CURRENT FACTS")).toBeVisible();
-  await expect(page.getByText("NEXT SAFE ACTION").first()).toBeVisible();
-
-  await page.getByTestId("x200-tab-LOGS").click();
-  await expect(page.getByTestId("x200-log-viewer")).toBeVisible();
-  await expect(page.getByText("no free terminal", { exact: false })).toBeVisible();
-
-  await page.getByTestId("x200-tab-NOTIFICATIONS").click();
-  await expect(page.getByTestId("x200-notification-center")).toBeVisible();
-  await expect(page.getByTestId("x200-notify-badge")).toBeVisible();
-
-  await page.getByTestId("x200-tab-ERRORS").click();
-  await expect(page.getByTestId("x200-error-intelligence")).toBeVisible();
-
-  await page.getByTestId("x200-tab-OVERVIEW").click();
-  await expect(page.getByTestId("x200-autopilot-live")).toBeVisible();
-  await expect(page.getByTestId("x200-cursor-agent")).toBeVisible();
-  await expect(page.getByTestId("x200-human-decision-center")).toBeVisible();
-
-  await page.keyboard.press("Control+KeyK");
-  await expect(page.getByTestId("x200-command-palette")).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByTestId("x200-command-palette")).toHaveCount(0);
-
-  // Hard reload resilience — route must remain available.
-  await page.reload();
-  await expect(
-    page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
-  ).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
-
-  const status = await page.request.get("/api/admin/x200/status");
-  expect(status.ok()).toBeTruthy();
-  const body = (await status.json()) as {
-    mirror?: {
-      nextSafeAction?: { code?: string; destructive?: boolean };
-      sourcesMatrix?: Array<{ conflict?: boolean }>;
-      cursorAgent?: { status?: string };
-    };
-  };
-  expect(body.mirror?.nextSafeAction?.code).toBeTruthy();
-  expect(body.mirror?.nextSafeAction?.destructive).toBe(false);
-  expect(body.mirror?.cursorAgent?.status).toBeTruthy();
-
-  await captureSafeEvidence(
+  test("Operational Mirror journey — facts, sources, operator, palette, resilience", async ({
     page,
-    `${testInfo.project.name}-x200-operational-mirror.png`,
-  );
+  }, testInfo) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+    await page.goto("/admin/x200");
+
+    await expect(
+      page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
+    await expect(page.getByTestId("x200-next-safe-action")).toBeVisible();
+    await expect(page.getByTestId("x200-fact-branch_local")).toBeVisible();
+    await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
+
+    await page.getByTestId("x200-tab-SOURCES").click();
+    await expect(page.getByTestId("x200-sources-matrix")).toBeVisible();
+
+    await page.getByTestId("x200-tab-GITHUB").click();
+    await expect(page.getByTestId("x200-github-center")).toBeVisible();
+    await expect(page.getByTestId("x200-release-stack")).toBeVisible();
+
+    await page.getByTestId("x200-tab-CI").click();
+    await expect(page.getByTestId("x200-ci-inspector")).toBeVisible();
+
+    await page.getByTestId("x200-tab-CHANGES").click();
+    await expect(page.getByTestId("x200-diff-inspector")).toBeVisible();
+
+    await page.getByTestId("x200-tab-OPERATOR").click();
+    await expect(page.getByTestId("x200-operator-view")).toBeVisible();
+    await expect(page.getByText("CURRENT FACTS")).toBeVisible();
+    await expect(page.getByText("NEXT SAFE ACTION").first()).toBeVisible();
+
+    await page.getByTestId("x200-tab-LOGS").click();
+    await expect(page.getByTestId("x200-log-viewer")).toBeVisible();
+    await expect(
+      page.getByText("no free terminal", { exact: false }),
+    ).toBeVisible();
+
+    await page.getByTestId("x200-tab-NOTIFICATIONS").click();
+    await expect(page.getByTestId("x200-notification-center")).toBeVisible();
+    await expect(page.getByTestId("x200-notify-badge")).toBeVisible();
+
+    await page.getByTestId("x200-tab-ERRORS").click();
+    await expect(page.getByTestId("x200-error-intelligence")).toBeVisible();
+
+    await page.getByTestId("x200-tab-OVERVIEW").click();
+    await expect(page.getByTestId("x200-autopilot-live")).toBeVisible();
+    await expect(page.getByTestId("x200-cursor-agent")).toBeVisible();
+    await expect(page.getByTestId("x200-human-decision-center")).toBeVisible();
+
+    await page.keyboard.press("Control+KeyK");
+    await expect(page.getByTestId("x200-command-palette")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("x200-command-palette")).toHaveCount(0);
+
+    // Hard reload resilience — route must remain available.
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+    ).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByTestId("x200-global-command-center")).toBeVisible();
+
+    const status = await page.request.get("/api/admin/x200/status");
+    expect(status.ok()).toBeTruthy();
+    const body = (await status.json()) as {
+      mirror?: {
+        nextSafeAction?: { code?: string; destructive?: boolean };
+        sourcesMatrix?: Array<{ conflict?: boolean }>;
+        cursorAgent?: { status?: string };
+      };
+    };
+    expect(body.mirror?.nextSafeAction?.code).toBeTruthy();
+    expect(body.mirror?.nextSafeAction?.destructive).toBe(false);
+    expect(body.mirror?.cursorAgent?.status).toBeTruthy();
+
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-operational-mirror.png`,
+    );
+  });
 });

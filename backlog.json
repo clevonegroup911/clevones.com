@@ -3231,8 +3231,8 @@
         }
       ],
       "regressionOf": null,
-      "nextAction": "Await CI quality SUCCESS then close T047",
-      "lastTransitionReason": "Local quality-gate PASS; awaiting CI FULL quality on draft PR",
+      "nextAction": "Await CI FULL quality SUCCESS after Playwright e2e stabilization then close T047",
+      "lastTransitionReason": "FULL CI playwright failed; e2e hardened (next start + X200_E2E + mocks); re-run pending",
       "id": "T047",
       "title": "X200 Operational Mirror + Universal Action Console",
       "objective": "Faire de /admin/x200 le cockpit opérationnel principal: miroir de vérité (facts+sources+freshness), inspecteurs GitHub/CI/diff, AUTOPILOT live, décisions humaines, merge/release stack, deploy/DB/incident, operator view, next-safe-action, palette Ctrl+K, notifications, audit — sans données inventées, faux SUCCESS, shell libre ni bypass Human Gate.",

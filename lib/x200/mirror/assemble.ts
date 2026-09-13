@@ -91,29 +91,48 @@ export async function assembleOperationalMirror(input: {
     degradationNotes.push(note);
   };
 
+  const e2eFast = ["1", "true", "yes", "on"].includes(
+    String(process.env.X200_E2E || "").toLowerCase(),
+  );
   const [mainRes, openPrsRes, ciJobsRes, diffRes, worktreePath] =
     await Promise.all([
-      withTimeout(
-        fetchMainHead(input.repository),
-        10_000,
-        { sha: null, warning: "main HEAD timeout" },
-        () => markDegraded("main HEAD fetch timeout/degraded"),
-      ),
-      withTimeout(
-        fetchOpenPrs(input.repository),
-        10_000,
-        { prs: [], warning: "open PRs timeout" },
-        () => markDegraded("open PRs fetch timeout/degraded"),
-      ),
-      withTimeout(
-        fetchCiJobs({
-          repository: input.repository,
-          runId: input.github.ciLatestRunId,
-        }),
-        12_000,
-        { jobs: [], durationMs: null, warning: "CI jobs timeout" },
-        () => markDegraded("CI jobs fetch timeout/degraded"),
-      ),
+      e2eFast
+        ? Promise.resolve({
+            sha: null as string | null,
+            warning: "e2e: remote main HEAD skipped",
+          })
+        : withTimeout(
+            fetchMainHead(input.repository),
+            10_000,
+            { sha: null, warning: "main HEAD timeout" },
+            () => markDegraded("main HEAD fetch timeout/degraded"),
+          ),
+      e2eFast
+        ? Promise.resolve({
+            prs: [] as Awaited<ReturnType<typeof fetchOpenPrs>>["prs"],
+            warning: "e2e: remote open PRs skipped",
+          })
+        : withTimeout(
+            fetchOpenPrs(input.repository),
+            10_000,
+            { prs: [], warning: "open PRs timeout" },
+            () => markDegraded("open PRs fetch timeout/degraded"),
+          ),
+      e2eFast
+        ? Promise.resolve({
+            jobs: [] as Awaited<ReturnType<typeof fetchCiJobs>>["jobs"],
+            durationMs: null as number | null,
+            warning: "e2e: remote CI jobs skipped",
+          })
+        : withTimeout(
+            fetchCiJobs({
+              repository: input.repository,
+              runId: input.github.ciLatestRunId,
+            }),
+            12_000,
+            { jobs: [], durationMs: null, warning: "CI jobs timeout" },
+            () => markDegraded("CI jobs fetch timeout/degraded"),
+          ),
       withTimeout(
         readLocalDiffNameStatus(),
         8_000,

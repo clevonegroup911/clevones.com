@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { spawn } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -16,6 +16,7 @@ const FALLBACK_DATABASE_URL =
   "postgresql://e2e:e2e@127.0.0.1:5432/clevones_e2e?schema=public";
 const PRISMA_BIN = join(process.cwd(), "node_modules/.bin/prisma");
 const NEXT_BIN = join(process.cwd(), "node_modules/.bin/next");
+const BUILD_ID = join(process.cwd(), ".next", "BUILD_ID");
 
 function migrateWithRetry(env: NodeJS.ProcessEnv) {
   let lastError: unknown;
@@ -85,13 +86,24 @@ async function main() {
     `${JSON.stringify({ databaseUrl, startedDocker, dbReady }, null, 2)}\n`,
   );
 
+  // Prefer production server when a build already exists (CI FULL runs build first).
+  // `next dev` can flake with loadManifest "Unexpected end of JSON input" under load.
+  const useProdServer = existsSync(BUILD_ID);
+  const serverEnv: NodeJS.ProcessEnv = useProdServer
+    ? { ...env, NODE_ENV: "production" }
+    : env;
   const child = spawn(
     NEXT_BIN,
-    ["dev", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)],
+    useProdServer
+      ? ["start", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)]
+      : ["dev", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)],
     {
-      env,
+      env: serverEnv,
       stdio: "inherit",
     },
+  );
+  process.stderr.write(
+    `e2e webServer mode=${useProdServer ? "next start" : "next dev"}\n`,
   );
 
   child.on("exit", (code) => {

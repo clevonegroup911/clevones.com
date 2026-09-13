@@ -829,10 +829,10 @@ export function HumanDecisionCenter({
                 </div>
               </dl>
               <p className="mt-2 text-[10px] text-gray-muted">
-                PRECONDITIONS: {d.preconditions.join("; ") || "none"}
+                PRECONDITIONS: {(d.preconditions ?? []).join("; ") || "none"}
               </p>
               <p className="text-[10px] text-gray-muted">
-                SOURCE EVIDENCE: {d.sourceEvidence.join(" · ")}
+                SOURCE EVIDENCE: {(d.sourceEvidence ?? []).join(" · ")}
               </p>
               <button
                 type="button"

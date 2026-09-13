@@ -237,9 +237,11 @@ export function HumanActionPanels({
 
   if (!plane) {
     return (
-      <p className="text-sm text-gray-muted" data-testid="x200-human-plane-missing">
-        Human Action plane unavailable
-      </p>
+      <div className="space-y-4" data-testid="x200-human-actions">
+        <p className="text-sm text-gray-muted" data-testid="x200-human-plane-missing">
+          Human Action plane unavailable
+        </p>
+      </div>
     );
   }
 
