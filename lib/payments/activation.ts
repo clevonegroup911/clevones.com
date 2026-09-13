@@ -1,3 +1,6 @@
+import type { PrismaClient } from "@prisma/client";
+
+import { auditActions, writeAuditLog } from "@/lib/admin/audit";
 import type { PaymentsClient } from "@/lib/payments/catalog";
 import { findPaymentWithInvoice } from "@/lib/payments/catalog";
 import {
@@ -7,7 +10,12 @@ import {
   type ReceiptRecord,
   type ServiceOrderRecord,
 } from "@/lib/payments/gateway";
-import { persistDecision, persistPaymentChain } from "@/lib/payments/persist";
+import {
+  loadPersistedReconciliationState,
+  persistDecision,
+  persistDecisionWithReplayProtection,
+  persistPaymentChain,
+} from "@/lib/payments/persist";
 import {
   createReconciliationService,
   type ReconciliationDecisionRecord,
@@ -29,20 +37,37 @@ function asMetadata(value: unknown): Record<string, string> {
   return out;
 }
 
+function isPrismaClient(client: PaymentsClient): client is PrismaClient {
+  return typeof (client as PrismaClient).$transaction === "function";
+}
+
 /**
- * Active une chaîne Prisma uniquement si une décision VERIFIED existe
- * (pas de bypass rapprochement). Utilise `activateFromClevoneEvent` sandbox.
+ * Open a transaction when the caller passed a root PrismaClient.
+ * Reuse an existing TransactionClient without nesting.
  */
-export async function activateVerifiedPayment(input: {
+export async function withPaymentsTransaction<T>(
+  client: PaymentsClient | undefined,
+  fn: (tx: PaymentsClient) => Promise<T>,
+): Promise<T> {
+  const base = client ?? prisma;
+  if (isPrismaClient(base)) {
+    return base.$transaction((tx) => fn(tx));
+  }
+  return fn(base);
+}
+
+async function activateVerifiedPaymentWithClient(input: {
   paymentId: string;
   decisionId?: string;
   actorId?: string;
-  client?: PaymentsClient;
+  client: PaymentsClient;
+  /** When false, skip AuditLog (caller writes a combined audit). */
+  writeAudit?: boolean;
 }): Promise<{
   chain: PaymentChain;
   decision: ReconciliationDecisionRecord;
 }> {
-  const client = input.client ?? prisma;
+  const client = input.client;
   const paymentRow = await findPaymentWithInvoice(input.paymentId, client);
   if (!paymentRow || !paymentRow.invoice) {
     throw new Error("payment_or_invoice_not_found");
@@ -69,6 +94,12 @@ export async function activateVerifiedPayment(input: {
   if (!orderRow) {
     throw new Error("order_not_found");
   }
+
+  const statusBefore = {
+    order: orderRow.status,
+    invoice: invoiceRow.status,
+    payment: paymentRow.status,
+  };
 
   const provider = createSandboxPaymentProvider();
   const payment: PaymentRecord = {
@@ -159,12 +190,62 @@ export async function activateVerifiedPayment(input: {
     createdAt: decisionRow.createdAt.toISOString(),
   };
 
+  if (input.writeAudit !== false && input.actorId) {
+    await writeAuditLog(
+      {
+        actorId: input.actorId,
+        action: auditActions.PAYMENT_VERIFIED_ACTIVATED,
+        entityType: "Payment",
+        entityId: decision.paymentId,
+        metadata: {
+          decisionId: decision.id,
+          paymentId: decision.paymentId,
+          invoiceId: decision.invoiceId ?? "",
+          eventKey: decision.matchedEventKey ?? "",
+          statusBefore,
+          statusAfter: {
+            order: chain.order.status,
+            invoice: chain.invoice.status,
+            payment: chain.payment?.status ?? "",
+            receipt: chain.receipt?.receiptNumber ?? "",
+          },
+          result: "activated",
+        },
+      },
+      client,
+    );
+  }
+
   return { chain, decision };
 }
 
 /**
- * Approve/reject d’une décision HUMAN_REVIEW persistée, avec audit.
- * Approve → VERIFIED puis activation gateway idempotente.
+ * Active une chaîne Prisma uniquement si une décision VERIFIED existe
+ * (pas de bypass rapprochement). Utilise `activateFromClevoneEvent` sandbox.
+ * Écritures DB dans une transaction unique lorsque possible.
+ */
+export async function activateVerifiedPayment(input: {
+  paymentId: string;
+  decisionId?: string;
+  actorId?: string;
+  client?: PaymentsClient;
+}): Promise<{
+  chain: PaymentChain;
+  decision: ReconciliationDecisionRecord;
+}> {
+  return withPaymentsTransaction(input.client, (tx) =>
+    activateVerifiedPaymentWithClient({
+      paymentId: input.paymentId,
+      decisionId: input.decisionId,
+      actorId: input.actorId,
+      client: tx,
+    }),
+  );
+}
+
+/**
+ * Approve/reject d’une décision HUMAN_REVIEW persistée, avec audit durable.
+ * Approve → VERIFIED + claim anti-rejeu + activation gateway, atomiques.
  */
 export async function resolvePersistedHumanReview(input: {
   decisionId: string;
@@ -172,58 +253,130 @@ export async function resolvePersistedHumanReview(input: {
   actorId: string;
   note?: string;
   client?: PaymentsClient;
+  /** Test hook: throw after VERIFIED persist to prove rollback. */
+  injectActivationFailure?: Error;
 }): Promise<{
   decision: ReconciliationDecisionRecord;
   chain: PaymentChain | null;
 }> {
-  const client = input.client ?? prisma;
-  const row = await client.reconciliationDecision.findUnique({
-    where: { id: input.decisionId },
-  });
-  if (!row) {
-    throw new Error("decision_not_found");
-  }
-  if (row.status !== "HUMAN_REVIEW") {
-    throw new Error("decision_not_in_human_review");
-  }
+  return withPaymentsTransaction(input.client, async (tx) => {
+    const row = await tx.reconciliationDecision.findUnique({
+      where: { id: input.decisionId },
+    });
+    if (!row) {
+      throw new Error("decision_not_found");
+    }
+    if (row.status !== "HUMAN_REVIEW") {
+      throw new Error("decision_not_in_human_review");
+    }
 
-  const service = createReconciliationService();
-  service.hydratePersistedState({
-    decisions: [
+    const statusBefore = row.status;
+    const state = await loadPersistedReconciliationState(row.paymentId, tx);
+    const service = createReconciliationService();
+    service.hydratePersistedState({
+      ...state,
+      decisions: state.decisions.map((decision) =>
+        decision.id === row.id
+          ? {
+              ...decision,
+              status: "HUMAN_REVIEW",
+            }
+          : decision,
+      ),
+    });
+
+    const decision = service.resolveHumanReview({
+      decisionId: row.id,
+      action: input.action,
+      actorId: input.actorId,
+      note: input.note,
+    });
+
+    if (input.action === "reject") {
+      await persistDecision(decision, tx);
+      await writeAuditLog(
+        {
+          actorId: input.actorId,
+          action: auditActions.HUMAN_REVIEW_REJECTED,
+          entityType: "ReconciliationDecision",
+          entityId: decision.id,
+          metadata: {
+            decisionId: decision.id,
+            paymentId: decision.paymentId,
+            invoiceId: decision.invoiceId ?? "",
+            eventKey: decision.matchedEventKey ?? "",
+            statusBefore,
+            statusAfter: decision.status,
+            result: "rejected",
+            action: "reject",
+          },
+        },
+        tx,
+      );
+      return { decision, chain: null };
+    }
+
+    const persisted = await persistDecisionWithReplayProtection(
+      decision,
+      { events: state.events, proofs: state.proofs },
+      tx,
+    );
+
+    if (persisted.status === "DUPLICATE_SUSPECTED") {
+      await writeAuditLog(
+        {
+          actorId: input.actorId,
+          action: auditActions.HUMAN_REVIEW_APPROVED,
+          entityType: "ReconciliationDecision",
+          entityId: persisted.id,
+          metadata: {
+            decisionId: persisted.id,
+            paymentId: persisted.paymentId,
+            invoiceId: persisted.invoiceId ?? "",
+            eventKey: persisted.matchedEventKey ?? "",
+            statusBefore,
+            statusAfter: persisted.status,
+            result: "duplicate_suspected",
+            action: "approve",
+          },
+        },
+        tx,
+      );
+      return { decision: persisted, chain: null };
+    }
+
+    await writeAuditLog(
       {
-        id: row.id,
-        paymentId: row.paymentId,
-        invoiceId: row.invoiceId ?? undefined,
-        status: "HUMAN_REVIEW",
-        score: row.score,
-        reasons: Array.isArray(row.reasons) ? row.reasons.map(String) : [],
-        idempotencyKey: row.idempotencyKey,
-        clientProofId: row.clientProofId ?? undefined,
-        matchedEventKey: row.matchedEventKey ?? undefined,
-        reviewDueAt: row.reviewDueAt?.toISOString(),
-        decidedAt: row.decidedAt.toISOString(),
-        createdAt: row.createdAt.toISOString(),
+        actorId: input.actorId,
+        action: auditActions.HUMAN_REVIEW_APPROVED,
+        entityType: "ReconciliationDecision",
+        entityId: persisted.id,
+        metadata: {
+          decisionId: persisted.id,
+          paymentId: persisted.paymentId,
+          invoiceId: persisted.invoiceId ?? "",
+          eventKey: persisted.matchedEventKey ?? "",
+          statusBefore,
+          statusAfter: persisted.status,
+          result: "approved",
+          action: "approve",
+        },
       },
-    ],
-  });
+      tx,
+    );
 
-  const decision = service.resolveHumanReview({
-    decisionId: row.id,
-    action: input.action,
-    actorId: input.actorId,
-    note: input.note,
-  });
-  await persistDecision(decision, client);
+    if (input.injectActivationFailure) {
+      throw input.injectActivationFailure;
+    }
 
-  if (input.action === "reject") {
-    return { decision, chain: null };
-  }
+    const { chain } = await activateVerifiedPaymentWithClient({
+      paymentId: persisted.paymentId,
+      decisionId: persisted.id,
+      actorId: input.actorId,
+      client: tx,
+      writeAudit: true,
+    });
 
-  const { chain } = await activateVerifiedPayment({
-    paymentId: decision.paymentId,
-    decisionId: decision.id,
-    actorId: input.actorId,
-    client,
+    return { decision: persisted, chain };
   });
-  return { decision, chain };
 }

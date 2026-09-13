@@ -2,10 +2,14 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { auditActions, writeAuditLog } from "@/lib/admin/audit";
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
 import { canAccessAdminPayments } from "@/lib/payments/access";
 import { findPaymentWithInvoice } from "@/lib/payments/catalog";
-import { persistClevoneOfficialEvent } from "@/lib/payments/persist";
+import {
+  ClevoneEventConflictError,
+  persistClevoneOfficialEvent,
+} from "@/lib/payments/persist";
 import type { ClevoneOfficialEvent } from "@/lib/payments/reconciliation";
 import { adminClevoneEventSchema } from "@/lib/payments/schemas";
 
@@ -13,7 +17,7 @@ export const runtime = "nodejs";
 
 /**
  * Enregistre un événement CLEVONE sandbox authentifié (Prisma `ClevoneGatewayEvent`).
- * Aucun webhook réseau, aucune clé PSP.
+ * eventKey immuable ; conflit d'identité → 409. Aucun webhook réseau, aucune clé PSP.
  */
 export async function POST(request: Request) {
   const actor = await getOptionalAdminActor();
@@ -67,22 +71,50 @@ export async function POST(request: Request) {
     source: input.source,
   };
 
-  await persistClevoneOfficialEvent(event, {
-    orderId: payment.invoice?.orderId,
-  });
+  try {
+    const result = await persistClevoneOfficialEvent(event, {
+      orderId: payment.invoice?.orderId,
+    });
 
-  return NextResponse.json({
-    eventKey: event.eventKey,
-    paymentId: event.paymentId,
-    invoiceId: event.invoiceId ?? null,
-    source: event.source,
-    authenticated: true,
-    reference: event.reference,
-    amountCents: event.amountCents,
-    currency: event.currency,
-    message:
-      "Événement CLEVONE sandbox persisté. Lancer reconcile pour produire une décision.",
-    actorId: actor.id,
-    requestId: randomUUID(),
-  });
+    await writeAuditLog({
+      actorId: actor.id,
+      action: auditActions.PAYMENT_CLEVONE_EVENT_CREATED,
+      entityType: "ClevoneGatewayEvent",
+      entityId: event.eventKey,
+      metadata: {
+        decisionId: "",
+        paymentId: event.paymentId,
+        invoiceId: event.invoiceId ?? "",
+        eventKey: event.eventKey,
+        statusBefore: "",
+        statusAfter: result.created ? "created" : "idempotent",
+        result: result.created ? "created" : "idempotent",
+      },
+    });
+
+    return NextResponse.json({
+      eventKey: event.eventKey,
+      paymentId: event.paymentId,
+      invoiceId: event.invoiceId ?? null,
+      source: event.source,
+      authenticated: true,
+      reference: event.reference,
+      amountCents: event.amountCents,
+      currency: event.currency,
+      created: result.created,
+      message: result.created
+        ? "Événement CLEVONE sandbox persisté. Lancer reconcile pour produire une décision."
+        : "Événement CLEVONE déjà présent (idempotent).",
+      actorId: actor.id,
+      requestId: randomUUID(),
+    });
+  } catch (error) {
+    if (error instanceof ClevoneEventConflictError) {
+      return NextResponse.json(
+        { error: "clevone_event_conflict", message: error.message },
+        { status: 409 },
+      );
+    }
+    throw error;
+  }
 }

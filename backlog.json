@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-12",
+  "updatedAt": "2026-09-13",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -2693,6 +2693,83 @@
       "status": "TERMINÉE",
       "estimatedCost": 1,
       "risk": "medium"
+    },
+    {
+      "id": "T041",
+      "project": "clevones.com",
+      "sourceRef": "PR#7 final security review",
+      "title": "Final pre-merge payment security hardening",
+      "objective": "Corriger les 4 défauts de la revue finale PR #7 : anti-rejeu global cross-payment, immutabilité eventKey, audit durable des décisions humaines, atomicité VERIFIED→activation. Invalide PRODUCT_COMPLETE précédent.",
+      "priority": "P0",
+      "dependencies": [
+        "T028",
+        "T030",
+        "T031",
+        "T040"
+      ],
+      "scope": [
+        "lib/payments",
+        "app/api/admin/payments",
+        "prisma",
+        "lib/admin/audit.ts",
+        "docs/PAYMENTS_GATEWAY.md",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Claim durable UNIQUE de références vérifiées ; cross-payment → DUPLICATE_SUSPECTED ; idempotent même paiement ; concurrence atomique",
+        "eventKey immuable : idempotent si identique, ClevoneEventConflictError/409 si divergence ; historique inchangé",
+        "AuditLog durable pour CLEVONE event, reconcile, HUMAN_REVIEW approve/reject, activation VERIFIED avec actorId",
+        "Transition HUMAN_REVIEW→VERIFIED→claim→activation→order/invoice/receipt/audit atomique (rollback si échec)",
+        "Invariants inchangés : preuve client seule ≠ VERIFIED/CAPTURED ; USER≠admin ; sandbox only",
+        "CI FULL quality SUCCESS sur SHA d'implémentation ; pas de merge/deploy"
+      ],
+      "tests": [
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run x200:validate",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "EN_CONTRÔLE",
+      "estimatedCost": 3,
+      "risk": "high",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 1,
+      "lastTransitionReason": "implementation complete; awaiting FULL CI on PR #7",
+      "nextAction": "wait quality FULL SUCCESS then close",
+      "blockedReason": null,
+      "claim": {
+        "workerId": "local:fedora",
+        "token": "39e6e3a40075199d7aa3f151bf2e96e7",
+        "claimedAt": "2026-09-13T06:55:09.116Z",
+        "expiresAt": "2026-09-13T08:55:09.116Z",
+        "leaseSeconds": 7200
+      },
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [
+        "quality-gate local PASS",
+        "migration additive VerifiedPaymentReferenceClaim"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T041",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T07:10:00.000Z",
+          "location": ".x200/quality-results.json"
+        }
+      ]
     }
   ],
   "history": [
@@ -3803,9 +3880,15 @@
       "taskId": "T040",
       "status": "TERMINÉE",
       "note": "quality CI SUCCESS; PRODUCT_COMPLETE marker"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T041",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 111,
+  "registryVersion": 114,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

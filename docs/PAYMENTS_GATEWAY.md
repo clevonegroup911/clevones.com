@@ -167,6 +167,22 @@ API domaine : `lib/payments/activation.ts` (`resolvePersistedHumanReview`, `acti
 - `lib/payments/reconciliation.test.ts`
 - `lib/payments/persist-reconcile.test.ts` (T030)
 - `lib/payments/activation.test.ts` (T031)
+- `lib/payments/reference-claims.test.ts` (T041 anti-rejeu global)
+- `lib/payments/clevone-event-immutable.test.ts` (T041 eventKey immuable)
+- `lib/payments/security-hardening.test.ts` (T041 audit + atomicité)
 - `lib/payments/access.test.ts`
 - `lib/payments/sandbox.test.ts` (T024)
 - Contrôles : `npx prisma validate`, `npm test`, lint, tsc, scan-secrets, `x200:validate`, `git diff --check`
+
+## Durcissement sécurité pré-merge (T041)
+
+| Défaut | Correction | Niveau |
+|---|---|---|
+| Anti-rejeu seulement en mémoire / par paymentId | Modèle `VerifiedPaymentReferenceClaim` (`normalizedReference` UNIQUE) + claims à la persistance VERIFIED | **implémenté + testé** |
+| `persistClevoneOfficialEvent` upsert réécrit l’historique | eventKey immuable ; idempotent si identité égale ; `ClevoneEventConflictError` → HTTP 409 | **implémenté + testé** |
+| Audit HUMAN_REVIEW surtout mémoire | `AuditLog` durable (`HUMAN_REVIEW_*`, reconcile, CLEVONE event, activation) avec `actorId` | **implémenté + testé** |
+| VERIFIED persisté puis activation échoue | `withPaymentsTransaction` : décision + claims + activation + receipt + audit atomiques | **implémenté + testé** |
+
+Migration additive : `prisma/migrations/20260913090000_add_verified_payment_reference_claim/` — **CI/local only**, pas de `migrate deploy` production dans T041.
+
+Invariants conservés : preuve client seule ≠ VERIFIED/CAPTURED ; USER ≠ admin paiements ; sessions admin/portail séparées ; sandbox only ; aucun rail live.

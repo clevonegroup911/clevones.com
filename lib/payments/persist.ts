@@ -25,6 +25,13 @@ import type {
   ReconciliationService,
 } from "@/lib/payments/reconciliation";
 import { createReconciliationService } from "@/lib/payments/reconciliation";
+import {
+  claimVerifiedReferences,
+  collectSignificantReferences,
+  decisionAsDuplicateSuspect,
+  listClaimedNormalizedReferences,
+  ReferenceClaimConflictError,
+} from "@/lib/payments/reference-claims";
 import type { PaymentRecord } from "@/lib/payments/types";
 import { prisma } from "@/lib/db/prisma";
 
@@ -32,6 +39,74 @@ function asJson(
   value: Record<string, unknown> | string[] | Record<string, string>,
 ): Prisma.InputJsonValue {
   return value as Prisma.InputJsonValue;
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    Boolean(error) &&
+    typeof error === "object" &&
+    (error as { code?: string }).code === "P2002"
+  );
+}
+
+export class ClevoneEventConflictError extends Error {
+  constructor(message = "clevone_event_conflict") {
+    super(message);
+    this.name = "ClevoneEventConflictError";
+  }
+}
+
+function canonicalEventIdentity(input: {
+  paymentId?: string | null;
+  invoiceId?: string | null;
+  eventType: string;
+  payload: ClevoneReconcilePayload;
+}): string {
+  return [
+    input.paymentId ?? "",
+    input.invoiceId ?? "",
+    input.eventType,
+    input.payload.source,
+    input.payload.reference.trim().toUpperCase(),
+    String(input.payload.amountCents),
+    input.payload.currency.toUpperCase(),
+    input.payload.authenticated ? "1" : "0",
+  ].join("|");
+}
+
+function assertEventUnchanged(
+  existing: {
+    paymentId: string | null;
+    invoiceId: string | null;
+    eventType: string;
+    payload: Prisma.JsonValue;
+  },
+  next: {
+    paymentId: string;
+    invoiceId?: string;
+    eventType: string;
+    payload: ClevoneReconcilePayload;
+  },
+): void {
+  const existingPayload = parseClevoneReconcilePayload(existing.payload);
+  if (!existingPayload) {
+    throw new ClevoneEventConflictError("clevone_event_conflict_unreadable");
+  }
+  const left = canonicalEventIdentity({
+    paymentId: existing.paymentId,
+    invoiceId: existing.invoiceId,
+    eventType: existing.eventType,
+    payload: existingPayload,
+  });
+  const right = canonicalEventIdentity({
+    paymentId: next.paymentId,
+    invoiceId: next.invoiceId,
+    eventType: next.eventType,
+    payload: next.payload,
+  });
+  if (left !== right) {
+    throw new ClevoneEventConflictError();
+  }
 }
 
 /** Persist a sandbox gateway chain (order → invoice → payment → receipt/events). */
@@ -76,6 +151,7 @@ export async function persistPaymentChain(
   }
 
   for (const event of events) {
+    // Identity fields are immutable once written (anti-tamper / anti-replay).
     await client.clevoneGatewayEvent.upsert({
       where: { idempotencyKey: event.idempotencyKey },
       create: {
@@ -88,13 +164,7 @@ export async function persistPaymentChain(
         payload: asJson(event.payload),
         createdAt: new Date(event.createdAt),
       },
-      update: {
-        eventType: event.eventType,
-        orderId: event.orderId,
-        invoiceId: event.invoiceId,
-        paymentId: event.paymentId,
-        payload: asJson(event.payload),
-      },
+      update: {},
     });
   }
 }
@@ -169,13 +239,58 @@ export async function persistDecision(
 }
 
 /**
+ * Persist a decision and, when VERIFIED, claim references globally in the same
+ * client/transaction. Conflicting claims become DUPLICATE_SUSPECTED.
+ */
+export async function persistDecisionWithReplayProtection(
+  decision: ReconciliationDecisionRecord,
+  context: {
+    events?: ClevoneOfficialEvent[];
+    proofs?: PaymentProofRecord[];
+  } = {},
+  client: PaymentsClient = prisma,
+): Promise<ReconciliationDecisionRecord> {
+  if (decision.status !== "VERIFIED") {
+    await persistDecision(decision, client);
+    return decision;
+  }
+
+  const references = collectSignificantReferences({
+    decision,
+    events: context.events,
+    proofs: context.proofs,
+  });
+
+  try {
+    await claimVerifiedReferences(
+      {
+        references,
+        paymentId: decision.paymentId,
+        decisionId: decision.id,
+        eventKey: decision.matchedEventKey,
+      },
+      client,
+    );
+    await persistDecision(decision, client);
+    return decision;
+  } catch (error) {
+    if (error instanceof ReferenceClaimConflictError) {
+      const duplicate = decisionAsDuplicateSuspect(decision);
+      await persistDecision(duplicate, client);
+      return duplicate;
+    }
+    throw error;
+  }
+}
+
+/**
  * Persiste un événement CLEVONE de rapprochement dans `ClevoneGatewayEvent`
- * (idempotencyKey = eventKey). Aucun webhook réseau.
+ * (idempotencyKey = eventKey). eventKey immuable après création.
  */
 export async function persistClevoneOfficialEvent(
   event: ClevoneOfficialEvent,
   options?: { orderId?: string; client?: PaymentsClient },
-): Promise<void> {
+): Promise<{ created: boolean }> {
   const client = options?.client ?? prisma;
   const eventType = reconcileEventTypeForSource(event.source);
   const payload: ClevoneReconcilePayload = {
@@ -186,25 +301,50 @@ export async function persistClevoneOfficialEvent(
     authenticated: true,
   };
 
-  await client.clevoneGatewayEvent.upsert({
+  const existing = await client.clevoneGatewayEvent.findUnique({
     where: { idempotencyKey: event.eventKey },
-    create: {
-      id: event.eventKey,
-      eventType,
-      idempotencyKey: event.eventKey,
-      orderId: options?.orderId,
-      invoiceId: event.invoiceId,
-      paymentId: event.paymentId,
-      payload: asJson(payload),
-    },
-    update: {
-      eventType,
-      orderId: options?.orderId,
-      invoiceId: event.invoiceId,
-      paymentId: event.paymentId,
-      payload: asJson(payload),
-    },
   });
+  if (existing) {
+    assertEventUnchanged(existing, {
+      paymentId: event.paymentId,
+      invoiceId: event.invoiceId,
+      eventType,
+      payload,
+    });
+    return { created: false };
+  }
+
+  try {
+    await client.clevoneGatewayEvent.create({
+      data: {
+        id: event.eventKey,
+        eventType,
+        idempotencyKey: event.eventKey,
+        orderId: options?.orderId,
+        invoiceId: event.invoiceId,
+        paymentId: event.paymentId,
+        payload: asJson(payload),
+      },
+    });
+    return { created: true };
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) {
+      throw error;
+    }
+    const raced = await client.clevoneGatewayEvent.findUnique({
+      where: { idempotencyKey: event.eventKey },
+    });
+    if (!raced) {
+      throw error;
+    }
+    assertEventUnchanged(raced, {
+      paymentId: event.paymentId,
+      invoiceId: event.invoiceId,
+      eventType,
+      payload,
+    });
+    return { created: false };
+  }
 }
 
 function mapProofRow(row: {
@@ -310,24 +450,27 @@ export async function loadPersistedReconciliationState(
   proofs: PaymentProofRecord[];
   events: ClevoneOfficialEvent[];
   decisions: ReconciliationDecisionRecord[];
+  verifiedReferences: string[];
 }> {
-  const [proofRows, eventRows, decisionRows] = await Promise.all([
-    client.paymentProof.findMany({
-      where: { paymentId },
-      orderBy: { createdAt: "asc" },
-    }),
-    client.clevoneGatewayEvent.findMany({
-      where: {
-        paymentId,
-        eventType: { in: [...RECONCILE_EVENT_TYPES] },
-      },
-      orderBy: { createdAt: "asc" },
-    }),
-    client.reconciliationDecision.findMany({
-      where: { paymentId },
-      orderBy: { createdAt: "asc" },
-    }),
-  ]);
+  const [proofRows, eventRows, decisionRows, verifiedReferences] =
+    await Promise.all([
+      client.paymentProof.findMany({
+        where: { paymentId },
+        orderBy: { createdAt: "asc" },
+      }),
+      client.clevoneGatewayEvent.findMany({
+        where: {
+          paymentId,
+          eventType: { in: [...RECONCILE_EVENT_TYPES] },
+        },
+        orderBy: { createdAt: "asc" },
+      }),
+      client.reconciliationDecision.findMany({
+        where: { paymentId },
+        orderBy: { createdAt: "asc" },
+      }),
+      listClaimedNormalizedReferences(client),
+    ]);
 
   return {
     proofs: proofRows.map(mapProofRow),
@@ -335,12 +478,14 @@ export async function loadPersistedReconciliationState(
       .map(mapGatewayEventToOfficial)
       .filter((row): row is ClevoneOfficialEvent => row !== null),
     decisions: decisionRows.map(mapDecisionRow),
+    verifiedReferences,
   };
 }
 
 /**
  * Service de rapprochement hydraté depuis Prisma pour un paiement donné.
  * Une preuve client seule ne produit jamais VERIFIED (invariant service).
+ * Les claims globaux alimentent l'anti-rejeu cross-payment.
  */
 export async function createHydratedReconciliationService(
   paymentId: string,
@@ -350,6 +495,7 @@ export async function createHydratedReconciliationService(
   proofs: PaymentProofRecord[];
   events: ClevoneOfficialEvent[];
   decisions: ReconciliationDecisionRecord[];
+  verifiedReferences: string[];
 }> {
   const state = await loadPersistedReconciliationState(paymentId, client);
   const service = createReconciliationService();

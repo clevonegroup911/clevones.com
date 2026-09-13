@@ -6,35 +6,44 @@
 
 ## ID
 
-T040
+T041
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-PRODUCT_COMPLETE dépôt.
+Corriger 4 défauts sécurité/cohérence revue finale PR #7 : anti-rejeu global, eventKey immuable, audit durable, atomicité VERIFIED→activation.
 
 ## Résultat
 
-Quality CI SUCCESS c4bb3b8 / run 34719158060. Marqueur local `.x200/PRODUCT_COMPLETE.json` à rafraîchir sur le HEAD de clôture. Aucune tâche auto PRÊTE restante. Gates humaines hors auto.
+Quality-gate local PASS. En attente CI FULL sur PR #7.
 
 ## Fichiers créés
 
-- `.x200/PRODUCT_COMPLETE.json` (local)
+- `lib/payments/reference-claims.ts` (+ tests)
+- `lib/payments/clevone-event-immutable.test.ts`
+- `lib/payments/security-hardening.test.ts`
+- `prisma/migrations/20260913090000_add_verified_payment_reference_claim/`
+- `reports/tasks/T041.md`
 
 ## Fichiers modifiés
 
+- `lib/payments/persist.ts`, `activation.ts`, `reconciliation.ts`
+- `lib/admin/audit.ts`
+- routes admin paiements
+- `prisma/schema.prisma`
+- `docs/PAYMENTS_GATEWAY.md`
 - backlog / rapports
 
 ## Commandes
 
-- quality-gate + CI
+- `npm test` / lint / tsc / prisma validate / x200:validate / scan-secrets
 
 ## Tests réussis
 
-- CI quality SUCCESS
+- 111 unit tests pass (incl. T041)
 
 ## Tests échoués
 
@@ -42,23 +51,23 @@ Quality CI SUCCESS c4bb3b8 / run 34719158060. Marqueur local `.x200/PRODUCT_COMP
 
 ## Lint
 
-- n/a
+- pass
 
 ## Type-check
 
-- n/a
+- pass
 
 ## Build
 
-- n/a
+- n/a local (CI FULL)
 
 ## Sécurité
 
-- not-live explicite
+- scan-secrets pass ; migration additive only ; no secrets
 
 ## Commit
 
-- `c4bb3b8812350c13859ea02b9dd9200fc2a4e995` (+ close metadata)
+- (pending)
 
 ## Pull Request
 
@@ -66,11 +75,11 @@ Quality CI SUCCESS c4bb3b8 / run 34719158060. Marqueur local `.x200/PRODUCT_COMP
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34719158060
+- (pending CI FULL)
 
 ## Risques
 
-- marqueur invalidé si HEAD ou PRODUCT_GOAL change
+- CI FULL obligatoire sur PR Ready for review
 
 ## Blocage
 
@@ -78,4 +87,4 @@ Quality CI SUCCESS c4bb3b8 / run 34719158060. Marqueur local `.x200/PRODUCT_COMP
 
 ## Prochaine tâche prête
 
-- aucune (gates humaines)
+- aucune (attendre CI puis clôture T041)

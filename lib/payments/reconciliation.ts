@@ -6,6 +6,7 @@ import {
   putPrivateObject,
   type StoredObject,
 } from "@/lib/documents/storage";
+import { normalizePaymentReference } from "@/lib/payments/reference-claims";
 
 export type PaymentProofSource =
   | "CLIENT_UPLOAD"
@@ -87,7 +88,7 @@ function now(): string {
 }
 
 function normalize(value?: string): string {
-  return value?.trim().toUpperCase() ?? "";
+  return normalizePaymentReference(value);
 }
 
 function createStore(): Store {
@@ -247,6 +248,8 @@ export function createReconciliationService(options?: { store?: Store }) {
       proofs?: PaymentProofRecord[];
       events?: ClevoneOfficialEvent[];
       decisions?: ReconciliationDecisionRecord[];
+      /** Global durable claims (cross-payment anti-replay). */
+      verifiedReferences?: string[];
     }): void {
       for (const proof of input.proofs ?? []) {
         store.proofs.set(proof.id, proof);
@@ -260,6 +263,12 @@ export function createReconciliationService(options?: { store?: Store }) {
           currency: event.currency.toUpperCase(),
           authenticated: true,
         });
+      }
+      for (const claimed of input.verifiedReferences ?? []) {
+        const normalized = normalize(claimed);
+        if (normalized) {
+          store.verifiedReferences.add(normalized);
+        }
       }
       for (const decision of input.decisions ?? []) {
         store.decisions.set(decision.id, decision);
@@ -284,7 +293,7 @@ export function createReconciliationService(options?: { store?: Store }) {
         "STORE_HYDRATED",
         "ReconciliationStore",
         "persist",
-        `proofs=${input.proofs?.length ?? 0};events=${input.events?.length ?? 0};decisions=${input.decisions?.length ?? 0}`,
+        `proofs=${input.proofs?.length ?? 0};events=${input.events?.length ?? 0};decisions=${input.decisions?.length ?? 0};claims=${input.verifiedReferences?.length ?? 0}`,
       );
     },
 
@@ -378,9 +387,34 @@ export function createReconciliationService(options?: { store?: Store }) {
         return decision;
       }
 
+      const markDuplicate = (reference: string): ReconciliationDecisionRecord => {
+        const decision: ReconciliationDecisionRecord = {
+          ...base,
+          status: "DUPLICATE_SUSPECTED",
+          score: 0,
+          reasons: ["reference_already_verified"],
+        };
+        store.decisions.set(decision.id, decision);
+        store.decisionsByIdempotency.set(input.idempotencyKey, decision.id);
+        pushAudit(
+          store,
+          "RECONCILE_DUPLICATE",
+          "ReconciliationDecision",
+          decision.id,
+          reference,
+        );
+        return decision;
+      };
+
       if (!clientProof) {
         // Événement CLEVONE seul, cohérent avec le paiement attendu → VERIFIED.
         const event = events[0]!;
+        if (
+          event.reference &&
+          store.verifiedReferences.has(normalize(event.reference))
+        ) {
+          return markDuplicate(event.reference);
+        }
         const amountOk = event.amountCents === input.expectedAmountCents;
         const currencyOk =
           normalize(event.currency) === normalize(input.expectedCurrency);
@@ -471,6 +505,9 @@ export function createReconciliationService(options?: { store?: Store }) {
         store.decisionsByIdempotency.set(input.idempotencyKey, decision.id);
         if (clientProof.reference) {
           store.verifiedReferences.add(normalize(clientProof.reference));
+        }
+        if (best.event.reference) {
+          store.verifiedReferences.add(normalize(best.event.reference));
         }
         pushAudit(
           store,
