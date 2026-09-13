@@ -125,56 +125,104 @@ test.describe("x200 core surfaces", () => {
     skipWithoutDb();
     await loginE2eAdmin(page);
 
+    // Pure synthetic status — avoid route.fetch races with abort/auto-refresh.
     await page.route("**/api/admin/x200/status", async (route) => {
       if (route.request().method() !== "GET") {
         await route.continue();
         return;
       }
-      let json: Record<string, unknown> = {};
-      try {
-        const response = await route.fetch();
-        json = (await response.json()) as Record<string, unknown>;
-      } catch {
-        // Aborted refresh or upstream flake — still fulfill a valid mocked plane.
-      }
-      const control = {
-        ...(typeof json.control === "object" && json.control
-          ? (json.control as Record<string, unknown>)
-          : {}),
-        mode: "LOCAL_CONTROL_READY",
-        actionsEnabled: true,
-        localExecutorAvailable: true,
-        actorRole: "SUPER_ADMIN",
-        canMutate: true,
-        disabledReasons: {
-          MERGE: "Human approval required",
-          DEPLOY: "Human approval required",
-        },
-        recentActions: [],
-      };
-      const sources =
-        typeof json.sources === "object" && json.sources
-          ? json.sources
-          : {
-              backlog: "OK",
-              productGoal: "OK",
-              humanGate: "OK",
-              git: "OK",
-              github: "UNKNOWN",
-              fedoraTelemetry: "UNKNOWN",
-            };
       await route.fulfill({
         status: 200,
         contentType: "application/json",
         headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
-          ...json,
-          generatedAt:
-            typeof json.generatedAt === "string"
-              ? json.generatedAt
-              : new Date().toISOString(),
-          sources,
-          control,
+          generatedAt: new Date().toISOString(),
+          sources: {
+            backlog: "OK",
+            productGoal: "OK",
+            humanGate: "OK",
+            git: "OK",
+            github: "UNKNOWN",
+            fedoraTelemetry: "UNKNOWN",
+          },
+          freshness: {},
+          warnings: [],
+          systemHealth: { status: "HEALTHY", summary: "mocked", criteria: [] },
+          pipeline: [],
+          backlog: { status: "OK", counts: {}, currentTask: null, tasks: [] },
+          productGoal: { status: "OK", hash: null, title: null, criteriaDetectable: 0, criteriaSatisfied: 0 },
+          humanGate: {
+            present: false,
+            reason: null,
+            taskId: null,
+            requiredAction: null,
+            blocking: [],
+            createdAt: null,
+          },
+          productComplete: { status: "ABSENT", head: null, goalHash: null, valid: false },
+          git: {
+            status: "OK",
+            branch: "feat/x200-operational-mirror",
+            head: "abcdef1",
+            dirty: false,
+            dirtyFileCount: 0,
+            ahead: 0,
+            behind: 0,
+          },
+          github: { status: "UNKNOWN" },
+          fedora: { fedoraTelemetry: "UNKNOWN", autopilotLiveState: "UNKNOWN" },
+          efficiency: {},
+          blockers: [],
+          activity: [],
+          roles: [],
+          control: {
+            mode: "LOCAL_CONTROL_READY",
+            actionsEnabled: true,
+            localExecutorAvailable: true,
+            actorRole: "SUPER_ADMIN",
+            canMutate: true,
+            disabledReasons: {
+              MERGE: "Human approval required",
+              DEPLOY: "Human approval required",
+            },
+            recentActions: [],
+          },
+          progress: { completed: 0, total: 0 },
+          lastUpdate: new Date().toISOString(),
+          humanActions: {
+            enabled: false,
+            productionEnabled: false,
+            githubActionAdapter: "MOCK",
+            csrf: {
+              status: "OK",
+              appOriginConfigured: true,
+              localAllowListActive: true,
+            },
+            inbox: [],
+            environments: [],
+            drift: { state: "UNKNOWN" },
+            paymentsLive: "NOT_AVAILABLE",
+            recentReceipts: [],
+            activeIncident: null,
+          },
+          mirror: {
+            generatedAt: new Date().toISOString(),
+            degraded: false,
+            degradationNotes: [],
+            globalFacts: [],
+            sourcesMatrix: [],
+            nextSafeAction: {
+              code: "WAIT",
+              title: "Wait",
+              detail: "mocked",
+              requiresHuman: false,
+              destructive: false,
+            },
+            commandPalette: [],
+            humanDecisions: [],
+            autopilotLive: {},
+            cursorAgent: { status: "NOT_CONNECTED" },
+          },
         }),
       });
     });
@@ -212,9 +260,11 @@ test.describe("x200 core surfaces", () => {
     });
 
     await page.goto("/admin/x200");
+    await page.getByTestId("x200-auto-refresh").selectOption("0");
     await page.getByTestId("x200-refresh-now").click();
     await expect(page.getByTestId("x200-control-mode")).toContainText(
       "LOCAL_CONTROL_READY",
+      { timeout: 20_000 },
     );
     await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeEnabled({
       timeout: 10_000,
