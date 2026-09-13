@@ -10,7 +10,7 @@ T043
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Pont télémétrie Fedora AUTOPILOT → `/admin/x200` (remplacer stubs T042).
 
 ## Résultat
 
-Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secrets) ; Control Center lit le fichier et dérive NOT_CONNECTED/STALE/RUNNING/IDLE/AUTOPLAN/COMPLETE sans inventer d'état. Fix CI #112 : parsing JSON sûr sur routes paiements admin (4xx déterministe) + e2e mobile via `fetch` navigateur. Attente FULL quality SUCCESS.
+Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secrets) ; Control Center lit le fichier et dérive NOT_CONNECTED/STALE/RUNNING/IDLE/AUTOPLAN/COMPLETE sans inventer d'état. Fix CI #112 : parsing JSON sûr sur routes paiements admin (4xx déterministe) + e2e mobile via `fetch` navigateur. CI FULL quality SUCCESS.
 
 ## Fichiers créés
 
@@ -57,10 +57,11 @@ Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secr
 - npm test (128 pass)
 - x200:test (74 pass / 1 skipped)
 - lint / tsc / build / secrets / diff-check
+- CI Playwright FULL (run 34763250287)
 
 ## Tests échoués
 
-- Playwright local non exécutable (rootless Docker port publish) — preuve attendue CI FULL
+- aucun (Playwright prouvé en CI FULL)
 
 ## Lint
 
@@ -81,7 +82,7 @@ Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secr
 
 ## Commit
 
-- pending push feat/x200-control-center (T043 telemetry + CI #112 payments JSON fix)
+- `931727619b396319a5c093ccd5ec51142b261d06` feat/x200-control-center
 
 ## Pull Request
 
@@ -90,7 +91,9 @@ Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secr
 ## Preuves
 
 - reports/tasks/T043.md
-- CI FULL pending on implementation SHA
+- CI FULL quality SUCCESS run 34763250287 head 931727619b396319a5c093ccd5ec51142b261d06
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287
+- MERGED=NO ; DEPLOYED=NO
 
 ## Risques
 
@@ -98,8 +101,8 @@ Heartbeat `.x200/telemetry.json` écrit par le superviseur (mode 0600, sans secr
 
 ## Blocage
 
-- aucun (attente CI FULL uniquement)
+- aucun
 
 ## Prochaine tâche prête
 
-- T044 (après T043 TERMINÉE)
+- T044
