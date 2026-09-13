@@ -76,7 +76,8 @@ Dashboard réel livré : sources backlog/git/GitHub/gates, health déterministe,
 
 ## Pull Request
 
-- draft stacked vs autoplan/payments-recovery-20260912
+- draft stacked PR #8 vs `autoplan/payments-recovery-20260912`
+- https://github.com/clevonegroup911/clevones.com/pull/8
 
 ## Preuves
 
