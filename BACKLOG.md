@@ -69,4 +69,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T045 | P0 | TERMINÉE | Interactive X200 Control Center — safe operations | non |
 | T046 | P0 | TERMINÉE | X200 Human Action Center — approvals, release, deploy and recovery | non |
 | T047 | P0 | TERMINÉE | X200 Operational Mirror + Universal Action Console | non |
-| T048 | P0 | EN_COURS | X200 Boot Orchestrator — automatic startup and self-recovery | non |
+| T048 | P0 | TERMINÉE | X200 Boot Orchestrator — automatic startup and self-recovery | non |

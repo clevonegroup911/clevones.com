@@ -3308,17 +3308,22 @@
       "lastFailureCause": null,
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
-      "claim": {
-        "workerId": "local:fedora",
-        "token": "0a40bf4fedba5681280cec281e51aa16",
-        "claimedAt": "2026-09-15T10:59:49.572Z",
-        "expiresAt": "2026-09-15T12:59:49.572Z",
-        "leaseSeconds": 7200
-      },
-      "evidenceRecords": [],
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34962261158",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158",
+          "version": "206cd31a7c37c91a34d442bab464603ec11bef49",
+          "at": "2026-09-15T11:20:26.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "exécuter le périmètre puis quality-gate",
-      "lastTransitionReason": "réservation par local:fedora",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34962261158 on 206cd31; T048 closed",
       "id": "T048",
       "title": "X200 Boot Orchestrator — automatic startup and self-recovery",
       "objective": "Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.",
@@ -3365,8 +3370,19 @@
         "npm run x200:scan-secrets",
         "git diff --check"
       ],
-      "status": "EN_COURS",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "systemd --user Control Center + Autopilot + watchdog; bind 127.0.0.1:3001; Restart=on-failure",
+        "Safe port ownership ALREADY_RUNNING vs PORT_3001_CONFLICT; UNKNOWN_PROCESS_KILLED=NO",
+        "clevones-x200-db restart=unless-stopped; start-if-needed only",
+        "STARTUP tab + BOOT badge; allowlisted boot actions + audit; browser XDG once-per-session",
+        "npm x200:autostart:{install,status,repair,disable}; docs/X200_BOOT_AUTOSTART.md",
+        "SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO MERGED=NO DEPLOYED=NO",
+        "CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158",
+        "Draft/open PR #12 https://github.com/clevonegroup911/clevones.com/pull/12",
+        "reports/tasks/T048.md"
+      ],
       "estimatedCost": 8,
       "risk": "high",
       "attempts": 2,
@@ -4686,9 +4702,15 @@
       "taskId": "T048",
       "status": "EN_COURS",
       "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T048",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49; close without waiting comment job"
     }
   ],
-  "registryVersion": 145,
+  "registryVersion": 146,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
