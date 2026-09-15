@@ -15,8 +15,8 @@
 | T052 Payment event adapters | `TERMINÉE` | `lib/agentic/payment-events.ts` |
 | T053 Finance vertical slice | `TERMINÉE` | `lib/agentic/finance-slice.ts` ; CI quality SUCCESS |
 | T054 Business Orchestrator | `TERMINÉE` | `lib/agentic/orchestrator.ts` ; CI run 34979500998 |
-| T055 Provider adapters | `PRÊTE` | backlog |
-| T056 Business Approval Engine | `PRÊTE` (dépend T054) | backlog |
+| T055 Provider adapters | `TERMINÉE` | `lib/agentic/providers` ; CI run 34980795199 |
+| T056 Business Approval Engine | `EN_CONTRÔLE` | `lib/agentic/approvals.ts` |
 | Control Center ops `/admin/x200` | Présent | T042–T047 |
 | Production | NON_ACCESSIBLE | — |
 | MERGED / DEPLOYED | NO / NO | PR #13 draft |

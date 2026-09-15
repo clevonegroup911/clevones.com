@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic T049–T054 `TERMINÉE`. T055–T056 `PRÊTE` (providers + Approval Engine). Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T055 `TERMINÉE`. T056 Approval Engine `EN_CONTRÔLE`. Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 

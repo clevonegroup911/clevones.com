@@ -76,5 +76,5 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T052 | P1 | TERMINÉE | Agentic Core — in-process Tool Gateway (LOW risk only) | non |
 | T053 | P1 | TERMINÉE | Finance Agent vertical slice — proof_uploaded recommendation | non |
 | T054 | P1 | TERMINÉE | Agentic Core — business X200 Orchestrator (event→agent→gateway) | non |
-| T055 | P1 | EN_CONTRÔLE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
-| T056 | P1 | PRÊTE | Agentic Core — business Approval Engine (single-use, persisted) | non |
+| T055 | P1 | TERMINÉE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
+| T056 | P1 | EN_CONTRÔLE | Agentic Core — business Approval Engine (single-use, persisted) | non |

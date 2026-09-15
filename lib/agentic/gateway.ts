@@ -1,4 +1,5 @@
 import { AgentAuditLog, type AgentAuditRecord } from "@/lib/agentic/audit";
+import type { BusinessApprovalEngine } from "@/lib/agentic/approvals";
 import {
   evaluateAgentTool,
   isBusinessToolId,
@@ -133,12 +134,16 @@ export class ToolGateway {
   private readonly auditLog: AgentAuditLog;
   private readonly handlers: Map<BusinessToolId, ToolHandler>;
   private readonly consumedApprovals = new Set<string>();
+  private readonly approvalEngine: BusinessApprovalEngine | null;
 
   constructor(options?: {
     auditLog?: AgentAuditLog;
     handlers?: Partial<Record<BusinessToolId, ToolHandler>>;
+    /** When set, gateway approvals must be issued by this engine (single-use). */
+    approvalEngine?: BusinessApprovalEngine | null;
   }) {
     this.auditLog = options?.auditLog ?? new AgentAuditLog();
+    this.approvalEngine = options?.approvalEngine ?? null;
     this.handlers = new Map();
     const merged = { ...DEFAULT_HANDLERS, ...(options?.handlers ?? {}) };
     for (const [tool, handler] of Object.entries(merged)) {
@@ -254,6 +259,16 @@ export class ToolGateway {
     }
     if (!evaluation.risk) {
       return { ok: false, code: "APPROVAL_INVALID" };
+    }
+    if (this.approvalEngine) {
+      const consumed = this.approvalEngine.consume({
+        token: approval.token,
+        agentId: input.agent.id,
+        tool: input.tool,
+      });
+      if (!consumed.ok) {
+        return { ok: false, code: consumed.code };
+      }
     }
     return { ok: true };
   }

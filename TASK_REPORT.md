@@ -6,7 +6,7 @@
 
 ## ID
 
-T055
+T056
 
 ## Statut
 
@@ -14,36 +14,37 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Adapters AgentProviderAdapter pour internal/grok/openai/cursor/future : healthCheck, getCapabilities, estimateCost. execute/stream → PROVIDER_LIVE_DISABLED. Aucun SDK payant.
+Moteur d'approbation métier : issue/consume tokens single-use (TTL), audit, intégration ToolGateway. Pas de MFA bypass / payout.
 
 ## Résultat
 
-`createProviderAdapter` stub in-process. Live execute/stream refusés. quality-gate T055 PASS. MERGED=NO DEPLOYED=NO.
+`BusinessApprovalEngine` + `issueBusinessApproval` / `consumeBusinessApproval`. ToolGateway option `approvalEngine`. quality-gate T056 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/providers/index.ts`
-- `lib/agentic/providers.test.ts`
-- `reports/tasks/T055.md`
+- `lib/agentic/approvals.ts`
+- `lib/agentic/approvals.test.ts`
+- `reports/tasks/T056.md`
 
 ## Fichiers modifiés
 
+- `lib/agentic/gateway.ts`
 - `lib/agentic/index.ts`
-- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
-- docs gap + T054 close proofs
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` (T055 close)
 
 ## Commandes
 
 - npm run x200:validate
-- npm test (agentic providers)
+- npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T055
+- npm run x200:quality-gate -- --task T056
 
 ## Tests réussis
 
-- providers.test.ts 4 PASS
+- approvals.test.ts 3 PASS
+- gateway.test.ts PASS
 - tsc --noEmit PASS
-- quality-gate T055 PASS
+- quality-gate T056 PASS
 
 ## Tests échoués
 
@@ -63,8 +64,8 @@ Adapters AgentProviderAdapter pour internal/grok/openai/cursor/future : healthCh
 
 ## Sécurité
 
-- Aucun SDK openai/xai/@cursor
-- execute/stream = PROVIDER_LIVE_DISABLED
+- Tokens single-use ; list() ne fuit pas le secret
+- Distinct des approvals ops merge/deploy
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -77,13 +78,13 @@ Adapters AgentProviderAdapter pour internal/grok/openai/cursor/future : healthCh
 
 ## Preuves
 
-- lib/agentic/providers/index.ts
-- reports/tasks/T055.md
-- .x200/quality-results.json (T055)
+- lib/agentic/approvals.ts
+- reports/tasks/T056.md
+- .x200/quality-results.json (T056)
 
 ## Risques
 
-- low — stubs only
+- medium — in-process store (pas encore Prisma)
 
 ## Blocage
 
@@ -91,4 +92,4 @@ Adapters AgentProviderAdapter pour internal/grok/openai/cursor/future : healthCh
 
 ## Prochaine tâche prête
 
-- T056 après clôture T055 (collision scope index.ts)
+- AUTOPLAN après T056 TERMINÉE (observability / P2)

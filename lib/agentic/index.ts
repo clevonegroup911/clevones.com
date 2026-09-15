@@ -109,3 +109,15 @@ export type {
   StubProviderAdapter,
   StubProviderId,
 } from "@/lib/agentic/providers";
+export {
+  BusinessApprovalEngine,
+  consumeBusinessApproval,
+  createBusinessApprovalEngine,
+  issueBusinessApproval,
+} from "@/lib/agentic/approvals";
+export type {
+  BusinessApprovalRecord,
+  ConsumeBusinessApprovalInput,
+  ConsumeBusinessApprovalResult,
+  IssueBusinessApprovalInput,
+} from "@/lib/agentic/approvals";

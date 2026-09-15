@@ -3825,13 +3825,29 @@
           "version": null,
           "at": "2026-09-15T14:18:02.760Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34980795199",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34980795199",
+          "version": "32c9486564ae6b23792bf28390d7f2032af68d8a",
+          "at": "2026-09-15T14:24:57.269Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34980795199 on 32c9486; MERGED=NO DEPLOYED=NO",
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/providers/index.ts",
+        "lib/agentic/providers.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34980795199 SHA 32c9486",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34980795199"
+      ],
       "estimatedCost": 4,
       "attempts": 1,
       "requiresHuman": false,
@@ -3857,7 +3873,7 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "low"
     },
     {
@@ -3867,14 +3883,25 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:29:36.309Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "réclamer après T055 ou en parallèle si scope libre",
-      "lastTransitionReason": "[X200-FAST] deps T054 TERMINÉE",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "owner": "cursor",
       "evidence": [],
       "estimatedCost": 6,
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T056",
@@ -3901,7 +3928,7 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium"
     }
   ],
@@ -5467,9 +5494,29 @@
       "taskId": "T055",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T14:24:57.269Z",
+      "taskId": "T055",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34980795199 head 32c9486564ae6b23792bf28390d7f2032af68d8a"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T056",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T056",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 168,
+  "registryVersion": 171,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
