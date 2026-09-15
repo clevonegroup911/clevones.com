@@ -18,7 +18,7 @@ Make the local X200 operating plane automatically available after Fedora boot an
 
 ## Résultat
 
-Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, linger, browser XDG, STARTUP tab, watchdog, installer npm). Acceptation locale partielle en cours ; MERGED=NO DEPLOYED=NO.
+Boot Orchestrator livré. CI FULL sur `ef3cacb` a échoué (playwright flake payments mobile + STARTUP flaky). Correctif e2e poussé ; MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -34,10 +34,10 @@ Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, li
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts`
+- `lib/x200/control-center.ts` / `types.ts` / `sources.ts`
 - `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
+- `tests/e2e/payments-gateway.spec.ts` / `x200-control-center.spec.ts`
 - `package.json`
-- `tests/e2e/x200-control-center.spec.ts`
 - `docs/X200_AUTOPILOT.md`
 - `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
 
@@ -53,19 +53,20 @@ Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, li
 - npx playwright test
 - npm run x200:scan-secrets
 - git diff --check
-- npm run x200:autostart:install / status
+- npm run x200:quality-gate -- --task T048
 
 ## Tests réussis
 
-- boot unit 9 PASS
-- autostart installer 4 PASS
-- npm test PASS
-- x200:test PASS
-- lint / tsc / prisma / build / playwright / secrets PASS
+- boot unit + autostart installer
+- npm test / x200:test / lint / tsc / prisma / build / secrets PASS
+- CI run 34785345198 SUCCESS sur `1aacd01` (livraison Boot)
 
 ## Tests échoués
 
-- aucun
+- CI run 34959203735 quality FAIL sur `ef3cacb` — playwright only
+  - mobile payments: Next.js loadManifest 500 puis strict-mode collision titre au retry
+  - mobile Operational Mirror STARTUP: flaky (passé au retry)
+- quality-gate local playwright: DB e2e rootless (port 55432) inaccessible depuis l’hôte
 
 ## Lint
 
@@ -90,25 +91,26 @@ Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, li
 
 ## Commit
 
-- feat/x200-boot-autostart (pending push)
+- feat/x200-boot-autostart
 
 ## Pull Request
 
-- pending draft PR → feat/x200-operational-mirror
+- draft PR #12 → feat/x200-operational-mirror
 
 ## Preuves
 
 - reports/tasks/T048.md
-- local install: units enabled, DB unless-stopped, linger YES, browser desktop installed, HTTP 307 OK
-- PORT_3001_OWNER=X200 (supervised; no duplicate; no kill)
+- local install: units enabled, DB unless-stopped, linger YES, browser desktop installed
+- PORT_3001_OWNER=X200 (no kill)
+- CI fail artifact: payments mobile Unexpected end of JSON input / strict mode
 
 ## Risques
 
-- Autopilot refuse worktree dirty pendant l'implémentation (attendu)
+- Playwright local Fedora rootless: mapping 55432 ≠ container (preuve CI requise)
 
 ## Blocage
 
-- aucun gate humain pour le code ; linger déjà YES sur la machine locale
+- aucun gate humain code ; attendre quality SUCCESS sur HEAD exact après correctif e2e
 
 ## Prochaine tâche prête
 

@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-13",
+  "updatedAt": "2026-09-15",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -3310,9 +3310,9 @@
       "blockedReason": null,
       "claim": {
         "workerId": "local:fedora",
-        "token": "f102df299a96b0e95b400b2d2c15b410",
-        "claimedAt": "2026-09-13T21:43:54.571Z",
-        "expiresAt": "2026-09-13T23:43:54.571Z",
+        "token": "0a40bf4fedba5681280cec281e51aa16",
+        "claimedAt": "2026-09-15T10:59:49.572Z",
+        "expiresAt": "2026-09-15T12:59:49.572Z",
         "leaseSeconds": 7200
       },
       "evidenceRecords": [],
@@ -3369,9 +3369,9 @@
       "evidence": [],
       "estimatedCost": 8,
       "risk": "high",
-      "attempts": 1,
+      "attempts": 2,
       "requiresHuman": false,
-      "updatedAt": "2026-09-13"
+      "updatedAt": "2026-09-15"
     }
   ],
   "history": [
@@ -4680,9 +4680,15 @@
       "taskId": "T048",
       "status": "EN_COURS",
       "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T048",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     }
   ],
-  "registryVersion": 143,
+  "registryVersion": 145,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

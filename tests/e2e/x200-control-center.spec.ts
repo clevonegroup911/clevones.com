@@ -861,8 +861,11 @@ test.describe("x200 operational mirror", () => {
     await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
     await expect(page.getByTestId("x200-boot-badge")).toBeVisible();
 
-    await page.getByTestId("x200-tab-STARTUP").click();
-    await expect(page.getByTestId("x200-startup-panel")).toBeVisible();
+    // Prefer badge navigation: tab bar may overflow on mobile viewports.
+    await page.getByTestId("x200-boot-badge").click();
+    await expect(page.getByTestId("x200-startup-panel")).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(page.getByTestId("x200-boot-overall")).toBeVisible();
 
     await page.getByTestId("x200-tab-SOURCES").click();
