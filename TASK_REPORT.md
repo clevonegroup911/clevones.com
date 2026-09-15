@@ -18,13 +18,13 @@ Make the local X200 operating plane automatically available after Fedora boot an
 
 ## Résultat
 
-Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
+Boot Orchestrator livré et validé CI FULL. AUTOPLAN: aucun écart automatique restant — PRODUCT_COMPLETE local re-épinglé sur HEAD `9b1bd3c`. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
 - `lib/x200/boot/*`
 - `scripts/x200-autostart.mjs` / `x200-control-center-serve.mjs` / `x200-browser-autostart.mjs` / `x200-boot-watchdog.mjs`
-- `scripts/lib/x200-autostart-core.mjs`
+- `scripts/lib/x200-autostart-core.mjs` / `x200-control-center-assets.mjs`
 - `ops/systemd/clevones-x200-*.template`
 - `ops/xdg/clevones-x200-open-control-center.desktop.template`
 - `app/admin/x200/startup-panels.tsx`
@@ -36,7 +36,7 @@ Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
 
 - `lib/x200/control-center.ts` / `types.ts` / `sources.ts`
 - `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
-- `tests/e2e/payments-gateway.spec.ts` / `x200-control-center.spec.ts`
+- `tests/e2e/*` / `next.config.ts` / `.gitignore`
 - `package.json`
 - `docs/X200_AUTOPILOT.md`
 - `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
@@ -44,21 +44,14 @@ Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
 ## Commandes
 
 - npm run x200:validate
-- npm test
-- npm run x200:test
-- npm run lint
-- npx tsc --noEmit
-- npx prisma validate
-- npm run build
-- npx playwright test
-- npm run x200:scan-secrets
-- git diff --check
+- npm run x200:next -- --json
+- npm test / x200:test / lint / tsc / prisma / build / playwright / secrets
 
 ## Tests réussis
 
-- boot unit + autostart installer
-- npm test / x200:test / lint / tsc / prisma / build / secrets PASS
-- CI FULL quality SUCCESS run 34962261158 head 206cd31
+- CI FULL quality SUCCESS run 34962261158 head 206cd31 (T048)
+- CI FULL quality SUCCESS run 34962961516 head 9b1bd3c (e2e distDir tip)
+- x200:next → NO_READY_TASK
 
 ## Tests échoués
 
@@ -87,7 +80,7 @@ Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
 
 ## Commit
 
-- 206cd31 (feat/x200-boot-autostart)
+- 9b1bd3c (feat/x200-boot-autostart)
 
 ## Pull Request
 
@@ -97,7 +90,8 @@ Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
 
 - reports/tasks/T048.md
 - https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158
-- local install: units enabled, DB unless-stopped, linger YES
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34962961516
+- `.x200/PRODUCT_COMPLETE.json` local (head=9b1bd3c)
 
 ## Risques
 
@@ -105,8 +99,8 @@ Boot Orchestrator livré et validé CI FULL. MERGED=NO DEPLOYED=NO.
 
 ## Blocage
 
-- aucun
+- gates humaines restantes seulement (SMTP réel, PSP live, merge main, deploy, MFA/secrets prod)
 
 ## Prochaine tâche prête
 
-- AUTOPLAN si aucune PRÊTE automatique
+- aucune automatique ; superviseur peut poll PRODUCT_COMPLETE
