@@ -6,7 +6,7 @@
 
 ## ID
 
-T049
+T050
 
 ## Statut
 
@@ -14,48 +14,34 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.
+Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.
 
 ## Résultat
 
-Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–T047 préservées. T048 passé en EN_CONTRÔLE sans rejeu. Registre d'agents `lib/agentic` implémenté. MERGED=NO DEPLOYED=NO.
+Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement vers `ClevoneGatewayEvent` sans dupliquer persist.ts. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/types.ts`
-- `lib/agentic/catalog.ts`
-- `lib/agentic/registry.ts`
-- `lib/agentic/index.ts`
-- `lib/agentic/registry.test.ts`
-- `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`
-- `reports/tasks/T049.md`
+- `lib/agentic/events.ts`
+- `lib/agentic/events.test.ts`
+- `lib/agentic/payment-events.ts`
 
 ## Fichiers modifiés
 
-- `package.json` (glob `lib/agentic/*.test.ts`)
-- `PRODUCT_GOAL.md` (critères 21–25)
-- `DECISIONS.md`
-- `PROJECT_CONTEXT.md`
-- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
+- `lib/agentic/index.ts`
+- `lib/payments/clevone-events.ts` (commentaire de réutilisation)
+- backlog / TASK_REPORT / PROJECT_CONTEXT / reports
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
-- npm run x200:test
 - npx tsc --noEmit
-- npm run lint
-- npm run x200:scan-secrets
 
 ## Tests réussis
 
-- lib/agentic/registry.test.ts : 11 PASS
-- npm test : 213 PASS
-- npm run x200:test : 83 PASS
-- npm run x200:validate : BACKLOG_VALID + TASK_REPORT_VALID
-- npx tsc --noEmit : PASS (exit 0)
-- npm run lint : 0 warning / 0 error
-- npm run x200:scan-secrets : SCAN_SECRETS_OK blocking_hits=0
+- npm run x200:quality-gate T050 PASS (validate, npm test, tsc)
+- T049 CI quality SUCCESS run 34965983633 SHA 2d5e38d
 
 ## Tests échoués
 
@@ -63,7 +49,7 @@ Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–
 
 ## Lint
 
-- PASS
+- non listé dans T050.tests ; tsc PASS
 
 ## Type-check
 
@@ -71,38 +57,31 @@ Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–
 
 ## Build
 
-- non requis (FAST — lib + docs, pas de Prisma/auth/CI)
+- non requis (FAST — pas de Prisma/auth)
 
 ## Sécurité
 
-- Aucun SDK vendor
-- Aucun secret
-- EXTERNAL/USER ne mutent pas le registre
-- Contenu confidentiel non routé vers Grok/OpenAI
-- Finance agent maxRisk=MEDIUM ; pas de payout
+- Pas de webhooks live
+- Pas de second store paiement
+- Contenu EXTERNAL = DATA
 - MERGED=NO DEPLOYED=NO
-- scan-secrets blocking_hits=0
 
 ## Commit
 
-- feat/x200-agentic-core (pending push)
+- pending
 
 ## Pull Request
 
-- draft PR à ouvrir après push
+- https://github.com/clevonegroup911/clevones.com/pull/13 (draft, T049+T050)
 
 ## Preuves
 
-- docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md
-- lib/agentic/*
-- lib/agentic/registry.test.ts
-- .x200/quality-results.json (local quality-gate PASS, T049)
+- lib/agentic/events.ts
+- lib/agentic/events.test.ts
 
 ## Risques
 
-- T048 Boot Orchestrator : `TERMINÉE` sur `origin/feat/x200-boot-autostart` (CI FULL) — pas rejoué
-- package.json est dans FULL_PATTERNS : le classifieur CI peut forcer FULL malgré une intention FAST
-- Workspace initial était un main périmé ; stash local non réappliqué
+- medium — idempotence in-process seulement (Prisma paiement inchangé)
 
 ## Blocage
 
@@ -110,4 +89,4 @@ Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–
 
 ## Prochaine tâche prête
 
-- clôturer T049 après job GitHub `quality` SUCCESS sur SHA exact, puis T050
+- T051 après T050 TERMINÉE

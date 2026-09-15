@@ -3406,11 +3406,21 @@
           "version": null,
           "at": "2026-09-15T11:43:04.677Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34965983633",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633",
+          "version": "2d5e38d",
+          "at": "2026-09-15T11:59:55.564904Z",
+          "location": "github-actions:quality FAST"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality-gate local PASS + CI quality SUCCESS run 34965983633 on 2d5e38d (FAST after FULL run failed only on diff_check whitespace)",
       "id": "T049",
       "title": "Agentic Core — provider-independent Agent Registry",
       "objective": "Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.",
@@ -3436,8 +3446,13 @@
         "npm run lint",
         "npm run x200:scan-secrets"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "lib/agentic/registry.ts",
+        "lib/agentic/registry.test.ts",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633",
+        "https://github.com/clevonegroup911/clevones.com/pull/13"
+      ],
       "estimatedCost": 5,
       "risk": "low",
       "attempts": 1,
@@ -3451,10 +3466,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T050",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T12:02:40.859897Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "attendre T049 TERMINÉE",
-      "lastTransitionReason": null,
+      "nextAction": "réconcilier le job quality puis clôturer",
+      "lastTransitionReason": "quality-gate local PASS (validate, npm test, tsc)",
       "id": "T050",
       "title": "Agentic Core — domain event envelope (idempotent)",
       "objective": "Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.",
@@ -3465,8 +3491,7 @@
       ],
       "scope": [
         "lib/agentic",
-        "lib/payments/clevone-events.ts",
-        "docs/architecture"
+        "lib/payments/clevone-events.ts"
       ],
       "acceptanceCriteria": [
         "Envelope unique: eventType, idempotencyKey, correlationId, source, actor, timestamp",
@@ -3480,11 +3505,15 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "lib/agentic/events.ts",
+        "lib/agentic/events.test.ts",
+        "lib/agentic/payment-events.ts"
+      ],
       "estimatedCost": 5,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15"
     },
@@ -4889,9 +4918,39 @@
       "taskId": "T049",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T11:59:55.564904Z",
+      "taskId": "T049",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "CI quality SUCCESS run 34965983633 SHA 2d5e38d; PR #13 draft; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "at": "2026-09-15T11:59:55.564904Z",
+      "taskId": "T050",
+      "from": "À_FAIRE",
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "Unblocked after T049 TERMINÉE"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T050",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15T12:02:40.859897Z",
+      "taskId": "T050",
+      "from": "EN_COURS",
+      "to": "EN_CONTRÔLE",
+      "by": "cursor",
+      "note": "Local quality-gate PASS; await CI quality"
     }
   ],
-  "registryVersion": 147,
+  "registryVersion": 150,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

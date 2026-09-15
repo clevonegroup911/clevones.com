@@ -27,3 +27,23 @@ export {
   type PolicyLayer,
   type TaskRoutingRequest,
 } from "@/lib/agentic/types";
+export {
+  DOMAIN_EVENT_TYPES,
+  DomainEventConflictError,
+  DomainEventLog,
+  buildDomainEvent,
+  digestPayload,
+  isDomainEventType,
+} from "@/lib/agentic/events";
+export type {
+  DomainEventActor,
+  DomainEventEnvelope,
+  DomainEventSource,
+  DomainEventType,
+  RecordEventInput,
+  RecordEventResult,
+} from "@/lib/agentic/events";
+export {
+  envelopeFromClevoneGatewayEvent,
+  proofUploadedEnvelope,
+} from "@/lib/agentic/payment-events";

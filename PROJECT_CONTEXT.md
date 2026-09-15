@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-agentic-core` (base `origin/feat/x200-boot-autostart` @ `8a203da`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T049 EN_CONTRÔLE — Agent Registry, quality-gate local PASS | CONFIRMÉ registre |
+| HEAD travail | T050 EN_CONTRÔLE — domain event envelope, quality-gate local PASS | CONFIRMÉ registre |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -42,8 +42,8 @@ Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconst
 |---|---|---|
 | T001–T047 | `TERMINÉE` | CONFIRMÉ registre |
 | T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
-| T049 | `EN_CONTRÔLE` Agent Registry — quality-gate local PASS ; attendre `quality` CI | CONFIRMÉ registre |
-| T050 | `À_FAIRE` Domain event envelope | CONFIRMÉ registre |
+| T049 | `TERMINÉE` Agent Registry — CI quality SUCCESS run 34965983633 / `2d5e38d` | CONFIRMÉ registre |
+| T050 | `EN_CONTRÔLE` Domain event envelope — quality-gate local PASS | CONFIRMÉ registre |
 | T051 | `À_FAIRE` Agent audit + policy reuse | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
