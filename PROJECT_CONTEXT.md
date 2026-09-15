@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | `feat/x200-boot-autostart` @ `206cd31` (T048 TERMINÉE — Boot Orchestrator) | CONFIRMÉ |
+| HEAD travail | `feat/x200-boot-autostart` @ `221c721` (T048 TERMINÉE — Boot Orchestrator) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé après T048 sur HEAD `9b1bd3c` (goalHash inchangé).
+Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé après T048 sur HEAD `221c721` (goalHash inchangé).
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
