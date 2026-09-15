@@ -4290,11 +4290,22 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:34:51.358Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
       "owner": "cursor",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T062",
@@ -4319,11 +4330,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "risk": "low",
       "estimatedCost": 3,
-      "nextAction": "réclamer si scope libre (indépendant de T061)",
-      "lastTransitionReason": "[X200-AUTOPLAN] outcome labels from gap analysis P3→P2 useful"
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
     },
     {
       "project": "clevones.com",
@@ -6114,9 +6125,21 @@
       "taskId": "T061",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T062",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T062",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 188,
+  "registryVersion": 190,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

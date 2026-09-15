@@ -156,3 +156,11 @@ export type {
   ConsumeBusinessApprovalResult,
   IssueBusinessApprovalInput,
 } from "@/lib/agentic/approvals";
+export {
+  AGENTIC_OUTCOME_CODES,
+  deriveCommercialOutcome,
+  deriveDmsOutcome,
+  deriveFinanceOutcome,
+  deriveOrchestrationOutcome,
+} from "@/lib/agentic/outcomes";
+export type { AgenticOutcome, AgenticOutcomeCode } from "@/lib/agentic/outcomes";
