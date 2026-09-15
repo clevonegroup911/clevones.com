@@ -79,13 +79,15 @@ export function runClaimTask(options) {
     complete,
     gatePath,
     targetStatus,
+    runtimeLeasePath,
   } = options;
 
   return mutateBacklogAtomic({
     filePath,
     dryRun,
     workerId,
-    mutator(data) {
+    runtimeLeasePath,
+    mutator(data, { runtimeLease } = {}) {
       if (release) {
         if (!taskId) {
           return { ok: false, error: "taskId requis pour --release" };
@@ -97,9 +99,22 @@ export function runClaimTask(options) {
           return { ok: false, error: "taskId requis pour --complete" };
         }
         const gate = loadGate(gatePath);
-        return completeTask(data, { taskId, workerId, token, gate, targetStatus });
+        return completeTask(data, {
+          taskId,
+          workerId,
+          token,
+          gate,
+          targetStatus,
+          runtimeLease,
+        });
       }
-      return claimTask(data, { taskId, workerId, leaseSeconds, includeHuman });
+      return claimTask(data, {
+        taskId,
+        workerId,
+        leaseSeconds,
+        includeHuman,
+        runtimeLease,
+      });
     },
   });
 }
@@ -115,9 +130,10 @@ async function main(argv) {
     errors: result.errors || [],
     taskId: result.task?.id || options.taskId || null,
     workerId: result.task?.claim?.workerId || options.workerId,
-    expiresAt: result.task?.claim?.expiresAt || null,
+    expiresAt: result.runtimeLease?.expiresAt || result.task?.claim?.expiresAt || null,
     token: result.task?.claim?.token || null,
     status: result.task?.status || null,
+    backlogUnchanged: Boolean(result.backlogUnchanged || result.skipBacklogWrite),
   };
   if (options.json) {
     process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`);

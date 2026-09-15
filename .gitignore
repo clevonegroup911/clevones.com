@@ -48,8 +48,9 @@ node_modules/
 # X100 local CI output
 ci-artifact/
 
-# X200 local executor state (locks, quality-gate, migrate backup)
+# X200 local executor state (locks, quality-gate, migrate backup, runtime leases)
 .x200/
+.x200/runtime/
 *.tmp
 
 # Playwright e2e

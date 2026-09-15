@@ -15,9 +15,19 @@ import {
   validateBacklog,
 } from "./x100-backlog.mjs";
 import { readJsonFile, withExclusiveLock, writeJsonFileAtomic } from "./x100-fs.mjs";
+import {
+  buildRuntimeLease,
+  clearRuntimeLease,
+  DEFAULT_RUNTIME_LEASE_PATH,
+  healRuntimeLeaseFromClaim,
+  mergeClaimWithRuntime,
+  readRuntimeLease,
+  writeRuntimeLease,
+} from "./x200-runtime-lease.mjs";
 
 export const DEFAULT_LOCK_PATH = ".x200/executor.lock";
 export const DEFAULT_BACKLOG_PATH = "backlog.json";
+export { DEFAULT_RUNTIME_LEASE_PATH };
 
 const SENSITIVE_SCOPE_PATTERN = /(prisma\/migrations|lib\/auth|app\/admin|middleware\.ts|instrumentation\.ts)/i;
 
@@ -77,9 +87,29 @@ function activeWork(data) {
   return (data.tasks || []).filter((task) => ["EN_COURS", "EN_CONTRÔLE"].includes(task.status));
 }
 
+function applyRuntimeLeaseSideEffects(mutation, {
+  runtimeLeasePath = DEFAULT_RUNTIME_LEASE_PATH,
+  dryRun = false,
+} = {}) {
+  if (dryRun) {
+    return { ok: true, dryRun: true };
+  }
+  if (mutation.clearRuntimeLease) {
+    clearRuntimeLease(runtimeLeasePath);
+  }
+  if (mutation.runtimeLease) {
+    const written = writeRuntimeLease(mutation.runtimeLease, runtimeLeasePath);
+    if (!written.ok) {
+      return written;
+    }
+  }
+  return { ok: true };
+}
+
 export function mutateBacklogAtomic({
   filePath = DEFAULT_BACKLOG_PATH,
   lockPath = DEFAULT_LOCK_PATH,
+  runtimeLeasePath = DEFAULT_RUNTIME_LEASE_PATH,
   expectedVersion = null,
   dryRun = false,
   workerId = defaultWorkerId(),
@@ -112,9 +142,32 @@ export function mutateBacklogAtomic({
       return { ok: false, error: "BACKLOG_INVALID", errors: validation.errors, preserved: true };
     }
 
-    const mutation = mutator(fresh.data);
+    const runtimeLoaded = readRuntimeLease(runtimeLeasePath);
+    const mutation = mutator(fresh.data, {
+      runtimeLease: runtimeLoaded.ok ? runtimeLoaded.lease : null,
+      runtimeLeasePath,
+    });
     if (!mutation || mutation.ok === false) {
       return { ok: false, ...(mutation || { error: "mutation refusée" }), preserved: true };
+    }
+
+    // Lease heartbeats must not dirty backlog.json / bump registryVersion.
+    if (mutation.skipBacklogWrite) {
+      const runtimeWrite = applyRuntimeLeaseSideEffects(mutation, {
+        runtimeLeasePath,
+        dryRun,
+      });
+      if (!runtimeWrite.ok) {
+        return { ok: false, error: runtimeWrite.error, preserved: true };
+      }
+      return {
+        ok: true,
+        dryRun,
+        data: fresh.data,
+        wrote: false,
+        backlogUnchanged: true,
+        ...mutation,
+      };
     }
 
     const nextData = incrementRegistryVersion(mutation.data);
@@ -133,6 +186,13 @@ export function mutateBacklogAtomic({
     }
 
     writeJsonFileAtomic(filePath, nextData);
+    const runtimeWrite = applyRuntimeLeaseSideEffects(mutation, {
+      runtimeLeasePath,
+      dryRun: false,
+    });
+    if (!runtimeWrite.ok) {
+      return { ok: false, error: runtimeWrite.error, preserved: false };
+    }
     return { ok: true, dryRun: false, data: nextData, wrote: true, ...mutation };
   };
 
@@ -153,6 +213,7 @@ export function claimTask(data, {
   leaseSeconds,
   now = new Date(),
   includeHuman = false,
+  runtimeLease = null,
 } = {}) {
   const seconds = Number.isInteger(leaseSeconds)
     ? leaseSeconds
@@ -174,24 +235,42 @@ export function claimTask(data, {
     return { ok: false, error: "HUMAN_GATE_REQUIRED" };
   }
 
-  if (task.status === "EN_COURS" && task.claim && !isClaimExpired(task.claim, now)) {
+  const effectiveClaim = mergeClaimWithRuntime(task.claim, runtimeLease, task.id);
+
+  if (task.status === "EN_COURS" && effectiveClaim && !isClaimExpired(effectiveClaim, now)) {
     if (claimMatches(task.claim, { workerId })) {
-      const renewed = {
+      const expiresAt = leaseExpiresAt(seconds, now);
+      const renewedAt = utcNow(now);
+      const renewedTask = {
         ...task,
         claim: {
           ...task.claim,
-          expiresAt: leaseExpiresAt(seconds, now),
-          renewedAt: utcNow(now),
+          expiresAt,
+          renewedAt,
         },
-        lastTransitionReason: "renouvellement de réservation",
-        updatedAt: utcDateStamp(now),
       };
-      return { ok: true, action: "renewed", task: renewed, data: replaceTask(data, renewed) };
+      return {
+        ok: true,
+        action: "renewed",
+        task: renewedTask,
+        // Durable backlog stays untouched — heartbeat lives only in runtime lease.
+        data,
+        skipBacklogWrite: true,
+        runtimeLease: buildRuntimeLease({
+          taskId: task.id,
+          workerId: task.claim.workerId,
+          claimedAt: task.claim.claimedAt || null,
+          expiresAt,
+          renewedAt,
+          heartbeatAt: renewedAt,
+          leaseSeconds: seconds,
+        }),
+      };
     }
     return { ok: false, error: "LOCK_HELD", holder: task.claim.workerId };
   }
 
-  if (task.status === "EN_COURS" && task.claim && isClaimExpired(task.claim, now)) {
+  if (task.status === "EN_COURS" && effectiveClaim && isClaimExpired(effectiveClaim, now)) {
     return {
       ok: false,
       error: "LEASE_EXPIRED_RECONCILE",
@@ -226,6 +305,8 @@ export function claimTask(data, {
     }
   }
 
+  const claimedAt = utcNow(now);
+  const expiresAt = leaseExpiresAt(seconds, now);
   const claimed = {
     ...task,
     status: "EN_COURS",
@@ -236,14 +317,28 @@ export function claimTask(data, {
     claim: {
       workerId,
       token: newClaimToken(),
-      claimedAt: utcNow(now),
-      expiresAt: leaseExpiresAt(seconds, now),
+      claimedAt,
+      expiresAt,
       leaseSeconds: seconds,
     },
   };
 
   const next = replaceTask({ ...data, nextTaskId: null }, claimed);
-  return { ok: true, action: "claimed", task: claimed, data: next };
+  return {
+    ok: true,
+    action: "claimed",
+    task: claimed,
+    data: next,
+    runtimeLease: buildRuntimeLease({
+      taskId: claimed.id,
+      workerId,
+      claimedAt,
+      expiresAt,
+      renewedAt: null,
+      heartbeatAt: claimedAt,
+      leaseSeconds: seconds,
+    }),
+  };
 }
 
 export function releaseTask(data, { taskId, workerId, token, now = new Date() } = {}) {
@@ -268,7 +363,13 @@ export function releaseTask(data, { taskId, workerId, token, now = new Date() } 
     nextAction: "sélectionner à nouveau",
     updatedAt: utcDateStamp(now),
   };
-  return { ok: true, action: "released", task: released, data: replaceTask(data, released) };
+  return {
+    ok: true,
+    action: "released",
+    task: released,
+    data: replaceTask(data, released),
+    clearRuntimeLease: true,
+  };
 }
 
 export function completeTask(data, {
@@ -278,12 +379,17 @@ export function completeTask(data, {
   gate,
   now = new Date(),
   targetStatus = "EN_CONTRÔLE",
+  runtimeLease = null,
 } = {}) {
   const task = data.tasks.find((item) => item.id === taskId);
   if (!task) {
     return { ok: false, error: `tâche introuvable (${taskId})` };
   }
-  const claimCheck = canCompleteWithClaim(task, { workerId, token, now });
+  const effectiveClaim = mergeClaimWithRuntime(task.claim, runtimeLease, task.id);
+  const taskWithLease = effectiveClaim === task.claim
+    ? task
+    : { ...task, claim: effectiveClaim };
+  const claimCheck = canCompleteWithClaim(taskWithLease, { workerId, token, now });
   if (!claimCheck.ok) {
     return claimCheck;
   }
@@ -323,13 +429,24 @@ export function completeTask(data, {
     updatedAt: utcDateStamp(now),
   };
 
-  return { ok: true, action: "completed", task: completed, data: replaceTask(data, completed) };
+  return {
+    ok: true,
+    action: "completed",
+    task: completed,
+    data: replaceTask(data, completed),
+    clearRuntimeLease: true,
+  };
 }
 
-export function resumeInspection(data, { gitDirty = false, now = new Date() } = {}) {
+export function resumeInspection(data, {
+  gitDirty = false,
+  now = new Date(),
+  runtimeLease = null,
+} = {}) {
   const active = (data.tasks || []).filter((task) => task.status === "EN_COURS");
   const findings = active.map((task) => {
-    const expired = isClaimExpired(task.claim, now);
+    const effectiveClaim = mergeClaimWithRuntime(task.claim, runtimeLease, task.id);
+    const expired = isClaimExpired(effectiveClaim, now);
     return {
       id: task.id,
       status: task.status,
@@ -350,5 +467,34 @@ export function resumeInspection(data, { gitDirty = false, now = new Date() } = 
     inControl: (data.tasks || []).filter((task) => task.status === "EN_CONTRÔLE").map((task) => task.id),
     exactlyOnce: false,
     note: "aucune garantie générale exactement-une-fois",
+  };
+}
+
+/**
+ * Ensure a durable EN_COURS claim has a matching runtime lease file (self-heal).
+ * Does not modify backlog.json.
+ */
+export function ensureRuntimeLeaseForActiveClaims(data, {
+  runtimeLeasePath = DEFAULT_RUNTIME_LEASE_PATH,
+  dryRun = false,
+  now = new Date(),
+} = {}) {
+  const active = (data.tasks || []).filter(
+    (task) => task.status === "EN_COURS" && task.claim,
+  );
+  const results = [];
+  for (const task of active) {
+    results.push(
+      healRuntimeLeaseFromClaim(task, {
+        filePath: runtimeLeasePath,
+        dryRun,
+        nowIso: utcNow(now),
+      }),
+    );
+  }
+  return {
+    ok: results.every((item) => item.ok !== false),
+    results,
+    healed: results.some((item) => item.healed),
   };
 }
