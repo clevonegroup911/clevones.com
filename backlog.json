@@ -3600,6 +3600,101 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T13:17:23.636Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 5,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T052",
+      "title": "Agentic Core — in-process Tool Gateway (LOW risk only)",
+      "objective": "Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute uniquement des handlers allowlistés LOW (lecture/recommandation). Aucun shell, aucun payout, aucun HIGH/CRITICAL auto.",
+      "priority": "P1",
+      "dependencies": [
+        "T051"
+      ],
+      "scope": [
+        "lib/agentic"
+      ],
+      "acceptanceCriteria": [
+        "Gateway invoke(tool, agent, input) refuse outils non allowlistés et risques > LOW sans approval token",
+        "Handlers in-process: payments.reconcile.recommend (stub déterministe), audit.read (no-op safe), documents.read.metadata (stub)",
+        "Journal AgentAuditLog pour chaque invoke (allow/deny/execute)",
+        "Réutilise evaluateAgentTool + policyForBusinessTool; pas de second moteur de risque",
+        "MERGED=NO DEPLOYED=NO; pas de mouvement d'argent"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "EN_CONTRÔLE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "attendre T052 TERMINÉE",
+      "lastTransitionReason": "[X200-AUTOPLAN] Finance vertical slice after Tool Gateway; PRODUCT_GOAL critère 25",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 5,
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T053",
+      "title": "Finance Agent vertical slice — proof_uploaded recommendation",
+      "objective": "Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FINANCE_AGENT → Tool Gateway recommend → score/recommendation + human approval si MEDIUM+. Aucun payout, aucune activation VERIFIED automatique hors moteur existant.",
+      "priority": "P1",
+      "dependencies": [
+        "T052"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/payments"
+      ],
+      "acceptanceCriteria": [
+        "Workflow recordé: proof_uploaded → DomainEventLog → AgentRegistry.select → gateway.invoke(payments.reconcile.recommend)",
+        "Réutilise lib/payments reconciliation scoring; ne duplique pas persist/activation",
+        "HIGH confidence → recommendation only; MEDIUM/LOW → approvalRequired=true",
+        "Audit trail agent_id/provider/tool/risk; MERGED=NO DEPLOYED=NO; no money movement"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "risk": "medium"
     }
   ],
   "history": [
@@ -5026,9 +5121,37 @@
       "to": "TERMINÉE",
       "by": "cursor",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34970081544 head 3cd3d3873b6ead186e39e6fea474dab6978847e1; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "at": "2026-09-15T13:12:33.292936Z",
+      "taskId": "T052",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Tool Gateway after T051; max 2 tasks this cycle"
+    },
+    {
+      "at": "2026-09-15T13:12:33.292936Z",
+      "taskId": "T053",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Finance vertical slice depends on T052"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T052",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T052",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 155,
+  "registryVersion": 158,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

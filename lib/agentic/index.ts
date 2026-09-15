@@ -64,3 +64,15 @@ export {
   toAdminAuditLogInput,
 } from "@/lib/agentic/audit";
 export type { AgentAuditRecord, AgentAuditStatus } from "@/lib/agentic/audit";
+export {
+  ToolGateway,
+  ToolGatewayError,
+  createDefaultToolGateway,
+} from "@/lib/agentic/gateway";
+export type {
+  ToolGatewayApproval,
+  ToolHandler,
+  ToolHandlerResult,
+  ToolInvokeInput,
+  ToolInvokeResult,
+} from "@/lib/agentic/gateway";

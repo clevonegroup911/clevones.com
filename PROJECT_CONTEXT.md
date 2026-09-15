@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-agentic-core` | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T051 TERMINÉE — CI FULL run 34970081544 / `3cd3d38` ; metadata close en cours | CONFIRMÉ |
+| HEAD travail | T052 EN_CONTRÔLE — Tool Gateway in-process ; T051 TERMINÉE | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic P0/P1 T049–T051 `TERMINÉE`. Prochain travail automatique : AUTOPLAN (Tool Gateway exécution in-process + vertical slice finance recommendation, sans payout). Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T051 `TERMINÉE`. T052 Tool Gateway `EN_CONTRÔLE`. T053 Finance vertical slice `À_FAIRE`. Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -40,8 +40,9 @@ Fondations agentic P0/P1 T049–T051 `TERMINÉE`. Prochain travail automatique :
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T050 | `TERMINÉE` | CONFIRMÉ registre |
-| T051 | `TERMINÉE` Agent audit + policy reuse — CI FULL run 34970081544 / `3cd3d38` | CONFIRMÉ registre |
+| T001–T051 | `TERMINÉE` | CONFIRMÉ registre |
+| T052 | `EN_CONTRÔLE` Tool Gateway in-process — quality-gate local PASS | CONFIRMÉ registre |
+| T053 | `À_FAIRE` Finance vertical slice (dépend T052) | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Draft PR | [#13](https://github.com/clevonegroup911/clevones.com/pull/13) | CONFIRMÉ |

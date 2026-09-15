@@ -6,46 +6,43 @@
 
 ## ID
 
-T051
+T052
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.
+Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute uniquement des handlers allowlistés LOW (lecture/recommandation). Aucun shell, aucun payout, aucun HIGH/CRITICAL auto.
 
 ## Résultat
 
-Allowlist BUSINESS_TOOL_IDS distincte de HUMAN_ACTION_TYPES. policyForBusinessTool = policyForRisk(riskForBusinessTool). Journal agent_id/provider/action/tool/risk/approval_required/status via sanitizeAuditValue. CI FULL quality SUCCESS run 34970081544 sur SHA 3cd3d38. MERGED=NO DEPLOYED=NO.
+`ToolGateway.invoke` refuse outils inconnus/ops, exige un token d'approbation single-use pour risque > LOW (ex. payments.reconcile.recommend), exécute des stubs déterministes sans mouvement d'argent. Journal AgentAuditLog. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/tools.ts`
-- `lib/agentic/tools.test.ts`
-- `lib/agentic/audit.ts`
+- `lib/agentic/gateway.ts`
+- `lib/agentic/gateway.test.ts`
+- `reports/tasks/T052.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/actions/policy.ts` (`policyForRisk`)
-- `lib/x200/actions/audit.ts` (réutilisation documentée)
-- `lib/x200/actions/index.ts`
-- `lib/admin/audit.ts` (`AGENT_TOOL_EVALUATED`)
 - `lib/agentic/index.ts`
 - `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
 
 ## Commandes
 
 - npm run x200:validate
-- npm test
+- npm test (agentic)
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T051
+- npm run x200:quality-gate -- --task T052
 
 ## Tests réussis
 
-- npm run x200:quality-gate T051 PASS (validate, npm test, tsc)
-- CI quality FULL SUCCESS run 34970081544 SHA 3cd3d38
+- lib/agentic/gateway.test.ts 7 PASS
+- agentic suite 25 PASS
+- quality-gate T052 PASS
 
 ## Tests échoués
 
@@ -53,7 +50,7 @@ Allowlist BUSINESS_TOOL_IDS distincte de HUMAN_ACTION_TYPES. policyForBusinessTo
 
 ## Lint
 
-- PASS (CI FULL)
+- non listé dans T052.tests
 
 ## Type-check
 
@@ -61,20 +58,17 @@ Allowlist BUSINESS_TOOL_IDS distincte de HUMAN_ACTION_TYPES. policyForBusinessTo
 
 ## Build
 
-- PASS (CI FULL)
+- non requis (FAST)
 
 ## Sécurité
 
-- Pas d'executor shell
-- Pas de payout
-- Ops HUMAN_ACTION_TYPES refusés comme outils métier
-- Secrets rédigés
+- Pas de shell, pas de payout, pas de handler HIGH
+- MEDIUM+ nécessite approval token single-use
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- `3cd3d3873b6ead186e39e6fea474dab6978847e1` (implementation)
-- metadata close pending this cycle
+- pending
 
 ## Pull Request
 
@@ -82,18 +76,17 @@ Allowlist BUSINESS_TOOL_IDS distincte de HUMAN_ACTION_TYPES. policyForBusinessTo
 
 ## Preuves
 
-- lib/agentic/tools.ts
-- lib/agentic/audit.ts
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544
+- lib/agentic/gateway.ts
+- .x200/quality-results.json
 
 ## Risques
 
-- medium — journal in-process ; pas de persist Prisma obligatoire (accepté pour P1 fondation)
+- medium — stubs in-process ; T053 branchera le scoring réel
 
 ## Blocage
 
-- aucun
+- aucun — attendre CI quality
 
 ## Prochaine tâche prête
 
-- AUTOPLAN (aucune tâche automatique restante dans T049–T051)
+- T053 après T052 TERMINÉE
