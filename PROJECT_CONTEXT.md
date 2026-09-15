@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | `feat/x200-boot-autostart` (T049 EN_COURS interactive Control Center) | CONFIRMÉ (session 2026-09-15) |
+| HEAD travail | `feat/x200-boot-autostart` (T049 TERMINÉE interactive Control Center) | CONFIRMÉ (session 2026-09-15) |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -42,7 +42,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL | CONFIRMÉ registre |
 | T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
-| T049 | `EN_CONTRÔLE` Control Center interactive ; e2e CI fix pushed | CONFIRMÉ registre |
+| T049 | `TERMINÉE` Control Center fully interactive — CI FULL run 34989022886 / `53e2ec7` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
@@ -54,6 +54,7 @@ Preuves CI récentes (CONFIRMÉ) :
 - T046 FULL quality SUCCESS `49d0c36` / run [34775412790](https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790) ; draft PR [#10](https://github.com/clevonegroup911/clevones.com/pull/10)
 - T047 FULL quality SUCCESS `7de8fd1` / run [34782004736](https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736) ; recovery tip `8c873db` / run [34782911788](https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788) ; draft PR [#11](https://github.com/clevonegroup911/clevones.com/pull/11)
 - T048 FULL quality SUCCESS `206cd31` / run [34962261158](https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
+- T049 FULL quality SUCCESS `53e2ec7` / run [34989022886](https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
 - Post-T048 tip FULL quality SUCCESS `8a203da` / run [34963710051](https://github.com/clevonegroup911/clevones.com/actions/runs/34963710051) ; tip `c097cd5` e2e Postgres port fix (CI tip may still be running)
 
 ## Écarts restants vs PRODUCT_GOAL
