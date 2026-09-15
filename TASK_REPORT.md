@@ -10,7 +10,7 @@ T064
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Résultat
 
-`persistOrchestrationBestEffort` + `issue`/`issueAsync` persist. quality-gate T064 PASS. MERGED=NO DEPLOYED=NO.
+Journal writers branchés. CI quality SUCCESS run 34992529905 SHA 3a56859. Critères agentic PRODUCT_GOAL 21–25 couverts en dépôt. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -29,7 +29,6 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 - `lib/agentic/orchestrator.ts`
 - `lib/agentic/approvals.ts`
 - `lib/agentic/approvals.test.ts`
-- backlog (T063 close + T064)
 
 ## Commandes
 
@@ -40,10 +39,9 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Tests réussis
 
-- approvals issueAsync persist PASS
-- orchestrator PASS
-- tsc --noEmit PASS
+- approvals/orchestrator PASS
 - quality-gate T064 PASS
+- CI quality SUCCESS run 34992529905 SHA 3a56859
 
 ## Tests échoués
 
@@ -51,7 +49,7 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Lint
 
-- non exigé localement (lane FAST CI)
+- PASS (CI)
 
 ## Type-check
 
@@ -59,7 +57,7 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Build
 
-- non exigé localement (lane FAST CI)
+- PASS (CI FULL)
 
 ## Sécurité
 
@@ -68,7 +66,7 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Commit
 
-- (push en cours)
+- `3a568594596323a8731cd6182839782d5f33a3d2`
 
 ## Pull Request
 
@@ -76,9 +74,7 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Preuves
 
-- lib/agentic/orchestrator.ts
-- lib/agentic/approvals.ts
-- .x200/quality-results.json (T064)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905
 
 ## Risques
 
@@ -86,8 +82,8 @@ Brancher writers journal depuis orchestrator + approval engine (best-effort, san
 
 ## Blocage
 
-- aucun — attendre CI
+- aucun automatique — gates humaines : merge PR #13, deploy, rails PSP live
 
 ## Prochaine tâche prête
 
-- aucune automatique attendue après TERMINÉE (gates humaines merge/deploy)
+- aucune (NO_READY_TASK)

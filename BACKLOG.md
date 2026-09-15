@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 196
+- Registre : 197
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 63
+- TERMINÉE : 64
 - ANNULÉE : 0
 
 ## Tâches
@@ -85,4 +85,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T061 | P1 | TERMINÉE | Agentic durable journal — events/approvals/audit to .x200 + Control Center feed | non |
 | T062 | P2 | TERMINÉE | Outcome engine — labels from orchestration (no side effects) | non |
 | T063 | P2 | TERMINÉE | Agentic recommend-only hook from payment proof path (no activation) | non |
-| T064 | P1 | EN_CONTRÔLE | Wire agentic journal writers from orchestrator + approval engine | non |
+| T064 | P1 | TERMINÉE | Wire agentic journal writers from orchestrator + approval engine | non |

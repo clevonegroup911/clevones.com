@@ -1,31 +1,21 @@
 # CLEVONE Agentic Business Platform — Gap Analysis
 
-**Date :** 2026-09-15 (post T060)
-**Base vérifiée :** `feat/x200-agentic-core`
-**Classe des faits :** CONFIRMÉ = dépôt ; NON_ACCESSIBLE = production.
+**Date :** 2026-09-15 (post T064)
+**Base :** `feat/x200-agentic-core` @ `3a56859`
 
-## 1. État X200 (CONFIRMÉ)
+## État
 
-| Élément | État |
+T001–T064 `TERMINÉE` sur la branche agentic (registry → orchestrator → approvals → providers → observability → Finance/Commercial/DMS → journal → outcomes → proof hook → journal writers).
+
+PRODUCT_GOAL critères **21–25** : CONFIRMÉ en dépôt (implémenté + testé + CI). MERGED=NO DEPLOYED=NO.
+
+## Écarts restants (non auto)
+
+| Écart | Gate |
 |---|---|
-| T001–T060 | `TERMINÉE` (agentic core + Finance/Commercial/DMS workers + Control Center panel) |
-| T061 Durable journal | `PRÊTE` |
-| T062 Outcome engine | `PRÊTE` |
-| T063 Payment recommend hook | `À_FAIRE` |
-| MERGED / DEPLOYED | NO / NO — PR #13 draft |
+| Merge PR #13 → main | humain |
+| Deploy production | humain |
+| Rails M-PESA/RAWBANK live / clés PSP | humain + externe |
+| MFA portail USER production | humain |
 
-## 2. Matrice vs PRODUCT_GOAL 21–25
-
-| Critère | État |
-|---|---|
-| 21 Registry + adapters | CONFIRMÉ T049/T055 |
-| 22 Domain events idempotents | CONFIRMÉ T050 |
-| 23 Tool Gateway + no auto money | CONFIRMÉ T051–T056 |
-| 24 EXTERNAL as DATA | CONFIRMÉ registry policy layers |
-| 25 Finance vertical slice | CONFIRMÉ T053/T058 |
-
-Écarts utiles restants : journal durable + feed CC (T061), labels outcomes (T062), hook preuve→recommend (T063). Rails live / merge / deploy = gates humaines.
-
-## 3. AUTOPLAN
-
-Max 3 : **T061** PRÊTE (low), **T062** PRÊTE (low), **T063** À_FAIRE (medium, après T061).
+Aucun travail automatique LOW/MEDIUM utile restant sans doublon/filler. AUTOPLAN s’arrête ici.
