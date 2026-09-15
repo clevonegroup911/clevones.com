@@ -6,43 +6,44 @@
 
 ## ID
 
-T053
+T054
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FINANCE_AGENT → Tool Gateway recommend → score/recommendation + human approval si MEDIUM+. Aucun payout, aucune activation VERIFIED automatique hors moteur existant.
+Orchestrateur métier in-process : EVENT → classify/risk → select → ToolGateway → verify/audit. Réutilise T050–T053. Pas de shell, pas de payout, pas de SDK vendor.
 
 ## Résultat
 
-`runFinanceProofUploadedSlice` enchaîne DomainEventLog, AgentRegistry.select, ToolGateway.invoke(payments.reconcile.recommend) et createReconciliationService.hydrate+reconcile. moneyMoved/verifiedActivated toujours false. CI quality SUCCESS run 34976217739 SHA 8153750. MERGED=NO DEPLOYED=NO.
+`runBusinessOrchestration` / `BusinessOrchestrator` avec étapes tracées. `payment.proof_uploaded` délègue à `runFinanceProofUploadedSlice`. HIGH/CRITICAL → `blocked_pending_human`. quality-gate local PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/finance-slice.ts`
-- `lib/agentic/finance-slice.test.ts`
-- `reports/tasks/T053.md`
+- `lib/agentic/orchestrator.ts`
+- `lib/agentic/orchestrator.test.ts`
+- `reports/tasks/T054.md`
 
 ## Fichiers modifiés
 
 - `lib/agentic/index.ts`
+- `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`
 - `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
 
 ## Commandes
 
 - npm run x200:validate
-- npm test (agentic finance-slice)
+- npm test (agentic orchestrator)
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T053
+- npm run x200:quality-gate -- --task T054
 
 ## Tests réussis
 
-- finance-slice.test.ts 3 PASS
-- quality-gate T053 PASS
-- CI quality SUCCESS run 34976217739 SHA 8153750
+- orchestrator.test.ts 6 PASS
+- tsc --noEmit PASS
+- quality-gate T054 PASS
 
 ## Tests échoués
 
@@ -50,7 +51,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Lint
 
-- PASS (CI)
+- non exigé localement (lane FAST CI)
 
 ## Type-check
 
@@ -58,17 +59,18 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Build
 
-- PASS (CI FULL)
+- non exigé localement (lane FAST CI)
 
 ## Sécurité
 
-- Pas de payout / activation
-- Preuve client seule → PENDING + approvalRequired
+- Pas de shell / payout / SDK vendor
+- HIGH/CRITICAL = blocked_pending_human
+- moneyMoved=false
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- `8153750d51714a628449f18d403b1e516e9f6f8d`
+- (push en cours)
 
 ## Pull Request
 
@@ -76,17 +78,18 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Preuves
 
-- lib/agentic/finance-slice.ts
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34976217739
+- lib/agentic/orchestrator.ts
+- reports/tasks/T054.md
+- .x200/quality-results.json (T054)
 
 ## Risques
 
-- medium — slice in-process ; pas branché aux routes HTTP portal
+- medium — orchestrateur in-process ; pas de bus distribué
 
 ## Blocage
 
-- aucun
+- aucun — attendre CI quality SUCCESS pour clôturer TERMINÉE
 
 ## Prochaine tâche prête
 
-- aucune automatique — AUTOPLAN ou gates humaines (merge/deploy/PSP)
+- T055 (providers stub) si PRÊTE ; sinon promouvoir après T054 EN_CONTRÔLE

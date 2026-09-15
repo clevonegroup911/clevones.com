@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic T049–T053 `TERMINÉE` (registry, events, policy/audit, Tool Gateway, finance recommendation slice). Aucune tâche automatique restante. Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T053 `TERMINÉE`. AUTOPLAN a créé T054–T056 (orchestrator EN_COURS, providers À_FAIRE, approvals À_FAIRE). Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -26,7 +26,7 @@ Fondations agentic T049–T053 `TERMINÉE` (registry, events, policy/audit, Tool
 - Node `>=20.9.0`, npm
 - Scripts gouvernance : `scripts/*.mjs` et `scripts/lib/`
 - Control Center : `lib/x200/*`, `/admin/x200`, télémétrie Fedora `.x200/telemetry.json`
-- Agentic core : `lib/agentic/*` (registry, events, tools, audit)
+- Agentic core : `lib/agentic/*` (registry, events, tools, audit, finance-slice, orchestrator)
 
 ## Authentification et rôles (CONFIRMÉ dans le code)
 

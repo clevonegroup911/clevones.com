@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 162
+- Registre : 163
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
@@ -11,10 +11,10 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 0
-- PRÊTE : 0
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 0
+- À_FAIRE : 2
 - TERMINÉE : 53
 - ANNULÉE : 0
 
@@ -75,3 +75,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T051 | P1 | TERMINÉE | Agentic Core — tool policy reuse + agent audit fields | non |
 | T052 | P1 | TERMINÉE | Agentic Core — in-process Tool Gateway (LOW risk only) | non |
 | T053 | P1 | TERMINÉE | Finance Agent vertical slice — proof_uploaded recommendation | non |
+| T054 | P1 | EN_CONTRÔLE | Agentic Core — business X200 Orchestrator (event→agent→gateway) | non |
+| T055 | P1 | À_FAIRE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
+| T056 | P1 | À_FAIRE | Agentic Core — business Approval Engine (single-use, persisted) | non |

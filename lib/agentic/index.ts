@@ -84,3 +84,18 @@ export type {
   FinanceSliceInput,
   FinanceSliceResult,
 } from "@/lib/agentic/finance-slice";
+export {
+  BusinessOrchestrator,
+  classifyBusinessEvent,
+  createBusinessOrchestrator,
+  knownDomainEventTypes,
+  runBusinessOrchestration,
+} from "@/lib/agentic/orchestrator";
+export type {
+  BusinessOrchestrationInput,
+  BusinessOrchestrationResult,
+  BusinessTaskClass,
+  ClassifiedBusinessTask,
+  OrchestrationStep,
+  OrchestrationStepName,
+} from "@/lib/agentic/orchestrator";

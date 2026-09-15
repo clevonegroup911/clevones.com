@@ -1,69 +1,52 @@
 # CLEVONE Agentic Business Platform — Gap Analysis
 
-**Date :** 2026-09-15
-**Base vérifiée :** `origin/feat/x200-boot-autostart` @ `ef3cacb`
-**Workspace de reprise :** `feat/x200-agentic-core`
-**Classe des faits :** CONFIRMÉ = lu dans le dépôt ; INDIQUÉ = docs/historique ; PROPOSÉ = recommandation ; NON_ACCESSIBLE = production/GitHub API cette session.
+**Date :** 2026-09-15 (mise à jour AUTOPLAN)
+**Base vérifiée :** `feat/x200-agentic-core`
+**Classe des faits :** CONFIRMÉ = lu dans le dépôt ; INDIQUÉ = docs/historique ; PROPOSÉ = recommandation ; NON_ACCESSIBLE = production.
 
-Le `main` local au démarrage de la session était **115 commits derrière** `origin/main` et ne contenait **aucun** artefact X200. Un stash `wip: stale local back-office snapshot` conserve l’arbre obsolète. Ne pas le réappliquer : il régresserait MFA, paiements, CI et X200.
-
-## 1. État X200 récupéré (CONFIRMÉ)
+## 1. État X200 (CONFIRMÉ)
 
 | Élément | État | Preuve |
 |---|---|---|
-| `AGENTS.md`, `PRODUCT_GOAL.md`, `backlog.json`, `TASK_REPORT.md` | Présents sur la branche X200 | fichiers HEAD |
-| T001–T047 | `TERMINÉE` | `backlog.json` |
-| T048 Boot Orchestrator | `TERMINÉE` (CI FULL run 34962261158) | `backlog.json` / PR #12 |
-| Control Center `/admin/x200` | Présent (T042–T047) | `lib/x200/*`, `app/admin/x200` |
-| Policy + Human Action Center | Présent (ops X200) | `lib/x200/actions/policy.ts`, `approvals.ts`, `executor.ts` |
-| Payment gateway + rapprochement | Présent (sandbox) | `lib/payments/*`, Prisma `PaymentProof`, `ClevoneGatewayEvent` |
-| Auth RBAC + MFA admin | Présent | `lib/auth`, Prisma |
-| CI `quality` METADATA/FAST/FULL | Présent | `.github/workflows/ci.yml` |
-| `AgentRegistry` / adapters Grok-OpenAI | Absent | `git grep` vide hors ce livrable |
-| Relais ChatGPT | NON CONFIGURÉ | `DECISIONS.md`, `PROJECT_CONTEXT.md` |
-| Production | NON_ACCESSIBLE cette session | — |
+| T001–T048 | `TERMINÉE` | `backlog.json` |
+| T049 Agent Registry | `TERMINÉE` | `lib/agentic/registry.ts` |
+| T050 Domain events | `TERMINÉE` | `lib/agentic/events.ts` |
+| T051 Tool Gateway + audit | `TERMINÉE` | `lib/agentic/gateway.ts`, `audit.ts`, `tools.ts` |
+| T052 Payment event adapters | `TERMINÉE` | `lib/agentic/payment-events.ts` |
+| T053 Finance vertical slice | `TERMINÉE` | `lib/agentic/finance-slice.ts` ; CI quality SUCCESS |
+| T054 Business Orchestrator | `EN_CONTRÔLE` | `lib/agentic/orchestrator.ts` |
+| T055 Provider adapters | `À_FAIRE` | backlog |
+| T056 Business Approval Engine | `À_FAIRE` (dépend T054) | backlog |
+| Control Center ops `/admin/x200` | Présent | T042–T047 |
+| Production | NON_ACCESSIBLE | — |
+| MERGED / DEPLOYED | NO / NO | PR #13 draft |
 
-T048 n’est **pas** rejoué. Clôturé `TERMINÉE` sur `origin/feat/x200-boot-autostart` (CI FULL).
+Ne pas rejouer T001–T053.
 
-## 2. Matrice composants vs X200 Agentic vNext
+## 2. Matrice composants vs but
 
-| COMPONENT | STATUS | EVIDENCE | WHAT EXISTS | WHAT IS MISSING | RISK | DEPENDENCIES | RECOMMENDED ACTION |
-|---|---|---|---|---|---|---|---|
-| Public site FR/EN | CONFIRMÉ livré | `app/(public)`, i18n | Site institutionnel | Hors scope agentic | low | — | Préserver |
-| Auth / RBAC / MFA | CONFIRMÉ livré | T001–T006, T033 | SUPER_ADMIN/ADMIN/USER, MFA admin | MFA portail USER ; enrollment prod = gate | high | T048 close ≠ blocker | Ne pas recréer |
-| CMS / DMS | CONFIRMÉ partiel | T019–T021 | Contenus, documents privés, grants | Agent DMS, extraction IA, object store cloud | medium | T049 | Étendre, ne pas remplacer |
-| Payments / Finance workflow | CONFIRMÉ partiel | T027–T032, T041 | Preuve ≠ vérifié ; HUMAN_REVIEW ; pas de mouvement d’argent auto | Worker Finance *agentique* au-dessus du moteur existant | high | T049, T050 | Premier vertical slice P2 |
-| X200 dev orchestrator | CONFIRMÉ livré | Autopilot, Control Center | Routage de *tâches de développement* | Routage de *tâches métier* multi-providers | medium | — | Réutiliser policy/approval ; ne pas fusionner les deux plans |
-| Agent Registry | CONFIRMÉ absent → T049 | grep | — | Catalogue, capacités, outils, coût, confiance | low | aucune | **P0 en cours** |
-| Provider adapters | CONFIRMÉ absent | — | `lib/email/providers.ts` email only | `AgentProviderAdapter` execute/stream | medium | T049 | P1, **aucun SDK payant auto** |
-| Domain events | CONFIRMÉ livré T050 | `lib/agentic/events.ts` | Envelope in-process + adapter paiement | Bus distribué / workers async | medium | T049 | P2 vertical |
-| Tool / Action Gateway métier | CONFIRMÉ partiel T051 | `lib/agentic/tools.ts` | Allowlist + policyForRisk | Executor métier (CRM/DMS/finance) | high | T049, policy existante | P2, pas de shell |
-| Human approval | CONFIRMÉ partiel | T046, paiements HUMAN_REVIEW | Gates ops + finance + `approval_required` agent | Gates unifiés persistés | high | T049 | Réutiliser, étendre |
-| Audit agentique | CONFIRMÉ partiel T051 | `lib/agentic/audit.ts` | Journal agent_id/provider/tool/risk/redaction | Persist Prisma obligatoire | medium | T049 | Étendre Control Center |
-| Observability | CONFIRMÉ livré | `/admin/x200` | Autopilot, CI, boot | Métriques agents métier | low | T049 | P1 Control Center panel |
-| Outcome engine | CONFIRMÉ absent | — | — | invoice_reconciled, lead_qualified… | low | events | P3 |
-| Finance Agent (IA) | CONFIRMÉ absent | rapprochement déterministe existe | Moteur sandbox | Worker enregistré + recommandation ; **pas de payout auto** | high | T049–T051 | P2 vertical slice |
-| Commercial Agent | CONFIRMÉ absent | — | — | Qualification, drafts | medium | T049–T051 | P2 |
-| DMS Agent | CONFIRMÉ absent | documents + workflow | — | Classification sans fuite confidentialité | high | T049–T051 | P2 |
-| CI X200 | CONFIRMÉ livré | `.github/workflows/ci.yml` | METADATA/FAST/FULL | Préserver | low | — | Ne pas recréer |
+| COMPONENT | STATUS | WHAT EXISTS | WHAT IS MISSING | RISK | ACTION |
+|---|---|---|---|---|---|
+| Agent Registry | CONFIRMÉ livré T049 | Catalogue + select | — | low | Préserver |
+| Domain events | CONFIRMÉ livré T050 | Envelope + idempotence | Bus distribué | medium | P3 |
+| Tool Gateway | CONFIRMÉ livré T051 | Allowlist + stubs | Handlers CRM/DMS live | medium | P2 |
+| Finance slice | CONFIRMÉ livré T053 | proof→recommend | Agent Finance complet P2 | high | Étendre |
+| Business Orchestrator | EN_COURS T054 | — | EVENT→agent→gateway | medium | **P1** |
+| Provider adapters | Absent T055 | Interface types | Stubs health/cost | low | **P1** |
+| Approval Engine métier | Partiel | tokens gateway ad-hoc | issue/consume TTL unifié | medium | **P1 T056** |
+| Observability agentique | Partiel ops | `/admin/x200` | Panel agents métier | low | cycle suivant |
+| Finance / Commercial / DMS agents | Catalogue only | IDs + allowlists | Workers métier complets | medium | **P2** après P1 |
 
-## 3. Premier vertical slice (PROPOSÉ, pas commencé)
+## 3. Vertical slice (CONFIRMÉ livré T053)
 
 ```text
-payment.proof_uploaded
-  → CLEVONE_FINANCE_AGENT (registry)
-  → extract / match / score (moteur existant lib/payments)
-  → recommendation
-  → human approval if MEDIUM+
-  → audit
+payment.proof_uploaded → CLEVONE_FINANCE_AGENT → recommend → human if MEDIUM+ → audit
 ```
 
-Interdit au début : mouvement d’argent, enable live PSP, merge `main`, deploy.
+Orchestrator T054 délègue ce chemin sans dupliquer `lib/payments`.
 
-## 4. Décision de reprise (CONFIRMÉ session)
+## 4. AUTOPLAN 2026-09-15 (CONFIRMÉ)
 
-1. Ne pas travailler sur le `main` local périmé.
-2. Ne pas détruire T001–T048.
-3. T048 déjà `TERMINÉE` sur la base distante — ne pas rejouer.
-4. T049 Agent Registry = première P0 manquante réellement absente.
-5. Maximum 3 nouvelles tâches ce cycle : T049, T050, T051.
+Max 3 tâches : **T054** (PRÊTE→EN_COURS), **T055** (À_FAIRE), **T056** (À_FAIRE, dep T054).
+Pas de tâche P2 créée ce cycle (Finance/Commercial/DMS complets) — après clôture P1 orchestrator/adapters/approvals.
+Pas de merge PR #13 / deploy sans gate humain.

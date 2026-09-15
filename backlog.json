@@ -3736,6 +3736,146 @@
       ],
       "status": "TERMINÉE",
       "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:01:52.857Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 6,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T054",
+      "title": "Agentic Core — business X200 Orchestrator (event→agent→gateway)",
+      "objective": "Orchestrateur métier in-process : EVENT → classify/risk → AgentRegistry.select → ToolGateway → verify/audit. Réutilise T050–T053. Pas de shell, pas de payout, pas de SDK vendor.",
+      "priority": "P1",
+      "dependencies": [
+        "T053"
+      ],
+      "scope": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/orchestrator.test.ts",
+        "lib/agentic/index.ts",
+        "docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md"
+      ],
+      "acceptanceCriteria": [
+        "API runBusinessOrchestration(event|task) avec étapes tracées: classify, risk, select, execute, verify, audit",
+        "payment.proof_uploaded délègue à runFinanceProofUploadedSlice sans duplication du moteur payments",
+        "HIGH/CRITICAL → status blocked_pending_human sans exécution automatique",
+        "Idempotence via DomainEventLog ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "EN_CONTRÔLE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "attendre T054 TERMINÉE (séquence P1 orchestrator d'abord)",
+      "lastTransitionReason": "[X200-AUTOPLAN] P1 provider adapters after registry; no paid SDK",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 4,
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T055",
+      "title": "Agentic Core — provider adapters (stub, no network, no paid SDK)",
+      "objective": "Adapters AgentProviderAdapter pour internal/grok/openai/cursor : healthCheck, getCapabilities, estimateCost. execute/stream refusent le réseau tant qu'aucune clé/provider live n'est autorisé. Aucun SDK payant.",
+      "priority": "P1",
+      "dependencies": [
+        "T049"
+      ],
+      "scope": [
+        "lib/agentic/providers",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "createProviderAdapter(id) pour internal|grok|openai|cursor|future",
+        "healthCheck/getCapabilities/estimateCost purs ; execute/stream → PROVIDER_LIVE_DISABLED sans appel réseau",
+        "Aucun import openai/xai/@cursor SDK ; tests unitaires ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "attendre T054 TERMINÉE",
+      "lastTransitionReason": "[X200-AUTOPLAN] P1 business Approval Engine after orchestrator",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 6,
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T056",
+      "title": "Agentic Core — business Approval Engine (single-use, persisted)",
+      "objective": "Moteur d'approbation métier pour outils MEDIUM+ : issue/consume tokens single-use (TTL), journal audit, intégration ToolGateway. Réutilise patterns T046 sans merge/deploy. Pas de MFA bypass.",
+      "priority": "P1",
+      "dependencies": [
+        "T054"
+      ],
+      "scope": [
+        "lib/agentic/approvals.ts",
+        "lib/agentic/approvals.test.ts",
+        "lib/agentic/gateway.ts",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "issueBusinessApproval / consumeBusinessApproval avec TTL, agentId, tool, reason",
+        "Replay token → APPROVAL_CONSUMED ; mismatch agent/tool refusés",
+        "ToolGateway accepte les approvals issus du moteur ; secrets rédigés dans l'audit",
+        "MERGED=NO DEPLOYED=NO ; pas de payout"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "risk": "medium"
     }
   ],
   "history": [
@@ -5228,9 +5368,45 @@
       "to": "TERMINÉE",
       "by": "cursor",
       "note": "[X200-FAST] CI quality SUCCESS run 34976217739 head 8153750d51714a628449f18d403b1e516e9f6f8d"
+    },
+    {
+      "at": "2026-09-15T13:52:36.737334Z",
+      "taskId": "T054",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Business Orchestrator; zero duplicate T001-T053"
+    },
+    {
+      "at": "2026-09-15T13:52:36.737334Z",
+      "taskId": "T055",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Provider adapters stub; sequenced after T054"
+    },
+    {
+      "at": "2026-09-15T13:52:36.737334Z",
+      "taskId": "T056",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Business Approval Engine; depends T054"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T054",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T054",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 162,
+  "registryVersion": 165,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
