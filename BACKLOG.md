@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 154
+- Registre : 155
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 50
+- TERMINÉE : 51
 - ANNULÉE : 0
 
 ## Tâches
@@ -72,4 +72,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T048 | P0 | TERMINÉE | X200 Boot Orchestrator — automatic startup and self-recovery | non |
 | T049 | P0 | TERMINÉE | Agentic Core — provider-independent Agent Registry | non |
 | T050 | P0 | TERMINÉE | Agentic Core — domain event envelope (idempotent) | non |
-| T051 | P1 | EN_CONTRÔLE | Agentic Core — tool policy reuse + agent audit fields | non |
+| T051 | P1 | TERMINÉE | Agentic Core — tool policy reuse + agent audit fields | non |

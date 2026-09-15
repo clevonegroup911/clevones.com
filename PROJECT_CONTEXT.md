@@ -8,8 +8,8 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-agentic-core` (base `origin/feat/x200-boot-autostart` @ `8a203da`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T051 EN_CONTRÔLE — tool policy reuse + agent audit, quality-gate local PASS | CONFIRMÉ registre |
+| Workspace local | branche `feat/x200-agentic-core` | CONFIRMÉ (session 2026-09-15) |
+| HEAD travail | T051 TERMINÉE — CI FULL run 34970081544 / `3cd3d38` ; metadata close en cours | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconstruire l’existant. T048–T050 sont `TERMINÉE`. T051 (policy métier + audit agent) est `EN_COURS`. Les rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic P0/P1 T049–T051 `TERMINÉE`. Prochain travail automatique : AUTOPLAN (Tool Gateway exécution in-process + vertical slice finance recommendation, sans payout). Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -26,7 +26,7 @@ Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconst
 - Node `>=20.9.0`, npm
 - Scripts gouvernance : `scripts/*.mjs` et `scripts/lib/`
 - Control Center : `lib/x200/*`, `/admin/x200`, télémétrie Fedora `.x200/telemetry.json`
-- Agentic core : `lib/agentic/*` (T049)
+- Agentic core : `lib/agentic/*` (registry, events, tools, audit)
 
 ## Authentification et rôles (CONFIRMÉ dans le code)
 
@@ -40,27 +40,25 @@ Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconst
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T047 | `TERMINÉE` | CONFIRMÉ registre |
-| T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
-| T049 | `TERMINÉE` Agent Registry — CI quality SUCCESS run 34965983633 / `2d5e38d` | CONFIRMÉ registre |
-| T050 | `TERMINÉE` Domain event envelope — CI quality SUCCESS run 34967009299 / `280ccbc` | CONFIRMÉ registre |
-| T051 | `EN_CONTRÔLE` Agent audit + policy reuse — quality-gate local PASS | CONFIRMÉ registre |
+| T001–T050 | `TERMINÉE` | CONFIRMÉ registre |
+| T051 | `TERMINÉE` Agent audit + policy reuse — CI FULL run 34970081544 / `3cd3d38` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
+| Draft PR | [#13](https://github.com/clevonegroup911/clevones.com/pull/13) | CONFIRMÉ |
 
 Gap analysis : `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`.
 
 Preuves CI récentes (CONFIRMÉ) :
 
-- T045 FULL quality SUCCESS `42fecbe` / run [34771780343](https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343)
-- T046 FULL quality SUCCESS `49d0c36` / run [34775412790](https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790) ; draft PR [#10](https://github.com/clevonegroup911/clevones.com/pull/10)
-- T047 FULL quality SUCCESS `7de8fd1` / run [34782004736](https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736) ; recovery tip `8c873db` / run [34782911788](https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788) ; draft PR [#11](https://github.com/clevonegroup911/clevones.com/pull/11)
-- T048 FULL quality SUCCESS `206cd31` / run [34962261158](https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
+- T049 quality SUCCESS `2d5e38d` / run [34965983633](https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633)
+- T050 quality SUCCESS `280ccbc` / run [34967009299](https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299)
+- T051 FULL quality SUCCESS `3cd3d38` / run [34970081544](https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544)
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).
-Critères 21–25 (agentic) : T049–T050 TERMINÉE ; T051 EN_CONTRÔLE ; P2 agents métier plus tard.
+Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).  
+Critères 21–22, 24 partiel, 25 : fondations registry/events/policy posées.  
+Écart automatique utile restant : exécuteur Tool Gateway in-process (LOW) + vertical slice finance recommendation (pas de payout).
 
 ### Gates humaines / externes (obligatoires hors auto)
 
@@ -96,7 +94,7 @@ Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieu
 | Relais ChatGPT | NON CONFIGURÉ |
 | Gouvernance | `docs/X200_GOVERNANCE.md` / `docs/X200_AUTOPILOT.md` |
 | Observabilité | `/admin/x200` + télémétrie Fedora (T042/T043) |
-| Agentic | `lib/agentic` (T049) — pas d’appel provider |
+| Agentic | `lib/agentic` T049–T051 — pas d’appel provider live |
 | Production | hors périmètre automatique |
 
 ## Interdit

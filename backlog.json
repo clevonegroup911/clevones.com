@@ -3545,11 +3545,21 @@
           "version": null,
           "at": "2026-09-15T12:37:11.550608Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34970081544",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544",
+          "version": "3cd3d3873b6ead186e39e6fea474dab6978847e1",
+          "at": "2026-09-15T13:11:10.905777Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer",
-      "lastTransitionReason": "quality-gate local PASS (validate, npm test, tsc)",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34970081544 on 3cd3d38; close without merge/deploy",
       "id": "T051",
       "title": "Agentic Core — tool policy reuse + agent audit fields",
       "objective": "Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.",
@@ -3575,12 +3585,15 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "lib/agentic/tools.ts",
         "lib/agentic/tools.test.ts",
         "lib/agentic/audit.ts",
-        "lib/x200/actions/policy.ts"
+        "lib/x200/actions/policy.ts",
+        "CI quality SUCCESS FULL run 34970081544 SHA 3cd3d38",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544",
+        "PR draft https://github.com/clevonegroup911/clevones.com/pull/13"
       ],
       "estimatedCost": 5,
       "risk": "medium",
@@ -5005,9 +5018,17 @@
       "to": "EN_CONTRÔLE",
       "by": "cursor",
       "note": "Local quality-gate PASS; await CI quality"
+    },
+    {
+      "at": "2026-09-15T13:11:10.905777Z",
+      "taskId": "T051",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 34970081544 head 3cd3d3873b6ead186e39e6fea474dab6978847e1; MERGED=NO DEPLOYED=NO"
     }
   ],
-  "registryVersion": 154,
+  "registryVersion": 155,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
