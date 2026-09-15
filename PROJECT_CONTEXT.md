@@ -59,7 +59,7 @@ Preuves CI récentes (CONFIRMÉ) :
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).  
+Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).
 Critères 21–25 (agentic) : T049 EN_CONTRÔLE ; T050/T051 ensuite ; P2 agents métier plus tard.
 
 ### Gates humaines / externes (obligatoires hors auto)

@@ -1,8 +1,8 @@
 # CLEVONE Agentic Business Platform — Gap Analysis
 
-**Date :** 2026-09-15  
-**Base vérifiée :** `origin/feat/x200-boot-autostart` @ `ef3cacb`  
-**Workspace de reprise :** `feat/x200-agentic-core`  
+**Date :** 2026-09-15
+**Base vérifiée :** `origin/feat/x200-boot-autostart` @ `ef3cacb`
+**Workspace de reprise :** `feat/x200-agentic-core`
 **Classe des faits :** CONFIRMÉ = lu dans le dépôt ; INDIQUÉ = docs/historique ; PROPOSÉ = recommandation ; NON_ACCESSIBLE = production/GitHub API cette session.
 
 Le `main` local au démarrage de la session était **115 commits derrière** `origin/main` et ne contenait **aucun** artefact X200. Un stash `wip: stale local back-office snapshot` conserve l’arbre obsolète. Ne pas le réappliquer : il régresserait MFA, paiements, CI et X200.
@@ -62,8 +62,8 @@ Interdit au début : mouvement d’argent, enable live PSP, merge `main`, deploy
 
 ## 4. Décision de reprise (CONFIRMÉ session)
 
-1. Ne pas travailler sur le `main` local périmé.  
-2. Ne pas détruire T001–T048.  
-3. T048 déjà `TERMINÉE` sur la base distante — ne pas rejouer.  
-4. T049 Agent Registry = première P0 manquante réellement absente.  
+1. Ne pas travailler sur le `main` local périmé.
+2. Ne pas détruire T001–T048.
+3. T048 déjà `TERMINÉE` sur la base distante — ne pas rejouer.
+4. T049 Agent Registry = première P0 manquante réellement absente.
 5. Maximum 3 nouvelles tâches ce cycle : T049, T050, T051.
