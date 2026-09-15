@@ -6,56 +6,67 @@
 
 ## ID
 
-T048
+T049
 
 ## Statut
 
-TERMINÉE
+EN_COURS
 
 ## Objectif
 
-Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.
+Make /admin/x200 a true interactive console: every clickable control has a visible effect, Preview opens an on-screen drawer without executing, Confirm & Execute is gated and verified, and NEXT SAFE MERGE is derived from GitHub stack truth.
 
 ## Résultat
 
-Boot Orchestrator livré et validé CI FULL. AUTOPLAN 2026-09-15: aucun écart automatique restant vs PRODUCT_GOAL — PRODUCT_COMPLETE local re-épinglé sur HEAD `c097cd5` (goalHash inchangé). MERGED=NO DEPLOYED=NO.
+Control Center action console livré : Preview ouvre un drawer visible (desktop latéral / mobile bottom sheet) sans mutation ; CONFIRM & EXECUTE reste gated (MFA, typed phrase, second confirm, adapter REAL) ; SUCCESS seulement après vérification distante ; NEXT SAFE MERGE dérivé de la stack GitHub du PR courant (jamais un PR non lié). MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/boot/*`
-- `scripts/x200-autostart.mjs` / `x200-control-center-serve.mjs` / `x200-browser-autostart.mjs` / `x200-boot-watchdog.mjs`
-- `scripts/lib/x200-autostart-core.mjs` / `x200-control-center-assets.mjs`
-- `ops/systemd/clevones-x200-*.template`
-- `ops/xdg/clevones-x200-open-control-center.desktop.template`
-- `app/admin/x200/startup-panels.tsx`
-- `app/api/admin/x200/boot-actions/route.ts`
-- `docs/X200_BOOT_AUTOSTART.md`
-- `reports/tasks/T048.md`
+- `app/admin/x200/action-console.tsx`
+- `reports/tasks/T049.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts` / `sources.ts`
-- `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
-- `tests/e2e/*` / `next.config.ts` / `.gitignore`
-- `package.json`
-- `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
+- `app/admin/x200/human-action-panels.tsx`
+- `app/admin/x200/control-center-client.tsx`
+- `app/admin/x200/operational-mirror-panels.tsx`
+- `app/admin/x200/startup-panels.tsx`
+- `lib/x200/actions/executor.ts`
+- `lib/x200/actions/policy.ts`
+- `lib/x200/actions/types.ts`
+- `lib/x200/mirror/release-stack.ts`
+- `lib/x200/mirror/assemble.ts`
+- `lib/x200/mirror/next-safe-action.ts`
+- `lib/x200/mirror/panels.ts`
+- `lib/x200/mirror/mirror.test.ts`
+- `lib/x200/actions/human-actions.test.ts`
+- `tests/e2e/x200-control-center.spec.ts`
+- `backlog.json`
+- `BACKLOG.md`
+- `TASK_REPORT.md`
+- `PROJECT_CONTEXT.md`
 
 ## Commandes
 
 - npm run x200:validate
-- npm run x200:next -- --json
-- npm test / x200:test / lint / tsc / prisma / build / playwright / secrets
+- npm test
+- npm run x200:test
+- npm run lint
+- npx tsc --noEmit
+- npx prisma validate
+- npm run build
+- npx playwright test
+- npm run x200:scan-secrets
 
 ## Tests réussis
 
-- CI FULL quality SUCCESS run 34962261158 head 206cd31 (T048)
-- CI FULL quality SUCCESS run 34962961516 head 9b1bd3c (e2e distDir tip)
-- x200:next → NO_READY_TASK
+- unitaires (205)
+- x200:test (84 pass, 1 skip hors Postgres loopback)
+- lint / tsc / prisma / build / scan-secrets
 
 ## Tests échoués
 
-- aucun sur HEAD final
+- Playwright authentifié local skippé : Docker publish 56432 / bridge 172.17.0.2 non joignables depuis ce netns ; preuve e2e = CI FULL
 
 ## Lint
 
@@ -74,13 +85,12 @@ Boot Orchestrator livré et validé CI FULL. AUTOPLAN 2026-09-15: aucun écart a
 - SECRET_VALUES_EXPOSED=NO
 - ARBITRARY_SHELL=NO
 - HUMAN_GATE_BYPASS=NO
-- UNKNOWN_PROCESS_KILLED=NO
 - MERGED=NO
 - DEPLOYED=NO
 
 ## Commit
 
-- 9b1bd3c (feat/x200-boot-autostart)
+- (en cours)
 
 ## Pull Request
 
@@ -88,19 +98,17 @@ Boot Orchestrator livré et validé CI FULL. AUTOPLAN 2026-09-15: aucun écart a
 
 ## Preuves
 
-- reports/tasks/T048.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34962961516
-- `.x200/PRODUCT_COMPLETE.json` local (head=c097cd5)
+- reports/tasks/T049.md
+- tests unitaires stack predecessor + previewOnly
 
 ## Risques
 
-- aucun restant dans le périmètre automatique
+- e2e local dépend du reachability Docker ; CI GitHub Actions reste la preuve Playwright FULL
 
 ## Blocage
 
-- gates humaines restantes seulement (SMTP réel, PSP live, merge main, deploy, MFA/secrets prod)
+- aucun automatique ; merge/deploy restent Human Gate
 
 ## Prochaine tâche prête
 
-- aucune automatique ; superviseur peut poll PRODUCT_COMPLETE
+- après CI FULL quality SUCCESS

@@ -258,6 +258,7 @@ test("critical action policy requires MFA + typed phrase", () => {
   assert.equal(p.risk, "CRITICAL");
   assert.equal(p.requireMfa, true);
   assert.equal(p.requireTypedPhrase, true);
+  assert.equal(p.requireSecondConfirmation, true);
   assert.equal(p.typedPhrase, "DEPLOY PRODUCTION abcdef1");
 });
 
@@ -457,6 +458,75 @@ test("critical action without MFA is rejected", async () => {
     );
     assert.equal(out.ok, false);
     assert.equal(out.code, "MFA_REQUIRED");
+  } finally {
+    await rm(cwd, { recursive: true, force: true });
+  }
+});
+
+test("previewOnly never mutates and does not consume idempotency", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "x200-preview-"));
+  try {
+    let adapterCalls = 0;
+    const ctx = {
+      actorId: "u1",
+      actorEmail: "a@b.c",
+      actorRole: "SUPER_ADMIN" as const,
+      git: { head: "abc1234", branch: "feat", dirty: false, status: "OK" as const },
+      github: {
+        prNumber: 12,
+        prDraft: true,
+        prState: "open",
+        prMergeable: "MERGEABLE",
+        prHeadSha: "abc1234",
+        ciLatestConclusion: "success",
+        status: "OK" as const,
+      },
+      humanGate: {
+        present: false,
+        reason: null,
+        taskId: null,
+        requiredAction: null,
+      },
+      productComplete: { head: null },
+      fedora: {
+        autopilotLiveState: "IDLE" as const,
+        ageMs: 1000,
+        agentRunning: false,
+      },
+      cwd,
+      env: {
+        X200_HUMAN_ACTIONS_ENABLED: "false",
+        NODE_ENV: "test",
+      } as NodeJS.ProcessEnv,
+      readyForReviewAdapter: async () => {
+        adapterCalls += 1;
+        throw new Error("adapter must not run during preview");
+      },
+    };
+    const out = await executeHumanAction(
+      {
+        action: "MARK_READY_FOR_REVIEW",
+        idempotencyKey: "preview-only-key-001",
+        previewOnly: true,
+      },
+      ctx,
+    );
+    assert.equal(out.ok, true);
+    assert.equal(out.code, "PREVIEW");
+    assert.equal(out.receipt, null);
+    assert.equal(out.preview?.verificationStatus, "PREVIEW_ONLY");
+    assert.equal(out.preview?.prNumber, 12);
+    assert.equal(adapterCalls, 0);
+    const second = await executeHumanAction(
+      {
+        action: "MARK_READY_FOR_REVIEW",
+        idempotencyKey: "preview-only-key-001",
+        previewOnly: true,
+      },
+      ctx,
+    );
+    assert.equal(second.ok, true);
+    assert.equal(second.code, "PREVIEW");
   } finally {
     await rm(cwd, { recursive: true, force: true });
   }

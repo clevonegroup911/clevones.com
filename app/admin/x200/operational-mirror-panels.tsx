@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import type { ControlCenterSnapshot } from "@/lib/x200/types";
 import { displayFactValue } from "@/lib/x200/mirror/freshness";
+import type { HumanActionType } from "@/lib/x200/actions/types";
+import { useDialogA11y } from "@/app/admin/x200/action-console";
 
 export type MirrorTabId =
   | "SOURCES"
@@ -281,6 +283,7 @@ export function OperationalMirrorPanels({
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="button"
+              data-testid="x200-refresh-github"
               onClick={onRefresh}
               className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
             >
@@ -288,6 +291,7 @@ export function OperationalMirrorPanels({
             </button>
             {g.prUrl ? (
               <a
+                data-testid="x200-open-pr"
                 href={g.prUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -295,9 +299,20 @@ export function OperationalMirrorPanels({
               >
                 Open PR
               </a>
-            ) : null}
-            {g.prHeadSha ? (
+            ) : (
+              <button
+                type="button"
+                data-testid="x200-open-pr"
+                disabled
+                title="PR URL not verified"
+                className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+              >
+                Open PR
+              </button>
+            )}
+            {g.prHeadSha && g.repository ? (
               <a
+                data-testid="x200-open-commit"
                 href={`https://github.com/${g.repository}/commit/${g.prHeadSha}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -305,19 +320,62 @@ export function OperationalMirrorPanels({
               >
                 Open commit
               </a>
-            ) : null}
+            ) : (
+              <button
+                type="button"
+                data-testid="x200-open-commit"
+                disabled
+                title="Commit SHA not verified"
+                className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+              >
+                Open commit
+              </button>
+            )}
+            {g.repository ? (
+              <a
+                data-testid="x200-open-actions"
+                href={`https://github.com/${g.repository}/actions`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
+              >
+                Open GitHub Actions
+              </a>
+            ) : (
+              <button
+                type="button"
+                data-testid="x200-open-actions"
+                disabled
+                title="Repository not verified"
+                className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+              >
+                Open GitHub Actions
+              </button>
+            )}
             {g.ciLatestUrl ? (
               <a
+                data-testid="x200-open-latest-ci"
                 href={g.ciLatestUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
               >
-                Open workflow
+                Open latest CI run
               </a>
-            ) : null}
+            ) : (
+              <button
+                type="button"
+                data-testid="x200-open-latest-ci"
+                disabled
+                title="Latest CI run URL not verified"
+                className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+              >
+                Open latest CI run
+              </button>
+            )}
             <button
               type="button"
+              data-testid="x200-open-human-actions"
               onClick={() => onOpenTab?.("HUMAN_ACTIONS")}
               className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted"
             >
@@ -331,10 +389,13 @@ export function OperationalMirrorPanels({
         <Card title="RELEASE STACK" testId="x200-release-stack">
           <p className="text-xs text-gray-muted">
             NEXT SAFE MERGE:{" "}
-            <span className="text-white">
-              {mirror.releaseStack.nextSafeMerge != null
-                ? `#${mirror.releaseStack.nextSafeMerge}`
-                : "N/A"}
+            <span className="text-white" data-testid="x200-next-safe-merge">
+              {mirror.releaseStack.status !== "OK" ||
+              mirror.releaseStack.nextSafeMerge == null
+                ? mirror.releaseStack.status === "NOT_CONNECTED"
+                  ? "NOT_CONNECTED"
+                  : "UNKNOWN"
+                : `#${mirror.releaseStack.nextSafeMerge}`}
             </span>
           </p>
           <p className="mt-1 text-xs text-gray-muted">
@@ -356,6 +417,19 @@ export function OperationalMirrorPanels({
               );
             })}
           </ol>
+          {mirror.releaseStack.nodes.filter(
+            (n) => !mirror.releaseStack.mergeOrder.includes(n.prNumber),
+          ).length ? (
+            <div className="mt-3 text-[11px] text-gray-muted">
+              Other open PRs (not predecessors of the current stack):{" "}
+              {mirror.releaseStack.nodes
+                .filter(
+                  (n) => !mirror.releaseStack.mergeOrder.includes(n.prNumber),
+                )
+                .map((n) => `#${n.prNumber}`)
+                .join(", ")}
+            </div>
+          ) : null}
         </Card>
       </div>
     );
@@ -397,6 +471,58 @@ export function OperationalMirrorPanels({
             <dd>{display(ci.suggestedNextAction)}</dd>
           </div>
         </dl>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {snapshot.github.repository ? (
+            <a
+              data-testid="x200-ci-open-actions"
+              href={`https://github.com/${snapshot.github.repository}/actions`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
+            >
+              Open GitHub Actions
+            </a>
+          ) : (
+            <button
+              type="button"
+              data-testid="x200-ci-open-actions"
+              disabled
+              title="Repository not verified"
+              className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+            >
+              Open GitHub Actions
+            </button>
+          )}
+          {snapshot.github.ciLatestUrl ? (
+            <a
+              data-testid="x200-ci-open-latest"
+              href={snapshot.github.ciLatestUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
+            >
+              Open latest CI run
+            </a>
+          ) : (
+            <button
+              type="button"
+              data-testid="x200-ci-open-latest"
+              disabled
+              title="Latest CI run URL not verified"
+              className="cursor-not-allowed rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gray-muted opacity-50"
+            >
+              Open latest CI run
+            </button>
+          )}
+          <button
+            type="button"
+            data-testid="x200-ci-refresh"
+            onClick={onRefresh}
+            className="rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold"
+          >
+            Refresh CI
+          </button>
+        </div>
         <div className="mt-4 space-y-3">
           {ci.jobs.map((job) => (
             <div
@@ -732,6 +858,8 @@ export function CommandPalette({
   onAction: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(open, onClose, dialogRef);
   const filtered = useMemo(() => {
     const actions = snapshot.mirror?.commandPalette ?? [];
     const q = query.trim().toLowerCase();
@@ -746,15 +874,14 @@ export function CommandPalette({
       data-testid="x200-command-palette"
       className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-[12vh]"
       onClick={onClose}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") onClose();
-      }}
       role="presentation"
     >
       <div
+        ref={dialogRef}
         className="w-full max-w-lg rounded-sm border border-border-subtle bg-surface-elevated p-3 shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
+        aria-modal="true"
         aria-label="Command palette"
       >
         <p className="mb-2 text-[10px] tracking-[0.2em] text-gold-muted uppercase">
@@ -772,7 +899,13 @@ export function CommandPalette({
             <li key={action.id}>
               <button
                 type="button"
+                data-testid={`x200-palette-${action.id}`}
                 disabled={!action.available}
+                title={
+                  action.available
+                    ? action.label
+                    : action.reason ?? "Unavailable"
+                }
                 onClick={() => {
                   onAction(action.id);
                   onClose();
@@ -799,8 +932,10 @@ export function CommandPalette({
 
 export function HumanDecisionCenter({
   snapshot,
+  onReviewDecision,
 }: {
   snapshot: ControlCenterSnapshot;
+  onReviewDecision?: (action: HumanActionType) => void;
 }) {
   const decisions = snapshot.mirror?.humanDecisions ?? [];
   return (
@@ -853,9 +988,14 @@ export function HumanDecisionCenter({
               </p>
               <button
                 type="button"
+                data-testid={`x200-review-decision-${d.type}`}
                 className="mt-2 rounded-sm border border-gold/40 px-2.5 py-1.5 text-[10px] text-gold"
-                onClick={() =>
-                  copyText(
+                onClick={() => {
+                  if (onReviewDecision) {
+                    onReviewDecision(d.type as HumanActionType);
+                    return;
+                  }
+                  void copyText(
                     JSON.stringify(
                       {
                         type: d.type,
@@ -866,8 +1006,8 @@ export function HumanDecisionCenter({
                       null,
                       2,
                     ),
-                  )
-                }
+                  );
+                }}
               >
                 REVIEW DECISION
               </button>

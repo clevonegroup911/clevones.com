@@ -223,8 +223,8 @@ export function buildCommandPaletteActions(input: {
     {
       id: "create_backup",
       label: "Create backup",
-      available: false,
-      reason: "Backup adapter NOT_AVAILABLE",
+      available: true,
+      reason: null,
       requiresHuman: true,
     },
     {

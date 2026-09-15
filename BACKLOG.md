@@ -3,13 +3,13 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 146
+- Registre : 147
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
-- EN_COURS : 0
+- EN_COURS : 1
 - EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
@@ -70,3 +70,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T046 | P0 | TERMINÉE | X200 Human Action Center — approvals, release, deploy and recovery | non |
 | T047 | P0 | TERMINÉE | X200 Operational Mirror + Universal Action Console | non |
 | T048 | P0 | TERMINÉE | X200 Boot Orchestrator — automatic startup and self-recovery | non |
+| T049 | P0 | EN_COURS | X200 Control Center — fully interactive actions and previews | non |

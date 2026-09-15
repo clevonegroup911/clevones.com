@@ -206,18 +206,32 @@ export function StartupPanels({
           role={actorRole} · allowlisted units only · no arbitrary shell
         </p>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {BOOT_ACTIONS.map((action) => (
-            <button
-              key={action.id}
-              type="button"
-              data-testid={`x200-boot-action-${action.id}`}
-              disabled={busy || actorRole !== "SUPER_ADMIN"}
-              onClick={() => void runAction(action.id, action.confirm)}
-              className="min-h-11 rounded-sm border border-gold/40 bg-gold/10 px-3 py-2 text-left text-xs text-gold disabled:opacity-50"
-            >
-              {action.label}
-            </button>
-          ))}
+          {BOOT_ACTIONS.map((action) => {
+            const disabled = busy || actorRole !== "SUPER_ADMIN";
+            const disabledReason =
+              actorRole !== "SUPER_ADMIN"
+                ? "SUPER_ADMIN required"
+                : busy
+                  ? "Action already running"
+                  : null;
+            return (
+              <div key={action.id}>
+                <button
+                  type="button"
+                  data-testid={`x200-boot-action-${action.id}`}
+                  disabled={disabled}
+                  title={disabledReason ?? action.label}
+                  onClick={() => void runAction(action.id, action.confirm)}
+                  className="min-h-11 w-full rounded-sm border border-gold/40 bg-gold/10 px-3 py-2 text-left text-xs text-gold disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {action.label}
+                </button>
+                {disabled && disabledReason ? (
+                  <p className="mt-1 text-[10px] text-gray-muted">{disabledReason}</p>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
         {result ? (
           <p className="mt-3 text-sm text-white" data-testid="x200-boot-action-result">
