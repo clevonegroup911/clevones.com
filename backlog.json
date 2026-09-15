@@ -3893,13 +3893,30 @@
           "version": null,
           "at": "2026-09-15T14:29:36.309Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34982059895",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34982059895",
+          "version": "c0bfeb3ed3d0238bdf1ce56c0061ce485020fe4a",
+          "at": "2026-09-15T14:35:19.546Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34982059895 on c0bfeb3; MERGED=NO DEPLOYED=NO",
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/approvals.ts",
+        "lib/agentic/approvals.test.ts",
+        "lib/agentic/gateway.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34982059895 SHA c0bfeb3",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34982059895"
+      ],
       "estimatedCost": 6,
       "attempts": 1,
       "requiresHuman": false,
@@ -3928,8 +3945,148 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:40:23.268Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T057",
+      "title": "Agentic Control Center — observability panel (registry/audit/orchestration)",
+      "objective": "Panneau admin lecture seule sous /admin/x200 : catalogue agents, derniers audits outils, dernières orchestrations (in-process snapshots). Aucune exécution live, pas de secrets, pas de merge/deploy.",
+      "priority": "P1",
+      "dependencies": [
+        "T056"
+      ],
+      "scope": [
+        "lib/agentic/observability.ts",
+        "lib/agentic/observability.test.ts",
+        "app/admin/x200/agentic-panels.tsx",
+        "app/admin/x200/page.tsx"
+      ],
+      "acceptanceCriteria": [
+        "Snapshot read-only: agents (id/provider/status/cost), audit tool récents, dernières étapes orchestration",
+        "Panneau rendu dans Control Center sans exposer tokens/secrets",
+        "Aucun appel provider live ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "EN_CONTRÔLE",
+      "risk": "low",
+      "estimatedCost": 5,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T058",
+      "title": "Finance Agent — complete recommendation worker (no payout)",
+      "objective": "Étendre le worker Finance au-delà du slice T053 : scoring multi-preuves, raisons structurées, hooks orchestrator pour invoice.overdue/payment.reconciliation_failed. Toujours recommend-only, jamais payout/VERIFIED auto.",
+      "priority": "P2",
+      "dependencies": [
+        "T056"
+      ],
+      "scope": [
+        "lib/agentic/finance-agent.ts",
+        "lib/agentic/finance-agent.test.ts",
+        "lib/agentic/finance-slice.ts",
+        "lib/agentic/orchestrator.ts"
+      ],
+      "acceptanceCriteria": [
+        "Worker finance-agent expose recommend() réutilisé par orchestrator pour proof_uploaded et reconciliation_failed",
+        "moneyMoved/verifiedActivated toujours false ; HUMAN_REVIEW paths conservés",
+        "Tests unitaires ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "PRÊTE",
+      "risk": "medium",
+      "estimatedCost": 7,
+      "nextAction": "réclamer après ou en parallèle de T057 si scopes disjoints (T057=admin UI, T058=lib/agentic finance)",
+      "lastTransitionReason": "[X200-AUTOPLAN] P2 Finance Agent complet ; deps T056"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T059",
+      "title": "Commercial Agent — lead.qualify draft worker (read/draft only)",
+      "objective": "Worker Commercial : lead.created → classify/qualify draft via crm.read + crm.draft stubs. Pas d'envoi email client, pas de SDK payant.",
+      "priority": "P2",
+      "dependencies": [
+        "T056"
+      ],
+      "scope": [
+        "lib/agentic/commercial-agent.ts",
+        "lib/agentic/commercial-agent.test.ts",
+        "lib/agentic/gateway.ts",
+        "lib/agentic/orchestrator.ts"
+      ],
+      "acceptanceCriteria": [
+        "Handler crm.draft stub + commercial-agent.recommendQualify",
+        "Orchestrator lead.created délègue au commercial agent ; approval MEDIUM+",
+        "Aucun envoi mail ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "risk": "medium",
+      "estimatedCost": 6,
+      "nextAction": "attendre scopes libres (collision gateway/orchestrator avec T058)",
+      "lastTransitionReason": "[X200-AUTOPLAN] P2 Commercial Agent ; séquencé après Finance Agent pour éviter collision scope"
     }
   ],
   "history": [
@@ -5514,9 +5671,53 @@
       "taskId": "T056",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T14:35:19.546Z",
+      "taskId": "T056",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34982059895 head c0bfeb3ed3d0238bdf1ce56c0061ce485020fe4a"
+    },
+    {
+      "at": "2026-09-15T14:36:37.371Z",
+      "taskId": "T057",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Observability Control Center; zero duplicate T001-T056"
+    },
+    {
+      "at": "2026-09-15T14:36:37.371Z",
+      "taskId": "T058",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Finance Agent complete; P2 after P1 core"
+    },
+    {
+      "at": "2026-09-15T14:36:37.371Z",
+      "taskId": "T059",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Commercial Agent; sequenced after T058 scope"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T057",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T057",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 171,
+  "registryVersion": 175,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

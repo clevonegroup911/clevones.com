@@ -6,7 +6,7 @@
 
 ## ID
 
-T056
+T057
 
 ## Statut
 
@@ -14,37 +14,36 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Moteur d'approbation métier : issue/consume tokens single-use (TTL), audit, intégration ToolGateway. Pas de MFA bypass / payout.
+Panneau admin lecture seule sous /admin/x200 : catalogue agents, audits outils, orchestrations. Aucune exécution live.
 
 ## Résultat
 
-`BusinessApprovalEngine` + `issueBusinessApproval` / `consumeBusinessApproval`. ToolGateway option `approvalEngine`. quality-gate T056 PASS. MERGED=NO DEPLOYED=NO.
+`buildAgenticObservabilitySnapshot` + `AgenticObservabilityPanels` sur Control Center. quality-gate T057 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/approvals.ts`
-- `lib/agentic/approvals.test.ts`
-- `reports/tasks/T056.md`
+- `lib/agentic/observability.ts`
+- `lib/agentic/observability.test.ts`
+- `app/admin/x200/agentic-panels.tsx`
+- `reports/tasks/T057.md`
 
 ## Fichiers modifiés
 
-- `lib/agentic/gateway.ts`
-- `lib/agentic/index.ts`
-- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` (T055 close)
+- `app/admin/x200/page.tsx`
+- `backlog.json` / `BACKLOG.md` (AUTOPLAN T057–T059 + T056 close)
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T056
+- npm run x200:quality-gate -- --task T057
 
 ## Tests réussis
 
-- approvals.test.ts 3 PASS
-- gateway.test.ts PASS
+- observability.test.ts 2 PASS
 - tsc --noEmit PASS
-- quality-gate T056 PASS
+- quality-gate T057 PASS
 
 ## Tests échoués
 
@@ -64,8 +63,7 @@ Moteur d'approbation métier : issue/consume tokens single-use (TTL), audit, int
 
 ## Sécurité
 
-- Tokens single-use ; list() ne fuit pas le secret
-- Distinct des approvals ops merge/deploy
+- Read-only ; liveProvidersDisabled=true
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -78,18 +76,18 @@ Moteur d'approbation métier : issue/consume tokens single-use (TTL), audit, int
 
 ## Preuves
 
-- lib/agentic/approvals.ts
-- reports/tasks/T056.md
-- .x200/quality-results.json (T056)
+- lib/agentic/observability.ts
+- app/admin/x200/agentic-panels.tsx
+- .x200/quality-results.json (T057)
 
 ## Risques
 
-- medium — in-process store (pas encore Prisma)
+- low
 
 ## Blocage
 
-- aucun — attendre CI quality SUCCESS pour clôturer TERMINÉE
+- aucun — attendre CI quality SUCCESS
 
 ## Prochaine tâche prête
 
-- AUTOPLAN après T056 TERMINÉE (observability / P2)
+- T058 (Finance Agent complet)
