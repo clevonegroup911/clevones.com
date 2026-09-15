@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-agentic-core` | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T053 EN_CONTRÔLE — Finance vertical slice ; T052 TERMINÉE | CONFIRMÉ |
+| HEAD travail | T053 TERMINÉE — CI quality run 34976217739 / `8153750` | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic T049–T052 `TERMINÉE`. T053 Finance vertical slice `EN_CONTRÔLE`. Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T053 `TERMINÉE` (registry, events, policy/audit, Tool Gateway, finance recommendation slice). Aucune tâche automatique restante. Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -40,8 +40,7 @@ Fondations agentic T049–T052 `TERMINÉE`. T053 Finance vertical slice `EN_CONT
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T052 | `TERMINÉE` | CONFIRMÉ registre |
-| T053 | `EN_CONTRÔLE` Finance vertical slice — quality-gate local PASS | CONFIRMÉ registre |
+| T001–T053 | `TERMINÉE` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Draft PR | [#13](https://github.com/clevonegroup911/clevones.com/pull/13) | CONFIRMÉ |
@@ -53,6 +52,8 @@ Preuves CI récentes (CONFIRMÉ) :
 - T049 quality SUCCESS `2d5e38d` / run [34965983633](https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633)
 - T050 quality SUCCESS `280ccbc` / run [34967009299](https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299)
 - T051 FULL quality SUCCESS `3cd3d38` / run [34970081544](https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544)
+- T052 quality SUCCESS `cb1ff13` / run [34974772115](https://github.com/clevonegroup911/clevones.com/actions/runs/34974772115)
+- T053 quality SUCCESS `8153750` / run [34976217739](https://github.com/clevonegroup911/clevones.com/actions/runs/34976217739)
 
 ## Écarts restants vs PRODUCT_GOAL
 

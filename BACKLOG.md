@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 161
+- Registre : 162
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 52
+- TERMINÉE : 53
 - ANNULÉE : 0
 
 ## Tâches
@@ -74,4 +74,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T050 | P0 | TERMINÉE | Agentic Core — domain event envelope (idempotent) | non |
 | T051 | P1 | TERMINÉE | Agentic Core — tool policy reuse + agent audit fields | non |
 | T052 | P1 | TERMINÉE | Agentic Core — in-process Tool Gateway (LOW risk only) | non |
-| T053 | P1 | EN_CONTRÔLE | Finance Agent vertical slice — proof_uploaded recommendation | non |
+| T053 | P1 | TERMINÉE | Finance Agent vertical slice — proof_uploaded recommendation | non |

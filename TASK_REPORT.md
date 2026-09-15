@@ -10,7 +10,7 @@ T053
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Résultat
 
-`runFinanceProofUploadedSlice` enchaîne DomainEventLog, AgentRegistry.select, ToolGateway.invoke(payments.reconcile.recommend) et createReconciliationService.hydrate+reconcile. moneyMoved/verifiedActivated toujours false. MERGED=NO DEPLOYED=NO.
+`runFinanceProofUploadedSlice` enchaîne DomainEventLog, AgentRegistry.select, ToolGateway.invoke(payments.reconcile.recommend) et createReconciliationService.hydrate+reconcile. moneyMoved/verifiedActivated toujours false. CI quality SUCCESS run 34976217739 SHA 8153750. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -42,7 +42,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 - finance-slice.test.ts 3 PASS
 - quality-gate T053 PASS
-- T052 CI SUCCESS run 34974772115 SHA cb1ff13
+- CI quality SUCCESS run 34976217739 SHA 8153750
 
 ## Tests échoués
 
@@ -50,7 +50,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Lint
 
-- non listé dans T053.tests
+- PASS (CI)
 
 ## Type-check
 
@@ -58,7 +58,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Build
 
-- non requis (FAST)
+- PASS (CI FULL)
 
 ## Sécurité
 
@@ -68,7 +68,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Commit
 
-- pending
+- `8153750d51714a628449f18d403b1e516e9f6f8d`
 
 ## Pull Request
 
@@ -77,7 +77,7 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 ## Preuves
 
 - lib/agentic/finance-slice.ts
-- .x200/quality-results.json
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34976217739
 
 ## Risques
 
@@ -85,8 +85,8 @@ Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FI
 
 ## Blocage
 
-- aucun — attendre CI quality
+- aucun
 
 ## Prochaine tâche prête
 
-- AUTOPLAN après T053 TERMINÉE
+- aucune automatique — AUTOPLAN ou gates humaines (merge/deploy/PSP)
