@@ -57,8 +57,8 @@ Preuves CI récentes (CONFIRMÉ) :
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).  
-Critères 21–22, 24 partiel, 25 : fondations registry/events/policy posées.  
+Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).
+Critères 21–22, 24 partiel, 25 : fondations registry/events/policy posées.
 Écart automatique utile restant : exécuteur Tool Gateway in-process (LOW) + vertical slice finance recommendation (pas de payout).
 
 ### Gates humaines / externes (obligatoires hors auto)
