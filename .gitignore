@@ -53,6 +53,9 @@ ci-artifact/
 .x200/runtime/
 *.tmp
 
+# Playwright next-dev dist (isolated from production `.next`)
+.next-e2e/
+
 # Playwright e2e
 tests/e2e/test-results/
 tests/e2e/report/

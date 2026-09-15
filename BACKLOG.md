@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 146
+- Registre : 147
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 2
+- EN_CONTRÔLE : 1
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 2
-- TERMINÉE : 47
+- TERMINÉE : 48
 - ANNULÉE : 0
 
 ## Tâches
@@ -69,7 +69,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T045 | P0 | TERMINÉE | Interactive X200 Control Center — safe operations | non |
 | T046 | P0 | TERMINÉE | X200 Human Action Center — approvals, release, deploy and recovery | non |
 | T047 | P0 | TERMINÉE | X200 Operational Mirror + Universal Action Console | non |
-| T048 | P0 | EN_CONTRÔLE | X200 Boot Orchestrator — automatic startup and self-recovery | non |
+| T048 | P0 | TERMINÉE | X200 Boot Orchestrator — automatic startup and self-recovery | non |
 | T049 | P0 | EN_CONTRÔLE | Agentic Core — provider-independent Agent Registry | non |
 | T050 | P0 | À_FAIRE | Agentic Core — domain event envelope (idempotent) | non |
 | T051 | P1 | À_FAIRE | Agentic Core — tool policy reuse + agent audit fields | non |

@@ -100,7 +100,7 @@ Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–
 
 ## Risques
 
-- T048 reste EN_CONTRÔLE jusqu'à CI FULL sur son SHA
+- T048 Boot Orchestrator : `TERMINÉE` sur `origin/feat/x200-boot-autostart` (CI FULL) — pas rejoué
 - package.json est dans FULL_PATTERNS : le classifieur CI peut forcer FULL malgré une intention FAST
 - Workspace initial était un main périmé ; stash local non réappliqué
 

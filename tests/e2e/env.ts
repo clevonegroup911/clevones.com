@@ -93,6 +93,8 @@ export function e2eAppEnv(databaseUrl: string): NodeJS.ProcessEnv {
   env.MFA_ISSUER = "CLEVONES-E2E";
   env.APP_ORIGIN = E2E_ORIGIN;
   env.X200_E2E = "1";
+  // Isolate Playwright `next dev` from CI/production `.next` build output.
+  env.NEXT_DIST_DIR = ".next-e2e";
   if (process.env.CI) {
     env.CI = process.env.CI;
   }

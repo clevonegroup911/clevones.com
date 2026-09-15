@@ -13,7 +13,7 @@ Le `main` local au démarrage de la session était **115 commits derrière** `or
 |---|---|---|
 | `AGENTS.md`, `PRODUCT_GOAL.md`, `backlog.json`, `TASK_REPORT.md` | Présents sur la branche X200 | fichiers HEAD |
 | T001–T047 | `TERMINÉE` | `backlog.json` |
-| T048 Boot Orchestrator | Implémenté, claim expiré, `EN_COURS` au recovery | `TASK_REPORT.md`, `reports/tasks/T048.md` |
+| T048 Boot Orchestrator | `TERMINÉE` (CI FULL run 34962261158) | `backlog.json` / PR #12 |
 | Control Center `/admin/x200` | Présent (T042–T047) | `lib/x200/*`, `app/admin/x200` |
 | Policy + Human Action Center | Présent (ops X200) | `lib/x200/actions/policy.ts`, `approvals.ts`, `executor.ts` |
 | Payment gateway + rapprochement | Présent (sandbox) | `lib/payments/*`, Prisma `PaymentProof`, `ClevoneGatewayEvent` |
@@ -23,7 +23,7 @@ Le `main` local au démarrage de la session était **115 commits derrière** `or
 | Relais ChatGPT | NON CONFIGURÉ | `DECISIONS.md`, `PROJECT_CONTEXT.md` |
 | Production | NON_ACCESSIBLE cette session | — |
 
-T048 n’est **pas** rejoué. Le registre le passe en `EN_CONTRÔLE` (code déjà livré, clôture après CI FULL sur SHA exact).
+T048 n’est **pas** rejoué. Clôturé `TERMINÉE` sur `origin/feat/x200-boot-autostart` (CI FULL).
 
 ## 2. Matrice composants vs X200 Agentic vNext
 
@@ -64,6 +64,6 @@ Interdit au début : mouvement d’argent, enable live PSP, merge `main`, deploy
 
 1. Ne pas travailler sur le `main` local périmé.  
 2. Ne pas détruire T001–T048.  
-3. T048 → `EN_CONTRÔLE` (implémentation déjà prouvée localement).  
+3. T048 déjà `TERMINÉE` sur la base distante — ne pas rejouer.  
 4. T049 Agent Registry = première P0 manquante réellement absente.  
 5. Maximum 3 nouvelles tâches ce cycle : T049, T050, T051.
