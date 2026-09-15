@@ -2,7 +2,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { createConnection } from "node:net";
 
 export const DOCKER_E2E_CONTAINER = "clevones-e2e-pg";
-export const DOCKER_E2E_HOST_PORT = 55432;
+/** Avoid 55432 — commonly occupied by local non-Docker Postgres on Fedora workstations. */
+export const DOCKER_E2E_HOST_PORT = 56432;
 
 function dockerAvailable(): boolean {
   const result = spawnSync("docker", ["info"], {
