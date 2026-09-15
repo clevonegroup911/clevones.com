@@ -6,7 +6,7 @@
 
 ## ID
 
-T062
+T063
 
 ## Statut
 
@@ -14,34 +14,36 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Outcome engine : labels déterministes depuis finance/commercial/dms/orchestration. Aucun side-effect.
+Hook recommend-only après upload preuve (flag AGENTIC_PROOF_RECOMMEND_HOOK). Aucune activation VERIFIED.
 
 ## Résultat
 
-`derive*Outcome` dans `lib/agentic/outcomes.ts`. quality-gate T062 PASS. MERGED=NO DEPLOYED=NO.
+`maybeRunAgenticProofRecommend` + branchement best-effort dans `persistProofAndDecision`. Désactivé par défaut. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/outcomes.ts`
-- `lib/agentic/outcomes.test.ts`
-- `reports/tasks/T062.md`
+- `lib/agentic/payment-hook.ts`
+- `lib/agentic/payment-hook.test.ts`
+- `reports/tasks/T063.md`
 
 ## Fichiers modifiés
 
+- `lib/payments/persist.ts`
 - `lib/agentic/index.ts`
+- backlog (T061/T062 close)
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T062
+- npm run x200:quality-gate -- --task T063
 
 ## Tests réussis
 
-- outcomes.test.ts 3 PASS
+- payment-hook.test.ts PASS
 - tsc --noEmit PASS
-- quality-gate T062 PASS
+- quality-gate T063 PASS
 
 ## Tests échoués
 
@@ -61,12 +63,12 @@ Outcome engine : labels déterministes depuis finance/commercial/dms/orchestrati
 
 ## Sécurité
 
-- Labels only ; pas de payout/mail/export
+- Hook off by default ; moneyMoved/verifiedActivated false
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- (push en cours)
+- (à pousser)
 
 ## Pull Request
 
@@ -74,17 +76,16 @@ Outcome engine : labels déterministes depuis finance/commercial/dms/orchestrati
 
 ## Preuves
 
-- lib/agentic/outcomes.ts
-- .x200/quality-results.json (T062)
+- lib/agentic/payment-hook.ts
 
 ## Risques
 
-- low
+- medium
 
 ## Blocage
 
-- aucun — attendre CI ; T061 CI in progress
+- aucun
 
 ## Prochaine tâche prête
 
-- T063 après T061 TERMINÉE
+- AUTOPLAN si NO_READY après clôture

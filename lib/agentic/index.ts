@@ -164,3 +164,8 @@ export {
   deriveOrchestrationOutcome,
 } from "@/lib/agentic/outcomes";
 export type { AgenticOutcome, AgenticOutcomeCode } from "@/lib/agentic/outcomes";
+export { maybeRunAgenticProofRecommend } from "@/lib/agentic/payment-hook";
+export type {
+  AgenticProofRecommendHookInput,
+  AgenticProofRecommendHookResult,
+} from "@/lib/agentic/payment-hook";

@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 190
+- Registre : 193
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 2
+- EN_CONTRÔLE : 1
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 1
-- TERMINÉE : 60
+- À_FAIRE : 0
+- TERMINÉE : 62
 - ANNULÉE : 0
 
 ## Tâches
@@ -82,6 +82,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T058 | P2 | TERMINÉE | Finance Agent — complete recommendation worker (no payout) | non |
 | T059 | P2 | TERMINÉE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
 | T060 | P2 | TERMINÉE | DMS Agent — document.classify metadata worker (no content leak) | non |
-| T061 | P1 | EN_CONTRÔLE | Agentic durable journal — events/approvals/audit to .x200 + Control Center feed | non |
-| T062 | P2 | EN_CONTRÔLE | Outcome engine — labels from orchestration (no side effects) | non |
-| T063 | P2 | À_FAIRE | Agentic recommend-only hook from payment proof path (no activation) | non |
+| T061 | P1 | TERMINÉE | Agentic durable journal — events/approvals/audit to .x200 + Control Center feed | non |
+| T062 | P2 | TERMINÉE | Outcome engine — labels from orchestration (no side effects) | non |
+| T063 | P2 | EN_CONTRÔLE | Agentic recommend-only hook from payment proof path (no activation) | non |

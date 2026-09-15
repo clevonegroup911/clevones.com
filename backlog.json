@@ -4245,11 +4245,27 @@
           "version": null,
           "at": "2026-09-15T15:30:35.081Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34989464769",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769",
+          "version": "edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38",
+          "at": "2026-09-15T15:43:14.409Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/persistence.ts",
+        "lib/agentic/persistence.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34989464769 SHA edc7bbd",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
@@ -4277,11 +4293,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "low",
       "estimatedCost": 5,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34989464769 on edc7bbd; MERGED=NO DEPLOYED=NO"
     },
     {
       "project": "clevones.com",
@@ -4300,11 +4316,27 @@
           "version": null,
           "at": "2026-09-15T15:34:51.358Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34989464769",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769",
+          "version": "edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38",
+          "at": "2026-09-15T15:43:14.409Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/outcomes.ts",
+        "lib/agentic/outcomes.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34989464769 SHA edc7bbd",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
@@ -4330,11 +4362,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "low",
       "estimatedCost": 3,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34989464769 on edc7bbd; MERGED=NO DEPLOYED=NO"
     },
     {
       "project": "clevones.com",
@@ -4343,11 +4375,22 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:47:08.361Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
       "owner": "cursor",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T063",
@@ -4372,11 +4415,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium",
       "estimatedCost": 6,
-      "nextAction": "séquence après T061 (éviter collision lib/payments si parallèle ambigu)",
-      "lastTransitionReason": "[X200-AUTOPLAN] integration hook; sequenced after durable journal"
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
     }
   ],
   "history": [
@@ -6137,9 +6180,45 @@
       "taskId": "T062",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T15:43:14.409Z",
+      "taskId": "T061",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34989464769 head edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38"
+    },
+    {
+      "at": "2026-09-15T15:43:14.409Z",
+      "taskId": "T062",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34989464769 head edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38"
+    },
+    {
+      "at": "2026-09-15T15:43:14.409Z",
+      "taskId": "T063",
+      "from": "À_FAIRE",
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-FAST] deps journal done; claim payment hook"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T063",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T063",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 190,
+  "registryVersion": 193,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
