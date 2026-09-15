@@ -6,62 +6,56 @@
 
 ## ID
 
-T048
+T049
 
 ## Statut
 
-EN_COURS
+EN_CONTRÔLE
 
 ## Objectif
 
-Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.
+Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.
 
 ## Résultat
 
-Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, linger, browser XDG, STARTUP tab, watchdog, installer npm). Acceptation locale partielle en cours ; MERGED=NO DEPLOYED=NO.
+Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–T047 préservées. T048 passé en EN_CONTRÔLE sans rejeu. Registre d'agents `lib/agentic` implémenté. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/boot/*`
-- `scripts/x200-autostart.mjs` / `x200-control-center-serve.mjs` / `x200-browser-autostart.mjs` / `x200-boot-watchdog.mjs`
-- `scripts/lib/x200-autostart-core.mjs`
-- `ops/systemd/clevones-x200-*.template`
-- `ops/xdg/clevones-x200-open-control-center.desktop.template`
-- `app/admin/x200/startup-panels.tsx`
-- `app/api/admin/x200/boot-actions/route.ts`
-- `docs/X200_BOOT_AUTOSTART.md`
-- `reports/tasks/T048.md`
+- `lib/agentic/types.ts`
+- `lib/agentic/catalog.ts`
+- `lib/agentic/registry.ts`
+- `lib/agentic/index.ts`
+- `lib/agentic/registry.test.ts`
+- `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`
+- `reports/tasks/T049.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts`
-- `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
-- `package.json`
-- `tests/e2e/x200-control-center.spec.ts`
-- `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
+- `package.json` (glob `lib/agentic/*.test.ts`)
+- `PRODUCT_GOAL.md` (critères 21–25)
+- `DECISIONS.md`
+- `PROJECT_CONTEXT.md`
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npm run x200:test
-- npm run lint
 - npx tsc --noEmit
-- npx prisma validate
-- npm run build
-- npx playwright test
+- npm run lint
 - npm run x200:scan-secrets
-- git diff --check
-- npm run x200:autostart:install / status
 
 ## Tests réussis
 
-- boot unit 9 PASS
-- autostart installer 4 PASS
-- npm test PASS
-- x200:test PASS
-- lint / tsc / prisma / build / playwright / secrets PASS
+- lib/agentic/registry.test.ts : 11 PASS
+- npm test : 213 PASS
+- npm run x200:test : 83 PASS
+- npm run x200:validate : BACKLOG_VALID + TASK_REPORT_VALID
+- npx tsc --noEmit : PASS (exit 0)
+- npm run lint : 0 warning / 0 error
+- npm run x200:scan-secrets : SCAN_SECRETS_OK blocking_hits=0
 
 ## Tests échoués
 
@@ -77,39 +71,43 @@ Implémentation complète Boot Orchestrator (systemd user, DB unless-stopped, li
 
 ## Build
 
-- PASS — aucun déploiement
+- non requis (FAST — lib + docs, pas de Prisma/auth/CI)
 
 ## Sécurité
 
-- SECRET_VALUES_EXPOSED=NO
-- ARBITRARY_SHELL=NO
-- HUMAN_GATE_BYPASS=NO
-- UNKNOWN_PROCESS_KILLED=NO
-- MERGED=NO
-- DEPLOYED=NO
+- Aucun SDK vendor
+- Aucun secret
+- EXTERNAL/USER ne mutent pas le registre
+- Contenu confidentiel non routé vers Grok/OpenAI
+- Finance agent maxRisk=MEDIUM ; pas de payout
+- MERGED=NO DEPLOYED=NO
+- scan-secrets blocking_hits=0
 
 ## Commit
 
-- feat/x200-boot-autostart (pending push)
+- feat/x200-agentic-core (pending push)
 
 ## Pull Request
 
-- pending draft PR → feat/x200-operational-mirror
+- draft PR à ouvrir après push
 
 ## Preuves
 
-- reports/tasks/T048.md
-- local install: units enabled, DB unless-stopped, linger YES, browser desktop installed, HTTP 307 OK
-- PORT_3001_OWNER=X200 (supervised; no duplicate; no kill)
+- docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md
+- lib/agentic/*
+- lib/agentic/registry.test.ts
+- .x200/quality-results.json (local quality-gate PASS, T049)
 
 ## Risques
 
-- Autopilot refuse worktree dirty pendant l'implémentation (attendu)
+- T048 reste EN_CONTRÔLE jusqu'à CI FULL sur son SHA
+- package.json est dans FULL_PATTERNS : le classifieur CI peut forcer FULL malgré une intention FAST
+- Workspace initial était un main périmé ; stash local non réappliqué
 
 ## Blocage
 
-- aucun gate humain pour le code ; linger déjà YES sur la machine locale
+- aucun
 
 ## Prochaine tâche prête
 
-- clôturer T048 après CI FULL SUCCESS sur HEAD exact
+- clôturer T049 après job GitHub `quality` SUCCESS sur SHA exact, puis T050
