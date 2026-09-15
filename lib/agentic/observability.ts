@@ -85,8 +85,24 @@ export function buildAgenticObservabilitySnapshot(options?: {
     recentAudits,
     recentOrchestrations,
     liveProvidersDisabled: true,
-    note: "In-process read-only snapshot. Live provider execute/stream remain PROVIDER_LIVE_DISABLED.",
+    note: "In-process/persisted read-only snapshot. Live provider execute/stream remain PROVIDER_LIVE_DISABLED.",
   };
+}
+
+/** Load durable journal (if any) then build Control Center snapshot. */
+export async function loadAgenticObservabilitySnapshot(options?: {
+  cwd?: string;
+  limit?: number;
+}): Promise<AgenticObservabilitySnapshot> {
+  const { loadAgenticJournal } = await import("@/lib/agentic/persistence");
+  const journal = await loadAgenticJournal({
+    cwd: options?.cwd,
+    limit: options?.limit ?? 50,
+  });
+  return buildAgenticObservabilitySnapshot({
+    audits: journal.audits,
+    orchestrations: journal.orchestrations,
+  });
 }
 
 export function orchestrationRowFromResult(input: {

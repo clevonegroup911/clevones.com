@@ -4175,13 +4175,29 @@
           "version": null,
           "at": "2026-09-15T15:15:48.712Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34987297923",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34987297923",
+          "version": "845095c133b7078329fc7276263af46cc5bdb81d",
+          "at": "2026-09-15T15:24:20.907Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34987297923 on 845095c; MERGED=NO DEPLOYED=NO",
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/dms-agent.ts",
+        "lib/agentic/dms-agent.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34987297923 SHA 845095c",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34987297923"
+      ],
       "estimatedCost": 6,
       "attempts": 1,
       "requiresHuman": false,
@@ -4209,8 +4225,147 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:30:35.081Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T061",
+      "title": "Agentic durable journal — events/approvals/audit to .x200 + Control Center feed",
+      "objective": "Persister DomainEventLog, BusinessApprovalEngine et AgentAuditLog dans .x200/agentic-*.jsonl (comme human-approvals), sans secrets. Alimenter buildAgenticObservabilitySnapshot pour le panneau Control Center.",
+      "priority": "P1",
+      "dependencies": [
+        "T057",
+        "T060"
+      ],
+      "scope": [
+        "lib/agentic/persistence.ts",
+        "lib/agentic/persistence.test.ts",
+        "lib/agentic/observability.ts",
+        "app/admin/x200/page.tsx"
+      ],
+      "acceptanceCriteria": [
+        "Append-only jsonl pour events, approvals (tokenDigest only), audits ; reload au démarrage snapshot",
+        "Control Center agentic panel affiche entrées persistées ; tokens absents des fichiers",
+        "MERGED=NO DEPLOYED=NO ; pas de Prisma/migration"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "EN_CONTRÔLE",
+      "risk": "low",
+      "estimatedCost": 5,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T062",
+      "title": "Outcome engine — labels from orchestration (no side effects)",
+      "objective": "Moteur d’outcomes déterministe : invoice_reconciled_candidate, lead_qualified_candidate, document_classified à partir des résultats orchestrator/agents. Labels only ; aucun payout/mail/export.",
+      "priority": "P2",
+      "dependencies": [
+        "T060"
+      ],
+      "scope": [
+        "lib/agentic/outcomes.ts",
+        "lib/agentic/outcomes.test.ts",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "deriveAgenticOutcome(result) pour finance/commercial/dms avec codes stables",
+        "Jamais moneyMoved/emailSent/exported true ; tests unitaires",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "PRÊTE",
+      "risk": "low",
+      "estimatedCost": 3,
+      "nextAction": "réclamer si scope libre (indépendant de T061)",
+      "lastTransitionReason": "[X200-AUTOPLAN] outcome labels from gap analysis P3→P2 useful"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [],
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T063",
+      "title": "Agentic recommend-only hook from payment proof path (no activation)",
+      "objective": "Brancher un appel optionnel runFinanceAgentTask après upload preuve (admin/sandbox) pour recommandation uniquement. Aucune activation VERIFIED, aucun payout. Feature derrière flag local / chemin sandbox existant.",
+      "priority": "P2",
+      "dependencies": [
+        "T058"
+      ],
+      "scope": [
+        "lib/agentic/payment-hook.ts",
+        "lib/agentic/payment-hook.test.ts",
+        "lib/payments"
+      ],
+      "acceptanceCriteria": [
+        "Hook recommend-only après preuve ; moneyMoved/verifiedActivated false",
+        "Désactivable ; n’altère pas le moteur reconciliation existant",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "risk": "medium",
+      "estimatedCost": 6,
+      "nextAction": "séquence après T061 (éviter collision lib/payments si parallèle ambigu)",
+      "lastTransitionReason": "[X200-AUTOPLAN] integration hook; sequenced after durable journal"
     }
   ],
   "history": [
@@ -5915,9 +6070,53 @@
       "taskId": "T060",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T15:24:20.907Z",
+      "taskId": "T060",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34987297923 head 845095c133b7078329fc7276263af46cc5bdb81d"
+    },
+    {
+      "at": "2026-09-15T15:24:20.907Z",
+      "taskId": "T061",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] durable agentic journal; zero duplicate T001-T060"
+    },
+    {
+      "at": "2026-09-15T15:24:20.907Z",
+      "taskId": "T062",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] outcome engine labels"
+    },
+    {
+      "at": "2026-09-15T15:24:20.907Z",
+      "taskId": "T063",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] payment recommend hook; after T061"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T061",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T061",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 185,
+  "registryVersion": 188,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

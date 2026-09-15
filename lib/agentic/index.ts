@@ -104,6 +104,22 @@ export type {
   DmsClassifyResult,
 } from "@/lib/agentic/dms-agent";
 export {
+  appendAgenticApproval,
+  appendAgenticAudit,
+  appendAgenticEvent,
+  appendAgenticOrchestration,
+  loadAgenticJournal,
+} from "@/lib/agentic/persistence";
+export type {
+  AgenticJournalSnapshot,
+  PersistedApprovalRow,
+} from "@/lib/agentic/persistence";
+export {
+  buildAgenticObservabilitySnapshot,
+  loadAgenticObservabilitySnapshot,
+  orchestrationRowFromResult,
+} from "@/lib/agentic/observability";
+export {
   BusinessOrchestrator,
   classifyBusinessEvent,
   createBusinessOrchestrator,

@@ -6,7 +6,7 @@
 
 ## ID
 
-T060
+T061
 
 ## Statut
 
@@ -14,38 +14,38 @@ EN_CONTRÔLE
 
 ## Objectif
 
-DMS Agent : document.uploaded → classify via documents.read.metadata + documents.classify. Pas d'export / echo contenu.
+Persister events/approvals/audits/orchestrations dans .x200/agentic-*.jsonl et alimenter le panneau Control Center.
 
 ## Résultat
 
-`recommendDocumentClassify` + handler `documents.classify` + orchestrator `runDms`. quality-gate T060 PASS. MERGED=NO DEPLOYED=NO.
+`lib/agentic/persistence.ts` + `loadAgenticObservabilitySnapshot` sur `/admin/x200`. Tokens absents des fichiers. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/dms-agent.ts`
-- `lib/agentic/dms-agent.test.ts`
-- `reports/tasks/T060.md`
+- `lib/agentic/persistence.ts`
+- `lib/agentic/persistence.test.ts`
+- `reports/tasks/T061.md`
 
 ## Fichiers modifiés
 
-- `lib/agentic/gateway.ts`
-- `lib/agentic/orchestrator.ts`
-- `lib/agentic/orchestrator.test.ts`
+- `lib/agentic/observability.ts`
+- `app/admin/x200/page.tsx`
 - `lib/agentic/index.ts`
+- backlog/gap (T060 close + AUTOPLAN T061–T063)
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T060
+- npm run x200:quality-gate -- --task T061
 
 ## Tests réussis
 
-- dms-agent.test.ts PASS
-- orchestrator DMS path PASS
+- persistence.test.ts PASS
+- observability.test.ts PASS
 - tsc --noEmit PASS
-- quality-gate T060 PASS
+- quality-gate T061 PASS
 
 ## Tests échoués
 
@@ -65,7 +65,7 @@ DMS Agent : document.uploaded → classify via documents.read.metadata + documen
 
 ## Sécurité
 
-- contentEchoed=false bytesEchoed=false exported=false
+- Pas de token brut en jsonl ; sanitizeAuditValue
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -78,17 +78,16 @@ DMS Agent : document.uploaded → classify via documents.read.metadata + documen
 
 ## Preuves
 
-- lib/agentic/dms-agent.ts
-- .x200/quality-results.json (T060)
+- lib/agentic/persistence.ts
 
 ## Risques
 
-- medium
+- low
 
 ## Blocage
 
-- aucun — attendre CI quality SUCCESS
+- aucun
 
 ## Prochaine tâche prête
 
-- AUTOPLAN après T060 TERMINÉE
+- T062 Outcome engine

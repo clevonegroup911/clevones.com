@@ -1,52 +1,31 @@
 # CLEVONE Agentic Business Platform — Gap Analysis
 
-**Date :** 2026-09-15 (mise à jour AUTOPLAN)
+**Date :** 2026-09-15 (post T060)
 **Base vérifiée :** `feat/x200-agentic-core`
-**Classe des faits :** CONFIRMÉ = lu dans le dépôt ; INDIQUÉ = docs/historique ; PROPOSÉ = recommandation ; NON_ACCESSIBLE = production.
+**Classe des faits :** CONFIRMÉ = dépôt ; NON_ACCESSIBLE = production.
 
 ## 1. État X200 (CONFIRMÉ)
 
-| Élément | État | Preuve |
-|---|---|---|
-| T001–T048 | `TERMINÉE` | `backlog.json` |
-| T049 Agent Registry | `TERMINÉE` | `lib/agentic/registry.ts` |
-| T050 Domain events | `TERMINÉE` | `lib/agentic/events.ts` |
-| T051 Tool Gateway + audit | `TERMINÉE` | `lib/agentic/gateway.ts`, `audit.ts`, `tools.ts` |
-| T052 Payment event adapters | `TERMINÉE` | `lib/agentic/payment-events.ts` |
-| T053 Finance vertical slice | `TERMINÉE` | `lib/agentic/finance-slice.ts` ; CI quality SUCCESS |
-| T054 Business Orchestrator | `TERMINÉE` | `lib/agentic/orchestrator.ts` ; CI run 34979500998 |
-| T055 Provider adapters | `TERMINÉE` | `lib/agentic/providers` ; CI run 34980795199 |
-| T056 Business Approval Engine | `EN_CONTRÔLE` | `lib/agentic/approvals.ts` |
-| Control Center ops `/admin/x200` | Présent | T042–T047 |
-| Production | NON_ACCESSIBLE | — |
-| MERGED / DEPLOYED | NO / NO | PR #13 draft |
+| Élément | État |
+|---|---|
+| T001–T060 | `TERMINÉE` (agentic core + Finance/Commercial/DMS workers + Control Center panel) |
+| T061 Durable journal | `PRÊTE` |
+| T062 Outcome engine | `PRÊTE` |
+| T063 Payment recommend hook | `À_FAIRE` |
+| MERGED / DEPLOYED | NO / NO — PR #13 draft |
 
-Ne pas rejouer T001–T053.
+## 2. Matrice vs PRODUCT_GOAL 21–25
 
-## 2. Matrice composants vs but
+| Critère | État |
+|---|---|
+| 21 Registry + adapters | CONFIRMÉ T049/T055 |
+| 22 Domain events idempotents | CONFIRMÉ T050 |
+| 23 Tool Gateway + no auto money | CONFIRMÉ T051–T056 |
+| 24 EXTERNAL as DATA | CONFIRMÉ registry policy layers |
+| 25 Finance vertical slice | CONFIRMÉ T053/T058 |
 
-| COMPONENT | STATUS | WHAT EXISTS | WHAT IS MISSING | RISK | ACTION |
-|---|---|---|---|---|---|
-| Agent Registry | CONFIRMÉ livré T049 | Catalogue + select | — | low | Préserver |
-| Domain events | CONFIRMÉ livré T050 | Envelope + idempotence | Bus distribué | medium | P3 |
-| Tool Gateway | CONFIRMÉ livré T051 | Allowlist + stubs | Handlers CRM/DMS live | medium | P2 |
-| Finance slice | CONFIRMÉ livré T053 | proof→recommend | Agent Finance complet P2 | high | Étendre |
-| Business Orchestrator | EN_COURS T054 | — | EVENT→agent→gateway | medium | **P1** |
-| Provider adapters | Absent T055 | Interface types | Stubs health/cost | low | **P1** |
-| Approval Engine métier | Partiel | tokens gateway ad-hoc | issue/consume TTL unifié | medium | **P1 T056** |
-| Observability agentique | Partiel ops | `/admin/x200` | Panel agents métier | low | cycle suivant |
-| Finance / Commercial / DMS agents | Catalogue only | IDs + allowlists | Workers métier complets | medium | **P2** après P1 |
+Écarts utiles restants : journal durable + feed CC (T061), labels outcomes (T062), hook preuve→recommend (T063). Rails live / merge / deploy = gates humaines.
 
-## 3. Vertical slice (CONFIRMÉ livré T053)
+## 3. AUTOPLAN
 
-```text
-payment.proof_uploaded → CLEVONE_FINANCE_AGENT → recommend → human if MEDIUM+ → audit
-```
-
-Orchestrator T054 délègue ce chemin sans dupliquer `lib/payments`.
-
-## 4. AUTOPLAN 2026-09-15 (CONFIRMÉ)
-
-Max 3 tâches : **T054** (PRÊTE→EN_COURS), **T055** (À_FAIRE), **T056** (À_FAIRE, dep T054).
-Pas de tâche P2 créée ce cycle (Finance/Commercial/DMS complets) — après clôture P1 orchestrator/adapters/approvals.
-Pas de merge PR #13 / deploy sans gate humain.
+Max 3 : **T061** PRÊTE (low), **T062** PRÊTE (low), **T063** À_FAIRE (medium, après T061).

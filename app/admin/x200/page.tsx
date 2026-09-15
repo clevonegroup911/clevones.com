@@ -3,7 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import { AgenticObservabilityPanels } from "@/app/admin/x200/agentic-panels";
 import { ControlCenterClient } from "@/app/admin/x200/control-center-client";
 import { requireAdmin } from "@/lib/auth/require-admin";
-import { buildAgenticObservabilitySnapshot } from "@/lib/agentic/observability";
+import { buildAgenticObservabilitySnapshot, loadAgenticObservabilitySnapshot } from "@/lib/agentic/observability";
 import {
   buildControlCenterFatalSnapshot,
   getControlCenterSnapshot,
@@ -29,7 +29,12 @@ export default async function AdminX200ControlCenterPage() {
     snapshot = buildControlCenterFatalSnapshot(error);
   }
 
-  const agenticSnapshot = buildAgenticObservabilitySnapshot();
+  let agenticSnapshot;
+  try {
+    agenticSnapshot = await loadAgenticObservabilitySnapshot();
+  } catch {
+    agenticSnapshot = buildAgenticObservabilitySnapshot();
+  }
 
   return (
     <>
