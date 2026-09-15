@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé AUTOPLAN sur HEAD `c097cd5` (goalHash inchangé).
+Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé AUTOPLAN sur HEAD `907167b` (goalHash inchangé) après clôture T049.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -46,7 +46,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
-| PRODUCT_COMPLETE | local `.x200/` ; head=`c097cd5` + goalHash courants | CONFIRMÉ règle X200 |
+| PRODUCT_COMPLETE | local `.x200/` ; head=`907167b` + goalHash courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
 
