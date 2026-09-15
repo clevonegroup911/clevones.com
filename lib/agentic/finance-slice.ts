@@ -1,4 +1,5 @@
 import { DomainEventLog } from "@/lib/agentic/events";
+import { recommendFinanceReconciliation } from "@/lib/agentic/finance-agent";
 import {
   createDefaultToolGateway,
   type ToolGateway,
@@ -11,11 +12,9 @@ import {
   type AgentRegistry,
 } from "@/lib/agentic/registry";
 import type { AgentDefinition, AgentRoutingDecision } from "@/lib/agentic/types";
-import {
-  createReconciliationService,
-  type PaymentProofRecord,
-  type ReconciliationDecisionRecord,
-  type ClevoneOfficialEvent,
+import type {
+  ReconciliationDecisionRecord,
+  ClevoneOfficialEvent,
 } from "@/lib/payments/reconciliation";
 
 export type FinanceSliceInput = {
@@ -46,25 +45,6 @@ export type FinanceSliceResult = {
   moneyMoved: false;
   verifiedActivated: false;
 };
-
-function syntheticProof(input: FinanceSliceInput): PaymentProofRecord {
-  return {
-    id: input.proofId,
-    paymentId: input.paymentId,
-    invoiceId: input.invoiceId,
-    source: input.proofSource,
-    storageKey: `agentic/synthetic/${input.proofId}`,
-    fileName: "proof.stub",
-    mimeType: "application/octet-stream",
-    sizeBytes: 0,
-    checksumSha256: "0".repeat(64),
-    reference: input.reference,
-    amountCents: input.amountCents,
-    currency: input.currency?.toUpperCase(),
-    authenticated: input.authenticated,
-    createdAt: new Date().toISOString(),
-  };
-}
 
 /**
  * Vertical slice: payment.proof_uploaded → select finance agent → recommend.
@@ -153,19 +133,8 @@ export async function runFinanceProofUploadedSlice(
     };
   }
 
-  const reconciliation = createReconciliationService();
-  reconciliation.hydratePersistedState({
-    proofs: [syntheticProof(input)],
-    events: input.clevoneEvent ? [input.clevoneEvent] : [],
-  });
-  const decision = reconciliation.reconcile({
-    idempotencyKey: `agentic:${input.idempotencyKey}`,
-    paymentId: input.paymentId,
-    invoiceId: input.invoiceId,
-    clientProofId: input.proofId,
-    expectedAmountCents: input.expectedAmountCents,
-    expectedCurrency: input.expectedCurrency,
-  });
+  const recommended = recommendFinanceReconciliation(input);
+  const decision = recommended.decision;
 
   const approvalRequired =
     decision.status === "HUMAN_REVIEW"

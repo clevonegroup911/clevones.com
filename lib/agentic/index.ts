@@ -85,6 +85,15 @@ export type {
   FinanceSliceResult,
 } from "@/lib/agentic/finance-slice";
 export {
+  recommendFinanceReconciliation,
+  runFinanceAgentTask,
+} from "@/lib/agentic/finance-agent";
+export type {
+  FinanceAgentTaskInput,
+  FinanceRecommendInput,
+  FinanceRecommendResult,
+} from "@/lib/agentic/finance-agent";
+export {
   BusinessOrchestrator,
   classifyBusinessEvent,
   createBusinessOrchestrator,

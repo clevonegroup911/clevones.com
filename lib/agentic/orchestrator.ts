@@ -5,7 +5,9 @@ import {
   type RecordEventInput,
 } from "@/lib/agentic/events";
 import {
-  runFinanceProofUploadedSlice,
+  runFinanceAgentTask,
+} from "@/lib/agentic/finance-agent";
+import {
   type FinanceSliceInput,
   type FinanceSliceResult,
 } from "@/lib/agentic/finance-slice";
@@ -263,10 +265,14 @@ export class BusinessOrchestrator {
       };
     }
 
-    const finance = await runFinanceProofUploadedSlice(
+    const finance = await runFinanceAgentTask(
       {
         ...input.finance,
         idempotencyKey: input.finance.idempotencyKey ?? input.event.idempotencyKey,
+        eventType:
+          input.event.eventType === "payment.reconciliation_failed"
+            ? "payment.reconciliation_failed"
+            : "payment.proof_uploaded",
       },
       {
         events: this.events,

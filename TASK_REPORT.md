@@ -6,7 +6,7 @@
 
 ## ID
 
-T057
+T058
 
 ## Statut
 
@@ -14,36 +14,37 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Panneau admin lecture seule sous /admin/x200 : catalogue agents, audits outils, orchestrations. Aucune exécution live.
+Finance Agent complet : recommend() multi-événements, raisons structurées, hooks orchestrator. Recommend-only.
 
 ## Résultat
 
-`buildAgenticObservabilitySnapshot` + `AgenticObservabilityPanels` sur Control Center. quality-gate T057 PASS. MERGED=NO DEPLOYED=NO.
+`recommendFinanceReconciliation` + `runFinanceAgentTask`. quality-gate T058 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/observability.ts`
-- `lib/agentic/observability.test.ts`
-- `app/admin/x200/agentic-panels.tsx`
-- `reports/tasks/T057.md`
+- `lib/agentic/finance-agent.ts`
+- `lib/agentic/finance-agent.test.ts`
+- `reports/tasks/T058.md`
 
 ## Fichiers modifiés
 
-- `app/admin/x200/page.tsx`
-- `backlog.json` / `BACKLOG.md` (AUTOPLAN T057–T059 + T056 close)
+- `lib/agentic/finance-slice.ts`
+- `lib/agentic/orchestrator.ts`
+- `lib/agentic/index.ts`
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T057
+- npm run x200:quality-gate -- --task T058
 
 ## Tests réussis
 
-- observability.test.ts 2 PASS
+- finance-agent.test.ts 2 PASS
+- finance-slice + orchestrator PASS
 - tsc --noEmit PASS
-- quality-gate T057 PASS
+- quality-gate T058 PASS
 
 ## Tests échoués
 
@@ -63,7 +64,7 @@ Panneau admin lecture seule sous /admin/x200 : catalogue agents, audits outils, 
 
 ## Sécurité
 
-- Read-only ; liveProvidersDisabled=true
+- moneyMoved=false verifiedActivated=false
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -76,18 +77,17 @@ Panneau admin lecture seule sous /admin/x200 : catalogue agents, audits outils, 
 
 ## Preuves
 
-- lib/agentic/observability.ts
-- app/admin/x200/agentic-panels.tsx
-- .x200/quality-results.json (T057)
+- lib/agentic/finance-agent.ts
+- .x200/quality-results.json (T058)
 
 ## Risques
 
-- low
+- medium
 
 ## Blocage
 
-- aucun — attendre CI quality SUCCESS
+- aucun — attendre CI
 
 ## Prochaine tâche prête
 
-- T058 (Finance Agent complet)
+- T059 (Commercial) après clôture scopes

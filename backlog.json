@@ -3965,11 +3965,27 @@
           "version": null,
           "at": "2026-09-15T14:40:23.268Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34983313834",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34983313834",
+          "version": "3e3c457789d76de72af08b627047f899a3ec516c",
+          "at": "2026-09-15T14:46:49.706Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/observability.ts",
+        "app/admin/x200/agentic-panels.tsx",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34983313834 SHA 3e3c457",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34983313834"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
@@ -3996,11 +4012,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "low",
       "estimatedCost": 5,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34983313834 on 3e3c457; MERGED=NO DEPLOYED=NO"
     },
     {
       "project": "clevones.com",
@@ -4009,11 +4025,22 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:46:18.934Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
       "owner": "cursor",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T058",
@@ -4039,11 +4066,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium",
       "estimatedCost": 7,
-      "nextAction": "réclamer après ou en parallèle de T057 si scopes disjoints (T057=admin UI, T058=lib/agentic finance)",
-      "lastTransitionReason": "[X200-AUTOPLAN] P2 Finance Agent complet ; deps T056"
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
     },
     {
       "project": "clevones.com",
@@ -5715,9 +5742,29 @@
       "taskId": "T057",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T058",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T058",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T14:46:49.706Z",
+      "taskId": "T057",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34983313834 head 3e3c457789d76de72af08b627047f899a3ec516c"
     }
   ],
-  "registryVersion": 175,
+  "registryVersion": 178,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

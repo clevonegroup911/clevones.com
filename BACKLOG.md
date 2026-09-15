@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 175
+- Registre : 178
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
@@ -11,11 +11,11 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - EN_COURS : 0
 - EN_CONTRÔLE : 1
-- PRÊTE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 1
-- TERMINÉE : 56
+- TERMINÉE : 57
 - ANNULÉE : 0
 
 ## Tâches
@@ -78,6 +78,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T054 | P1 | TERMINÉE | Agentic Core — business X200 Orchestrator (event→agent→gateway) | non |
 | T055 | P1 | TERMINÉE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
 | T056 | P1 | TERMINÉE | Agentic Core — business Approval Engine (single-use, persisted) | non |
-| T057 | P1 | EN_CONTRÔLE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
-| T058 | P2 | PRÊTE | Finance Agent — complete recommendation worker (no payout) | non |
+| T057 | P1 | TERMINÉE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
+| T058 | P2 | EN_CONTRÔLE | Finance Agent — complete recommendation worker (no payout) | non |
 | T059 | P2 | À_FAIRE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
