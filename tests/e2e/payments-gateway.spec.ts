@@ -20,12 +20,19 @@ function skipWithoutDb() {
   }
 }
 
+type PostJsonResult = {
+  ok: boolean;
+  status: number;
+  json: unknown;
+  text: string;
+};
+
 /** Browser-context JSON POST — keeps cookies and always sends a complete body. */
-async function postJson(
+async function postJsonOnce(
   page: import("@playwright/test").Page,
   path: string,
   payload: Record<string, unknown>,
-) {
+): Promise<PostJsonResult> {
   return page.evaluate(
     async ({ path: url, payload: body }) => {
       const response = await fetch(url, {
@@ -51,12 +58,41 @@ async function postJson(
   );
 }
 
+function isTransientDevRouteError(result: PostJsonResult): boolean {
+  if (result.ok || result.status !== 500) return false;
+  return (
+    result.text.includes("Unexpected end of JSON input") ||
+    result.text.includes("loadManifest") ||
+    result.text.includes("/_error")
+  );
+}
+
+/** Retries brief Next.js dev-route compile races without masking real 4xx/5xx app errors. */
+async function postJson(
+  page: import("@playwright/test").Page,
+  path: string,
+  payload: Record<string, unknown>,
+  attempts = 5,
+): Promise<PostJsonResult> {
+  let last: PostJsonResult | null = null;
+  for (let i = 0; i < attempts; i += 1) {
+    last = await postJsonOnce(page, path, payload);
+    if (last.ok || !isTransientDevRouteError(last) || i === attempts - 1) {
+      return last;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500 * (i + 1)));
+  }
+  return last as PostJsonResult;
+}
+
 test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile → VERIFIED receipt", async ({
   page,
 }, testInfo) => {
   skipWithoutDb();
   const project = testInfo.project.name;
-  const reference = `E2E-PAY-${project}-${Date.now().toString(36)}`;
+  const unique = `${project}-${Date.now().toString(36)}-${testInfo.retry}`;
+  const reference = `E2E-PAY-${unique}`;
+  const orderTitle = `E2E gateway ${unique}`;
 
   await loginE2eAdmin(page);
 
@@ -70,7 +106,7 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
   await captureSafeEvidence(page, `${project}-payments-admin.png`);
 
   const seed = await postJson(page, "/api/admin/payments/sandbox", {
-    title: `E2E gateway ${project}`,
+    title: orderTitle,
     amountCents: 3400,
     currency: "USD",
     settle: false,
@@ -85,7 +121,7 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
 
   await page.goto("/portal/payments");
   await expect(page.getByRole("heading", { name: "Mes paiements" })).toBeVisible();
-  await expect(page.getByText(`E2E gateway ${project}`)).toBeVisible();
+  await expect(page.getByText(orderTitle, { exact: false }).first()).toBeVisible();
 
   const proofForm = page.locator("form").filter({ hasText: "Envoyer preuve" }).first();
   await proofForm.locator('input[name="reference"]').fill(reference);
@@ -155,11 +191,12 @@ test("payments gateway sandbox: mismatch → HUMAN_REVIEW → approve activates"
 }, testInfo) => {
   skipWithoutDb();
   const project = testInfo.project.name;
+  const unique = `${project}-${Date.now().toString(36)}-${testInfo.retry}`;
 
   await loginE2eAdmin(page);
 
   const seed = await postJson(page, "/api/admin/payments/sandbox", {
-    title: `E2E review ${project}`,
+    title: `E2E review ${unique}`,
     amountCents: 2100,
     currency: "USD",
     settle: false,
@@ -173,7 +210,7 @@ test("payments gateway sandbox: mismatch → HUMAN_REVIEW → approve activates"
   await postJson(page, "/api/admin/payments/clevone-event", {
     paymentId: seeded.paymentId,
     invoiceId: seeded.invoiceId,
-    reference: `E2E-MIS-${project}`,
+    reference: `E2E-MIS-${unique}`,
     amountCents: 9999,
     currency: "USD",
     source: "CLEVONE_SANDBOX",

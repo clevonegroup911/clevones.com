@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=CLEVONE X200 Control Center
+Comment=Open Control Center once after desktop login
+Exec={{NODE_BIN}} {{REPO_ROOT}}/scripts/x200-browser-autostart.mjs
+Icon=web-browser
+Terminal=false
+Categories=Network;
+X-GNOME-Autostart-enabled=true
+StartupNotify=false

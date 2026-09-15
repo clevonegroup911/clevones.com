@@ -175,6 +175,153 @@ export function parseBacklogJson(raw: string): BacklogParseResult {
   };
 }
 
+export function parseRuntimeLeaseJson(raw: string): {
+  status: SourceStatus;
+  lease: {
+    taskId: string;
+    workerId: string;
+    expiresAt: string;
+    renewedAt: string | null;
+    heartbeatAt: string | null;
+    claimedAt: string | null;
+  } | null;
+  warning: string | null;
+} {
+  let data: unknown;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    return {
+      status: "INVALID",
+      lease: null,
+      warning: "autopilot-lease.json is not valid JSON",
+    };
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return {
+      status: "INVALID",
+      lease: null,
+      warning: "autopilot-lease.json root is not an object",
+    };
+  }
+  const record = data as Record<string, unknown>;
+  if ("token" in record) {
+    return {
+      status: "INVALID",
+      lease: null,
+      warning: "autopilot-lease.json must not contain secrets",
+    };
+  }
+  if (typeof record.taskId !== "string" || typeof record.workerId !== "string") {
+    return {
+      status: "INVALID",
+      lease: null,
+      warning: "autopilot-lease.json missing taskId/workerId",
+    };
+  }
+  if (typeof record.expiresAt !== "string") {
+    return {
+      status: "INVALID",
+      lease: null,
+      warning: "autopilot-lease.json missing expiresAt",
+    };
+  }
+  return {
+    status: "OK",
+    lease: {
+      taskId: record.taskId,
+      workerId: record.workerId,
+      expiresAt: record.expiresAt,
+      renewedAt: typeof record.renewedAt === "string" ? record.renewedAt : null,
+      heartbeatAt:
+        typeof record.heartbeatAt === "string"
+          ? record.heartbeatAt
+          : typeof record.renewedAt === "string"
+            ? record.renewedAt
+            : null,
+      claimedAt: typeof record.claimedAt === "string" ? record.claimedAt : null,
+    },
+    warning: null,
+  };
+}
+
+export function applyRuntimeLeaseToBacklog(
+  backlog: BacklogParseResult,
+  lease: {
+    taskId: string;
+    workerId: string;
+    expiresAt: string;
+    renewedAt: string | null;
+    heartbeatAt: string | null;
+  } | null,
+): BacklogParseResult {
+  if (!lease || backlog.status !== "OK") {
+    return backlog;
+  }
+
+  const tasks = backlog.tasks.map((task) => {
+    if (task.id !== lease.taskId) {
+      return task;
+    }
+    return {
+      ...task,
+      claimWorkerId: lease.workerId || task.claimWorkerId,
+      claimExpiresAt: lease.expiresAt,
+      lastTransitionReason:
+        lease.renewedAt != null
+          ? task.lastTransitionReason
+          : task.lastTransitionReason,
+    };
+  });
+
+  const currentTask =
+    tasks.find((task) => task.status === "EN_COURS") ??
+    tasks.find((task) => task.status === "EN_CONTRÔLE") ??
+    backlog.currentTask;
+
+  return {
+    ...backlog,
+    tasks,
+    currentTask:
+      currentTask && currentTask.id === lease.taskId
+        ? {
+            ...currentTask,
+            claimWorkerId: lease.workerId || currentTask.claimWorkerId,
+            claimExpiresAt: lease.expiresAt,
+          }
+        : currentTask,
+  };
+}
+
+export async function readRuntimeLeaseSnapshot(): Promise<{
+  status: SourceStatus;
+  lease: {
+    taskId: string;
+    workerId: string;
+    expiresAt: string;
+    renewedAt: string | null;
+    heartbeatAt: string | null;
+    claimedAt: string | null;
+  } | null;
+  warning: string | null;
+}> {
+  const filePath = repoPath(".x200", "runtime", "autopilot-lease.json");
+  if (!(await fileExists(filePath))) {
+    return { status: "MISSING", lease: null, warning: null };
+  }
+  try {
+    const raw = await readFile(filePath, "utf8");
+    return parseRuntimeLeaseJson(raw);
+  } catch (error) {
+    return {
+      status: "ERROR",
+      lease: null,
+      warning:
+        error instanceof Error ? error.message : "runtime lease read failed",
+    };
+  }
+}
+
 export async function readBacklogSnapshot(): Promise<BacklogParseResult> {
   const filePath = repoPath("backlog.json");
   if (!(await fileExists(filePath))) {
@@ -191,7 +338,17 @@ export async function readBacklogSnapshot(): Promise<BacklogParseResult> {
 
   try {
     const raw = await readFile(filePath, "utf8");
-    return parseBacklogJson(raw);
+    const parsed = parseBacklogJson(raw);
+    const runtime = await readRuntimeLeaseSnapshot();
+    if (runtime.warning) {
+      return {
+        ...applyRuntimeLeaseToBacklog(parsed, runtime.lease),
+        warning: parsed.warning
+          ? `${parsed.warning}; ${runtime.warning}`
+          : runtime.warning,
+      };
+    }
+    return applyRuntimeLeaseToBacklog(parsed, runtime.lease);
   } catch (error) {
     return {
       status: "ERROR",

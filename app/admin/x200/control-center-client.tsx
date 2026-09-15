@@ -17,6 +17,8 @@ import type {
   PipelineStep,
   SystemHealth,
 } from "@/lib/x200/types";
+import type { HumanActionType } from "@/lib/x200/actions/types";
+import { DisabledReason } from "@/app/admin/x200/action-console";
 import {
   HumanActionPanels,
   X200TabBar,
@@ -30,6 +32,7 @@ import {
   NextSafeActionBanner,
   OperationalMirrorPanels,
 } from "@/app/admin/x200/operational-mirror-panels";
+import { BootBadge, StartupPanels } from "@/app/admin/x200/startup-panels";
 
 type FilterId =
   | "all"
@@ -214,6 +217,14 @@ export function ControlCenterClient({
   const [nowTick, setNowTick] = useState(() => Date.now());
   const [activeTab, setActiveTab] = useState<TabId>("OVERVIEW");
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const openPreviewRef = useRef<(action: HumanActionType) => void>(() => {});
+  const [lastHumanMeta, setLastHumanMeta] = useState<{
+    at: number;
+    phase: string;
+    message: string;
+    receiptId: string | null;
+    durationMs: number | null;
+  } | null>(null);
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -455,6 +466,25 @@ export function ControlCenterClient({
             <span data-testid="x200-csrf-chip" className="text-gray-muted">
               CSRF: {snapshot.humanActions?.csrf.status ?? "N/A"}
             </span>
+            <span data-testid="x200-actor-role" className="text-gray-muted">
+              actor={actorRole}
+            </span>
+            <span data-testid="x200-last-action-bar" className="text-gray-muted">
+              last action=
+              {lastHumanMeta
+                ? `${lastHumanMeta.phase} ${new Date(lastHumanMeta.at).toLocaleTimeString()}`
+                : "none"}
+              {lastHumanMeta?.receiptId
+                ? ` · receipt=${lastHumanMeta.receiptId.slice(0, 8)}`
+                : ""}
+              {lastHumanMeta?.durationMs != null
+                ? ` · ${lastHumanMeta.durationMs}ms`
+                : ""}
+            </span>
+            <BootBadge
+              snapshot={snapshot}
+              onOpenStartup={() => setActiveTab("STARTUP")}
+            />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -500,6 +530,14 @@ export function ControlCenterClient({
 
       <NextSafeActionBanner snapshot={snapshot} />
 
+      {activeTab === "STARTUP" ? (
+        <StartupPanels
+          snapshot={snapshot}
+          actorRole={actorRole}
+          onRefresh={() => void refresh()}
+        />
+      ) : null}
+
       {activeTab === "OVERVIEW" ? (
         <GlobalCommandCenter snapshot={snapshot} />
       ) : null}
@@ -528,6 +566,7 @@ export function ControlCenterClient({
           ) : null}
           <button
             type="button"
+            data-testid="x200-copy-required-action-banner"
             className="mt-3 rounded-sm border border-amber-400/40 px-3 py-2 text-xs text-amber-100"
             onClick={() =>
               void copyText(
@@ -542,23 +581,14 @@ export function ControlCenterClient({
         </div>
       ) : null}
 
-      {(
-        [
-          "HUMAN_ACTIONS",
-          "RELEASE",
-          "DEPLOY",
-          "DATABASE",
-          "INCIDENTS",
-          "AUDIT",
-        ] as TabId[]
-      ).includes(activeTab) ? (
-        <HumanActionPanels
-          snapshot={snapshot}
-          actorRole={actorRole}
-          activeTab={activeTab}
-          onRefresh={() => void refresh()}
-        />
-      ) : null}
+      <HumanActionPanels
+        snapshot={snapshot}
+        actorRole={actorRole}
+        activeTab={activeTab}
+        onRefresh={() => void refresh()}
+        openPreviewRef={openPreviewRef}
+        onActionMeta={setLastHumanMeta}
+      />
 
       {(
         [
@@ -581,7 +611,13 @@ export function ControlCenterClient({
       ) : null}
 
       {activeTab === "OVERVIEW" || activeTab === "HUMAN_ACTIONS" ? (
-        <HumanDecisionCenter snapshot={snapshot} />
+        <HumanDecisionCenter
+          snapshot={snapshot}
+          onReviewDecision={(action) => {
+            setActiveTab("HUMAN_ACTIONS");
+            requestAnimationFrame(() => openPreviewRef.current(action));
+          }}
+        />
       ) : null}
 
       {activeTab === "AUTOMATION" || activeTab === "OVERVIEW" ? (
@@ -602,39 +638,73 @@ export function ControlCenterClient({
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {(Object.keys(ACTION_LABELS) as ControlActionId[]).map((action) => {
             const enabled = isActionEnabled(action);
+            const reason = enabled ? null : actionTitle(action);
             return (
-              <button
-                key={action}
-                type="button"
-                data-testid={`x200-action-${action}`}
-                disabled={!enabled}
-                title={actionTitle(action)}
-                onClick={() => setConfirmAction(action)}
-                className={`min-h-12 rounded-sm border px-3 py-3 text-left text-sm ${
-                  enabled
-                    ? "border-gold/50 bg-gold/10 text-gold hover:bg-gold/20"
-                    : "cursor-not-allowed border-border-subtle text-gray-muted opacity-60"
-                }`}
-              >
-                {ACTION_LABELS[action]}
-              </button>
+              <div key={action}>
+                <button
+                  type="button"
+                  data-testid={`x200-action-${action}`}
+                  disabled={!enabled}
+                  title={reason ?? ACTION_LABELS[action]}
+                  onClick={() => setConfirmAction(action)}
+                  className={`min-h-12 w-full rounded-sm border px-3 py-3 text-left text-sm ${
+                    enabled
+                      ? "border-gold/50 bg-gold/10 text-gold hover:bg-gold/20"
+                      : "cursor-not-allowed border-border-subtle text-gray-muted opacity-60"
+                  }`}
+                >
+                  {ACTION_LABELS[action]}
+                </button>
+                <DisabledReason reason={reason} testId={`x200-disabled-${action}`} />
+              </div>
             );
           })}
           <button
             type="button"
+            data-testid="x200-command-refresh"
             onClick={() => void refresh()}
             className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-left text-sm text-white"
           >
             ⟳ Refresh now
           </button>
-          <div className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-sm text-gray-muted">
+          <button
+            type="button"
+            data-testid="x200-action-MERGE"
+            title={
+              control.disabledReasons.MERGE ??
+              "Opens merge preview — Human Gate required to execute"
+            }
+            onClick={() => {
+              setActiveTab("RELEASE");
+              requestAnimationFrame(() => openPreviewRef.current("MERGE_PR"));
+            }}
+            className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-left text-sm text-white"
+          >
             MERGE
-            <p className="mt-1 text-xs">Human approval required</p>
-          </div>
-          <div className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-sm text-gray-muted">
+            <p className="mt-1 text-xs text-gray-muted">
+              {control.disabledReasons.MERGE ?? "Human approval required — opens preview"}
+            </p>
+          </button>
+          <button
+            type="button"
+            data-testid="x200-action-DEPLOY"
+            title={
+              control.disabledReasons.DEPLOY ??
+              "Opens deploy preview — Human Gate required to execute"
+            }
+            onClick={() => {
+              setActiveTab("DEPLOY");
+              requestAnimationFrame(() =>
+                openPreviewRef.current("DEPLOY_PRODUCTION"),
+              );
+            }}
+            className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-left text-sm text-white"
+          >
             DEPLOY
-            <p className="mt-1 text-xs">Human approval required</p>
-          </div>
+            <p className="mt-1 text-xs text-gray-muted">
+              {control.disabledReasons.DEPLOY ?? "Human approval required — opens preview"}
+            </p>
+          </button>
         </div>
         {actionResult ? (
           <p
@@ -1351,11 +1421,28 @@ export function ControlCenterClient({
           else if (id === "start_autopilot") setConfirmAction("AUTOPILOT_START");
           else if (id === "stop_autopilot") setConfirmAction("AUTOPILOT_STOP");
           else if (id === "run_cycle") setConfirmAction("RUN_ONE_CYCLE");
-          else if (id === "mark_pr_ready" || id === "review_merge")
+          else if (id === "mark_pr_ready") {
             setActiveTab("HUMAN_ACTIONS");
-          else if (id === "create_backup") setActiveTab("DATABASE");
-          else if (id === "run_health_check") setHealthOpen(true);
-          else if (id === "open_incident") setActiveTab("INCIDENTS");
+            requestAnimationFrame(() =>
+              openPreviewRef.current("MARK_READY_FOR_REVIEW"),
+            );
+          } else if (id === "review_merge") {
+            setActiveTab("RELEASE");
+            requestAnimationFrame(() => openPreviewRef.current("MERGE_PR"));
+          } else if (id === "create_backup") {
+            setActiveTab("DATABASE");
+            requestAnimationFrame(() => openPreviewRef.current("CREATE_BACKUP"));
+          } else if (id === "run_health_check") {
+            setActiveTab("INCIDENTS");
+            requestAnimationFrame(() =>
+              openPreviewRef.current("RUN_HEALTH_CHECKS"),
+            );
+          } else if (id === "open_incident") {
+            setActiveTab("INCIDENTS");
+            requestAnimationFrame(() =>
+              openPreviewRef.current("COLLECT_DIAGNOSTICS"),
+            );
+          }
         }}
       />
     </div>

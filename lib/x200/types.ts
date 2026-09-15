@@ -339,4 +339,6 @@ export type ControlCenterSnapshot = {
   humanActions?: import("@/lib/x200/actions/types").HumanActionPlaneSnapshot | null;
   /** T047 Operational Mirror — optional for fatal snapshots. */
   mirror?: import("@/lib/x200/mirror/types").OperationalMirrorSnapshot | null;
+  /** T048 Boot orchestrator — optional for fatal snapshots. */
+  boot?: import("@/lib/x200/boot/types").BootOrchestratorSnapshot | null;
 };

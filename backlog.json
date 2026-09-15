@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-13",
+  "updatedAt": "2026-09-15",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -3301,6 +3301,182 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-13"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34962261158",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158",
+          "version": "206cd31a7c37c91a34d442bab464603ec11bef49",
+          "at": "2026-09-15T11:20:26.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34962261158 on 206cd31; T048 closed",
+      "id": "T048",
+      "title": "X200 Boot Orchestrator — automatic startup and self-recovery",
+      "objective": "Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T047"
+      ],
+      "scope": [
+        "ops/systemd",
+        "ops/xdg",
+        "scripts/x200-autostart.mjs",
+        "scripts/x200-control-center-serve.mjs",
+        "scripts/x200-browser-autostart.mjs",
+        "scripts/x200-boot-watchdog.mjs",
+        "scripts/lib/x200-autostart-core.mjs",
+        "lib/x200/boot",
+        "app/admin/x200",
+        "app/api/admin/x200/boot-actions",
+        "docs/X200_BOOT_AUTOSTART.md",
+        "package.json",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "PROJECT_CONTEXT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "systemd --user Control Center service binds 127.0.0.1:3001; Restart=on-failure; no credentials in unit",
+        "Safe port 3001 ownership: ALREADY_RUNNING vs PORT_3001_CONFLICT without killing unknown processes",
+        "clevones-x200-db restart=unless-stopped; start-if-needed; no recreate/migrate/destroy",
+        "Autopilot user autostart; linger detection without silent sudo; browser XDG once-per-session",
+        "STARTUP tab + BOOT badge with verified facts; allowlisted boot actions + audit; watchdog cooldown",
+        "npm x200:autostart:{install,status,repair,disable}; docs; CI-safe fixtures; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "systemd --user Control Center + Autopilot + watchdog; bind 127.0.0.1:3001; Restart=on-failure",
+        "Safe port ownership ALREADY_RUNNING vs PORT_3001_CONFLICT; UNKNOWN_PROCESS_KILLED=NO",
+        "clevones-x200-db restart=unless-stopped; start-if-needed only",
+        "STARTUP tab + BOOT badge; allowlisted boot actions + audit; browser XDG once-per-session",
+        "npm x200:autostart:{install,status,repair,disable}; docs/X200_BOOT_AUTOSTART.md",
+        "SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO MERGED=NO DEPLOYED=NO",
+        "CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158",
+        "Draft/open PR #12 https://github.com/clevonegroup911/clevones.com/pull/12",
+        "reports/tasks/T048.md"
+      ],
+      "estimatedCost": 8,
+      "risk": "high",
+      "attempts": 2,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:30:18.104Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34989022886",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886",
+          "version": "53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee",
+          "at": "2026-09-15T15:37:46.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34989022886 on 53e2ec7; T049 closed",
+      "id": "T049",
+      "title": "X200 Control Center — fully interactive actions and previews",
+      "objective": "Make /admin/x200 a true interactive console: every clickable control has a visible effect, Preview opens an on-screen drawer without executing, Confirm & Execute is gated and verified, and NEXT SAFE MERGE is derived from GitHub stack truth.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T048"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200/actions",
+        "lib/x200/mirror",
+        "tests/e2e/x200-control-center.spec.ts",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "PROJECT_CONTEXT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Preview opens a visible drawer/modal immediately with Loading preview… then ACTION/TARGET/SHA/risks/gates; previewOnly never mutates",
+        "CONFIRM & EXECUTE disabled with visible reason until preconditions; loading; idempotency; no double execute; SUCCESS only after remote verification; receipt shown",
+        "Every interactive control is functional, disabled with explicit reason, or removed — no dead clicks",
+        "NEXT SAFE MERGE derived from verified GitHub stack for the current PR; unrelated/stale PRs never shown as predecessor; UNKNOWN/NOT_CONNECTED when GitHub truth missing",
+        "Playwright covers Preview drawer, tabs, refresh, Ctrl+K, disabled reasons, GitHub truth; HUMAN_GATE/MFA/typed confirmation preserved; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "Preview drawer (desktop/mobile) with Loading preview… then ACTION/TARGET/SHA/risks/gates; previewOnly never mutates",
+        "CONFIRM & EXECUTE gated with visible disabled reasons; anti double-execute; SUCCESS only after remoteVerified",
+        "Interactive controls audited: functional, disabled+reason, or removed",
+        "NEXT SAFE MERGE from verified GitHub stack of current PR; unrelated PRs excluded; UNKNOWN/NOT_CONNECTED when GitHub missing",
+        "Playwright T049 covers Preview drawer, tabs, refresh, Ctrl+K, disabled reasons, GitHub truth; HUMAN_GATE/MFA preserved",
+        "SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO MERGED=NO DEPLOYED=NO",
+        "CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886",
+        "Draft/open PR #12 https://github.com/clevonegroup911/clevones.com/pull/12",
+        "reports/tasks/T049.md"
+      ],
+      "estimatedCost": 8,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
     }
   ],
   "history": [
@@ -4597,9 +4773,57 @@
       "to": "TERMINÉE",
       "by": "cursor",
       "note": "Recovery push CI #141 SUCCESS; PRODUCT_COMPLETE re-pinned to 8c873db"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T048",
+      "status": "PRÊTE",
+      "note": "Owner brief registered Boot Orchestrator after T047 TERMINÉE"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T048",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T048",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T048",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T049",
+      "status": "PRÊTE",
+      "note": "Owner brief: Control Center fully interactive actions and previews after T048 TERMINÉE"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T049",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T049",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T049",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee; close without waiting comment job"
     }
   ],
-  "registryVersion": 142,
+  "registryVersion": 149,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

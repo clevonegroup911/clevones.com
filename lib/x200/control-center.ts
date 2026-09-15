@@ -34,6 +34,7 @@ import {
   assembleOperationalMirror,
   emptyOperationalMirror,
 } from "@/lib/x200/mirror/assemble";
+import { assembleBootOrchestratorSnapshot } from "@/lib/x200/boot/status";
 import type {
   ControlCenterSnapshot,
   ControlCenterSources,
@@ -320,6 +321,7 @@ export function buildControlCenterFatalSnapshot(
       generatedAt,
       sanitizeDisplayText(message),
     ),
+    boot: null,
   };
 }
 
@@ -543,6 +545,17 @@ async function assembleControlCenterSnapshot(options?: {
     );
   }
 
+  const boot = await assembleBootOrchestratorSnapshot({
+    cwd: process.cwd(),
+  }).catch(() => null);
+
+  if (boot?.overall === "DEGRADED" || boot?.overall === "CONFLICT") {
+    warnings.push(`BOOT: ${boot.overall} — ${boot.missing.join(", ") || "see STARTUP tab"}`);
+  }
+  if (boot?.overall === "LINGER_REQUIRED") {
+    warnings.push(`LINGER_REQUIRED — ${boot.linger.enableCommand}`);
+  }
+
   let snapshot: ControlCenterSnapshot = {
     generatedAt,
     sources,
@@ -581,6 +594,7 @@ async function assembleControlCenterSnapshot(options?: {
     lastUpdate: generatedAt,
     humanActions,
     mirror,
+    boot,
   };
 
   const secretHits = assertNoSecretsInPayload(snapshot);

@@ -217,13 +217,20 @@ export type ActionPreview = {
   action: HumanActionType;
   target: string;
   environment: HumanActionEnvironment;
+  prNumber: number | null;
   exactSha: string | null;
+  currentRemoteSha: string | null;
   expectedChanges: string[];
   risks: string[];
   rollback: string | null;
   preconditions: string[];
   approvalRequirement: ActionRisk;
   typedPhrase: string | null;
+  humanGate: string;
+  mfaRequired: boolean;
+  typedConfirmationRequired: boolean;
+  source: string;
+  verificationStatus: string;
 };
 
 export type HumanActionPlaneSnapshot = {
