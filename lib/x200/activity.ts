@@ -16,7 +16,7 @@ export function redactMonitoringText(value: string, max = 280): string {
     )
     .replace(/\bAUTH_SECRET\b/gi, "[REDACTED_ENV]")
     .replace(/\bMFA_ENCRYPTION_KEY\b/gi, "[REDACTED_ENV]")
-    .replace(/\bDATABASE_URL\s*=/gi, "DATABASE_URL=[REDACTED]")
+    .replace(/\bDATABASE_URL\s*=\s*\S+/gi, "DATABASE_URL=[REDACTED]")
     .replace(/recovery\s*codes?/gi, "[REDACTED_RECOVERY]")
     .replace(/otpauth:\/\/\S+/gi, "[REDACTED_OTP]")
     .replace(/ghp_[A-Za-z0-9]{20,}/g, "[REDACTED_TOKEN]")

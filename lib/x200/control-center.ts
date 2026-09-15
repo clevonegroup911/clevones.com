@@ -22,12 +22,97 @@ import {
   emptyTaskCounts,
 } from "@/lib/x200/sources";
 import { readFedoraTelemetrySnapshot } from "@/lib/x200/telemetry";
+import {
+  buildControlPlaneSnapshot,
+  readRecentControlActions,
+} from "@/lib/x200/control-actions";
 import type {
   ControlCenterSnapshot,
   ControlCenterSources,
   ControlCenterTask,
   Freshness,
+  ProjectProgressSnapshot,
 } from "@/lib/x200/types";
+
+function formatAgeLabel(ageMs: number | null): string | null {
+  if (ageMs === null || !Number.isFinite(ageMs)) return null;
+  const sec = Math.floor(ageMs / 1000);
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  const rem = sec % 60;
+  if (min < 60) return `${min}m${String(rem).padStart(2, "0")}s`;
+  const hours = Math.floor(min / 60);
+  const remMin = min % 60;
+  return `${hours}h${String(remMin).padStart(2, "0")}m`;
+}
+
+function buildProgressSnapshot(input: {
+  counts: ControlCenterSnapshot["backlog"]["counts"];
+  efficiency: ControlCenterSnapshot["efficiency"];
+  fedoraAgeMs: number | null;
+  fedoraStale: boolean;
+}): ProjectProgressSnapshot {
+  const total = input.counts?.total ?? null;
+  const completed = input.counts?.["TERMINÉE"] ?? null;
+  const percent =
+    total != null && total > 0 && completed != null
+      ? Math.round((completed / total) * 1000) / 10
+      : null;
+  const heartbeatRaw = formatAgeLabel(input.fedoraAgeMs);
+  const heartbeatAge =
+    heartbeatRaw == null
+      ? null
+      : input.fedoraStale
+        ? `STALE — ${heartbeatRaw.replace(" ago", "")}`
+        : heartbeatRaw;
+
+  return {
+    completed,
+    total,
+    percent,
+    currentCycleDuration: null,
+    ciDuration: null,
+    heartbeatAge,
+    averageAttempts: input.efficiency.averageAttemptsOnCompleted,
+    successRatePercent: input.efficiency.successRatePercent,
+    blocked: input.counts?.["BLOQUÉE"] ?? input.efficiency.blockedTasks,
+    failed: input.counts?.["ÉCHOUÉE"] ?? input.efficiency.failedTasks,
+  };
+}
+
+function emptyControlPlane(): ControlCenterSnapshot["control"] {
+  return {
+    mode: "UNAVAILABLE",
+    actionsEnabled: false,
+    localExecutorAvailable: false,
+    actorRole: "UNKNOWN",
+    canMutate: false,
+    disabledReasons: {
+      MERGE: "Human approval required",
+      DEPLOY: "Human approval required",
+      AUTOPILOT_START: "Control Center degraded",
+      AUTOPILOT_STOP: "Control Center degraded",
+      AUTOPILOT_RESTART: "Control Center degraded",
+      RUN_ONE_CYCLE: "Control Center degraded",
+    },
+    recentActions: [],
+  };
+}
+
+function emptyProgress(): ProjectProgressSnapshot {
+  return {
+    completed: null,
+    total: null,
+    percent: null,
+    currentCycleDuration: null,
+    ciDuration: null,
+    heartbeatAge: null,
+    averageAttempts: null,
+    successRatePercent: null,
+    blocked: null,
+    failed: null,
+  };
+}
 
 function sanitizeDisplayText(value: string): string {
   return redactMonitoringText(value, 2000);
@@ -211,20 +296,26 @@ export function buildControlCenterFatalSnapshot(
       name: role.name,
       responsibilities: [...role.responsibilities],
     })),
+    control: emptyControlPlane(),
+    progress: emptyProgress(),
     lastUpdate: generatedAt,
   };
 }
 
-export async function getControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
+export async function getControlCenterSnapshot(options?: {
+  actorRole?: "SUPER_ADMIN" | "ADMIN" | "UNKNOWN";
+}): Promise<ControlCenterSnapshot> {
   try {
-    return await assembleControlCenterSnapshot();
+    return await assembleControlCenterSnapshot(options);
   } catch (error) {
     // Monitoring must never 500 the dashboard for source/assembly failures.
     return buildControlCenterFatalSnapshot(error);
   }
 }
 
-async function assembleControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
+async function assembleControlCenterSnapshot(options?: {
+  actorRole?: "SUPER_ADMIN" | "ADMIN" | "UNKNOWN";
+}): Promise<ControlCenterSnapshot> {
   const generatedAt = new Date().toISOString();
   const warnings: string[] = [];
 
@@ -352,6 +443,23 @@ async function assembleControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
     productComplete,
   });
 
+  const recentActions = await readRecentControlActions(20);
+  const control = buildControlPlaneSnapshot({
+    actorRole: options?.actorRole ?? "UNKNOWN",
+    humanGatePresent: humanGate.present,
+    agentRunning: fedora.agentRunning,
+    autopilotLiveState: fedora.autopilotLiveState,
+    gitDirty: git.dirty,
+    recentActions,
+  });
+
+  const progress = buildProgressSnapshot({
+    counts: backlog.counts,
+    efficiency,
+    fedoraAgeMs: fedora.ageMs,
+    fedoraStale: fedora.autopilotLiveState === "STALE",
+  });
+
   let snapshot: ControlCenterSnapshot = {
     generatedAt,
     sources,
@@ -385,6 +493,8 @@ async function assembleControlCenterSnapshot(): Promise<ControlCenterSnapshot> {
       name: role.name,
       responsibilities: [...role.responsibilities],
     })),
+    control,
+    progress,
     lastUpdate: generatedAt,
   };
 

@@ -96,6 +96,78 @@ export type PipelineStep = {
   id: PipelineStepId;
   state: PipelineStepState;
   detail: string;
+  /** Evidence source label — never invented when unavailable. */
+  source: string;
+  evidence: string | null;
+  timestamp: string | null;
+  reason: string | null;
+  relatedCommit: string | null;
+  relatedCiUrl: string | null;
+};
+
+export type ControlMode =
+  | "READ_ONLY"
+  | "LOCAL_CONTROL_READY"
+  | "ACTION_RUNNING"
+  | "HUMAN_GATE"
+  | "UNAVAILABLE"
+  | "UNKNOWN";
+
+export type ControlActionId =
+  | "AUTOPILOT_START"
+  | "AUTOPILOT_STOP"
+  | "AUTOPILOT_RESTART"
+  | "RUN_ONE_CYCLE";
+
+export type ControlActionCode =
+  | "ACTION_NOT_ALLOWED"
+  | "WORKTREE_DIRTY"
+  | "HUMAN_GATE_REQUIRED"
+  | "AGENT_BUSY"
+  | "CONTROL_DISABLED"
+  | "LOCAL_EXECUTOR_UNAVAILABLE"
+  | "CSRF_ORIGIN"
+  | "CSRF_REFERER"
+  | "CSRF_MISSING"
+  | "INVALID_ACTION"
+  | "TIMEOUT"
+  | "EXEC_FAILED"
+  | "OK";
+
+export type ControlActionAuditEntry = {
+  timestamp: string;
+  action: ControlActionId;
+  actor: string;
+  result: "SUCCESS" | "FAILED";
+  durationMs: number;
+  beforeState: ControlMode;
+  afterState: ControlMode;
+  taskId: string | null;
+  code: string | null;
+  detail: string | null;
+};
+
+export type ControlPlaneSnapshot = {
+  mode: ControlMode;
+  actionsEnabled: boolean;
+  localExecutorAvailable: boolean;
+  actorRole: "SUPER_ADMIN" | "ADMIN" | "UNKNOWN";
+  canMutate: boolean;
+  disabledReasons: Partial<Record<ControlActionId | "MERGE" | "DEPLOY", string>>;
+  recentActions: ControlActionAuditEntry[];
+};
+
+export type ProjectProgressSnapshot = {
+  completed: number | null;
+  total: number | null;
+  percent: number | null;
+  currentCycleDuration: string | null;
+  ciDuration: string | null;
+  heartbeatAge: string | null;
+  averageAttempts: number | null;
+  successRatePercent: number | null;
+  blocked: number | null;
+  failed: number | null;
 };
 
 export type Blocker = {
@@ -243,5 +315,7 @@ export type ControlCenterSnapshot = {
   blockers: Blocker[];
   activity: ActivityItem[];
   roles: RoleCard[];
+  control: ControlPlaneSnapshot;
+  progress: ProjectProgressSnapshot;
   lastUpdate: string;
 };

@@ -6,7 +6,7 @@
 
 ## ID
 
-T044
+T045
 
 ## Statut
 
@@ -14,79 +14,85 @@ TERMINÉE
 
 ## Objectif
 
-Aligner PROJECT_CONTEXT/inventaires sur T001–T043 TERMINÉE, documenter les gates humaines restantes, et réémettre `.x200/PRODUCT_COMPLETE.json` aligné HEAD + hash `PRODUCT_GOAL.md`.
+Transformer `/admin/x200` en Control Center interactif (live refresh, drawers, COMMAND CENTER) avec actions sûres AUTOPILOT/RUN_ONE_CYCLE, sans merge/deploy/shell libre ni bypass Human Gate.
 
 ## Résultat
 
-Docs et inventaires resynchronisés. CI FAST quality SUCCESS. Marqueur PRODUCT_COMPLETE local réémis (pas de claim merge/deploy/PSP live). Aucune tâche automatique PRÊTE restante.
+Control plane sûr livré et validé CI FULL. Live refresh, drawers, COMMAND CENTER, progress, Human Gate banner, audit jsonl. Mutations SUPER_ADMIN seulement via enum + `execFile` fixes. Pas de merge/deploy/shell libre.
 
 ## Fichiers créés
 
-- `reports/tasks/T044.md`
-- `.x200/PRODUCT_COMPLETE.json` (local, gitignored)
+- `lib/x200/control-actions.ts`
+- `lib/x200/control-actions.test.ts`
+- `lib/x200/control-audit.ts`
+- `lib/http/same-origin.ts`
+- `app/api/admin/x200/actions/route.ts`
+- `reports/tasks/T045.md`
 
 ## Fichiers modifiés
 
-- `PROJECT_CONTEXT.md`
-- `docs/CMS_AND_DOCUMENTS.md`
-- `docs/ANALYTICS_AND_PAYMENTS.md`
+- `lib/x200/types.ts` / `control-center.ts` / `derive.ts` / `activity.ts`
+- `app/admin/x200/*`
+- `app/api/admin/x200/status/route.ts`
+- `.env.example`
 - `docs/X200_AUTOPILOT.md`
-- `BACKLOG.md`
-- backlog / TASK_REPORT
+- `tests/e2e/x200-control-center.spec.ts`
+- `playwright.config.ts` (retry CI 1×)
+- backlog / TASK_REPORT / BACKLOG.md / PROJECT_CONTEXT.md
 
 ## Commandes
 
 - `npm run x200:validate`
-- `npm run x200:test`
-- `npm run x200:scan-secrets`
-- `git diff --check`
-- `npm run x200:quality-gate -- --task T044`
+- `npm test` / `npm run x200:test`
+- `npm run lint` / `npx tsc --noEmit` / `npm run build`
+- `npx playwright test`
+- `npm run x200:scan-secrets` / `git diff --check`
+- `npm run x200:quality-gate -- --task T045`
 
 ## Tests réussis
 
-- x200:validate
-- x200:test (75 pass)
-- scan-secrets / diff-check / quality-gate
-- CI FAST quality SUCCESS run 34763905161
+- unit control-actions + control-center
+- npm test / x200:test / lint / tsc / build / secrets
+- Playwright CI FULL (x200 + suite)
+- quality CI FULL SUCCESS run 34771780343
 
 ## Tests échoués
 
-- aucun
+- aucun (CI FINAL)
 
 ## Lint
 
-- PASS (CI FAST)
+- PASS
 
 ## Type-check
 
-- PASS (CI FAST)
+- PASS
 
 ## Build
 
-- n/a (lane FAST)
+- PASS
 
 ## Sécurité
 
-- pas de secrets ; MERGED=NO ; DEPLOYED=NO ; pas de PSP live
+- `X200_CONTROL_ACTIONS_ENABLED=false` ; HUMAN_GATE_BYPASS=NO ; ARBITRARY_SHELL=NO ; MERGED=NO ; DEPLOYED=NO
 
 ## Commit
 
-- docs `424a842` ; close commit sur feat/x200-control-center
+- `16db0a4` feat + follow-up fixes `286cd96` `42c3850` `42fecbe`
 
 ## Pull Request
 
-- draft PR #8 https://github.com/clevonegroup911/clevones.com/pull/8
+- draft PR #9 https://github.com/clevonegroup911/clevones.com/pull/9
 
 ## Preuves
 
-- reports/tasks/T044.md
-- CI FAST quality SUCCESS run 34763905161 head 424a84280589c7f4663519ebc852d8fe5724385d
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161
-- `.x200/PRODUCT_COMPLETE.json` local aligné HEAD/goalHash
+- reports/tasks/T045.md
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343
+- head `42fecbe5ccfb23a012cd299bb1f6be8979768a54`
 
 ## Risques
 
-- aucun
+- aucun restant pour le scope T045
 
 ## Blocage
 
@@ -94,4 +100,4 @@ Docs et inventaires resynchronisés. CI FAST quality SUCCESS. Marqueur PRODUCT_C
 
 ## Prochaine tâche prête
 
-- aucune (AUTOPLAN / PRODUCT_COMPLETE)
+- aucune (AUTOPLAN)

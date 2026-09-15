@@ -155,6 +155,7 @@ test("derivePipeline uses UNKNOWN/WAITING when proofs are missing", () => {
       prState: null,
       ciLatestConclusion: null,
       ciLatestStatus: null,
+      ciLatestUrl: null,
     },
     productComplete: {
       present: false,

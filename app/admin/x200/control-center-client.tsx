@@ -1,10 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import type {
   ActivityItem,
   Blocker,
+  ControlActionId,
   ControlCenterSnapshot,
   ControlCenterTask,
   PipelineStep,
@@ -19,6 +26,10 @@ type FilterId =
   | "bloquees"
   | "echouees";
 
+type RefreshInterval = 5 | 15 | 30 | 0;
+
+type ConnectionStatus = "LIVE" | "IDLE" | "DEGRADED" | "HIDDEN";
+
 const FILTERS: Array<{ id: FilterId; label: string }> = [
   { id: "all", label: "Toutes" },
   { id: "en_cours", label: "En cours" },
@@ -27,6 +38,13 @@ const FILTERS: Array<{ id: FilterId; label: string }> = [
   { id: "bloquees", label: "Bloquées" },
   { id: "echouees", label: "Échouées" },
 ];
+
+const ACTION_LABELS: Record<ControlActionId, string> = {
+  AUTOPILOT_START: "▶ Start AUTOPILOT",
+  AUTOPILOT_STOP: "■ Stop AUTOPILOT",
+  AUTOPILOT_RESTART: "↻ Restart AUTOPILOT",
+  RUN_ONE_CYCLE: "⚡ Run one safe cycle",
+};
 
 function pipelineTone(state: PipelineStep["state"]): string {
   switch (state) {
@@ -122,14 +140,67 @@ function display(value: string | number | boolean | null | undefined): string {
   return String(value);
 }
 
+async function copyText(value: string) {
+  try {
+    await navigator.clipboard.writeText(value);
+  } catch {
+    // ignore clipboard failures in locked-down contexts
+  }
+}
+
+function ExternalLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center rounded-sm border border-border-subtle px-2.5 py-1.5 text-xs text-gold hover:border-gold/50"
+    >
+      {children}
+    </a>
+  );
+}
+
 export function ControlCenterClient({
-  snapshot,
+  snapshot: initialSnapshot,
+  actorRole,
 }: {
   snapshot: ControlCenterSnapshot;
+  actorRole: "SUPER_ADMIN" | "ADMIN";
 }) {
+  const [snapshot, setSnapshot] = useState(initialSnapshot);
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
   const [healthOpen, setHealthOpen] = useState(false);
+  const [refreshInterval, setRefreshInterval] = useState<RefreshInterval>(15);
+  const [connection, setConnection] = useState<ConnectionStatus>("LIVE");
+  const [lastRefreshAt, setLastRefreshAt] = useState(() => Date.now());
+  const [nextRefreshAt, setNextRefreshAt] = useState<number | null>(
+    () => Date.now() + 15_000,
+  );
+  const [latencyMs, setLatencyMs] = useState<number | null>(null);
+  const [selectedTask, setSelectedTask] = useState<ControlCenterTask | null>(
+    null,
+  );
+  const [selectedPipeline, setSelectedPipeline] =
+    useState<PipelineStep | null>(null);
+  const [confirmAction, setConfirmAction] = useState<ControlActionId | null>(
+    null,
+  );
+  const [actionBusy, setActionBusy] = useState(false);
+  const [actionResult, setActionResult] = useState<{
+    ok: boolean;
+    message: string;
+  } | null>(null);
+  const [nowTick, setNowTick] = useState(() => Date.now());
+
+  const abortRef = useRef<AbortController | null>(null);
 
   const tasks = useMemo(() => {
     let list: ControlCenterTask[] = snapshot.backlog.tasks;
@@ -166,9 +237,146 @@ export function ControlCenterClient({
     return list;
   }, [filter, query, snapshot.backlog.tasks]);
 
+  const refresh = useCallback(async () => {
+    if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+      setConnection("HIDDEN");
+      return;
+    }
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const started = performance.now();
+    try {
+      const response = await fetch("/api/admin/x200/status", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        signal: controller.signal,
+        headers: { Accept: "application/json" },
+      });
+      const elapsed = Math.round(performance.now() - started);
+      setLatencyMs(elapsed);
+      if (!response.ok) {
+        setConnection("DEGRADED");
+        return;
+      }
+      const body = (await response.json()) as ControlCenterSnapshot;
+      if (!body || typeof body.generatedAt !== "string" || !body.sources) {
+        setConnection("DEGRADED");
+        return;
+      }
+      setSnapshot(body);
+      setLastRefreshAt(Date.now());
+      setConnection("LIVE");
+    } catch (error) {
+      if ((error as { name?: string })?.name === "AbortError") return;
+      // Keep last valid snapshot — never destroy it on failure.
+      setConnection("DEGRADED");
+    }
+  }, []);
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        void refresh();
+      } else {
+        abortRef.current?.abort();
+        setConnection("HIDDEN");
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [refresh]);
+
+  useEffect(() => {
+    const tick = window.setInterval(() => setNowTick(Date.now()), 1000);
+    return () => window.clearInterval(tick);
+  }, []);
+
+  useEffect(() => {
+    if (refreshInterval === 0) {
+      return;
+    }
+    const id = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      setNextRefreshAt(Date.now() + refreshInterval * 1000);
+      void refresh();
+    }, refreshInterval * 1000);
+    return () => window.clearInterval(id);
+  }, [refreshInterval, refresh]);
+
+  useEffect(() => {
+    return () => abortRef.current?.abort();
+  }, []);
+
+  const runAction = useCallback(
+    async (action: ControlActionId) => {
+      setActionBusy(true);
+      setActionResult(null);
+      try {
+        const response = await fetch("/api/admin/x200/actions", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ action }),
+        });
+        const body = (await response.json()) as {
+          ok?: boolean;
+          message?: string;
+          code?: string;
+        };
+        setActionResult({
+          ok: response.ok && body.ok === true,
+          message: body.message ?? body.code ?? `HTTP ${response.status}`,
+        });
+        await refresh();
+      } catch (error) {
+        setActionResult({
+          ok: false,
+          message: error instanceof Error ? error.message : "Request failed",
+        });
+      } finally {
+        setActionBusy(false);
+        setConfirmAction(null);
+      }
+    },
+    [refresh],
+  );
+
   const current = snapshot.backlog.currentTask;
-  const counts = snapshot.backlog.counts;
   const eff = snapshot.efficiency;
+  const control = snapshot.control;
+  const progress = snapshot.progress;
+  const repo = snapshot.github.repository || "clevonegroup911/clevones.com";
+  const actionsUrl = `https://github.com/${repo}/actions`;
+  const commitUrl = snapshot.git.head
+    ? `https://github.com/${repo}/commit/${snapshot.git.head}`
+    : null;
+
+  const effectiveNextRefreshAt =
+    refreshInterval === 0 ? null : nextRefreshAt;
+  const nextRefreshLabel =
+    effectiveNextRefreshAt == null
+      ? "Off"
+      : `${Math.max(0, Math.ceil((effectiveNextRefreshAt - nowTick) / 1000))}s`;
+  const connectionDisplay =
+    refreshInterval === 0 && connection !== "HIDDEN" && connection !== "DEGRADED"
+      ? "IDLE"
+      : connection;
+  const isActionEnabled = (action: ControlActionId) =>
+    actorRole === "SUPER_ADMIN" &&
+    control.canMutate &&
+    !control.disabledReasons[action] &&
+    !actionBusy;
+
+  const actionTitle = (action: ControlActionId) =>
+    control.disabledReasons[action] ??
+    (actorRole !== "SUPER_ADMIN"
+      ? "ADMIN read-only"
+      : ACTION_LABELS[action]);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
@@ -180,14 +388,177 @@ export function ControlCenterClient({
           CLEVONE X200 CONTROL CENTER
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-gray-muted">
-          Supervision temps réel du système Multi-AI X200 — lecture seule,
-          sources réelles uniquement. Aucune donnée inventée.
+          Supervision temps réel et contrôle local sûr — Human Gates protégés,
+          aucune commande shell libre depuis le navigateur.
         </p>
-        <p className="mt-3 text-xs text-navy-muted">
-          Last update: {snapshot.lastUpdate} · generatedAt:{" "}
-          {snapshot.generatedAt}
-        </p>
+
+        <div
+          className="mt-4 flex flex-col gap-3 rounded-sm border border-border-subtle bg-surface-elevated p-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between"
+          data-testid="x200-live-bar"
+        >
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            <span
+              data-testid="x200-live-indicator"
+              className={
+                connectionDisplay === "DEGRADED"
+                  ? "font-semibold text-gold"
+                  : connectionDisplay === "LIVE"
+                    ? "font-semibold text-emerald-300"
+                    : "font-semibold text-gray-muted"
+              }
+            >
+              {connectionDisplay === "DEGRADED"
+                ? "CONNECTION DEGRADED"
+                : `LIVE ●`}
+            </span>
+            <span className="text-gray-muted">
+              Last refresh: {new Date(lastRefreshAt).toLocaleTimeString()}
+            </span>
+            <span className="text-gray-muted">Next: {nextRefreshLabel}</span>
+            <span className="text-gray-muted">
+              Latency: {latencyMs == null ? "N/A" : `${latencyMs} ms`}
+            </span>
+            <span className="text-gray-muted">Status: {connectionDisplay}</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              data-testid="x200-refresh-now"
+              onClick={() => {
+                setNextRefreshAt(
+                  refreshInterval === 0
+                    ? null
+                    : Date.now() + refreshInterval * 1000,
+                );
+                void refresh();
+              }}
+              className="rounded-sm border border-gold/40 bg-gold/10 px-3 py-2 text-xs text-gold"
+            >
+              ⟳ Refresh now
+            </button>
+            <label className="flex items-center gap-2 text-xs text-gray-muted">
+              Auto refresh
+              <select
+                data-testid="x200-auto-refresh"
+                value={refreshInterval}
+                onChange={(event) => {
+                  const value = Number(event.target.value) as RefreshInterval;
+                  setRefreshInterval(value);
+                  setNextRefreshAt(
+                    value === 0 ? null : Date.now() + value * 1000,
+                  );
+                }}
+                className="rounded-sm border border-border-subtle bg-surface px-2 py-1.5 text-white"
+              >
+                <option value={5}>5 sec</option>
+                <option value={15}>15 sec</option>
+                <option value={30}>30 sec</option>
+                <option value={0}>Off</option>
+              </select>
+            </label>
+          </div>
+        </div>
       </header>
+
+      {snapshot.humanGate.present ? (
+        <div
+          data-testid="x200-human-gate-banner"
+          className="rounded-sm border border-red-500/50 bg-gradient-to-r from-red-950/80 to-amber-950/60 p-4"
+        >
+          <p className="text-sm font-semibold tracking-wide text-red-200 uppercase">
+            HUMAN APPROVAL REQUIRED
+          </p>
+          <p className="mt-2 text-sm text-amber-100">
+            {snapshot.humanGate.reason ?? "N/A"}
+          </p>
+          <p className="mt-1 text-xs text-amber-100/80">
+            task={display(snapshot.humanGate.taskId)} · requiredAction=
+            {display(snapshot.humanGate.requiredAction)}
+          </p>
+          {snapshot.humanGate.blocking.length > 0 ? (
+            <ul className="mt-2 list-disc pl-5 text-xs text-amber-100/80">
+              {snapshot.humanGate.blocking.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
+          <button
+            type="button"
+            className="mt-3 rounded-sm border border-amber-400/40 px-3 py-2 text-xs text-amber-100"
+            onClick={() =>
+              void copyText(
+                snapshot.humanGate.requiredAction ??
+                  snapshot.humanGate.reason ??
+                  "HUMAN_GATE",
+              )
+            }
+          >
+            Copy required action
+          </button>
+        </div>
+      ) : null}
+
+      <Card title="COMMAND CENTER" testId="x200-command-center">
+        <div className="mb-3 flex flex-wrap items-center gap-3 text-xs">
+          <span data-testid="x200-control-mode" className="text-white">
+            CONTROL MODE = {control.mode}
+          </span>
+          <span className="text-gray-muted">role={actorRole}</span>
+          <span className="text-gray-muted">
+            actionsEnabled={String(control.actionsEnabled)}
+          </span>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {(Object.keys(ACTION_LABELS) as ControlActionId[]).map((action) => {
+            const enabled = isActionEnabled(action);
+            return (
+              <button
+                key={action}
+                type="button"
+                data-testid={`x200-action-${action}`}
+                disabled={!enabled}
+                title={actionTitle(action)}
+                onClick={() => setConfirmAction(action)}
+                className={`min-h-12 rounded-sm border px-3 py-3 text-left text-sm ${
+                  enabled
+                    ? "border-gold/50 bg-gold/10 text-gold hover:bg-gold/20"
+                    : "cursor-not-allowed border-border-subtle text-gray-muted opacity-60"
+                }`}
+              >
+                {ACTION_LABELS[action]}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => void refresh()}
+            className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-left text-sm text-white"
+          >
+            ⟳ Refresh now
+          </button>
+          <div className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-sm text-gray-muted">
+            MERGE
+            <p className="mt-1 text-xs">Human approval required</p>
+          </div>
+          <div className="min-h-12 rounded-sm border border-border-subtle px-3 py-3 text-sm text-gray-muted">
+            DEPLOY
+            <p className="mt-1 text-xs">Human approval required</p>
+          </div>
+        </div>
+        {actionResult ? (
+          <p
+            data-testid="x200-action-result"
+            className={`mt-3 text-sm ${actionResult.ok ? "text-emerald-300" : "text-red-300"}`}
+          >
+            {actionResult.ok ? "SUCCESS" : "FAILED"} — {actionResult.message}
+          </p>
+        ) : null}
+        {actionBusy ? (
+          <p className="mt-2 text-xs text-gold" data-testid="x200-action-spinner">
+            Action en cours…
+          </p>
+        ) : null}
+      </Card>
 
       <div
         className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
@@ -231,32 +602,48 @@ export function ControlCenterClient({
           ) : null}
         </Card>
 
-        <Card title="AUTOPLAN" testId="card-autoplan">
-          <p className="text-sm text-white">
-            Prêtes: {display(counts?.["PRÊTE"])} · À faire:{" "}
-            {display(counts?.["À_FAIRE"])}
-          </p>
-          <p className="mt-2 text-xs text-gray-muted">
-            PRODUCT_GOAL hash:{" "}
-            {snapshot.productGoal.hash
-              ? `${snapshot.productGoal.hash.slice(0, 12)}…`
+        <Card title="PROJECT PROGRESS" testId="card-project-progress">
+          <p className="font-heading text-xl text-white">
+            {progress.completed != null && progress.total != null
+              ? `${progress.completed} / ${progress.total} completed`
               : "N/A"}
           </p>
+          <div className="mt-3 h-2 overflow-hidden rounded-sm bg-surface">
+            <div
+              className="h-full bg-gold/70"
+              style={{
+                width: `${Math.min(100, Math.max(0, progress.percent ?? 0))}%`,
+              }}
+            />
+          </div>
+          <p className="mt-2 text-xs text-gray-muted">
+            Heartbeat: {display(progress.heartbeatAge)}
+          </p>
           <p className="mt-1 text-xs text-gray-muted">
-            Critères détectés:{" "}
-            {display(snapshot.productGoal.detectableCriteriaCount)}
+            Success {display(progress.successRatePercent)}
+            {progress.successRatePercent != null ? "%" : ""} · Blocked{" "}
+            {display(progress.blocked)} · Failed {display(progress.failed)}
+          </p>
+          <p className="mt-1 text-xs text-gray-muted">
+            Avg attempts {display(progress.averageAttempts)} · Cycle{" "}
+            {display(progress.currentCycleDuration)} · CI{" "}
+            {display(progress.ciDuration)}
           </p>
         </Card>
 
         <Card title="CURRENT TASK" testId="card-current-task">
           {current ? (
-            <>
+            <button
+              type="button"
+              className="text-left"
+              onClick={() => setSelectedTask(current)}
+            >
               <p className="font-heading text-lg text-white">{current.id}</p>
               <p className="mt-1 text-sm text-gray-muted">{current.title}</p>
               <p className="mt-2 text-xs text-gold-muted">
                 {current.status} · {current.priority}
               </p>
-            </>
+            </button>
           ) : (
             <p className="text-sm text-gray-muted">Aucune tâche EN_COURS / EN_CONTRÔLE</p>
           )}
@@ -264,23 +651,32 @@ export function ControlCenterClient({
 
         <Card title="ACTIVE AGENT" testId="card-active-agent">
           <p className="text-sm text-white">
-            {snapshot.fedora.host
-              ? `${snapshot.fedora.host} · pid ${snapshot.fedora.pid ?? "N/A"}`
-              : (current?.claimWorkerId ?? "WAITING_FOR_TELEMETRY")}
-          </p>
-          <p className="mt-2 text-xs text-gray-muted">
-            FEDORA TELEMETRY = {snapshot.fedora.fedoraTelemetry}
+            host={display(snapshot.fedora.host)} · pid=
+            {display(snapshot.fedora.pid)}
           </p>
           <p className="mt-1 text-xs text-gray-muted">
-            AUTOPILOT LIVE STATE = {snapshot.fedora.autopilotLiveState}
+            mode={display(snapshot.fedora.mode)} · agentRunning=
+            {display(snapshot.fedora.agentRunning)}
           </p>
-          {snapshot.fedora.lastEvent ? (
-            <p className="mt-1 text-xs text-gray-muted">
-              lastEvent={snapshot.fedora.lastEvent}
-              {snapshot.fedora.taskId ? ` · task=${snapshot.fedora.taskId}` : ""}
-            </p>
-          ) : null}
-          <p className="mt-1 text-xs text-gray-muted">{snapshot.fedora.note}</p>
+          <p className="mt-1 text-xs text-gray-muted">
+            Heartbeat: {display(progress.heartbeatAge)}
+          </p>
+          <p className="mt-1 text-xs text-gray-muted">
+            lastEvent={display(snapshot.fedora.lastEvent)}
+            {snapshot.fedora.taskId ? ` · task=${snapshot.fedora.taskId}` : ""}
+          </p>
+          <p className="mt-1 text-xs text-gray-muted">
+            branch={display(snapshot.fedora.branch)} · HEAD=
+            {snapshot.fedora.head
+              ? snapshot.fedora.head.slice(0, 7)
+              : snapshot.git.head
+                ? snapshot.git.head.slice(0, 7)
+                : "N/A"}
+          </p>
+          <p className="mt-1 text-xs text-gray-muted">
+            FEDORA={snapshot.fedora.fedoraTelemetry} · LIVE=
+            {snapshot.fedora.autopilotLiveState}
+          </p>
         </Card>
 
         <Card title="CI STATUS" testId="card-ci-status">
@@ -293,9 +689,14 @@ export function ControlCenterClient({
             Run #{display(snapshot.github.ciLatestRunNumber)} ·{" "}
             {display(snapshot.github.ciLatestName)}
           </p>
-          <p className="mt-1 text-xs text-gray-muted">
-            source={snapshot.sources.github}
-          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <ExternalLink href={actionsUrl}>Open GitHub Actions</ExternalLink>
+            {snapshot.github.ciLatestUrl ? (
+              <ExternalLink href={snapshot.github.ciLatestUrl}>
+                Open latest run
+              </ExternalLink>
+            ) : null}
+          </div>
         </Card>
 
         <Card title="HUMAN GATE" testId="card-human-gate">
@@ -327,14 +728,23 @@ export function ControlCenterClient({
                 ? `true (${snapshot.git.dirtyFileCount})`
                 : "false"}
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {snapshot.github.prUrl ? (
+              <ExternalLink href={snapshot.github.prUrl}>
+                Open PR #{display(snapshot.github.prNumber)}
+              </ExternalLink>
+            ) : null}
+            {commitUrl ? (
+              <ExternalLink href={commitUrl}>Open commit</ExternalLink>
+            ) : null}
+          </div>
         </Card>
 
-        <Card title="LAST UPDATE" testId="card-last-update">
-          <p className="text-sm text-white">{snapshot.lastUpdate}</p>
+        <Card title="CONTROL MODE" testId="card-control-mode">
+          <p className="font-heading text-xl text-white">{control.mode}</p>
           <p className="mt-2 text-xs text-gray-muted">
-            sources: backlog={snapshot.sources.backlog}, git=
-            {snapshot.sources.git}, github={snapshot.sources.github}, fedora=
-            {snapshot.sources.fedoraTelemetry}
+            localExecutor={String(control.localExecutorAvailable)} · canMutate=
+            {String(control.canMutate)}
           </p>
         </Card>
       </div>
@@ -342,14 +752,17 @@ export function ControlCenterClient({
       <Card title="PIPELINE" testId="x200-pipeline">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
           {snapshot.pipeline.map((step) => (
-            <div
+            <button
               key={step.id}
+              type="button"
+              data-testid={`x200-pipeline-${step.id}`}
+              onClick={() => setSelectedPipeline(step)}
               className={`rounded-sm border px-2 py-3 text-center ${pipelineTone(step.state)}`}
               title={step.detail}
             >
               <p className="text-[10px] font-semibold tracking-wide">{step.id}</p>
               <p className="mt-1 text-xs">{step.state}</p>
-            </div>
+            </button>
           ))}
         </div>
       </Card>
@@ -357,66 +770,26 @@ export function ControlCenterClient({
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Tâche actuelle" testId="x200-current-task-panel">
           {current ? (
-            <dl className="grid gap-2 text-sm">
-              <div>
-                <dt className="text-xs text-gold-muted">ID</dt>
-                <dd className="text-white">{current.id}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">Titre</dt>
-                <dd className="text-white">{current.title}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">Objectif</dt>
-                <dd className="text-gray-muted">{current.objective || "N/A"}</dd>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              className="w-full text-left"
+              onClick={() => setSelectedTask(current)}
+            >
+              <dl className="grid gap-2 text-sm">
                 <div>
-                  <dt className="text-xs text-gold-muted">Statut</dt>
-                  <dd className="text-white">{current.status}</dd>
+                  <dt className="text-xs text-gold-muted">ID</dt>
+                  <dd className="text-white">{current.id}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gold-muted">Priorité</dt>
-                  <dd className="text-white">{current.priority}</dd>
-                </div>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">Dépendances</dt>
-                <dd className="text-white">
-                  {current.dependencies.length
-                    ? current.dependencies.join(", ")
-                    : "aucune"}
-                </dd>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <dt className="text-xs text-gold-muted">Attempts</dt>
-                  <dd className="text-white">{current.attempts}</dd>
+                  <dt className="text-xs text-gold-muted">Titre</dt>
+                  <dd className="text-white">{current.title}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gold-muted">requiresHuman</dt>
-                  <dd className="text-white">{String(current.requiresHuman)}</dd>
+                  <dt className="text-xs text-gold-muted">Objectif</dt>
+                  <dd className="text-gray-muted">{current.objective || "N/A"}</dd>
                 </div>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">nextAction</dt>
-                <dd className="text-gray-muted">{display(current.nextAction)}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">Evidence</dt>
-                <dd className="text-gray-muted">
-                  {current.evidenceCount > 0
-                    ? current.evidence.slice(0, 4).join(" · ")
-                    : "N/A"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-gold-muted">Début / durée / ETA</dt>
-                <dd className="text-gray-muted">
-                  updatedAt={display(current.updatedAt)} · durée=N/A · ETA=N/A
-                </dd>
-              </div>
-            </dl>
+              </dl>
+            </button>
           ) : (
             <p className="text-sm text-gray-muted">N/A</p>
           )}
@@ -487,7 +860,9 @@ export function ControlCenterClient({
               {tasks.map((task) => (
                 <tr
                   key={task.id}
-                  className="border-b border-border-subtle/70 text-gray-muted"
+                  data-testid={`x200-task-row-${task.id}`}
+                  className="cursor-pointer border-b border-border-subtle/70 text-gray-muted hover:bg-surface"
+                  onClick={() => setSelectedTask(task)}
                 >
                   <td className="px-2 py-2 text-white">{task.id}</td>
                   <td className="px-2 py-2">{task.status}</td>
@@ -521,11 +896,6 @@ export function ControlCenterClient({
                   ? "N/A"
                   : `${eff.successRatePercent}%`
               }
-              hint={
-                eff.successRatePercent === null
-                  ? "Donnée insuffisante"
-                  : "completed / (completed + failed)"
-              }
             />
             <Metric label="Attempts total" value={String(eff.totalAttempts)} />
             <Metric label="Bloquées" value={String(eff.blockedTasks)} />
@@ -537,49 +907,50 @@ export function ControlCenterClient({
                   ? "N/A"
                   : String(eff.averageAttemptsOnCompleted)
               }
-              hint={
-                eff.averageAttemptsOnCompleted === null
-                  ? "Donnée insuffisante"
-                  : null
-              }
-            />
-            <Metric
-              label="Cycle moyen (jours)"
-              value={
-                eff.averageCycleDays === null
-                  ? "N/A"
-                  : String(eff.averageCycleDays)
-              }
-              hint={
-                eff.averageCycleDays === null
-                  ? "Donnée insuffisante"
-                  : "EN_COURS→TERMINÉE datés"
-              }
-            />
-            <Metric
-              label="Attente humaine"
-              value={eff.humanWaitHint ?? "N/A"}
             />
           </div>
         </Card>
 
-        <Card title="Activité récente" testId="x200-activity">
-          <ul className="max-h-96 space-y-2 overflow-y-auto">
-            {snapshot.activity.map((item: ActivityItem) => (
-              <li
-                key={item.id}
-                className="border-b border-border-subtle/60 pb-2 text-xs"
-              >
-                <p className="text-gold-muted">
-                  [{item.kind}] {item.at}
-                </p>
-                <p className="text-white">{item.title}</p>
-                <p className="text-gray-muted">{item.detail}</p>
-              </li>
-            ))}
-          </ul>
+        <Card title="ACTION HISTORY" testId="x200-action-history">
+          {control.recentActions.length === 0 ? (
+            <p className="text-sm text-gray-muted">Aucune action enregistrée</p>
+          ) : (
+            <ul className="max-h-96 space-y-2 overflow-y-auto text-xs">
+              {control.recentActions.map((item, index) => (
+                <li
+                  key={`${item.timestamp}-${item.action}-${index}`}
+                  className="border-b border-border-subtle/60 pb-2"
+                >
+                  <p className="text-gold-muted">{item.timestamp}</p>
+                  <p className="text-white">
+                    {item.action} · {item.result} · {item.durationMs}ms
+                  </p>
+                  <p className="text-gray-muted">
+                    {item.actor} · {item.code ?? "N/A"} · {item.detail ?? ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
         </Card>
       </div>
+
+      <Card title="Activité récente" testId="x200-activity">
+        <ul className="max-h-96 space-y-2 overflow-y-auto">
+          {snapshot.activity.map((item: ActivityItem) => (
+            <li
+              key={item.id}
+              className="border-b border-border-subtle/60 pb-2 text-xs"
+            >
+              <p className="text-gold-muted">
+                [{item.kind}] {item.at}
+              </p>
+              <p className="text-white">{item.title}</p>
+              <p className="text-gray-muted">{item.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </Card>
 
       <Card title="Qui fait quoi / comment / quand" testId="x200-roles">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -606,14 +977,6 @@ export function ControlCenterClient({
             <p className="mt-1 text-white">
               {snapshot.productComplete.present ? "present" : "absent"}
             </p>
-            <p>
-              matchesHead=
-              {display(snapshot.productComplete.matchesCurrentHead)}
-            </p>
-            <p>
-              matchesGoal=
-              {display(snapshot.productComplete.matchesCurrentGoalHash)}
-            </p>
           </div>
           <div>
             <p className="text-gold-muted">GitHub PR</p>
@@ -621,8 +984,6 @@ export function ControlCenterClient({
               #{display(snapshot.github.prNumber)} ·{" "}
               {display(snapshot.github.prState)}
             </p>
-            <p>draft={display(snapshot.github.prDraft)}</p>
-            <p>mergeable={display(snapshot.github.prMergeable)}</p>
           </div>
           <div>
             <p className="text-gold-muted">Warnings</p>
@@ -638,6 +999,242 @@ export function ControlCenterClient({
           </div>
         </div>
       </Card>
+
+      {selectedTask ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-6"
+          data-testid="x200-task-drawer"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-sm border border-border-subtle bg-surface-elevated p-4 sm:rounded-sm sm:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs text-gold-muted">{selectedTask.id}</p>
+                <h3 className="mt-1 font-heading text-xl text-white">
+                  {selectedTask.title}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="rounded-sm border border-border-subtle px-2 py-1 text-xs text-gray-muted"
+                onClick={() => setSelectedTask(null)}
+              >
+                Close
+              </button>
+            </div>
+            <dl className="mt-4 grid gap-3 text-sm">
+              <div>
+                <dt className="text-xs text-gold-muted">Objectif</dt>
+                <dd className="text-gray-muted">{display(selectedTask.objective)}</dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <dt className="text-xs text-gold-muted">Statut</dt>
+                  <dd className="text-white">{selectedTask.status}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gold-muted">Priorité</dt>
+                  <dd className="text-white">{selectedTask.priority}</dd>
+                </div>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">Dependencies</dt>
+                <dd className="text-white">
+                  {selectedTask.dependencies.join(", ") || "aucune"}
+                </dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <dt className="text-xs text-gold-muted">Attempts</dt>
+                  <dd className="text-white">{selectedTask.attempts}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gold-muted">Owner</dt>
+                  <dd className="text-white">{display(selectedTask.owner)}</dd>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <dt className="text-xs text-gold-muted">requiresHuman</dt>
+                  <dd className="text-white">
+                    {String(selectedTask.requiresHuman)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gold-muted">updatedAt</dt>
+                  <dd className="text-white">{display(selectedTask.updatedAt)}</dd>
+                </div>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">Claim worker / expiry</dt>
+                <dd className="text-white">
+                  {display(selectedTask.claimWorkerId)} ·{" "}
+                  {display(selectedTask.claimExpiresAt)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">nextAction</dt>
+                <dd className="text-gray-muted">{display(selectedTask.nextAction)}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">blockedReason</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedTask.blockedReason)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">transition reason</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedTask.lastTransitionReason)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">Evidence</dt>
+                <dd className="whitespace-pre-wrap text-gray-muted">
+                  {selectedTask.evidence.length
+                    ? selectedTask.evidence.join("\n")
+                    : "N/A"}
+                </dd>
+              </div>
+            </dl>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="rounded-sm border border-border-subtle px-3 py-2 text-xs text-gold"
+                onClick={() => void copyText(selectedTask.id)}
+              >
+                Copy task ID
+              </button>
+              <button
+                type="button"
+                className="rounded-sm border border-border-subtle px-3 py-2 text-xs text-gold"
+                onClick={() =>
+                  void copyText(selectedTask.evidence.join("\n") || "N/A")
+                }
+              >
+                Copy evidence
+              </button>
+              {snapshot.github.ciLatestUrl ? (
+                <ExternalLink href={snapshot.github.ciLatestUrl}>
+                  Open related CI
+                </ExternalLink>
+              ) : null}
+              {snapshot.github.prUrl ? (
+                <ExternalLink href={snapshot.github.prUrl}>
+                  Open related PR
+                </ExternalLink>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {selectedPipeline ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-6"
+          data-testid="x200-pipeline-drawer"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-lg overflow-y-auto rounded-t-sm border border-border-subtle bg-surface-elevated p-4 sm:rounded-sm sm:p-6">
+            <div className="flex items-start justify-between">
+              <h3 className="font-heading text-xl text-white">
+                {selectedPipeline.id}
+              </h3>
+              <button
+                type="button"
+                className="rounded-sm border border-border-subtle px-2 py-1 text-xs text-gray-muted"
+                onClick={() => setSelectedPipeline(null)}
+              >
+                Close
+              </button>
+            </div>
+            <dl className="mt-4 grid gap-2 text-sm">
+              <div>
+                <dt className="text-xs text-gold-muted">state</dt>
+                <dd className="text-white">{selectedPipeline.state}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">source</dt>
+                <dd className="text-white">{selectedPipeline.source}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">evidence</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedPipeline.evidence)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">timestamp</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedPipeline.timestamp)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">reason</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedPipeline.reason)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">related commit</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedPipeline.relatedCommit)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">related CI</dt>
+                <dd className="text-gray-muted">
+                  {display(selectedPipeline.relatedCiUrl)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gold-muted">detail</dt>
+                <dd className="text-gray-muted">{selectedPipeline.detail}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      ) : null}
+
+      {confirmAction ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          data-testid="x200-confirm-modal"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-md rounded-sm border border-border-subtle bg-surface-elevated p-5">
+            <h3 className="font-heading text-lg text-white">Confirm action</h3>
+            <p className="mt-2 text-sm text-gray-muted">
+              Exécuter {ACTION_LABELS[confirmAction]} ? Aucun merge, deploy ou
+              shell libre ne sera lancé.
+            </p>
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                data-testid="x200-confirm-action"
+                className="rounded-sm border border-gold/50 bg-gold/10 px-3 py-2 text-sm text-gold disabled:opacity-60"
+                onClick={() => {
+                  if (actionBusy) return;
+                  void runAction(confirmAction);
+                }}
+              >
+                {actionBusy ? "Running…" : "Confirm"}
+              </button>
+              <button
+                type="button"
+                className="rounded-sm border border-border-subtle px-3 py-2 text-sm text-gray-muted"
+                disabled={actionBusy}
+                onClick={() => setConfirmAction(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
