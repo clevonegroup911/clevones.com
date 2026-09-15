@@ -14,6 +14,7 @@ export function humanActionsAuditPath(cwd = process.cwd()): string {
   return path.join(cwd, AUDIT_REL);
 }
 
+/** Shared redaction for ops receipts and agentic audit (T051). */
 export function sanitizeAuditValue(value: unknown): unknown {
   if (typeof value === "string") {
     return redactMonitoringText(value, 400);

@@ -36,10 +36,10 @@ T048 n’est **pas** rejoué. Clôturé `TERMINÉE` sur `origin/feat/x200-boot-a
 | X200 dev orchestrator | CONFIRMÉ livré | Autopilot, Control Center | Routage de *tâches de développement* | Routage de *tâches métier* multi-providers | medium | — | Réutiliser policy/approval ; ne pas fusionner les deux plans |
 | Agent Registry | CONFIRMÉ absent → T049 | grep | — | Catalogue, capacités, outils, coût, confiance | low | aucune | **P0 en cours** |
 | Provider adapters | CONFIRMÉ absent | — | `lib/email/providers.ts` email only | `AgentProviderAdapter` execute/stream | medium | T049 | P1, **aucun SDK payant auto** |
-| Domain events | CONFIRMÉ partiel | `ClevoneGatewayEvent`, `AnalyticsEvent` | Paiements + analytics | Bus métier idempotent (lead, document, invoice…) | medium | T049 | T050 |
-| Tool / Action Gateway métier | CONFIRMÉ partiel | `lib/x200/actions/executor.ts` | Gateway *ops* (merge/deploy) | Gateway *métier* (CRM, DMS, finance recommend) | high | T049, policy existante | T051+ |
-| Human approval | CONFIRMÉ partiel | T046, paiements HUMAN_REVIEW | Gates ops + finance | Gates unifiés agent/tool | high | T049 | Réutiliser, étendre |
-| Audit agentique | CONFIRMÉ partiel | `AuditLog`, human-actions.jsonl | Acteur humain, paiements | Champs agent_id/provider/correlation/redaction outillage | medium | T049 | T051 |
+| Domain events | CONFIRMÉ livré T050 | `lib/agentic/events.ts` | Envelope in-process + adapter paiement | Bus distribué / workers async | medium | T049 | P2 vertical |
+| Tool / Action Gateway métier | CONFIRMÉ partiel T051 | `lib/agentic/tools.ts` | Allowlist + policyForRisk | Executor métier (CRM/DMS/finance) | high | T049, policy existante | P2, pas de shell |
+| Human approval | CONFIRMÉ partiel | T046, paiements HUMAN_REVIEW | Gates ops + finance + `approval_required` agent | Gates unifiés persistés | high | T049 | Réutiliser, étendre |
+| Audit agentique | CONFIRMÉ partiel T051 | `lib/agentic/audit.ts` | Journal agent_id/provider/tool/risk/redaction | Persist Prisma obligatoire | medium | T049 | Étendre Control Center |
 | Observability | CONFIRMÉ livré | `/admin/x200` | Autopilot, CI, boot | Métriques agents métier | low | T049 | P1 Control Center panel |
 | Outcome engine | CONFIRMÉ absent | — | — | invoice_reconciled, lead_qualified… | low | events | P3 |
 | Finance Agent (IA) | CONFIRMÉ absent | rapprochement déterministe existe | Moteur sandbox | Worker enregistré + recommandation ; **pas de payout auto** | high | T049–T051 | P2 vertical slice |

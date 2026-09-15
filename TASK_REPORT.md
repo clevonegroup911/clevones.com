@@ -6,7 +6,7 @@
 
 ## ID
 
-T050
+T051
 
 ## Statut
 
@@ -14,23 +14,25 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.
+Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.
 
 ## Résultat
 
-Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement vers `ClevoneGatewayEvent` sans dupliquer persist.ts. MERGED=NO DEPLOYED=NO.
+Allowlist BUSINESS_TOOL_IDS distincte de HUMAN_ACTION_TYPES. policyForBusinessTool = policyForRisk(riskForBusinessTool). Journal agent_id/provider/action/tool/risk/approval_required/status via sanitizeAuditValue. T050 TERMINÉE (CI 34967009299). MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/events.ts`
-- `lib/agentic/events.test.ts`
-- `lib/agentic/payment-events.ts`
+- `lib/agentic/tools.ts`
+- `lib/agentic/tools.test.ts`
+- `lib/agentic/audit.ts`
 
 ## Fichiers modifiés
 
+- `lib/x200/actions/policy.ts` (`policyForRisk`)
+- `lib/x200/actions/audit.ts` (réutilisation documentée)
+- `lib/x200/actions/index.ts`
+- `lib/admin/audit.ts` (`AGENT_TOOL_EVALUATED`)
 - `lib/agentic/index.ts`
-- `lib/payments/clevone-events.ts` (commentaire de réutilisation)
-- backlog / TASK_REPORT / PROJECT_CONTEXT / reports
 
 ## Commandes
 
@@ -40,8 +42,8 @@ Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement v
 
 ## Tests réussis
 
-- npm run x200:quality-gate T050 PASS (validate, npm test, tsc)
-- T049 CI quality SUCCESS run 34965983633 SHA 2d5e38d
+- npm run x200:quality-gate T051 PASS (validate, npm test, tsc)
+- T050 CI quality SUCCESS run 34967009299 SHA 280ccbc
 
 ## Tests échoués
 
@@ -49,7 +51,7 @@ Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement v
 
 ## Lint
 
-- non listé dans T050.tests ; tsc PASS
+- non listé dans T051.tests ; tsc PASS
 
 ## Type-check
 
@@ -57,13 +59,14 @@ Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement v
 
 ## Build
 
-- non requis (FAST — pas de Prisma/auth)
+- non requis (FAST — pas de Prisma schema / auth)
 
 ## Sécurité
 
-- Pas de webhooks live
-- Pas de second store paiement
-- Contenu EXTERNAL = DATA
+- Pas d'executor shell
+- Pas de payout
+- Ops HUMAN_ACTION_TYPES refusés comme outils métier
+- Secrets rédigés
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -72,16 +75,16 @@ Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement v
 
 ## Pull Request
 
-- https://github.com/clevonegroup911/clevones.com/pull/13 (draft, T049+T050)
+- https://github.com/clevonegroup911/clevones.com/pull/13 (draft)
 
 ## Preuves
 
-- lib/agentic/events.ts
-- lib/agentic/events.test.ts
+- lib/agentic/tools.ts
+- lib/agentic/audit.ts
 
 ## Risques
 
-- medium — idempotence in-process seulement (Prisma paiement inchangé)
+- medium — journal in-process ; pas de persist Prisma obligatoire
 
 ## Blocage
 
@@ -89,4 +92,4 @@ Envelope `lib/agentic/events.ts` + log idempotent in-process. Adapter paiement v
 
 ## Prochaine tâche prête
 
-- T051 après T050 TERMINÉE
+- aucune dans le cycle T049–T051 après T051

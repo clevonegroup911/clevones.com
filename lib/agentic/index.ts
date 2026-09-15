@@ -47,3 +47,20 @@ export {
   envelopeFromClevoneGatewayEvent,
   proofUploadedEnvelope,
 } from "@/lib/agentic/payment-events";
+export {
+  BUSINESS_TOOL_IDS,
+  BusinessToolError,
+  evaluateAgentTool,
+  isBusinessToolId,
+  isHumanActionType,
+  policyForBusinessTool,
+  riskForBusinessTool,
+} from "@/lib/agentic/tools";
+export type { AgentToolEvaluation, BusinessToolId } from "@/lib/agentic/tools";
+export {
+  AGENT_TOOL_EVALUATED_ACTION,
+  AgentAuditLog,
+  buildAgentAuditRecord,
+  toAdminAuditLogInput,
+} from "@/lib/agentic/audit";
+export type { AgentAuditRecord, AgentAuditStatus } from "@/lib/agentic/audit";

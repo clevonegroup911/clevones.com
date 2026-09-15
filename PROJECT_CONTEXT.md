@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-agentic-core` (base `origin/feat/x200-boot-autostart` @ `8a203da`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T050 EN_CONTRÔLE — domain event envelope, quality-gate local PASS | CONFIRMÉ registre |
+| HEAD travail | T051 EN_CONTRÔLE — tool policy reuse + agent audit, quality-gate local PASS | CONFIRMÉ registre |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconstruire l’existant. T048 est `TERMINÉE` (CI FULL). T049 = registre d’agents indépendant des fournisseurs (EN_CONTRÔLE). T050/T051 restent `À_FAIRE`. Les rails live, merge `main` et deploy restent des gates humaines.
+Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconstruire l’existant. T048–T050 sont `TERMINÉE`. T051 (policy métier + audit agent) est `EN_COURS`. Les rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -43,8 +43,8 @@ Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconst
 | T001–T047 | `TERMINÉE` | CONFIRMÉ registre |
 | T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
 | T049 | `TERMINÉE` Agent Registry — CI quality SUCCESS run 34965983633 / `2d5e38d` | CONFIRMÉ registre |
-| T050 | `EN_CONTRÔLE` Domain event envelope — quality-gate local PASS | CONFIRMÉ registre |
-| T051 | `À_FAIRE` Agent audit + policy reuse | CONFIRMÉ registre |
+| T050 | `TERMINÉE` Domain event envelope — CI quality SUCCESS run 34967009299 / `280ccbc` | CONFIRMÉ registre |
+| T051 | `EN_CONTRÔLE` Agent audit + policy reuse — quality-gate local PASS | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 
@@ -60,7 +60,7 @@ Preuves CI récentes (CONFIRMÉ) :
 ## Écarts restants vs PRODUCT_GOAL
 
 Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).
-Critères 21–25 (agentic) : T049 EN_CONTRÔLE ; T050/T051 ensuite ; P2 agents métier plus tard.
+Critères 21–25 (agentic) : T049–T050 TERMINÉE ; T051 EN_CONTRÔLE ; P2 agents métier plus tard.
 
 ### Gates humaines / externes (obligatoires hors auto)
 

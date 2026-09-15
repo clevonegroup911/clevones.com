@@ -3476,11 +3476,21 @@
           "version": null,
           "at": "2026-09-15T12:02:40.859897Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34967009299",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34967009299",
+          "version": "280ccbcbda2da50d9f80158c47ce895c19f65309",
+          "at": "2026-09-15T12:31:36.323320Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer",
-      "lastTransitionReason": "quality-gate local PASS (validate, npm test, tsc)",
+      "nextAction": null,
+      "lastTransitionReason": "CI quality SUCCESS run 34967009299 SHA 280ccbc",
       "id": "T050",
       "title": "Agentic Core — domain event envelope (idempotent)",
       "objective": "Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.",
@@ -3505,11 +3515,12 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "evidence": [
         "lib/agentic/events.ts",
         "lib/agentic/events.test.ts",
-        "lib/agentic/payment-events.ts"
+        "lib/agentic/payment-events.ts",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299"
       ],
       "estimatedCost": 5,
       "risk": "medium",
@@ -3524,10 +3535,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T051",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T12:37:11.550608Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "attendre T049 TERMINÉE",
-      "lastTransitionReason": null,
+      "nextAction": "réconcilier le job quality puis clôturer",
+      "lastTransitionReason": "quality-gate local PASS (validate, npm test, tsc)",
       "id": "T051",
       "title": "Agentic Core — tool policy reuse + agent audit fields",
       "objective": "Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.",
@@ -3553,11 +3575,16 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
-      "evidence": [],
+      "status": "EN_CONTRÔLE",
+      "evidence": [
+        "lib/agentic/tools.ts",
+        "lib/agentic/tools.test.ts",
+        "lib/agentic/audit.ts",
+        "lib/x200/actions/policy.ts"
+      ],
       "estimatedCost": 5,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15"
     }
@@ -4948,9 +4975,39 @@
       "to": "EN_CONTRÔLE",
       "by": "cursor",
       "note": "Local quality-gate PASS; await CI quality"
+    },
+    {
+      "at": "2026-09-15T12:31:36.323320Z",
+      "taskId": "T050",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "CI quality SUCCESS 34967009299 SHA 280ccbc; watch client network drop ignored"
+    },
+    {
+      "at": "2026-09-15T12:32:14.785925Z",
+      "taskId": "T051",
+      "from": "À_FAIRE",
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "Unblocked after T049+T050 TERMINÉE"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T051",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15T12:37:11.550608Z",
+      "taskId": "T051",
+      "from": "EN_COURS",
+      "to": "EN_CONTRÔLE",
+      "by": "cursor",
+      "note": "Local quality-gate PASS; await CI quality"
     }
   ],
-  "registryVersion": 150,
+  "registryVersion": 154,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
