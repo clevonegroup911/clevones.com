@@ -72,7 +72,7 @@ async function postJson(
   page: import("@playwright/test").Page,
   path: string,
   payload: Record<string, unknown>,
-  attempts = 3,
+  attempts = 5,
 ): Promise<PostJsonResult> {
   let last: PostJsonResult | null = null;
   for (let i = 0; i < attempts; i += 1) {
@@ -80,7 +80,7 @@ async function postJson(
     if (last.ok || !isTransientDevRouteError(last) || i === attempts - 1) {
       return last;
     }
-    await new Promise((resolve) => setTimeout(resolve, 400 * (i + 1)));
+    await new Promise((resolve) => setTimeout(resolve, 500 * (i + 1)));
   }
   return last as PostJsonResult;
 }

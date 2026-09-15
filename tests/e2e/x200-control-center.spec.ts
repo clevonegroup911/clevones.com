@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 import { loginE2eAdmin, readE2eRuntimeState } from "./admin-login";
+import { assertControlCenterHtmlHasAssets } from "./control-center-assets";
 import { loginE2ePortalUser } from "./portal-login";
 import { captureSafeEvidence } from "./safe-screenshot";
 
@@ -35,6 +36,65 @@ test.describe("x200 core surfaces", () => {
     await captureSafeEvidence(
       page,
       `${testInfo.project.name}-x200-user-denied.png`,
+    );
+  });
+
+  test("Control Center HTML serves required /_next CSS and JS assets", async ({
+    page,
+  }, testInfo) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+
+    const response = await page.goto("/admin/x200");
+    expect(response, "navigation response missing").toBeTruthy();
+    expect(response!.ok(), `status=${response!.status()}`).toBeTruthy();
+
+    await expect(
+      page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+    ).toBeVisible({ timeout: 30_000 });
+
+    const html = await page.content();
+    const { assets } = assertControlCenterHtmlHasAssets(html);
+    expect(assets.length).toBeGreaterThan(0);
+
+    const stylesheetHrefs = await page
+      .locator('link[rel="stylesheet"]')
+      .evaluateAll((nodes) =>
+        nodes
+          .map((node) => (node as HTMLLinkElement).href)
+          .filter((href) => Boolean(href)),
+      );
+    const nextScripts = await page.locator('script[src*="/_next/"]').evaluateAll(
+      (nodes) =>
+        nodes
+          .map((node) => (node as HTMLScriptElement).src)
+          .filter((src) => Boolean(src)),
+    );
+
+    expect(
+      stylesheetHrefs.length + nextScripts.length,
+      "DOM must expose stylesheet and/or /_next script tags",
+    ).toBeGreaterThan(0);
+
+    for (const href of stylesheetHrefs) {
+      const asset = await page.request.get(href);
+      expect(asset.ok(), `stylesheet ${href} status=${asset.status()}`).toBeTruthy();
+    }
+    for (const src of nextScripts.slice(0, 8)) {
+      const asset = await page.request.get(src);
+      expect(asset.ok(), `script ${src} status=${asset.status()}`).toBeTruthy();
+    }
+
+    const bodyDisplay = await page
+      .locator("body")
+      .evaluate((el) => getComputedStyle(el).display);
+    expect(bodyDisplay, "body must not stay FOUC-hidden without styles").not.toBe(
+      "none",
+    );
+
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-control-center-assets.png`,
     );
   });
 
