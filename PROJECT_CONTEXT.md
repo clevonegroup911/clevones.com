@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-agentic-core` | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | T052 EN_CONTRÔLE — Tool Gateway in-process ; T051 TERMINÉE | CONFIRMÉ |
+| HEAD travail | T053 EN_CONTRÔLE — Finance vertical slice ; T052 TERMINÉE | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic T049–T051 `TERMINÉE`. T052 Tool Gateway `EN_CONTRÔLE`. T053 Finance vertical slice `À_FAIRE`. Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T052 `TERMINÉE`. T053 Finance vertical slice `EN_CONTRÔLE`. Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -40,9 +40,8 @@ Fondations agentic T049–T051 `TERMINÉE`. T052 Tool Gateway `EN_CONTRÔLE`. T0
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T051 | `TERMINÉE` | CONFIRMÉ registre |
-| T052 | `EN_CONTRÔLE` Tool Gateway in-process — quality-gate local PASS | CONFIRMÉ registre |
-| T053 | `À_FAIRE` Finance vertical slice (dépend T052) | CONFIRMÉ registre |
+| T001–T052 | `TERMINÉE` | CONFIRMÉ registre |
+| T053 | `EN_CONTRÔLE` Finance vertical slice — quality-gate local PASS | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Draft PR | [#13](https://github.com/clevonegroup911/clevones.com/pull/13) | CONFIRMÉ |

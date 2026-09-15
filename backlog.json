@@ -3618,13 +3618,27 @@
           "version": null,
           "at": "2026-09-15T13:17:23.636Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34974772115",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34974772115",
+          "version": "cb1ff13f4ada6453193bb591a729e3f94e73d6d3",
+          "at": "2026-09-15T13:30:32.495631Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34974772115 on cb1ff13; MERGED=NO DEPLOYED=NO",
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "CI quality SUCCESS run 34974772115 SHA cb1ff13",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34974772115",
+        "lib/agentic/gateway.ts"
+      ],
       "estimatedCost": 5,
       "attempts": 1,
       "requiresHuman": false,
@@ -3651,7 +3665,7 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "medium"
     },
     {
@@ -3661,14 +3675,29 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T053",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T13:37:16.791440Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "attendre T052 TERMINÉE",
-      "lastTransitionReason": "[X200-AUTOPLAN] Finance vertical slice after Tool Gateway; PRODUCT_GOAL critère 25",
+      "nextAction": "réconcilier le job quality puis clôturer",
+      "lastTransitionReason": "quality-gate local PASS (validate, npm test, tsc)",
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/finance-slice.ts",
+        "lib/agentic/finance-slice.test.ts",
+        ".x200/quality-results.json"
+      ],
       "estimatedCost": 5,
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T053",
@@ -3693,7 +3722,7 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium"
     }
   ],
@@ -5149,9 +5178,39 @@
       "taskId": "T052",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T13:30:32.495631Z",
+      "taskId": "T052",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34974772115 head cb1ff13f4ada6453193bb591a729e3f94e73d6d3"
+    },
+    {
+      "at": "2026-09-15T13:30:32.495631Z",
+      "taskId": "T053",
+      "from": "À_FAIRE",
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "T052 TERMINÉE — promote Finance vertical slice"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T053",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15T13:37:16.791440Z",
+      "taskId": "T053",
+      "from": "EN_COURS",
+      "to": "EN_CONTRÔLE",
+      "by": "cursor",
+      "note": "Local quality-gate PASS; push for CI"
     }
   ],
-  "registryVersion": 158,
+  "registryVersion": 161,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

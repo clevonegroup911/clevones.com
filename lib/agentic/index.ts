@@ -76,3 +76,11 @@ export type {
   ToolInvokeInput,
   ToolInvokeResult,
 } from "@/lib/agentic/gateway";
+export {
+  financeAgentOrThrow,
+  runFinanceProofUploadedSlice,
+} from "@/lib/agentic/finance-slice";
+export type {
+  FinanceSliceInput,
+  FinanceSliceResult,
+} from "@/lib/agentic/finance-slice";

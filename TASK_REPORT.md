@@ -6,7 +6,7 @@
 
 ## ID
 
-T052
+T053
 
 ## Statut
 
@@ -14,17 +14,17 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute uniquement des handlers allowlistés LOW (lecture/recommandation). Aucun shell, aucun payout, aucun HIGH/CRITICAL auto.
+Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FINANCE_AGENT → Tool Gateway recommend → score/recommendation + human approval si MEDIUM+. Aucun payout, aucune activation VERIFIED automatique hors moteur existant.
 
 ## Résultat
 
-`ToolGateway.invoke` refuse outils inconnus/ops, exige un token d'approbation single-use pour risque > LOW (ex. payments.reconcile.recommend), exécute des stubs déterministes sans mouvement d'argent. Journal AgentAuditLog. MERGED=NO DEPLOYED=NO.
+`runFinanceProofUploadedSlice` enchaîne DomainEventLog, AgentRegistry.select, ToolGateway.invoke(payments.reconcile.recommend) et createReconciliationService.hydrate+reconcile. moneyMoved/verifiedActivated toujours false. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/gateway.ts`
-- `lib/agentic/gateway.test.ts`
-- `reports/tasks/T052.md`
+- `lib/agentic/finance-slice.ts`
+- `lib/agentic/finance-slice.test.ts`
+- `reports/tasks/T053.md`
 
 ## Fichiers modifiés
 
@@ -34,15 +34,15 @@ Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute 
 ## Commandes
 
 - npm run x200:validate
-- npm test (agentic)
+- npm test (agentic finance-slice)
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T052
+- npm run x200:quality-gate -- --task T053
 
 ## Tests réussis
 
-- lib/agentic/gateway.test.ts 7 PASS
-- agentic suite 25 PASS
-- quality-gate T052 PASS
+- finance-slice.test.ts 3 PASS
+- quality-gate T053 PASS
+- T052 CI SUCCESS run 34974772115 SHA cb1ff13
 
 ## Tests échoués
 
@@ -50,7 +50,7 @@ Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute 
 
 ## Lint
 
-- non listé dans T052.tests
+- non listé dans T053.tests
 
 ## Type-check
 
@@ -62,8 +62,8 @@ Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute 
 
 ## Sécurité
 
-- Pas de shell, pas de payout, pas de handler HIGH
-- MEDIUM+ nécessite approval token single-use
+- Pas de payout / activation
+- Preuve client seule → PENDING + approvalRequired
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -76,12 +76,12 @@ Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute 
 
 ## Preuves
 
-- lib/agentic/gateway.ts
+- lib/agentic/finance-slice.ts
 - .x200/quality-results.json
 
 ## Risques
 
-- medium — stubs in-process ; T053 branchera le scoring réel
+- medium — slice in-process ; pas branché aux routes HTTP portal
 
 ## Blocage
 
@@ -89,4 +89,4 @@ Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute 
 
 ## Prochaine tâche prête
 
-- T053 après T052 TERMINÉE
+- AUTOPLAN après T053 TERMINÉE
