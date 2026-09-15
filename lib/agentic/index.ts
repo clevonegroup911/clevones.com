@@ -93,6 +93,11 @@ export type {
   FinanceRecommendInput,
   FinanceRecommendResult,
 } from "@/lib/agentic/finance-agent";
+export { recommendLeadQualify } from "@/lib/agentic/commercial-agent";
+export type {
+  CommercialQualifyInput,
+  CommercialQualifyResult,
+} from "@/lib/agentic/commercial-agent";
 export {
   BusinessOrchestrator,
   classifyBusinessEvent,

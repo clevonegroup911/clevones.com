@@ -4095,11 +4095,22 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:01:18.660Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
       "owner": "cursor",
       "evidence": [],
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T059",
@@ -4125,11 +4136,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium",
       "estimatedCost": 6,
-      "nextAction": "réclamer et implémenter Commercial Agent",
-      "lastTransitionReason": "[X200-FAST] unblocked after T058 TERMINÉE (scope free)"
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
     }
   ],
   "history": [
@@ -5794,9 +5805,21 @@
       "to": "PRÊTE",
       "by": "cursor",
       "note": "[X200-FAST] unblocked after T058 TERMINÉE"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T059",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T059",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 179,
+  "registryVersion": 181,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

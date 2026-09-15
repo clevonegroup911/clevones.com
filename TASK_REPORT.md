@@ -6,29 +6,29 @@
 
 ## ID
 
-T058
+T059
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Finance Agent complet : recommend() multi-événements, raisons structurées, hooks orchestrator. Recommend-only.
+Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas d'envoi email.
 
 ## Résultat
 
-`recommendFinanceReconciliation` + `runFinanceAgentTask`. CI quality SUCCESS run 34984040818 SHA fa3895f. MERGED=NO DEPLOYED=NO.
+`recommendLeadQualify` + handlers crm.read/crm.draft + orchestrator commercial.qualify. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/finance-agent.ts`
-- `lib/agentic/finance-agent.test.ts`
-- `reports/tasks/T058.md`
+- `lib/agentic/commercial-agent.ts`
+- `lib/agentic/commercial-agent.test.ts`
+- `reports/tasks/T059.md`
 
 ## Fichiers modifiés
 
-- `lib/agentic/finance-slice.ts`
+- `lib/agentic/gateway.ts`
 - `lib/agentic/orchestrator.ts`
 - `lib/agentic/index.ts`
 
@@ -37,13 +37,13 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T058
+- npm run x200:quality-gate -- --task T059
 
 ## Tests réussis
 
-- finance-agent.test.ts 2 PASS
-- quality-gate T058 PASS
-- CI quality SUCCESS run 34984040818 SHA fa3895f
+- commercial-agent.test.ts 1 PASS
+- tsc --noEmit PASS
+- quality-gate T059 PASS
 
 ## Tests échoués
 
@@ -51,7 +51,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Lint
 
-- PASS (CI)
+- non exigé localement (lane FAST CI)
 
 ## Type-check
 
@@ -59,16 +59,16 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Build
 
-- PASS (CI FULL)
+- non exigé localement (lane FAST CI)
 
 ## Sécurité
 
-- moneyMoved=false verifiedActivated=false
+- emailSent=false mailQueued=false
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- `fa3895fe3a11d52980f5d773283e3ea8a19a5e5c`
+- (push en cours)
 
 ## Pull Request
 
@@ -76,8 +76,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Preuves
 
-- lib/agentic/finance-agent.ts
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818
+- lib/agentic/commercial-agent.ts
 
 ## Risques
 
@@ -89,4 +88,4 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Prochaine tâche prête
 
-- T059 Commercial Agent
+- AUTOPLAN DMS Agent après T059

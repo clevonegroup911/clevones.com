@@ -7,6 +7,7 @@ import {
 import {
   runFinanceAgentTask,
 } from "@/lib/agentic/finance-agent";
+import { recommendLeadQualify } from "@/lib/agentic/commercial-agent";
 import {
   type FinanceSliceInput,
   type FinanceSliceResult,
@@ -70,6 +71,13 @@ export type BusinessOrchestrationInput = {
   /** Finance payload when eventType is payment.proof_uploaded. */
   finance?: Omit<FinanceSliceInput, "idempotencyKey"> & {
     idempotencyKey?: string;
+  };
+  /** Commercial lead payload for lead.created / qualify. */
+  commercial?: {
+    leadId: string;
+    email?: string;
+    notes?: string;
+    company?: string;
   };
   approval?: ToolGatewayApproval | null;
 };
@@ -243,7 +251,108 @@ export class BusinessOrchestrator {
       return this.runFinance(input, classification, steps);
     }
 
+    if (classification.taskClass === "commercial.qualify") {
+      return this.runCommercial(input, classification, steps);
+    }
+
     return this.runGenericTool(input, classification, steps);
+  }
+
+  private async runCommercial(
+    input: BusinessOrchestrationInput,
+    classification: ClassifiedBusinessTask,
+    steps: OrchestrationStep[],
+  ): Promise<BusinessOrchestrationResult> {
+    const recorded = this.events.record(input.event);
+    if (recorded.status === "conflict") {
+      steps.push(step("execute", "EVENT_CONFLICT", false));
+      return {
+        status: "conflict",
+        classification,
+        steps,
+        correlationId: recorded.event.correlationId,
+        routing: null,
+        gateway: null,
+        finance: null,
+        moneyMoved: false,
+      };
+    }
+
+    const leadId =
+      input.commercial?.leadId
+      ?? (typeof input.event.payload.leadId === "string"
+        ? input.event.payload.leadId
+        : null);
+    if (!leadId) {
+      steps.push(step("execute", "LEAD_ID_REQUIRED", false));
+      return {
+        status: "denied",
+        classification,
+        steps,
+        correlationId: recorded.event.correlationId,
+        routing: null,
+        gateway: null,
+        finance: null,
+        moneyMoved: false,
+      };
+    }
+
+    const result = await recommendLeadQualify(
+      {
+        leadId,
+        email: input.commercial?.email
+          ?? (typeof input.event.payload.email === "string"
+            ? input.event.payload.email
+            : undefined),
+        notes: input.commercial?.notes
+          ?? (typeof input.event.payload.notes === "string"
+            ? input.event.payload.notes
+            : undefined),
+        company: input.commercial?.company
+          ?? (typeof input.event.payload.company === "string"
+            ? input.event.payload.company
+            : undefined),
+        approval: input.approval ?? null,
+        correlationId: recorded.event.correlationId,
+      },
+      { registry: this.registry, gateway: this.gateway },
+    );
+
+    steps.push(step("select", result.routing.reason, Boolean(result.routing.agent)));
+    steps.push(
+      step(
+        "execute",
+        result.gatewayDraft?.code ?? "NO_DRAFT",
+        result.gatewayDraft?.status === "executed"
+          || result.gatewayDraft?.status === "pending_approval",
+      ),
+    );
+    steps.push(
+      step(
+        "verify",
+        result.qualification,
+        result.emailSent === false && result.mailQueued === false,
+      ),
+    );
+    steps.push(step("audit", `approvalRequired=${result.approvalRequired}`, true));
+
+    const status =
+      result.gatewayDraft?.status === "denied"
+        ? "denied"
+        : result.approvalRequired || result.gatewayDraft?.status === "pending_approval"
+          ? "pending_approval"
+          : "completed";
+
+    return {
+      status,
+      classification,
+      steps,
+      correlationId: recorded.event.correlationId,
+      routing: result.routing,
+      gateway: result.gatewayDraft,
+      finance: null,
+      moneyMoved: false,
+    };
   }
 
   private async runFinance(

@@ -84,6 +84,30 @@ const DEFAULT_HANDLERS: Partial<Record<BusinessToolId, ToolHandler>> = {
       hits: [],
     },
   }),
+  "crm.read": (input) => ({
+    ok: true,
+    code: "CRM_READ",
+    output: {
+      leadId: typeof input.leadId === "string" ? input.leadId : null,
+      email: typeof input.email === "string" ? input.email.slice(0, 120) : null,
+      status: "read_only_stub",
+      emailSent: false,
+    },
+  }),
+  "crm.draft": (input) => ({
+    ok: true,
+    code: "CRM_DRAFT",
+    output: {
+      leadId: typeof input.leadId === "string" ? input.leadId : null,
+      draftType: typeof input.draftType === "string" ? input.draftType : "qualify",
+      body:
+        typeof input.notes === "string"
+          ? `DRAFT (no send): ${input.notes.slice(0, 280)}`
+          : "DRAFT (no send): pending qualification",
+      emailSent: false,
+      mailQueued: false,
+    },
+  }),
   /**
    * Recommendation only — never activates VERIFIED payments or moves money.
    * Deterministic stub for gateway unit tests; T053 wires real scoring.
