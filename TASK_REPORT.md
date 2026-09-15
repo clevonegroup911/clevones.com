@@ -6,30 +6,31 @@
 
 ## ID
 
-T059
+T060
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas d'envoi email.
+DMS Agent : document.uploaded → classify via documents.read.metadata + documents.classify. Pas d'export / echo contenu.
 
 ## Résultat
 
-`recommendLeadQualify` + handlers CRM. CI quality SUCCESS run 34985618494 SHA 31dbf89. MERGED=NO DEPLOYED=NO.
+`recommendDocumentClassify` + handler `documents.classify` + orchestrator `runDms`. quality-gate T060 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/commercial-agent.ts`
-- `lib/agentic/commercial-agent.test.ts`
-- `reports/tasks/T059.md`
+- `lib/agentic/dms-agent.ts`
+- `lib/agentic/dms-agent.test.ts`
+- `reports/tasks/T060.md`
 
 ## Fichiers modifiés
 
 - `lib/agentic/gateway.ts`
 - `lib/agentic/orchestrator.ts`
+- `lib/agentic/orchestrator.test.ts`
 - `lib/agentic/index.ts`
 
 ## Commandes
@@ -37,13 +38,14 @@ Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T059
+- npm run x200:quality-gate -- --task T060
 
 ## Tests réussis
 
-- commercial-agent.test.ts PASS
-- quality-gate T059 PASS
-- CI quality SUCCESS run 34985618494 SHA 31dbf89
+- dms-agent.test.ts PASS
+- orchestrator DMS path PASS
+- tsc --noEmit PASS
+- quality-gate T060 PASS
 
 ## Tests échoués
 
@@ -51,7 +53,7 @@ Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas 
 
 ## Lint
 
-- PASS (CI)
+- non exigé localement (lane FAST CI)
 
 ## Type-check
 
@@ -59,16 +61,16 @@ Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas 
 
 ## Build
 
-- PASS (CI FULL)
+- non exigé localement (lane FAST CI)
 
 ## Sécurité
 
-- emailSent=false mailQueued=false
+- contentEchoed=false bytesEchoed=false exported=false
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- `31dbf8900d39ca175adf2e49c3aa055bd2771c92`
+- (push en cours)
 
 ## Pull Request
 
@@ -76,8 +78,8 @@ Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas 
 
 ## Preuves
 
-- lib/agentic/commercial-agent.ts
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34985618494
+- lib/agentic/dms-agent.ts
+- .x200/quality-results.json (T060)
 
 ## Risques
 
@@ -85,8 +87,8 @@ Commercial Agent : lead.created → qualify draft via crm.read + crm.draft. Pas 
 
 ## Blocage
 
-- aucun
+- aucun — attendre CI quality SUCCESS
 
 ## Prochaine tâche prête
 
-- AUTOPLAN DMS Agent (T060)
+- AUTOPLAN après T060 TERMINÉE

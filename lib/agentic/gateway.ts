@@ -66,6 +66,31 @@ const DEFAULT_HANDLERS: Partial<Record<BusinessToolId, ToolHandler>> = {
       contentEchoed: false,
     },
   }),
+  "documents.classify": (input) => {
+    const title = typeof input.title === "string" ? input.title : "";
+    const mimeType = typeof input.mimeType === "string" ? input.mimeType : "";
+    let label = "UNCLASSIFIED";
+    if (/contract|policy/i.test(title)) {
+      label = "POLICY_CANDIDATE";
+    } else if (/invoice|facture/i.test(title)) {
+      label = "INVOICE_CANDIDATE";
+    } else if (mimeType.includes("pdf")) {
+      label = "DOCUMENT_PDF";
+    }
+    return {
+      ok: true,
+      code: "DOCUMENT_CLASSIFY",
+      output: {
+        documentId: typeof input.documentId === "string" ? input.documentId : null,
+        label,
+        confidence: label === "UNCLASSIFIED" ? 0.35 : 0.78,
+        // Never echo file bytes, OCR text, or storage paths.
+        contentEchoed: false,
+        bytesEchoed: false,
+        exported: false,
+      },
+    };
+  },
   "audit.read": () => ({
     ok: true,
     code: "AUDIT_READ",

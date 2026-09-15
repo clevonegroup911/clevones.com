@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 183
+- Registre : 185
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 0
-- PRÊTE : 1
+- EN_CONTRÔLE : 1
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
@@ -81,4 +81,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T057 | P1 | TERMINÉE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
 | T058 | P2 | TERMINÉE | Finance Agent — complete recommendation worker (no payout) | non |
 | T059 | P2 | TERMINÉE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
-| T060 | P2 | PRÊTE | DMS Agent — document.classify metadata worker (no content leak) | non |
+| T060 | P2 | EN_CONTRÔLE | DMS Agent — document.classify metadata worker (no content leak) | non |

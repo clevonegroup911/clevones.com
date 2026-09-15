@@ -98,6 +98,11 @@ export type {
   CommercialQualifyInput,
   CommercialQualifyResult,
 } from "@/lib/agentic/commercial-agent";
+export { recommendDocumentClassify } from "@/lib/agentic/dms-agent";
+export type {
+  DmsClassifyInput,
+  DmsClassifyResult,
+} from "@/lib/agentic/dms-agent";
 export {
   BusinessOrchestrator,
   classifyBusinessEvent,

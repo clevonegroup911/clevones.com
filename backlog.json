@@ -4165,14 +4165,25 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:15:48.712Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "réclamer et implémenter DMS Agent classify (metadata only)",
-      "lastTransitionReason": "[X200-AUTOPLAN] P2 DMS Agent after Commercial T059",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "owner": "cursor",
       "evidence": [],
       "estimatedCost": 6,
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
       "id": "T060",
@@ -4198,7 +4209,7 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "risk": "medium"
     }
   ],
@@ -5892,9 +5903,21 @@
       "to": "PRÊTE",
       "by": "cursor",
       "note": "[X200-AUTOPLAN] DMS Agent; zero duplicate T001-T059"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T060",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T060",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 183,
+  "registryVersion": 185,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

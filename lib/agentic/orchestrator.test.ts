@@ -133,22 +133,47 @@ test("payment.proof_uploaded delegates to finance slice without money movement",
   assert.ok(done.steps.map((s) => s.name).includes("audit"));
 });
 
-test("document.uploaded selects DMS agent and executes metadata read", async () => {
-  const result = await runBusinessOrchestration({
-    event: baseEvent({
-      eventType: "document.uploaded",
-      idempotencyKey: "orch-doc-1",
-      contentLayer: "SYSTEM",
-      payload: { documentId: "doc_1", title: "Policy" },
-    }),
-  });
+test("document.uploaded selects DMS agent and classifies with approval", async () => {
+  const gateway = createDefaultToolGateway();
+  const pending = await runBusinessOrchestration(
+    {
+      event: baseEvent({
+        eventType: "document.uploaded",
+        idempotencyKey: "orch-doc-1",
+        contentLayer: "SYSTEM",
+        payload: { documentId: "doc_1", title: "Policy" },
+      }),
+    },
+    { gateway },
+  );
 
-  assert.equal(result.classification.taskClass, "documents.classify");
-  assert.equal(result.routing?.agent?.id, "CLEVONE_DMS_AGENT");
-  assert.equal(result.gateway?.status, "executed");
-  assert.equal(result.gateway?.code, "DOCUMENT_METADATA");
-  assert.equal(result.status, "completed");
-  assert.equal(result.moneyMoved, false);
+  assert.equal(pending.classification.taskClass, "documents.classify");
+  assert.equal(pending.routing?.agent?.id, "CLEVONE_DMS_AGENT");
+  assert.equal(pending.gateway?.status, "pending_approval");
+  assert.equal(pending.status, "pending_approval");
+  assert.equal(pending.moneyMoved, false);
+
+  const done = await runBusinessOrchestration(
+    {
+      event: baseEvent({
+        eventType: "document.uploaded",
+        idempotencyKey: "orch-doc-1",
+        contentLayer: "SYSTEM",
+        payload: { documentId: "doc_1", title: "Policy" },
+      }),
+      approval: {
+        token: "apr_orch_dms_1",
+        tool: "documents.classify",
+        agentId: "CLEVONE_DMS_AGENT",
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      },
+    },
+    { gateway },
+  );
+  assert.equal(done.gateway?.status, "executed");
+  assert.equal(done.gateway?.code, "DOCUMENT_CLASSIFY");
+  assert.equal(done.status, "completed");
+  assert.equal(done.gateway?.output?.contentEchoed, false);
 });
 
 test("idempotent conflict returns conflict status", async () => {
@@ -161,7 +186,7 @@ test("idempotent conflict returns conflict status", async () => {
       payload: { documentId: "a" },
     }),
   });
-  assert.equal(first.status, "completed");
+  assert.ok(first.status === "pending_approval" || first.status === "completed");
 
   const second = await orch.run({
     event: baseEvent({

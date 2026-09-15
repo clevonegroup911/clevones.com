@@ -8,6 +8,7 @@ import {
   runFinanceAgentTask,
 } from "@/lib/agentic/finance-agent";
 import { recommendLeadQualify } from "@/lib/agentic/commercial-agent";
+import { recommendDocumentClassify } from "@/lib/agentic/dms-agent";
 import {
   type FinanceSliceInput,
   type FinanceSliceResult,
@@ -79,6 +80,12 @@ export type BusinessOrchestrationInput = {
     notes?: string;
     company?: string;
   };
+  /** DMS document payload for document.uploaded / classify. */
+  dms?: {
+    documentId: string;
+    title?: string;
+    mimeType?: string;
+  };
   approval?: ToolGatewayApproval | null;
 };
 
@@ -135,9 +142,9 @@ export function classifyBusinessEvent(
     return {
       taskClass: "documents.classify",
       eventType,
-      risk: layer === "EXTERNAL" ? "MEDIUM" : "LOW",
+      risk: "MEDIUM",
       requiredCapabilities: ["classify", "documents"],
-      requiredTools: ["documents.read.metadata"],
+      requiredTools: ["documents.read.metadata", "documents.classify"],
       contentSensitivity: layer === "EXTERNAL" ? "confidential" : "internal",
       contentLayer: layer,
     };
@@ -255,7 +262,106 @@ export class BusinessOrchestrator {
       return this.runCommercial(input, classification, steps);
     }
 
+    if (classification.taskClass === "documents.classify") {
+      return this.runDms(input, classification, steps);
+    }
+
     return this.runGenericTool(input, classification, steps);
+  }
+
+  private async runDms(
+    input: BusinessOrchestrationInput,
+    classification: ClassifiedBusinessTask,
+    steps: OrchestrationStep[],
+  ): Promise<BusinessOrchestrationResult> {
+    const recorded = this.events.record(input.event);
+    if (recorded.status === "conflict") {
+      steps.push(step("execute", "EVENT_CONFLICT", false));
+      return {
+        status: "conflict",
+        classification,
+        steps,
+        correlationId: recorded.event.correlationId,
+        routing: null,
+        gateway: null,
+        finance: null,
+        moneyMoved: false,
+      };
+    }
+
+    const documentId =
+      input.dms?.documentId
+      ?? (typeof input.event.payload.documentId === "string"
+        ? input.event.payload.documentId
+        : null);
+    if (!documentId) {
+      steps.push(step("execute", "DOCUMENT_ID_REQUIRED", false));
+      return {
+        status: "denied",
+        classification,
+        steps,
+        correlationId: recorded.event.correlationId,
+        routing: null,
+        gateway: null,
+        finance: null,
+        moneyMoved: false,
+      };
+    }
+
+    const result = await recommendDocumentClassify(
+      {
+        documentId,
+        title: input.dms?.title
+          ?? (typeof input.event.payload.title === "string"
+            ? input.event.payload.title
+            : undefined),
+        mimeType: input.dms?.mimeType
+          ?? (typeof input.event.payload.mimeType === "string"
+            ? input.event.payload.mimeType
+            : undefined),
+        approval: input.approval ?? null,
+        correlationId: recorded.event.correlationId,
+      },
+      { registry: this.registry, gateway: this.gateway },
+    );
+
+    steps.push(step("select", result.routing.reason, Boolean(result.routing.agent)));
+    steps.push(
+      step(
+        "execute",
+        result.gatewayClassify?.code ?? "NO_CLASSIFY",
+        result.gatewayClassify?.status === "executed"
+          || result.gatewayClassify?.status === "pending_approval",
+      ),
+    );
+    steps.push(
+      step(
+        "verify",
+        result.label ?? "NO_LABEL",
+        result.contentEchoed === false
+          && result.bytesEchoed === false
+          && result.exported === false,
+      ),
+    );
+    steps.push(step("audit", `approvalRequired=${result.approvalRequired}`, true));
+
+    const status =
+      result.gatewayClassify?.status === "denied"
+        ? "denied"
+        : result.approvalRequired || result.gatewayClassify?.status === "pending_approval"
+          ? "pending_approval"
+          : "completed";
+
+    return {
+      status,
+      classification,
+      steps,
+      correlationId: recorded.event.correlationId,
+      routing: result.routing,
+      gateway: result.gatewayClassify,
+      finance: null,
+      moneyMoved: false,
+    };
   }
 
   private async runCommercial(
