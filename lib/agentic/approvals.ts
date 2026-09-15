@@ -92,6 +92,12 @@ export class BusinessApprovalEngine {
   }
 
   issue(input: IssueBusinessApprovalInput): BusinessApprovalRecord {
+    const record = this.issueSync(input);
+    void this.persistApprovalBestEffort(record);
+    return record;
+  }
+
+  issueSync(input: IssueBusinessApprovalInput): BusinessApprovalRecord {
     if (!isBusinessToolId(input.tool)) {
       throw new Error(`UNKNOWN_BUSINESS_TOOL:${input.tool}`);
     }
@@ -131,6 +137,23 @@ export class BusinessApprovalEngine {
       at: record.issuedAt,
     });
     return { ...record };
+  }
+
+  async issueAsync(input: IssueBusinessApprovalInput): Promise<BusinessApprovalRecord> {
+    const record = this.issueSync(input);
+    await this.persistApprovalBestEffort(record);
+    return record;
+  }
+
+  private async persistApprovalBestEffort(
+    record: BusinessApprovalRecord,
+  ): Promise<void> {
+    try {
+      const { appendAgenticApproval } = await import("@/lib/agentic/persistence");
+      await appendAgenticApproval(record);
+    } catch {
+      // Journal must never break approval issuance.
+    }
   }
 
   consume(input: ConsumeBusinessApprovalInput): ConsumeBusinessApprovalResult {

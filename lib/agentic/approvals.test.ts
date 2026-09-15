@@ -101,3 +101,32 @@ test("ToolGateway accepts engine-issued approvals and rejects replay", async () 
   assert.equal(second.status, "pending_approval");
   assert.equal(second.code, "APPROVAL_CONSUMED");
 });
+
+test("issueAsync persists digest without raw token", async () => {
+  const { mkdtemp } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const path = await import("node:path");
+  const cwd = await mkdtemp(path.join(tmpdir(), "apr-persist-"));
+  const prev = process.cwd();
+  process.chdir(cwd);
+  try {
+    const engine = createBusinessApprovalEngine();
+    const agent = financeAgentOrThrow();
+    const issued = await engine.issueAsync({
+      agentId: agent.id,
+      tool: "payments.reconcile.recommend",
+      reason: "persist check",
+      issuerId: "admin-1",
+    });
+    const { loadAgenticJournal } = await import("@/lib/agentic/persistence");
+    const journal = await loadAgenticJournal({ cwd, limit: 10 });
+    assert.ok(journal.approvals.length >= 1);
+    assert.equal(journal.approvals.some((a) => a.approvalDigest === issued.tokenDigest), true);
+    const raw = await import("node:fs/promises").then((fs) =>
+      fs.readFile(path.join(cwd, ".x200", "agentic-approvals.jsonl"), "utf8"),
+    );
+    assert.doesNotMatch(raw, new RegExp(issued.token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  } finally {
+    process.chdir(prev);
+  }
+});

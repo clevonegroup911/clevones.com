@@ -6,7 +6,7 @@
 
 ## ID
 
-T063
+T064
 
 ## Statut
 
@@ -14,36 +14,36 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Hook recommend-only après upload preuve (flag AGENTIC_PROOF_RECOMMEND_HOOK). Aucune activation VERIFIED.
+Brancher writers journal depuis orchestrator + approval engine (best-effort, sans tokens).
 
 ## Résultat
 
-`maybeRunAgenticProofRecommend` + branchement best-effort dans `persistProofAndDecision`. Désactivé par défaut. MERGED=NO DEPLOYED=NO.
+`persistOrchestrationBestEffort` + `issue`/`issueAsync` persist. quality-gate T064 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/payment-hook.ts`
-- `lib/agentic/payment-hook.test.ts`
-- `reports/tasks/T063.md`
+- `reports/tasks/T064.md`
 
 ## Fichiers modifiés
 
-- `lib/payments/persist.ts`
-- `lib/agentic/index.ts`
-- backlog (T061/T062 close)
+- `lib/agentic/orchestrator.ts`
+- `lib/agentic/approvals.ts`
+- `lib/agentic/approvals.test.ts`
+- backlog (T063 close + T064)
 
 ## Commandes
 
 - npm run x200:validate
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T063
+- npm run x200:quality-gate -- --task T064
 
 ## Tests réussis
 
-- payment-hook.test.ts PASS
+- approvals issueAsync persist PASS
+- orchestrator PASS
 - tsc --noEmit PASS
-- quality-gate T063 PASS
+- quality-gate T064 PASS
 
 ## Tests échoués
 
@@ -63,12 +63,12 @@ Hook recommend-only après upload preuve (flag AGENTIC_PROOF_RECOMMEND_HOOK). Au
 
 ## Sécurité
 
-- Hook off by default ; moneyMoved/verifiedActivated false
+- Tokens absents du journal
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- (à pousser)
+- (push en cours)
 
 ## Pull Request
 
@@ -76,16 +76,18 @@ Hook recommend-only après upload preuve (flag AGENTIC_PROOF_RECOMMEND_HOOK). Au
 
 ## Preuves
 
-- lib/agentic/payment-hook.ts
+- lib/agentic/orchestrator.ts
+- lib/agentic/approvals.ts
+- .x200/quality-results.json (T064)
 
 ## Risques
 
-- medium
+- low
 
 ## Blocage
 
-- aucun
+- aucun — attendre CI
 
 ## Prochaine tâche prête
 
-- AUTOPLAN si NO_READY après clôture
+- aucune automatique attendue après TERMINÉE (gates humaines merge/deploy)

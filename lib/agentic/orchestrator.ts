@@ -223,6 +223,35 @@ export class BusinessOrchestrator {
   }
 
   async run(input: BusinessOrchestrationInput): Promise<BusinessOrchestrationResult> {
+    const result = await this.dispatch(input);
+    await this.persistOrchestrationBestEffort(result);
+    return result;
+  }
+
+  private async persistOrchestrationBestEffort(
+    result: BusinessOrchestrationResult,
+  ): Promise<void> {
+    try {
+      const { appendAgenticOrchestration } = await import("@/lib/agentic/persistence");
+      await appendAgenticOrchestration({
+        correlationId: result.correlationId,
+        taskClass: result.classification.taskClass,
+        status: result.status,
+        steps: result.steps.map((s) => ({
+          name: s.name,
+          ok: s.ok,
+          detail: s.detail.slice(0, 200),
+        })),
+        moneyMoved: false,
+      });
+    } catch {
+      // Journal must never break orchestration.
+    }
+  }
+
+  private async dispatch(
+    input: BusinessOrchestrationInput,
+  ): Promise<BusinessOrchestrationResult> {
     const steps: OrchestrationStep[] = [];
     const classification = classifyBusinessEvent(
       input.event.eventType,

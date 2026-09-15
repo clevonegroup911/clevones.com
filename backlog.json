@@ -4385,11 +4385,28 @@
           "version": null,
           "at": "2026-09-15T15:47:08.361Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34990785657",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34990785657",
+          "version": "c5dbf815f2f9a3cbdf5de764f1eaf108a780c2a5",
+          "at": "2026-09-15T15:59:02.780Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/payment-hook.ts",
+        "lib/agentic/payment-hook.test.ts",
+        "lib/payments/persist.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34990785657 SHA c5dbf81",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34990785657"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
@@ -4415,11 +4432,66 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "medium",
       "estimatedCost": 6,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34990785657 on c5dbf81; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T16:03:00.382Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
       "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "owner": "cursor",
+      "evidence": [],
+      "estimatedCost": 4,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T064",
+      "title": "Wire agentic journal writers from orchestrator + approval engine",
+      "objective": "Après runBusinessOrchestration / issueBusinessApproval, append best-effort vers persistence (.x200 jsonl) pour alimenter réellement le Control Center. Échecs d’écriture non bloquants ; tokens jamais persistés.",
+      "priority": "P1",
+      "dependencies": [
+        "T061",
+        "T063"
+      ],
+      "scope": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/approvals.ts",
+        "lib/agentic/orchestrator.test.ts",
+        "lib/agentic/approvals.test.ts"
+      ],
+      "acceptanceCriteria": [
+        "Orchestration completed/pending appende agentic-orchestrations.jsonl (best-effort)",
+        "issueBusinessApproval appende agentic-approvals.jsonl sans token brut",
+        "Tests ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "EN_CONTRÔLE",
+      "risk": "low"
     }
   ],
   "history": [
@@ -6216,9 +6288,37 @@
       "taskId": "T063",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-15T15:59:02.780Z",
+      "taskId": "T063",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34990785657 head c5dbf815f2f9a3cbdf5de764f1eaf108a780c2a5"
+    },
+    {
+      "at": "2026-09-15T15:59:02.780Z",
+      "taskId": "T064",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] journal writers; zero duplicate T001-T063"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T064",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T064",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 193,
+  "registryVersion": 196,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
