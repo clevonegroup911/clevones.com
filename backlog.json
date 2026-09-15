@@ -3388,6 +3388,149 @@
       "attempts": 2,
       "requiresHuman": false,
       "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T11:43:04.677Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "id": "T049",
+      "title": "Agentic Core — provider-independent Agent Registry",
+      "objective": "Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [],
+      "scope": [
+        "lib/agentic",
+        "docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md"
+      ],
+      "acceptanceCriteria": [
+        "Catalogue workers: CLEVONE_FINANCE_AGENT, CLEVONE_COMMERCIAL_AGENT, CLEVONE_DMS_AGENT, CLEVONE_ADMIN_AGENT, CURSOR_DEV_WORKER, GROK_WORKER, OPENAI_WORKER",
+        "select() respecte capacités, allowlist outils, maxRisk, confidentialité (pas d'envoi auto vers Grok/OpenAI)",
+        "EXTERNAL/USER ne peuvent pas register/disable; registry frozen par défaut",
+        "Aucun import SDK vendor; unit tests passent; x200:validate passe",
+        "MERGED=NO DEPLOYED=NO; pas de mouvement d'argent"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npx tsc --noEmit",
+        "npm run lint",
+        "npm run x200:scan-secrets"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "low",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "attendre T049 TERMINÉE",
+      "lastTransitionReason": null,
+      "id": "T050",
+      "title": "Agentic Core — domain event envelope (idempotent)",
+      "objective": "Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T049"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/payments/clevone-events.ts",
+        "docs/architecture"
+      ],
+      "acceptanceCriteria": [
+        "Envelope unique: eventType, idempotencyKey, correlationId, source, actor, timestamp",
+        "Idempotence: la même clé ne produit pas deux effets",
+        "Réutilise ClevoneGatewayEvent pour les paiements; pas de duplication du moteur de rapprochement",
+        "Pas de webhooks live ni workers asynchrones obligatoires",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "medium",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "attendre T049 TERMINÉE",
+      "lastTransitionReason": null,
+      "id": "T051",
+      "title": "Agentic Core — tool policy reuse + agent audit fields",
+      "objective": "Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T049"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/x200/actions/policy.ts",
+        "lib/admin/audit.ts",
+        "lib/x200/actions/audit.ts"
+      ],
+      "acceptanceCriteria": [
+        "Journal agentique: agent_id, provider, action, tool, risk, approval_required, status — sans secrets",
+        "Réutilise riskForAction / policyForAction; pas de second moteur de risque",
+        "Allowlist d'outils métier distincte de HUMAN_ACTION_TYPES ops",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "À_FAIRE",
+      "evidence": [],
+      "estimatedCost": 5,
+      "risk": "medium",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
     }
   ],
   "history": [
@@ -4708,9 +4851,47 @@
       "taskId": "T048",
       "status": "TERMINÉE",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-15T11:08:49.293570Z",
+      "taskId": "T049",
+      "from": null,
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Agent Registry after owner Agentic vNext prompt; zero duplicate of T001-T048"
+    },
+    {
+      "at": "2026-09-15T11:08:49.293570Z",
+      "taskId": "T050",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Domain event envelope depends on T049"
+    },
+    {
+      "at": "2026-09-15T11:08:49.293570Z",
+      "taskId": "T051",
+      "from": null,
+      "to": "À_FAIRE",
+      "by": "cursor",
+      "note": "[X200-AUTOPLAN] Agent audit/policy reuse depends on T049"
+    },
+    {
+      "at": "2026-09-15T11:15:00.000Z",
+      "taskId": "T049",
+      "from": "PRÊTE",
+      "to": "EN_COURS",
+      "by": "cursor",
+      "note": "Scope narrowed vs T048 EN_CONTRÔLE; local reservation for Agent Registry"
+    },
+    {
+      "at": "2026-09-15",
+      "taskId": "T049",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 146,
+  "registryVersion": 147,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

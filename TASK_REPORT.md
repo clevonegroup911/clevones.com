@@ -6,56 +6,60 @@
 
 ## ID
 
-T048
+T049
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Make the local X200 operating plane automatically available after Fedora boot and automatically open the Control Center after graphical login.
+Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.
 
 ## Résultat
 
-Boot Orchestrator livré et validé CI FULL. AUTOPLAN: aucun écart automatique restant — PRODUCT_COMPLETE local re-épinglé sur HEAD `9b1bd3c`. MERGED=NO DEPLOYED=NO.
+Discovery pass + recovery X200 depuis `origin/feat/x200-boot-autostart`. T001–T047 préservées. T048 passé en EN_CONTRÔLE sans rejeu. Registre d'agents `lib/agentic` implémenté. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/boot/*`
-- `scripts/x200-autostart.mjs` / `x200-control-center-serve.mjs` / `x200-browser-autostart.mjs` / `x200-boot-watchdog.mjs`
-- `scripts/lib/x200-autostart-core.mjs` / `x200-control-center-assets.mjs`
-- `ops/systemd/clevones-x200-*.template`
-- `ops/xdg/clevones-x200-open-control-center.desktop.template`
-- `app/admin/x200/startup-panels.tsx`
-- `app/api/admin/x200/boot-actions/route.ts`
-- `docs/X200_BOOT_AUTOSTART.md`
-- `reports/tasks/T048.md`
+- `lib/agentic/types.ts`
+- `lib/agentic/catalog.ts`
+- `lib/agentic/registry.ts`
+- `lib/agentic/index.ts`
+- `lib/agentic/registry.test.ts`
+- `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`
+- `reports/tasks/T049.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts` / `sources.ts`
-- `app/admin/x200/control-center-client.tsx` / `human-action-panels.tsx`
-- `tests/e2e/*` / `next.config.ts` / `.gitignore`
-- `package.json`
-- `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
+- `package.json` (glob `lib/agentic/*.test.ts`)
+- `PRODUCT_GOAL.md` (critères 21–25)
+- `DECISIONS.md`
+- `PROJECT_CONTEXT.md`
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
 
 ## Commandes
 
 - npm run x200:validate
-- npm run x200:next -- --json
-- npm test / x200:test / lint / tsc / prisma / build / playwright / secrets
+- npm test
+- npm run x200:test
+- npx tsc --noEmit
+- npm run lint
+- npm run x200:scan-secrets
 
 ## Tests réussis
 
-- CI FULL quality SUCCESS run 34962261158 head 206cd31 (T048)
-- CI FULL quality SUCCESS run 34962961516 head 9b1bd3c (e2e distDir tip)
-- x200:next → NO_READY_TASK
+- lib/agentic/registry.test.ts : 11 PASS
+- npm test : 213 PASS
+- npm run x200:test : 83 PASS
+- npm run x200:validate : BACKLOG_VALID + TASK_REPORT_VALID
+- npx tsc --noEmit : PASS (exit 0)
+- npm run lint : 0 warning / 0 error
+- npm run x200:scan-secrets : SCAN_SECRETS_OK blocking_hits=0
 
 ## Tests échoués
 
-- aucun sur HEAD final
+- aucun
 
 ## Lint
 
@@ -67,40 +71,43 @@ Boot Orchestrator livré et validé CI FULL. AUTOPLAN: aucun écart automatique 
 
 ## Build
 
-- PASS — aucun déploiement
+- non requis (FAST — lib + docs, pas de Prisma/auth/CI)
 
 ## Sécurité
 
-- SECRET_VALUES_EXPOSED=NO
-- ARBITRARY_SHELL=NO
-- HUMAN_GATE_BYPASS=NO
-- UNKNOWN_PROCESS_KILLED=NO
-- MERGED=NO
-- DEPLOYED=NO
+- Aucun SDK vendor
+- Aucun secret
+- EXTERNAL/USER ne mutent pas le registre
+- Contenu confidentiel non routé vers Grok/OpenAI
+- Finance agent maxRisk=MEDIUM ; pas de payout
+- MERGED=NO DEPLOYED=NO
+- scan-secrets blocking_hits=0
 
 ## Commit
 
-- 9b1bd3c (feat/x200-boot-autostart)
+- feat/x200-agentic-core (pending push)
 
 ## Pull Request
 
-- draft PR #12 → feat/x200-operational-mirror
+- draft PR à ouvrir après push
 
 ## Preuves
 
-- reports/tasks/T048.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34962961516
-- `.x200/PRODUCT_COMPLETE.json` local (head=9b1bd3c)
+- docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md
+- lib/agentic/*
+- lib/agentic/registry.test.ts
+- .x200/quality-results.json (local quality-gate PASS, T049)
 
 ## Risques
 
-- aucun restant dans le périmètre automatique
+- T048 Boot Orchestrator : `TERMINÉE` sur `origin/feat/x200-boot-autostart` (CI FULL) — pas rejoué
+- package.json est dans FULL_PATTERNS : le classifieur CI peut forcer FULL malgré une intention FAST
+- Workspace initial était un main périmé ; stash local non réappliqué
 
 ## Blocage
 
-- gates humaines restantes seulement (SMTP réel, PSP live, merge main, deploy, MFA/secrets prod)
+- aucun
 
 ## Prochaine tâche prête
 
-- aucune automatique ; superviseur peut poll PRODUCT_COMPLETE
+- clôturer T049 après job GitHub `quality` SUCCESS sur SHA exact, puis T050

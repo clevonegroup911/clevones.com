@@ -8,9 +8,9 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | `feat/x200-boot-autostart` @ `221c721` (T048 TERMINÉE — Boot Orchestrator) | CONFIRMÉ |
-| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
+| Workspace local | branche `feat/x200-agentic-core` (base `origin/feat/x200-boot-autostart` @ `8a203da`) | CONFIRMÉ (session 2026-09-15) |
+| HEAD travail | T049 EN_CONTRÔLE — Agent Registry, quality-gate local PASS | CONFIRMÉ registre |
+| Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` + fondation `lib/agentic` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
 | Hébergement | VM GCP `clevones-serveur` (`europe-west1-b`), projet `clevonegroup` | INDIQUÉ (`DEPLOYMENT.md`) — non revérifié cette session |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé après T048 sur HEAD `221c721` (goalHash inchangé).
+Poser les fondations P0 de la **CLEVONE Agentic Business Platform** sans reconstruire l’existant. T048 est `TERMINÉE` (CI FULL). T049 = registre d’agents indépendant des fournisseurs (EN_CONTRÔLE). T050/T051 restent `À_FAIRE`. Les rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -26,6 +26,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 - Node `>=20.9.0`, npm
 - Scripts gouvernance : `scripts/*.mjs` et `scripts/lib/`
 - Control Center : `lib/x200/*`, `/admin/x200`, télémétrie Fedora `.x200/telemetry.json`
+- Agentic core : `lib/agentic/*` (T049)
 
 ## Authentification et rôles (CONFIRMÉ dans le code)
 
@@ -39,13 +40,15 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
-| T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL | CONFIRMÉ registre |
+| T001–T047 | `TERMINÉE` | CONFIRMÉ registre |
 | T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
+| T049 | `EN_CONTRÔLE` Agent Registry — quality-gate local PASS ; attendre `quality` CI | CONFIRMÉ registre |
+| T050 | `À_FAIRE` Domain event envelope | CONFIRMÉ registre |
+| T051 | `À_FAIRE` Agent audit + policy reuse | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
-| PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
+
+Gap analysis : `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`.
 
 Preuves CI récentes (CONFIRMÉ) :
 
@@ -56,7 +59,8 @@ Preuves CI récentes (CONFIRMÉ) :
 
 ## Écarts restants vs PRODUCT_GOAL
 
-Aucun écart **automatique** restant au registre. Les écarts restants sont des **gates humaines / externes**.
+Critères 1–20 : écarts restants = **gates humaines / externes** (inchangé).
+Critères 21–25 (agentic) : T049 EN_CONTRÔLE ; T050/T051 ensuite ; P2 agents métier plus tard.
 
 ### Gates humaines / externes (obligatoires hors auto)
 
@@ -66,7 +70,7 @@ Aucun écart **automatique** restant au registre. Les écarts restants sont des 
 | PSP live (M-PESA / RAWBANK / Stripe) | Gateway sandbox complète ; pas de webhooks/clés réseau |
 | Alertes GCP / uptime | Documentées ; non provisionnées |
 | Timer backup production | Unités `ops/systemd/` préparées ; **non activées** |
-| Merge `main` / PR ready | PR drafts #8/#9/#10 ; pas de merge auto |
+| Merge `main` / PR ready | Pas de merge auto |
 | Deploy + migrations production | Migrations CI/éphémères seulement |
 | MFA / secrets production | Enrollment et `.env` VM = gate |
 | SMS | Seulement si canal réel autorisé |
@@ -92,6 +96,7 @@ Exécutant : **single-executor**. Un fichier JSON local ne coordonne pas plusieu
 | Relais ChatGPT | NON CONFIGURÉ |
 | Gouvernance | `docs/X200_GOVERNANCE.md` / `docs/X200_AUTOPILOT.md` |
 | Observabilité | `/admin/x200` + télémétrie Fedora (T042/T043) |
+| Agentic | `lib/agentic` (T049) — pas d’appel provider |
 | Production | hors périmètre automatique |
 
 ## Interdit
