@@ -42,7 +42,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL | CONFIRMÉ registre |
 | T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
-| T049 | `EN_COURS` Control Center fully interactive actions and previews | CONFIRMÉ registre |
+| T049 | `EN_CONTRÔLE` Control Center interactive ; e2e CI fix pushed | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |

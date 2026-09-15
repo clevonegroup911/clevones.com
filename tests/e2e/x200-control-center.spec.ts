@@ -1,9 +1,15 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 import { loginE2eAdmin, readE2eRuntimeState } from "./admin-login";
 import { assertControlCenterHtmlHasAssets } from "./control-center-assets";
 import { loginE2ePortalUser } from "./portal-login";
 import { captureSafeEvidence } from "./safe-screenshot";
+
+async function dismissNextjsOverlay(page: Page) {
+  await page.evaluate(() => {
+    document.querySelectorAll("nextjs-portal").forEach((node) => node.remove());
+  });
+}
 
 function skipWithoutDb() {
   const state = readE2eRuntimeState();
@@ -1418,7 +1424,7 @@ test.describe("x200 interactive action console T049", () => {
 
     await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
     await page.getByTestId("x200-mark-ready").click();
-    await expect(page.getByTestId("x200-preview-loading").or(page.getByTestId("x200-action-preview"))).toBeVisible();
+    await expect(page.getByTestId("x200-preview-drawer-root")).toBeVisible();
     await expect(page.getByTestId("x200-action-preview")).toBeVisible();
     await expect(page.getByTestId("x200-preview-field-action")).toContainText(
       "MARK_READY_FOR_REVIEW",
@@ -1441,9 +1447,10 @@ test.describe("x200 interactive action console T049", () => {
     await expect(page.getByTestId("x200-action-receipt")).toBeVisible();
     await expect(page.getByTestId("x200-action-toast")).toContainText("SUCCESS");
     expect(executePosts).toBe(1);
-    await page.getByTestId("x200-copy-receipt").click();
-    await page.getByTestId("x200-preview-copy").click();
-    await page.getByTestId("x200-preview-close").click();
+    await dismissNextjsOverlay(page);
+    await page.getByTestId("x200-copy-receipt").click({ force: true });
+    await page.getByTestId("x200-preview-copy").click({ force: true });
+    await page.getByTestId("x200-preview-close").click({ force: true });
     await expect(page.getByTestId("x200-action-preview")).toHaveCount(0);
 
     await page.getByTestId("x200-tab-RELEASE").click();
@@ -1453,21 +1460,24 @@ test.describe("x200 interactive action console T049", () => {
     await expect(page.getByTestId("x200-confirm-disabled-reason")).toContainText(
       "MFA",
     );
-    await page.getByTestId("x200-preview-close").click();
+    await page.getByTestId("x200-preview-close").click({ force: true });
 
     await page.getByTestId("x200-tab-DEPLOY").click();
     await page.getByTestId("x200-deploy-preview").click();
     await expect(page.getByTestId("x200-action-preview")).toBeVisible();
     await expect(page.getByTestId("x200-confirm-disabled-reason")).toBeVisible();
-    await page.getByTestId("x200-preview-close").click();
+    await page.getByTestId("x200-preview-close").click({ force: true });
 
     await page.getByTestId("x200-tab-INCIDENTS").click();
     await page.getByTestId("x200-incident-RUN_HEALTH_CHECKS").click();
     await expect(page.getByTestId("x200-action-preview")).toBeVisible();
-    await page.getByTestId("x200-confirm-execute").click();
-    await expect(page.getByTestId("x200-preview-failed").or(page.getByTestId("x200-action-toast"))).toBeVisible();
-    await page.getByTestId("x200-copy-error").click();
-    await page.getByTestId("x200-preview-close").click();
+    await dismissNextjsOverlay(page);
+    await page.getByTestId("x200-confirm-execute").click({ force: true });
+    // Both the drawer failure panel and toast are visible; assert each explicitly.
+    await expect(page.getByTestId("x200-preview-failed")).toBeVisible();
+    await expect(page.getByTestId("x200-action-toast")).toBeVisible();
+    await page.getByTestId("x200-copy-error").click({ force: true });
+    await page.getByTestId("x200-preview-close").click({ force: true });
 
     await page.getByTestId("x200-tab-AUTOMATION").click();
     await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeVisible();
@@ -1485,7 +1495,7 @@ test.describe("x200 interactive action console T049", () => {
     await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
     await page.getByTestId("x200-mark-ready").click();
     await expect(page.getByTestId("x200-action-preview")).toBeVisible();
-    await page.getByTestId("x200-preview-close").click();
+    await page.getByTestId("x200-preview-close").click({ force: true });
 
     await captureSafeEvidence(
       page,

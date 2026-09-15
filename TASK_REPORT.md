@@ -10,7 +10,7 @@ T049
 
 ## Statut
 
-EN_COURS
+EN_CONTRÔLE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Make /admin/x200 a true interactive console: every clickable control has a visib
 
 ## Résultat
 
-Control Center action console livré : Preview ouvre un drawer visible (desktop latéral / mobile bottom sheet) sans mutation ; CONFIRM & EXECUTE reste gated (MFA, typed phrase, second confirm, adapter REAL) ; SUCCESS seulement après vérification distante ; NEXT SAFE MERGE dérivé de la stack GitHub du PR courant (jamais un PR non lié). MERGED=NO DEPLOYED=NO.
+contrôles locaux réussis ; correctif e2e CI (strict locators + toast non bloquant) ; attente du job quality FULL SUCCESS
 
 ## Fichiers créés
 
@@ -27,24 +27,12 @@ Control Center action console livré : Preview ouvre un drawer visible (desktop 
 
 ## Fichiers modifiés
 
-- `app/admin/x200/human-action-panels.tsx`
-- `app/admin/x200/control-center-client.tsx`
-- `app/admin/x200/operational-mirror-panels.tsx`
-- `app/admin/x200/startup-panels.tsx`
-- `lib/x200/actions/executor.ts`
-- `lib/x200/actions/policy.ts`
-- `lib/x200/actions/types.ts`
-- `lib/x200/mirror/release-stack.ts`
-- `lib/x200/mirror/assemble.ts`
-- `lib/x200/mirror/next-safe-action.ts`
-- `lib/x200/mirror/panels.ts`
-- `lib/x200/mirror/mirror.test.ts`
-- `lib/x200/actions/human-actions.test.ts`
 - `tests/e2e/x200-control-center.spec.ts`
+- `app/admin/x200/action-console.tsx`
 - `backlog.json`
-- `BACKLOG.md`
 - `TASK_REPORT.md`
 - `PROJECT_CONTEXT.md`
+- `reports/tasks/T049.md`
 
 ## Commandes
 
@@ -57,58 +45,58 @@ Control Center action console livré : Preview ouvre un drawer visible (desktop 
 - npm run build
 - npx playwright test
 - npm run x200:scan-secrets
+- git diff --check
+- npm run x200:quality-gate -- --task T049
 
 ## Tests réussis
 
-- unitaires (205)
-- x200:test (84 pass, 1 skip hors Postgres loopback)
-- lint / tsc / prisma / build / scan-secrets
+- quality-gate local QUALITY_GATE_OK
+- npm run x200:validate / npm test / npm run x200:test / lint / tsc / prisma / build / scan-secrets / playwright (auth skippé local si Docker e2e down)
 
 ## Tests échoués
 
-- Playwright authentifié local skippé : Docker publish 56432 / bridge 172.17.0.2 non joignables depuis ce netns ; preuve e2e = CI FULL
+- CI 34986848879 playwright T049 (strict `.or()` dual-match) — correctif inclus dans ce tip
 
 ## Lint
 
-- PASS
+PASS
 
 ## Type-check
 
-- PASS
+PASS
 
 ## Build
 
-- PASS — aucun déploiement
+PASS — aucun déploiement
 
 ## Sécurité
 
 - SECRET_VALUES_EXPOSED=NO
-- ARBITRARY_SHELL=NO
-- HUMAN_GATE_BYPASS=NO
 - MERGED=NO
 - DEPLOYED=NO
 
 ## Commit
 
-- (en cours)
+feat/x200-boot-autostart (tip correctif e2e + EN_CONTRÔLE)
 
 ## Pull Request
 
-- draft PR #12 → feat/x200-operational-mirror
+draft PR #12 → feat/x200-operational-mirror
 
 ## Preuves
 
+- quality-gate ok=true
 - reports/tasks/T049.md
-- tests unitaires stack predecessor + previewOnly
+- .x200/quality-results.json
 
 ## Risques
 
-- e2e local dépend du reachability Docker ; CI GitHub Actions reste la preuve Playwright FULL
+- preuve Playwright authentifiée FULL = CI GitHub Actions
 
 ## Blocage
 
-- aucun automatique ; merge/deploy restent Human Gate
+aucun automatique ; TERMINÉE après quality SUCCESS sur tip
 
 ## Prochaine tâche prête
 
-- après CI FULL quality SUCCESS
+NO_READY_TASK (AUTOPLAN après clôture T049)

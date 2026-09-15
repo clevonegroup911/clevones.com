@@ -86,7 +86,7 @@ export function ActionToast({
     <div
       data-testid="x200-action-toast"
       role="status"
-      className={`rounded-sm border bg-surface-elevated px-3 py-2 text-xs ${tone}`}
+      className={`pointer-events-none fixed top-4 left-4 right-4 z-[90] rounded-sm border bg-surface-elevated px-3 py-2 text-xs shadow-lg md:left-auto md:w-[28rem] ${tone}`}
     >
       <span data-testid="x200-action-phase" className="font-semibold tracking-wide uppercase">
         {phase}
@@ -160,7 +160,7 @@ export function PreviewDrawer({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-end justify-end bg-black/55 md:items-stretch"
+      className="fixed inset-0 z-[80] flex items-end justify-end bg-black/55 md:items-stretch"
       data-testid="x200-preview-drawer-root"
       onClick={onClose}
     >
