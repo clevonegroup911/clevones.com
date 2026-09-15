@@ -99,3 +99,13 @@ export type {
   OrchestrationStep,
   OrchestrationStepName,
 } from "@/lib/agentic/orchestrator";
+export {
+  createProviderAdapter,
+  isAgentProviderId,
+  listStubProviderIds,
+} from "@/lib/agentic/providers";
+export type {
+  LiveProviderCallResult,
+  StubProviderAdapter,
+  StubProviderId,
+} from "@/lib/agentic/providers";

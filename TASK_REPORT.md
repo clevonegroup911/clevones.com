@@ -6,7 +6,7 @@
 
 ## ID
 
-T054
+T055
 
 ## Statut
 
@@ -14,36 +14,36 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Orchestrateur métier in-process : EVENT → classify/risk → select → ToolGateway → verify/audit. Réutilise T050–T053. Pas de shell, pas de payout, pas de SDK vendor.
+Adapters AgentProviderAdapter pour internal/grok/openai/cursor/future : healthCheck, getCapabilities, estimateCost. execute/stream → PROVIDER_LIVE_DISABLED. Aucun SDK payant.
 
 ## Résultat
 
-`runBusinessOrchestration` / `BusinessOrchestrator` avec étapes tracées. `payment.proof_uploaded` délègue à `runFinanceProofUploadedSlice`. HIGH/CRITICAL → `blocked_pending_human`. quality-gate local PASS. MERGED=NO DEPLOYED=NO.
+`createProviderAdapter` stub in-process. Live execute/stream refusés. quality-gate T055 PASS. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/agentic/orchestrator.ts`
-- `lib/agentic/orchestrator.test.ts`
-- `reports/tasks/T054.md`
+- `lib/agentic/providers/index.ts`
+- `lib/agentic/providers.test.ts`
+- `reports/tasks/T055.md`
 
 ## Fichiers modifiés
 
 - `lib/agentic/index.ts`
-- `docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md`
 - `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
+- docs gap + T054 close proofs
 
 ## Commandes
 
 - npm run x200:validate
-- npm test (agentic orchestrator)
+- npm test (agentic providers)
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T054
+- npm run x200:quality-gate -- --task T055
 
 ## Tests réussis
 
-- orchestrator.test.ts 6 PASS
+- providers.test.ts 4 PASS
 - tsc --noEmit PASS
-- quality-gate T054 PASS
+- quality-gate T055 PASS
 
 ## Tests échoués
 
@@ -63,9 +63,8 @@ Orchestrateur métier in-process : EVENT → classify/risk → select → ToolGa
 
 ## Sécurité
 
-- Pas de shell / payout / SDK vendor
-- HIGH/CRITICAL = blocked_pending_human
-- moneyMoved=false
+- Aucun SDK openai/xai/@cursor
+- execute/stream = PROVIDER_LIVE_DISABLED
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
@@ -78,13 +77,13 @@ Orchestrateur métier in-process : EVENT → classify/risk → select → ToolGa
 
 ## Preuves
 
-- lib/agentic/orchestrator.ts
-- reports/tasks/T054.md
-- .x200/quality-results.json (T054)
+- lib/agentic/providers/index.ts
+- reports/tasks/T055.md
+- .x200/quality-results.json (T055)
 
 ## Risques
 
-- medium — orchestrateur in-process ; pas de bus distribué
+- low — stubs only
 
 ## Blocage
 
@@ -92,4 +91,4 @@ Orchestrateur métier in-process : EVENT → classify/risk → select → ToolGa
 
 ## Prochaine tâche prête
 
-- T055 (providers stub) si PRÊTE ; sinon promouvoir après T054 EN_CONTRÔLE
+- T056 après clôture T055 (collision scope index.ts)

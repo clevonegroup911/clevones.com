@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Fondations agentic T049–T053 `TERMINÉE`. AUTOPLAN a créé T054–T056 (orchestrator EN_COURS, providers À_FAIRE, approvals À_FAIRE). Rails live, merge `main` et deploy restent des gates humaines.
+Fondations agentic T049–T054 `TERMINÉE`. T055–T056 `PRÊTE` (providers + Approval Engine). Rails live, merge `main` et deploy restent des gates humaines.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
