@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 143
+- Registre : 146
 - Mode : single-executor
-- Mis à jour : 2026-09-13
+- Mis à jour : 2026-09-15
 
 ## Compteurs
 
-- EN_COURS : 1
+- EN_COURS : 0
 - EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 47
+- TERMINÉE : 48
 - ANNULÉE : 0
 
 ## Tâches

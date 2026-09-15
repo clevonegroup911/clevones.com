@@ -9,7 +9,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
 | Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-15) |
-| HEAD travail | `feat/x200-boot-autostart` @ `221c721` (T048 TERMINÉE — Boot Orchestrator) | CONFIRMÉ |
+| HEAD travail | `feat/x200-boot-autostart` @ `c097cd5` (T048 TERMINÉE + e2e Postgres port fix) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé après T048 sur HEAD `221c721` (goalHash inchangé).
+Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé AUTOPLAN sur HEAD `c097cd5` (goalHash inchangé).
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -45,7 +45,7 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
-| PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
+| PRODUCT_COMPLETE | local `.x200/` ; head=`c097cd5` + goalHash courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
 
@@ -53,6 +53,7 @@ Preuves CI récentes (CONFIRMÉ) :
 - T046 FULL quality SUCCESS `49d0c36` / run [34775412790](https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790) ; draft PR [#10](https://github.com/clevonegroup911/clevones.com/pull/10)
 - T047 FULL quality SUCCESS `7de8fd1` / run [34782004736](https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736) ; recovery tip `8c873db` / run [34782911788](https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788) ; draft PR [#11](https://github.com/clevonegroup911/clevones.com/pull/11)
 - T048 FULL quality SUCCESS `206cd31` / run [34962261158](https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
+- Post-T048 tip FULL quality SUCCESS `8a203da` / run [34963710051](https://github.com/clevonegroup911/clevones.com/actions/runs/34963710051) ; tip `c097cd5` e2e Postgres port fix (CI tip may still be running)
 
 ## Écarts restants vs PRODUCT_GOAL
 
