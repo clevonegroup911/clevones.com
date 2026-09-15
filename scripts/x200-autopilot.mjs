@@ -11,6 +11,7 @@ import {
   releaseLock,
   resolveAutopilotLockPath,
 } from "./lib/x200-autopilot-lock.mjs";
+import { buildTelemetryPayload, writeTelemetryFile } from "./lib/x200-telemetry.mjs";
 
 const ROOT = process.cwd();
 const STATE_DIR = resolve(ROOT, ".x200");
@@ -222,6 +223,35 @@ function writeBootLine(options, snapshot) {
   );
 }
 
+function telemetryMode(options) {
+  return options.daemon ? "daemon" : options.once ? "once" : "single";
+}
+
+function currentTaskId(backlog) {
+  const active = backlog?.tasks?.find((task) => task.status === "EN_COURS" || task.status === "EN_CONTRÔLE");
+  return active?.id || null;
+}
+
+function publishTelemetry(options, {
+  lastEvent,
+  cycle = 0,
+  agentRunning = false,
+  taskId = null,
+  snapshot = null,
+} = {}) {
+  const snap = snapshot || statusSnapshot();
+  const payload = buildTelemetryPayload({
+    mode: telemetryMode(options),
+    head: snap.head === "unknown" ? null : snap.head,
+    branch: snap.branch === "unknown" ? null : snap.branch,
+    lastEvent,
+    cycle,
+    agentRunning,
+    taskId,
+  });
+  writeTelemetryFile(payload, { root: ROOT });
+}
+
 function sleep(ms) {
   return new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
 }
@@ -243,6 +273,7 @@ async function main() {
   lockOwned = true;
 
   writeBootLine(options, statusSnapshot());
+  publishTelemetry(options, { lastEvent: "BOOT", cycle: 0, agentRunning: false });
 
   let stalls = 0;
   let cycles = 0;
@@ -279,12 +310,26 @@ async function main() {
         goalHash,
         completionMarker: completion,
       });
+      const taskId = currentTaskId(backlog);
 
       if (decision.action === "FAST_LANE") {
         clearGate();
+        publishTelemetry(options, {
+          lastEvent: "FAST_LANE",
+          cycle: cycles,
+          agentRunning: true,
+          taskId,
+          snapshot,
+        });
         const before = statusSnapshot();
         if (options.dryRun) {
           process.stdout.write(`${prompt}\n`);
+          publishTelemetry(options, {
+            lastEvent: "IDLE",
+            cycle: cycles,
+            agentRunning: false,
+            taskId,
+          });
           return 0;
         }
 
@@ -292,6 +337,13 @@ async function main() {
         const after = statusSnapshot();
         const progressed = before.head !== after.head || before.backlogHash !== after.backlogHash;
         stalls = progressed ? 0 : stalls + 1;
+        publishTelemetry(options, {
+          lastEvent: "FAST_LANE",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: currentTaskId(readBacklog()),
+          snapshot: after,
+        });
 
         process.stdout.write(`AUTOPILOT_CYCLE cycle=${cycles} agentExit=${exitCode} progressed=${progressed} stalls=${stalls}\n`);
         if (stalls >= MAX_STALLS) {
@@ -304,9 +356,23 @@ async function main() {
 
       if (decision.action === "AUTOPLAN_COMPLETE") {
         clearGate();
+        publishTelemetry(options, {
+          lastEvent: "AUTOPLAN_COMPLETE",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: null,
+          snapshot,
+        });
         process.stdout.write(`AUTOPLAN_COMPLETE head=${snapshot.head}\n`);
         if (!options.daemon || options.once) return 0;
         process.stdout.write(`AUTOPILOT_WAIT reason=PRODUCT_COMPLETE_POLL ms=${options.sleepMs}\n`);
+        publishTelemetry(options, {
+          lastEvent: "WAIT",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: null,
+          snapshot,
+        });
         await sleep(options.sleepMs);
         continue;
       }
@@ -318,8 +384,22 @@ async function main() {
         humanReadyTasks: humanReady,
       });
 
+      publishTelemetry(options, {
+        lastEvent: "AUTOPLAN",
+        cycle: cycles,
+        agentRunning: true,
+        taskId: null,
+        snapshot,
+      });
+
       if (options.dryRun) {
         process.stdout.write(`${autoplanPrompt}\n`);
+        publishTelemetry(options, {
+          lastEvent: "IDLE",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: null,
+        });
         return 0;
       }
 
@@ -338,6 +418,13 @@ async function main() {
         goalHash: goalHashAfterPlan,
         completionMarker: completionAfterPlan,
       });
+      publishTelemetry(options, {
+        lastEvent: afterDecision.action === "AUTOPLAN_COMPLETE" ? "AUTOPLAN_COMPLETE" : "AUTOPLAN",
+        cycle: cycles,
+        agentRunning: false,
+        taskId: currentTaskId(backlogAfterPlan),
+        snapshot: afterPlan,
+      });
 
       if (afterDecision.action === "AUTOPLAN_COMPLETE") {
         stalls = 0;
@@ -345,6 +432,13 @@ async function main() {
         process.stdout.write(`AUTOPLAN_COMPLETE head=${afterPlan.head}\n`);
         if (options.once) return 0;
         process.stdout.write(`AUTOPILOT_WAIT reason=PRODUCT_COMPLETE_POLL ms=${options.sleepMs}\n`);
+        publishTelemetry(options, {
+          lastEvent: "WAIT",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: null,
+          snapshot: afterPlan,
+        });
         await sleep(options.sleepMs);
         continue;
       }
@@ -358,6 +452,13 @@ async function main() {
 
       if (afterDecision.action === "HUMAN_GATE") {
         writeGate(afterDecision.reason, afterDecision.tasks);
+        publishTelemetry(options, {
+          lastEvent: "HUMAN_GATE",
+          cycle: cycles,
+          agentRunning: false,
+          taskId: afterDecision.tasks?.[0]?.id || null,
+          snapshot: afterPlan,
+        });
         if (!options.daemon || options.once) return 10;
         process.stdout.write(`AUTOPILOT_WAIT reason=HUMAN_GATE_POLL ms=${options.sleepMs}\n`);
         await sleep(options.sleepMs);
@@ -372,11 +473,23 @@ async function main() {
       }
       if (options.once) return planExit === 0 || planExit === 124 ? 0 : planExit;
       process.stdout.write(`AUTOPILOT_WAIT reason=AUTOPLAN_RETRY_POLL ms=${options.sleepMs}\n`);
+      publishTelemetry(options, {
+        lastEvent: "WAIT",
+        cycle: cycles,
+        agentRunning: false,
+        taskId: null,
+        snapshot: afterPlan,
+      });
       await sleep(options.sleepMs);
     }
     writeGate("MAX_CYCLES_REACHED", []);
     return 6;
   } finally {
+    try {
+      publishTelemetry(options, { lastEvent: "SHUTDOWN", cycle: cycles, agentRunning: false });
+    } catch {
+      // best-effort heartbeat on exit
+    }
     releaseOwnedLock();
   }
 }

@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { getOptionalAdminActor } from "@/lib/auth/require-admin";
+import { readJsonBody } from "@/lib/http/read-json-body";
 import { canAccessAdminPayments } from "@/lib/payments/access";
 import { createPaymentGateway } from "@/lib/payments/gateway";
 import { persistPaymentChain } from "@/lib/payments/persist";
@@ -23,14 +24,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Accès admin paiements refusé." }, { status: 403 });
   }
 
-  let body: unknown = {};
-  try {
-    body = await request.json();
-  } catch {
-    body = {};
+  const json = await readJsonBody(request);
+  if (!json.ok) {
+    return json.response;
   }
 
-  const parsed = adminSandboxCreateSchema.safeParse(body);
+  const parsed = adminSandboxCreateSchema.safeParse(json.body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Corps invalide." }, { status: 400 });
   }

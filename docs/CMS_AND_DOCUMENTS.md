@@ -2,7 +2,7 @@
 
 > **Inventaire historique T014 (2026-09-09)** — les verdicts ci-dessous décrivent l’état **à la date T014**. Ils sont **obsolètes** pour le code courant. Voir la section « État réel post-T019–T038 » et les docs opérationnelles liées.
 
-## État réel post-T019–T038 (2026-09-12)
+## État réel post-T019–T043 (2026-09-13)
 
 | Surface | État | Niveau de vérité | Doc |
 |---|---|---|---|
@@ -13,7 +13,7 @@
 | Contenu marketing i18n | Toujours `lib/i18n/content/` (non remplacé par le CMS) | CONFIRMÉ | — |
 | Migration / deploy production | Hors auto ; gate humaine | **non** | T026 / gates |
 
-T001–T038 sont `TERMINÉE` au registre. `.x200/PRODUCT_COMPLETE.json` n’est émis qu’après resync docs (T039) + marqueur explicite (T040). Les gates humaines (SMTP, PSP, GCP, merge/deploy, migrations prod, MFA prod, timer backup) restent hors auto.
+T001–T043 sont `TERMINÉE` au registre. Le marqueur local `.x200/PRODUCT_COMPLETE.json` (T040, resync T044) n’est valide que s’il correspond au HEAD et au hash courants de `PRODUCT_GOAL.md`. Les gates humaines (SMTP, PSP, GCP, merge/deploy, migrations prod, MFA prod, timer backup) restent hors auto.
 
 ## Inventaire historique T014 (ne plus traiter comme vérité code)
 

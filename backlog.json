@@ -2788,6 +2788,249 @@
           "location": ".x200/quality-results.json"
         }
       ]
+    },
+    {
+      "id": "T042",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL observability / X200 Control Center",
+      "title": "X200 Control Center — observabilité et supervision",
+      "objective": "Créer le vrai tableau de bord sécurisé /admin/x200 permettant de contrôler visuellement l'état réel du système X200 (progression, backlog, tâche actuelle, AUTOPLAN/AUTOPILOT, Git, PR, CI, Human Gates, PRODUCT_GOAL, efficacité, blockers) en lecture seule, sans données inventées et sans commandes dangereuses (T044).",
+      "priority": "P0",
+      "dependencies": [
+        "T041"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200",
+        "lib/auth/routes.ts",
+        "tests/e2e",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Route /admin/x200 réelle, protégée admin, utilisable (pas une maquette)",
+        "Chaque valeur affichée provient d’une source réelle ou UNKNOWN/NOT_CONNECTED/N/A/WAITING_FOR_TELEMETRY",
+        "Sources: backlog.json, PRODUCT_GOAL.md, .x200/HUMAN_GATE.json, .x200/PRODUCT_COMPLETE.json, git local fixe, GitHub server-side",
+        "Fedora telemetry = NOT_CONNECTED / WAITING_FOR_TELEMETRY avant T043",
+        "System health déterministe HEALTHY|DEGRADED|BLOCKED|UNKNOWN (pas de % inventé)",
+        "Pipeline PLAN→MERGE dérivé des preuves; task registry filtrable; activité récente sans secrets",
+        "API admin JSON typées Cache-Control:no-store; USER refusé; pas de shell navigateur",
+        "Tests unitaires + Playwright desktop/mobile + screenshots evidence",
+        "Pas de Pause/Resume/Retry/Merge/Deploy (T044); pas de heartbeat Fedora (T043)"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "git diff --check",
+        "npm run x200:scan-secrets",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 3,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 1,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34759082358 on 31af13b; T042 closed",
+      "nextAction": null,
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [
+        "local quality-gate steps pass (validate/test/lint/tsc/build/playwright)",
+        "tests/e2e/evidence/desktop-x200-control-center.png",
+        "tests/e2e/evidence/mobile-x200-control-center.png",
+        "reports/tasks/T042.md",
+        "CI FULL quality SUCCESS run 34759082358 head 31af13b15988a707047a6f28293b6561501fb270",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T10:04:15.412Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34759082358",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358",
+          "version": "31af13b15988a707047a6f28293b6561501fb270",
+          "at": "2026-09-13T13:15:26.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ]
+    },
+    {
+      "id": "T043",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL crit.8 monitoring / T042 Fedora stub",
+      "title": "Pont télémétrie Fedora AUTOPILOT → /admin/x200",
+      "objective": "Remplacer les stubs T042 (NOT_CONNECTED / WAITING_FOR_TELEMETRY) par un heartbeat réel écrit par le superviseur Fedora et lu serveur-side par le Control Center, sans inventer d'état agent ni exposer de secrets.",
+      "priority": "P1",
+      "dependencies": [
+        "T042"
+      ],
+      "scope": [
+        "scripts/x200-autopilot.mjs",
+        "scripts/lib",
+        "lib/x200",
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "docs/X200_AUTOPILOT.md",
+        "tests/e2e",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Autopilot écrit un fichier local versionné (ex. .x200/telemetry.json) : pid/host/mode/HEAD/branch/lastEvent/updatedAt, mode 0600, sans secrets",
+        "Control Center lit ce fichier ; frais → fedoraTelemetry=OK + état live dérivé ; absent/stale → NOT_CONNECTED/WAITING_FOR_TELEMETRY/STALE (jamais de faux RUNNING)",
+        "Cartes ACTIVE AGENT / blockers utilisent la télémétrie réelle",
+        "Aucune commande shell depuis le navigateur ; pas de Pause/Resume/Merge/Deploy",
+        "Tests unitaires + Playwright mis à jour ; pas de données inventées"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx playwright test tests/e2e/x200-control-center.spec.ts",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 2,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 1,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34763250287 on 9317276; close without waiting comment job",
+      "nextAction": null,
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [
+        "telemetry writer/reader + Control Center wired",
+        "readJsonBody 4xx for empty/malformed JSON on payment admin routes",
+        "payments-gateway e2e uses browser fetch for complete JSON body",
+        "local validate/test/lint/tsc/build/secrets/diff-check PASS",
+        "CI FULL quality SUCCESS run 34763250287 head 931727619b396319a5c093ccd5ec51142b261d06",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287",
+        "reports/tasks/T043.md",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34763250287",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287",
+          "version": "931727619b396319a5c093ccd5ec51142b261d06",
+          "at": "2026-09-13T14:43:03.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ]
+    },
+    {
+      "id": "T044",
+      "project": "clevones.com",
+      "sourceRef": "PRODUCT_GOAL crit.17–20 docs + PRODUCT_COMPLETE",
+      "title": "Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043",
+      "objective": "Aligner PROJECT_CONTEXT/inventaires sur T001–T043 TERMINÉE, documenter les gates humaines restantes, et réémettre .x200/PRODUCT_COMPLETE.json aligné HEAD + hash PRODUCT_GOAL.md avec preuves concrètes (sans claim live prod/merge/deploy).",
+      "priority": "P1",
+      "dependencies": [
+        "T043"
+      ],
+      "scope": [
+        "PROJECT_CONTEXT.md",
+        "docs/CMS_AND_DOCUMENTS.md",
+        "docs/ANALYTICS_AND_PAYMENTS.md",
+        "docs/X200_AUTOPILOT.md",
+        ".x200/PRODUCT_COMPLETE.json",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "PROJECT_CONTEXT reflète T041–T043 fermés, Control Center + télémétrie, écarts = gates humaines/externes seulement",
+        "Inventaires n'affirment plus T039/T040 ouverts à tort",
+        "PRODUCT_COMPLETE version=1, head=HEAD courant, goalHash=hash courant PRODUCT_GOAL.md, evidence[] non vide ; aucune revendication merge/deploy/PSP live",
+        "x200:validate vert ; pas de tâches PRÊTE de remplissage créées dans ce cycle"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "estimatedCost": 1,
+      "risk": "medium",
+      "requiresHuman": false,
+      "owner": "cursor",
+      "updatedAt": "2026-09-13",
+      "attempts": 1,
+      "lastTransitionReason": "quality CI FAST SUCCESS run 34763905161 on 424a842; T044 closed + PRODUCT_COMPLETE local",
+      "nextAction": null,
+      "blockedReason": null,
+      "claim": null,
+      "regressionOf": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "evidence": [
+        "PROJECT_CONTEXT + CMS/analytics inventaires alignés T001–T043 TERMINÉE",
+        "X200_AUTOPILOT telemetry section preserved; inventaires no longer claim T039/T040 open",
+        "quality-gate T044 PASS (validate/x200:test/secrets/diff-check)",
+        "CI FAST quality SUCCESS run 34763905161 head 424a84280589c7f4663519ebc852d8fe5724385d",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161",
+        "reports/tasks/T044.md",
+        ".x200/PRODUCT_COMPLETE.json local (head+goalHash aligned; no merge/deploy/PSP live claim)",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T044",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-13T14:51:08.000Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34763905161",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161",
+          "version": "424a84280589c7f4663519ebc852d8fe5724385d",
+          "at": "2026-09-13T14:53:41.000Z",
+          "location": "github-actions:quality FAST"
+        }
+      ]
     }
   ],
   "history": [
@@ -3904,9 +4147,105 @@
       "taskId": "T041",
       "status": "EN_COURS",
       "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "PRÊTE",
+      "note": "created on feat/x200-control-center for real Control Center dashboard"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T042",
+      "status": "TERMINÉE",
+      "note": "quality CI FULL SUCCESS run 34759082358 on 31af13b; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] Fedora telemetry bridge after T042"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "À_FAIRE",
+      "note": "[X200-AUTOPLAN] docs + PRODUCT_COMPLETE after T043; not dangerous commands"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_COURS",
+      "note": "renouvellement de réservation"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente quality FULL (CI #112 Playwright recovery included)"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T043",
+      "status": "TERMINÉE",
+      "note": "quality CI FULL SUCCESS run 34763250287 on 9317276; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "PRÊTE",
+      "note": "[X200-FAST] À_FAIRE→PRÊTE after T043 TERMINÉE"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "EN_CONTRÔLE",
+      "note": "docs resync + quality-gate local PASS ; attente quality CI"
+    },
+    {
+      "at": "2026-09-13",
+      "taskId": "T044",
+      "status": "TERMINÉE",
+      "note": "quality CI FAST SUCCESS run 34763905161 on 424a842; PRODUCT_COMPLETE local reissued"
     }
   ],
-  "registryVersion": 115,
+  "registryVersion": 129,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

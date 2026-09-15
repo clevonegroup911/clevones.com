@@ -20,6 +20,37 @@ function skipWithoutDb() {
   }
 }
 
+/** Browser-context JSON POST — keeps cookies and always sends a complete body. */
+async function postJson(
+  page: import("@playwright/test").Page,
+  path: string,
+  payload: Record<string, unknown>,
+) {
+  return page.evaluate(
+    async ({ path: url, payload: body }) => {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const text = await response.text();
+      let json: unknown = null;
+      if (text) {
+        try {
+          json = JSON.parse(text);
+        } catch {
+          json = { parseError: true, text };
+        }
+      }
+      return { ok: response.ok, status: response.status, json, text };
+    },
+    { path, payload },
+  );
+}
+
 test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile → VERIFIED receipt", async ({
   page,
 }, testInfo) => {
@@ -38,16 +69,14 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
   expect(htmlAdmin).not.toMatch(/sk_live|pk_live|whsec_|MPESA_CONSUMER/i);
   await captureSafeEvidence(page, `${project}-payments-admin.png`);
 
-  const seed = await page.request.post("/api/admin/payments/sandbox", {
-    data: {
-      title: `E2E gateway ${project}`,
-      amountCents: 3400,
-      currency: "USD",
-      settle: false,
-    },
+  const seed = await postJson(page, "/api/admin/payments/sandbox", {
+    title: `E2E gateway ${project}`,
+    amountCents: 3400,
+    currency: "USD",
+    settle: false,
   });
-  expect(seed.ok()).toBeTruthy();
-  const seeded = (await seed.json()) as {
+  expect(seed.ok, `sandbox status=${seed.status} body=${seed.text}`).toBeTruthy();
+  const seeded = seed.json as {
     orderId: string;
     paymentId: string;
     invoiceId: string;
@@ -69,41 +98,44 @@ test("payments gateway sandbox: seed → proof PENDING → CLEVONE reconcile →
   await expect(page.getByText(/PENDING|source CLEVONE|pas de validation/i)).toBeVisible();
   await captureSafeEvidence(page, `${project}-payments-portal-proof.png`);
 
-  const eventRes = await page.request.post("/api/admin/payments/clevone-event", {
-    data: {
-      paymentId: seeded.paymentId,
-      invoiceId: seeded.invoiceId,
-      reference,
-      amountCents: 3400,
-      currency: "USD",
-      source: "CLEVONE_SANDBOX",
-    },
+  const eventRes = await postJson(page, "/api/admin/payments/clevone-event", {
+    paymentId: seeded.paymentId,
+    invoiceId: seeded.invoiceId,
+    reference,
+    amountCents: 3400,
+    currency: "USD",
+    source: "CLEVONE_SANDBOX",
   });
-  expect(eventRes.ok()).toBeTruthy();
-  const eventBody = (await eventRes.json()) as { authenticated?: boolean };
+  expect(
+    eventRes.ok,
+    `clevone-event status=${eventRes.status} body=${eventRes.text}`,
+  ).toBeTruthy();
+  const eventBody = eventRes.json as { authenticated?: boolean };
   expect(eventBody.authenticated).toBe(true);
 
-  const reconcileRes = await page.request.post("/api/admin/payments/reconcile", {
-    data: {
-      paymentId: seeded.paymentId,
-      invoiceId: seeded.invoiceId,
-    },
+  const reconcileRes = await postJson(page, "/api/admin/payments/reconcile", {
+    paymentId: seeded.paymentId,
+    invoiceId: seeded.invoiceId,
   });
-  expect(reconcileRes.ok()).toBeTruthy();
-  const reconciled = (await reconcileRes.json()) as {
+  expect(
+    reconcileRes.ok,
+    `reconcile status=${reconcileRes.status} body=${reconcileRes.text}`,
+  ).toBeTruthy();
+  const reconciled = reconcileRes.json as {
     status?: string;
     allowsCapture?: boolean;
   };
   expect(reconciled.status).toBe("VERIFIED");
   expect(reconciled.allowsCapture).toBe(true);
 
-  const activateRes = await page.request.post("/api/admin/payments/activate", {
-    data: {
-      paymentId: seeded.paymentId,
-    },
+  const activateRes = await postJson(page, "/api/admin/payments/activate", {
+    paymentId: seeded.paymentId,
   });
-  expect(activateRes.ok()).toBeTruthy();
-  const activated = (await activateRes.json()) as {
+  expect(
+    activateRes.ok,
+    `activate status=${activateRes.status} body=${activateRes.text}`,
+  ).toBeTruthy();
+  const activated = activateRes.json as {
     orderStatus?: string;
     invoiceStatus?: string;
     receiptNumber?: string | null;
@@ -126,36 +158,36 @@ test("payments gateway sandbox: mismatch → HUMAN_REVIEW → approve activates"
 
   await loginE2eAdmin(page);
 
-  const seed = await page.request.post("/api/admin/payments/sandbox", {
-    data: {
-      title: `E2E review ${project}`,
-      amountCents: 2100,
-      currency: "USD",
-      settle: false,
-    },
+  const seed = await postJson(page, "/api/admin/payments/sandbox", {
+    title: `E2E review ${project}`,
+    amountCents: 2100,
+    currency: "USD",
+    settle: false,
   });
-  expect(seed.ok()).toBeTruthy();
-  const seeded = (await seed.json()) as {
+  expect(seed.ok, `sandbox status=${seed.status} body=${seed.text}`).toBeTruthy();
+  const seeded = seed.json as {
     paymentId: string;
     invoiceId: string;
   };
 
-  await page.request.post("/api/admin/payments/clevone-event", {
-    data: {
-      paymentId: seeded.paymentId,
-      invoiceId: seeded.invoiceId,
-      reference: `E2E-MIS-${project}`,
-      amountCents: 9999,
-      currency: "USD",
-      source: "CLEVONE_SANDBOX",
-    },
+  await postJson(page, "/api/admin/payments/clevone-event", {
+    paymentId: seeded.paymentId,
+    invoiceId: seeded.invoiceId,
+    reference: `E2E-MIS-${project}`,
+    amountCents: 9999,
+    currency: "USD",
+    source: "CLEVONE_SANDBOX",
   });
 
-  const reconcileRes = await page.request.post("/api/admin/payments/reconcile", {
-    data: { paymentId: seeded.paymentId, invoiceId: seeded.invoiceId },
+  const reconcileRes = await postJson(page, "/api/admin/payments/reconcile", {
+    paymentId: seeded.paymentId,
+    invoiceId: seeded.invoiceId,
   });
-  expect(reconcileRes.ok()).toBeTruthy();
-  const reconciled = (await reconcileRes.json()) as {
+  expect(
+    reconcileRes.ok,
+    `reconcile status=${reconcileRes.status} body=${reconcileRes.text}`,
+  ).toBeTruthy();
+  const reconciled = reconcileRes.json as {
     status?: string;
     decisionId?: string;
     reviewDueAt?: string | null;
@@ -170,14 +202,15 @@ test("payments gateway sandbox: mismatch → HUMAN_REVIEW → approve activates"
   ).toBeVisible();
   await expect(page.getByText(/échéance indicative/i).first()).toBeVisible();
 
-  const reviewRes = await page.request.post("/api/admin/payments/review", {
-    data: {
-      decisionId: reconciled.decisionId,
-      action: "approve",
-    },
+  const reviewRes = await postJson(page, "/api/admin/payments/review", {
+    decisionId: reconciled.decisionId,
+    action: "approve",
   });
-  expect(reviewRes.ok()).toBeTruthy();
-  const reviewed = (await reviewRes.json()) as {
+  expect(
+    reviewRes.ok,
+    `review status=${reviewRes.status} body=${reviewRes.text}`,
+  ).toBeTruthy();
+  const reviewed = reviewRes.json as {
     status?: string;
     receiptNumber?: string | null;
     orderStatus?: string;

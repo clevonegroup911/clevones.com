@@ -3,7 +3,7 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 115
+- Registre : 129
 - Mode : single-executor
 - Mis à jour : 2026-09-13
 
@@ -15,7 +15,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 41
+- TERMINÉE : 44
 - ANNULÉE : 0
 
 ## Tâches
@@ -63,3 +63,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T039 | P2 | TERMINÉE | Resynchroniser PROJECT_CONTEXT et inventaires post-T038 | non |
 | T040 | P2 | TERMINÉE | Émettre .x200/PRODUCT_COMPLETE.json (niveau dépôt) | non |
 | T041 | P0 | TERMINÉE | Final pre-merge payment security hardening | non |
+| T042 | P0 | TERMINÉE | X200 Control Center — observabilité et supervision | non |
+| T043 | P1 | TERMINÉE | Pont télémétrie Fedora AUTOPILOT → /admin/x200 | non |
+| T044 | P1 | TERMINÉE | Resync docs reprise + PRODUCT_COMPLETE valide post-T041–T043 | non |
