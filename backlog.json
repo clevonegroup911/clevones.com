@@ -4035,11 +4035,27 @@
           "version": null,
           "at": "2026-09-15T14:46:18.934Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34984040818",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818",
+          "version": "fa3895fe3a11d52980f5d773283e3ea8a19a5e5c",
+          "at": "2026-09-15T14:54:19.355Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "owner": "cursor",
-      "evidence": [],
+      "evidence": [
+        "lib/agentic/finance-agent.ts",
+        "lib/agentic/finance-agent.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34984040818 SHA fa3895f",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818"
+      ],
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
@@ -4066,11 +4082,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "EN_CONTRÔLE",
+      "status": "TERMINÉE",
       "risk": "medium",
       "estimatedCost": 7,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality"
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34984040818 on fa3895f; MERGED=NO DEPLOYED=NO"
     },
     {
       "project": "clevones.com",
@@ -4109,11 +4125,11 @@
         "npm test",
         "npx tsc --noEmit"
       ],
-      "status": "À_FAIRE",
+      "status": "PRÊTE",
       "risk": "medium",
       "estimatedCost": 6,
-      "nextAction": "attendre scopes libres (collision gateway/orchestrator avec T058)",
-      "lastTransitionReason": "[X200-AUTOPLAN] P2 Commercial Agent ; séquencé après Finance Agent pour éviter collision scope"
+      "nextAction": "réclamer et implémenter Commercial Agent",
+      "lastTransitionReason": "[X200-FAST] unblocked after T058 TERMINÉE (scope free)"
     }
   ],
   "history": [
@@ -5762,9 +5778,25 @@
       "to": "TERMINÉE",
       "by": "cursor",
       "note": "[X200-FAST] CI quality SUCCESS run 34983313834 head 3e3c457789d76de72af08b627047f899a3ec516c"
+    },
+    {
+      "at": "2026-09-15T14:54:19.355Z",
+      "taskId": "T058",
+      "from": "EN_CONTRÔLE",
+      "to": "TERMINÉE",
+      "by": "cursor",
+      "note": "[X200-FAST] CI quality SUCCESS run 34984040818 head fa3895fe3a11d52980f5d773283e3ea8a19a5e5c"
+    },
+    {
+      "at": "2026-09-15T14:54:19.355Z",
+      "taskId": "T059",
+      "from": "À_FAIRE",
+      "to": "PRÊTE",
+      "by": "cursor",
+      "note": "[X200-FAST] unblocked after T058 TERMINÉE"
     }
   ],
-  "registryVersion": 178,
+  "registryVersion": 179,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

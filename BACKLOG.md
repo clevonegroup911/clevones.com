@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 178
+- Registre : 179
 - Mode : single-executor
 - Mis à jour : 2026-09-15
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 1
-- PRÊTE : 0
+- EN_CONTRÔLE : 0
+- PRÊTE : 1
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
-- À_FAIRE : 1
-- TERMINÉE : 57
+- À_FAIRE : 0
+- TERMINÉE : 58
 - ANNULÉE : 0
 
 ## Tâches
@@ -79,5 +79,5 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T055 | P1 | TERMINÉE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
 | T056 | P1 | TERMINÉE | Agentic Core — business Approval Engine (single-use, persisted) | non |
 | T057 | P1 | TERMINÉE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
-| T058 | P2 | EN_CONTRÔLE | Finance Agent — complete recommendation worker (no payout) | non |
-| T059 | P2 | À_FAIRE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
+| T058 | P2 | TERMINÉE | Finance Agent — complete recommendation worker (no payout) | non |
+| T059 | P2 | PRÊTE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |

@@ -10,7 +10,7 @@ T058
 
 ## Statut
 
-EN_CONTRÔLE
+TERMINÉE
 
 ## Objectif
 
@@ -18,7 +18,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Résultat
 
-`recommendFinanceReconciliation` + `runFinanceAgentTask`. quality-gate T058 PASS. MERGED=NO DEPLOYED=NO.
+`recommendFinanceReconciliation` + `runFinanceAgentTask`. CI quality SUCCESS run 34984040818 SHA fa3895f. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -42,9 +42,8 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 ## Tests réussis
 
 - finance-agent.test.ts 2 PASS
-- finance-slice + orchestrator PASS
-- tsc --noEmit PASS
 - quality-gate T058 PASS
+- CI quality SUCCESS run 34984040818 SHA fa3895f
 
 ## Tests échoués
 
@@ -52,7 +51,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Lint
 
-- non exigé localement (lane FAST CI)
+- PASS (CI)
 
 ## Type-check
 
@@ -60,7 +59,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Build
 
-- non exigé localement (lane FAST CI)
+- PASS (CI FULL)
 
 ## Sécurité
 
@@ -69,7 +68,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Commit
 
-- (push en cours)
+- `fa3895fe3a11d52980f5d773283e3ea8a19a5e5c`
 
 ## Pull Request
 
@@ -78,7 +77,7 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 ## Preuves
 
 - lib/agentic/finance-agent.ts
-- .x200/quality-results.json (T058)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818
 
 ## Risques
 
@@ -86,8 +85,8 @@ Finance Agent complet : recommend() multi-événements, raisons structurées, ho
 
 ## Blocage
 
-- aucun — attendre CI
+- aucun
 
 ## Prochaine tâche prête
 
-- T059 (Commercial) après clôture scopes
+- T059 Commercial Agent
