@@ -48,7 +48,7 @@ Conflits PR #13 résolus. Control Center T049 conservé. Série agentique renum�
 
 ## Tests échoués
 
-- aucun
+- aucun (Playwright recovery: Operational Mirror STARTUP nav fixed locally — 38/38 e2e PASS)
 
 ## Lint
 
@@ -79,7 +79,8 @@ PASS
 ## Preuves
 
 - recovery tag `recovery/pr13-pre-conflict-resolve-469988a`
-- https://github.com/clevonegroup911/clevones.com/actions/runs/35071262846 (FULL, playwright fail)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/35071262846 (FULL, playwright fail on 7b1cf94 — root cause: STARTUP nav via BOOT badge mid-gesture race)
+- Playwright recovery pending FULL CI on post-fix SHA
 
 ## Risques
 

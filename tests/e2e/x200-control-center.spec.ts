@@ -927,8 +927,12 @@ test.describe("x200 operational mirror", () => {
     await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
     await expect(page.getByTestId("x200-boot-badge")).toBeVisible();
 
-    // Prefer badge navigation: tab bar may overflow on mobile viewports.
-    await page.getByTestId("x200-boot-badge").click();
+    // Prefer STARTUP tab with scrollIntoView: the BOOT badge triggers a large
+    // OVERVIEW→STARTUP DOM swap mid mouse-gesture, which is flaky under Playwright.
+    // On narrow viewports the tab may be wrapped — scroll it into view first.
+    const startupTab = page.getByTestId("x200-tab-STARTUP");
+    await startupTab.scrollIntoViewIfNeeded();
+    await startupTab.click();
     await expect(page.getByTestId("x200-startup-panel")).toBeVisible({
       timeout: 30_000,
     });

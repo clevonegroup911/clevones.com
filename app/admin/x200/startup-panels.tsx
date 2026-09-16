@@ -73,8 +73,14 @@ export function BootBadge({
     <button
       type="button"
       data-testid="x200-boot-badge"
-      onClick={onOpenStartup}
-      className={`rounded-sm border px-2 py-1 text-[11px] font-semibold tracking-wide uppercase ${tone}`}
+      onClick={(event) => {
+        // Stop the rest of the Playwright/user gesture from landing on a
+        // different control after STARTUP replaces the huge OVERVIEW tree.
+        event.preventDefault();
+        event.stopPropagation();
+        onOpenStartup();
+      }}
+      className={`relative z-10 shrink-0 rounded-sm border px-2 py-1 text-[11px] font-semibold tracking-wide uppercase ${tone}`}
       title={snapshot.boot?.missing.join(", ") || "Open STARTUP tab"}
     >
       BOOT: {overall}
