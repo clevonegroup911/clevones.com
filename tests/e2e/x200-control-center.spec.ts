@@ -927,6 +927,10 @@ test.describe("x200 operational mirror", () => {
     await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
     await expect(page.getByTestId("x200-boot-badge")).toBeVisible();
 
+    // Freeze live refresh before tab navigation: 1 Hz live-bar updates + heavy
+    // OVERVIEW tree have caused Playwright clicks to miss STARTUP under CI load.
+    await page.getByTestId("x200-auto-refresh").selectOption("0");
+
     // Prefer STARTUP tab with scrollIntoView: the BOOT badge triggers a large
     // OVERVIEW→STARTUP DOM swap mid mouse-gesture, which is flaky under Playwright.
     // On narrow viewports the tab may be wrapped — scroll it into view first.

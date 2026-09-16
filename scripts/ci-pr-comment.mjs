@@ -34,17 +34,22 @@ export function buildCommentBody({
   reportOk,
   nextTaskId,
   workflowUrl,
+  playwrightExcerpt = "",
 }) {
   const overall = summary?.ok ? "succès" : "échec";
   const checks = summary?.checks || {};
   const nextLine = nextTaskId ? nextTaskId : "NO_READY_TASK";
+  const failed = Array.isArray(summary?.failed) ? summary.failed : [];
+  const mode = summary?.mode || "inconnu";
 
-  return [
+  const lines = [
     MARKER,
     "",
     `- ID de tâche : ${taskId || "inconnu"}`,
     `- SHA contrôlé : ${sha || "inconnu"}`,
     `- Résultat : ${overall}`,
+    `- Mode : ${mode}`,
+    `- Failed : ${failed.length ? failed.join(",") : "none"}`,
     `- Tests : ${checkLabel(checks.tests)} (X100 ${checkLabel(checks.x100Tests)})`,
     `- Lint : ${checkLabel(checks.lint)}`,
     `- Build : ${checkLabel(checks.build)}`,
@@ -56,7 +61,13 @@ export function buildCommentBody({
     `- Workflow : ${workflowUrl || "indisponible"}`,
     `- Prochaine tâche : ${nextLine}`,
     "",
-  ].join("\n");
+  ];
+
+  if (playwrightExcerpt) {
+    lines.push("```text", playwrightExcerpt.trimEnd(), "```", "");
+  }
+
+  return lines.join("\n");
 }
 
 export function findX100Comment(comments) {
@@ -158,6 +169,16 @@ async function main() {
   }
 
   const nextTask = backlogLoaded.ok ? selectNextTask(backlogLoaded.data) : null;
+  let playwrightExcerpt = "";
+  if (summary.checks?.playwright === "fail") {
+    try {
+      const log = readFileSync(join(artifactRoot, "logs", "playwright.log"), "utf8");
+      const lines = log.split(/\r?\n/);
+      playwrightExcerpt = lines.slice(Math.max(0, lines.length - 60)).join("\n");
+    } catch {
+      playwrightExcerpt = "";
+    }
+  }
   const body = buildCommentBody({
     taskId,
     sha: process.env.HEAD_SHA || process.env.GITHUB_SHA || "",
@@ -166,6 +187,7 @@ async function main() {
     reportOk: summary.checks?.taskReport ? summary.checks.taskReport === "pass" : reportOk,
     nextTaskId: nextTask?.id || null,
     workflowUrl: process.env.WORKFLOW_URL || "",
+    playwrightExcerpt,
   });
 
   if (!body.startsWith(MARKER)) {

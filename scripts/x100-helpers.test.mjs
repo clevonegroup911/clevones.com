@@ -69,6 +69,8 @@ test("CI comment starts with [X100-CI] and updates the previous bot comment", ()
   assert.ok(body.startsWith("[X100-CI]"));
   assert.match(body, /T007/);
   assert.match(body, /NO_READY_TASK/);
+  assert.match(body, /Mode :/);
+  assert.match(body, /Failed : none/);
   assert.doesNotMatch(body, /AUTH_SECRET|MFA_ENCRYPTION_KEY|postgresql:\/\//);
 
   const existing = findX100Comment([
