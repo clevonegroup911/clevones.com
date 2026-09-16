@@ -8,8 +8,8 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-operational-mirror`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `feat/x200-operational-mirror` @ `8c873db` (T047 TERMINÉE — Operational Mirror + recovery tip CI) | CONFIRMÉ |
+| Workspace local | branche `feat/x200-boot-autostart` (base `feat/x200-operational-mirror`) | CONFIRMÉ (session 2026-09-15) |
+| HEAD travail | `feat/x200-boot-autostart` (T049 TERMINÉE interactive Control Center) | CONFIRMÉ (session 2026-09-15) |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` (Operational Mirror T047) | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines.
+Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (implémenté / testé / CI) aligné sur le HEAD et le hash de `PRODUCT_GOAL.md`, sans fusion `main` automatique ni déploiement automatique. Les rails live et ops production restent des gates humaines. Marqueur local re-épinglé AUTOPLAN sur HEAD `0e069e4` (goalHash inchangé) après clôture T049.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -35,22 +35,27 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 - Gestion users + DocumentGrant admin (T034) ; e2e ACL (T037)
 - Matrice : `docs/ROLES_AND_PERMISSIONS.md`
 
-## Gouvernance — état au 2026-09-13
+## Gouvernance — état au 2026-09-15
 
 | ID | État | Classe |
 |---|---|---|
 | T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
-| T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL run 34782004736 | CONFIRMÉ registre |
+| T047 | `TERMINÉE` Operational Mirror + Universal Action Console — CI FULL | CONFIRMÉ registre |
+| T048 | `TERMINÉE` Boot Orchestrator — CI FULL run 34962261158 / `206cd31` | CONFIRMÉ registre |
+| T049 | `TERMINÉE` Control Center fully interactive — CI FULL run 34989022886 / `53e2ec7` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) + Operational Mirror (T047) ; télémétrie Fedora | CONFIRMÉ dépôt |
-| PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
+| PRODUCT_COMPLETE | local `.x200/` ; head=`0e069e4` + goalHash courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
 
 - T045 FULL quality SUCCESS `42fecbe` / run [34771780343](https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343)
 - T046 FULL quality SUCCESS `49d0c36` / run [34775412790](https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790) ; draft PR [#10](https://github.com/clevonegroup911/clevones.com/pull/10)
 - T047 FULL quality SUCCESS `7de8fd1` / run [34782004736](https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736) ; recovery tip `8c873db` / run [34782911788](https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788) ; draft PR [#11](https://github.com/clevonegroup911/clevones.com/pull/11)
+- T048 FULL quality SUCCESS `206cd31` / run [34962261158](https://github.com/clevonegroup911/clevones.com/actions/runs/34962261158) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
+- T049 FULL quality SUCCESS `53e2ec7` / run [34989022886](https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886) ; draft PR [#12](https://github.com/clevonegroup911/clevones.com/pull/12)
+- Post-T048 tip FULL quality SUCCESS `8a203da` / run [34963710051](https://github.com/clevonegroup911/clevones.com/actions/runs/34963710051) ; tip `c097cd5` e2e Postgres port fix (CI tip may still be running)
 
 ## Écarts restants vs PRODUCT_GOAL
 

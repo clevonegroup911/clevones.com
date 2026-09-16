@@ -151,13 +151,15 @@ export function buildActionPreview(
   return {
     action,
     target:
-      action === "MERGE_PR"
+      action === "MERGE_PR" || action === "MARK_READY_FOR_REVIEW"
         ? `PR #${ctx.github.prNumber ?? "?"}`
         : action === "APPROVE_HUMAN_GATE"
           ? ctx.humanGate.taskId ?? "HUMAN_GATE"
           : action,
     environment: env,
+    prNumber: ctx.github.prNumber,
     exactSha: ctx.github.prHeadSha ?? ctx.git.head,
+    currentRemoteSha: ctx.github.prHeadSha,
     expectedChanges: [`Execute controlled action ${action}`],
     risks: [`Risk=${policy.risk}`, ...(policy.requireMfa ? ["MFA required"] : [])],
     rollback:
@@ -169,9 +171,17 @@ export function buildActionPreview(
       ...(policy.requireReason ? ["reason"] : []),
       ...(policy.requireMfa ? ["MFA/re-auth"] : []),
       ...(policy.requireTypedPhrase ? [`typed: ${policy.typedPhrase}`] : []),
+      ...(policy.requireSecondConfirmation ? ["second confirmation"] : []),
     ],
     approvalRequirement: policy.risk,
     typedPhrase: policy.typedPhrase,
+    humanGate: ctx.humanGate.present
+      ? ctx.humanGate.requiredAction ?? ctx.humanGate.reason ?? "present"
+      : "not required",
+    mfaRequired: policy.requireMfa,
+    typedConfirmationRequired: policy.requireTypedPhrase,
+    source: "human-actions executor (previewOnly — no mutation)",
+    verificationStatus: "PREVIEW_ONLY",
   };
 }
 
@@ -188,6 +198,21 @@ export async function executeHumanAction(
 
   if (ctx.actorRole !== "SUPER_ADMIN") {
     return fail(403, "ACTION_NOT_ALLOWED", "SUPER_ADMIN requis", preview);
+  }
+
+  if (request.previewOnly) {
+    return {
+      ok: true,
+      status: 200,
+      code: "PREVIEW",
+      message: "Preview ready — no action executed.",
+      preview,
+      receipt: null,
+      approvalId: null,
+      challengeId: null,
+      expectedSha: preview.exactSha,
+      currentSha: ctx.github.prHeadSha ?? ctx.git.head,
+    };
   }
 
   if (!isHumanActionsEnvEnabled(env)) {
@@ -220,27 +245,21 @@ export async function executeHumanAction(
     );
   }
 
-  if (request.previewOnly) {
-    return {
-      ok: true,
-      status: 200,
-      code: "PREVIEW",
-      message: "WHAT WILL HAPPEN — confirmation required",
-      preview,
-      receipt: null,
-      approvalId: null,
-      challengeId: null,
-      expectedSha: preview.exactSha,
-      currentSha: ctx.github.prHeadSha ?? ctx.git.head,
-    };
-  }
-
   const policy = policyForAction(request.action, {
     shortSha: preview.exactSha,
   });
 
   if (policy.requireReason && !request.reason?.trim()) {
     return fail(400, "REASON_REQUIRED", "Justification requise", preview);
+  }
+
+  if (policy.requireSecondConfirmation && request.secondConfirmation !== true) {
+    return fail(
+      400,
+      "SECOND_CONFIRMATION_REQUIRED",
+      "Second confirmation required for this critical action",
+      preview,
+    );
   }
 
   if (

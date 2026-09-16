@@ -1,8 +1,15 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 import { loginE2eAdmin, readE2eRuntimeState } from "./admin-login";
+import { assertControlCenterHtmlHasAssets } from "./control-center-assets";
 import { loginE2ePortalUser } from "./portal-login";
 import { captureSafeEvidence } from "./safe-screenshot";
+
+async function dismissNextjsOverlay(page: Page) {
+  await page.evaluate(() => {
+    document.querySelectorAll("nextjs-portal").forEach((node) => node.remove());
+  });
+}
 
 function skipWithoutDb() {
   const state = readE2eRuntimeState();
@@ -35,6 +42,65 @@ test.describe("x200 core surfaces", () => {
     await captureSafeEvidence(
       page,
       `${testInfo.project.name}-x200-user-denied.png`,
+    );
+  });
+
+  test("Control Center HTML serves required /_next CSS and JS assets", async ({
+    page,
+  }, testInfo) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+
+    const response = await page.goto("/admin/x200");
+    expect(response, "navigation response missing").toBeTruthy();
+    expect(response!.ok(), `status=${response!.status()}`).toBeTruthy();
+
+    await expect(
+      page.getByRole("heading", { name: "CLEVONE X200 CONTROL CENTER" }),
+    ).toBeVisible({ timeout: 30_000 });
+
+    const html = await page.content();
+    const { assets } = assertControlCenterHtmlHasAssets(html);
+    expect(assets.length).toBeGreaterThan(0);
+
+    const stylesheetHrefs = await page
+      .locator('link[rel="stylesheet"]')
+      .evaluateAll((nodes) =>
+        nodes
+          .map((node) => (node as HTMLLinkElement).href)
+          .filter((href) => Boolean(href)),
+      );
+    const nextScripts = await page.locator('script[src*="/_next/"]').evaluateAll(
+      (nodes) =>
+        nodes
+          .map((node) => (node as HTMLScriptElement).src)
+          .filter((src) => Boolean(src)),
+    );
+
+    expect(
+      stylesheetHrefs.length + nextScripts.length,
+      "DOM must expose stylesheet and/or /_next script tags",
+    ).toBeGreaterThan(0);
+
+    for (const href of stylesheetHrefs) {
+      const asset = await page.request.get(href);
+      expect(asset.ok(), `stylesheet ${href} status=${asset.status()}`).toBeTruthy();
+    }
+    for (const src of nextScripts.slice(0, 8)) {
+      const asset = await page.request.get(src);
+      expect(asset.ok(), `script ${src} status=${asset.status()}`).toBeTruthy();
+    }
+
+    const bodyDisplay = await page
+      .locator("body")
+      .evaluate((el) => getComputedStyle(el).display);
+    expect(bodyDisplay, "body must not stay FOUC-hidden without styles").not.toBe(
+      "none",
+    );
+
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-control-center-assets.png`,
     );
   });
 
@@ -859,6 +925,14 @@ test.describe("x200 operational mirror", () => {
     await expect(page.getByTestId("x200-next-safe-action")).toBeVisible();
     await expect(page.getByTestId("x200-fact-branch_local")).toBeVisible();
     await expect(page.getByTestId("x200-fact-head_local")).toBeVisible();
+    await expect(page.getByTestId("x200-boot-badge")).toBeVisible();
+
+    // Prefer badge navigation: tab bar may overflow on mobile viewports.
+    await page.getByTestId("x200-boot-badge").click();
+    await expect(page.getByTestId("x200-startup-panel")).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(page.getByTestId("x200-boot-overall")).toBeVisible();
 
     await page.getByTestId("x200-tab-SOURCES").click();
     await expect(page.getByTestId("x200-sources-matrix")).toBeVisible();
@@ -866,6 +940,10 @@ test.describe("x200 operational mirror", () => {
     await page.getByTestId("x200-tab-GITHUB").click();
     await expect(page.getByTestId("x200-github-center")).toBeVisible();
     await expect(page.getByTestId("x200-release-stack")).toBeVisible();
+    await expect(page.getByTestId("x200-next-safe-merge")).toBeVisible();
+    await expect(page.getByTestId("x200-next-safe-merge")).not.toHaveText(/#4\b/);
+    await expect(page.getByTestId("x200-refresh-github")).toBeVisible();
+    await page.getByTestId("x200-refresh-github").click();
 
     await page.getByTestId("x200-tab-CI").click();
     await expect(page.getByTestId("x200-ci-inspector")).toBeVisible();
@@ -925,5 +1003,504 @@ test.describe("x200 operational mirror", () => {
       page,
       `${testInfo.project.name}-x200-operational-mirror.png`,
     );
+  });
+});
+
+test.describe("x200 interactive action console T049", () => {
+  test.describe.configure({ mode: "serial" });
+
+  test("Preview drawer, confirm gates, receipts, and no stale predecessor", async ({
+    page,
+  }, testInfo) => {
+    skipWithoutDb();
+    await loginE2eAdmin(page);
+
+    const interactiveSnapshot = {
+      generatedAt: new Date().toISOString(),
+      sources: {
+        backlog: "OK",
+        productGoal: "OK",
+        humanGate: "MISSING",
+        productComplete: "MISSING",
+        git: "OK",
+        github: "OK",
+        fedoraTelemetry: "OK",
+      },
+      freshness: {},
+      warnings: [],
+      systemHealth: {
+        status: "HEALTHY",
+        scorePercent: 90,
+        criteria: [],
+        rationale: "e2e t049",
+      },
+      pipeline: [],
+      backlog: { status: "OK", counts: {}, currentTask: null, tasks: [] },
+      productGoal: {
+        status: "OK",
+        exists: true,
+        hash: "abc",
+        byteLength: 1,
+        detectableCriteriaCount: 1,
+        warning: null,
+      },
+      humanGate: {
+        status: "MISSING",
+        present: false,
+        createdAt: null,
+        reason: null,
+        taskId: null,
+        requiredAction: null,
+        blocking: [],
+        merged: null,
+        deployed: null,
+        warning: null,
+      },
+      productComplete: {
+        status: "MISSING",
+        present: false,
+        head: null,
+        goalHash: null,
+        generatedAt: null,
+        matchesCurrentHead: null,
+        matchesCurrentGoalHash: null,
+        summary: null,
+        warning: null,
+      },
+      git: {
+        status: "OK",
+        branch: "feat/x200-boot-autostart",
+        head: "abcdef1",
+        dirty: false,
+        dirtyFileCount: 0,
+        recentCommits: [],
+        warning: null,
+      },
+      github: {
+        status: "OK",
+        warning: null,
+        repository: "clevonegroup911/clevones.com",
+        prNumber: 12,
+        prTitle: "T049",
+        prState: "open",
+        prDraft: true,
+        prMergeable: "MERGEABLE",
+        prHeadSha: "abcdef1",
+        prUrl: "https://github.com/clevonegroup911/clevones.com/pull/12",
+        ciLatestRunId: 1,
+        ciLatestRunNumber: 1,
+        ciLatestConclusion: "success",
+        ciLatestStatus: "completed",
+        ciLatestUrl: "https://github.com/clevonegroup911/clevones.com/actions/runs/1",
+        ciLatestName: "quality",
+        githubSource: "REST_AUTHENTICATED",
+      },
+      fedora: {
+        fedoraTelemetry: "OK",
+        autopilotLiveState: "IDLE",
+        note: "e2e",
+        updatedAt: new Date().toISOString(),
+        ageMs: 1000,
+        pid: 1,
+        host: "fedora",
+        mode: "daemon",
+        head: "abcdef1",
+        branch: "feat/x200-boot-autostart",
+        lastEvent: "tick",
+        cycle: 1,
+        agentRunning: false,
+        taskId: null,
+      },
+      efficiency: {},
+      blockers: [],
+      activity: [],
+      roles: [],
+      control: {
+        mode: "LOCAL_CONTROL_READY",
+        actionsEnabled: true,
+        localExecutorAvailable: true,
+        actorRole: "SUPER_ADMIN",
+        canMutate: true,
+        disabledReasons: {
+          MERGE: "Human approval required",
+          DEPLOY: "Human approval required",
+        },
+        recentActions: [],
+      },
+      progress: { completed: 0, total: 0 },
+      lastUpdate: new Date().toISOString(),
+      humanActions: {
+        enabled: true,
+        productionEnabled: false,
+        githubActionAdapter: "REAL",
+        csrf: {
+          status: "OK",
+          appOriginConfigured: true,
+          localAllowListActive: true,
+        },
+        inbox: [
+          {
+            id: "mark-ready",
+            type: "MARK_READY_FOR_REVIEW",
+            environment: "LOCAL",
+            risk: "MEDIUM",
+            reason: "Draft PR with green CI",
+            blockingTaskId: "T049",
+            requestedBy: "e2e",
+            createdAt: new Date().toISOString(),
+            preconditions: ["reason"],
+            status: "READY",
+          },
+        ],
+        environments: [
+          {
+            id: "LOCAL",
+            versionSha: "abcdef1",
+            health: "HEALTHY",
+            database: "configured",
+            deployState: "local-dev",
+            migrationState: "N/A",
+            lastDeploy: null,
+            uptime: null,
+            controlActionsEnabled: true,
+          },
+        ],
+        drift: { state: "IN_SYNC", detail: "e2e", blocksDeploy: false },
+        release: {
+          currentRelease: "feat/x200-boot-autostart",
+          candidateRelease: "PR #12",
+          head: "abcdef1",
+          ci: "success",
+          pr: "#12",
+          migration: "N/A",
+          backup: "UNKNOWN",
+          deploymentStatus: "DISABLED",
+          frozen: false,
+          pipeline: [{ id: "CODE", state: "DONE", detail: "local HEAD" }],
+        },
+        secrets: [],
+        paymentsLive: "NOT_AVAILABLE",
+        notifications: [],
+        stall: { stalled: false, reason: null, durationMs: null, suggestedAction: null },
+        metrics: { cost: "N/A" },
+        recentReceipts: [],
+        activeIncident: null,
+      },
+      boot: { overall: "READY", missing: [], facts: [], linger: {}, diagnosticsText: "ok" },
+      mirror: {
+        generatedAt: new Date().toISOString(),
+        degraded: false,
+        degradationNotes: [],
+        globalFacts: [],
+        sourcesMatrix: [],
+        nextSafeAction: {
+          code: "MERGE_DEPENDENCY_FIRST",
+          title: "Merge stack predecessor first",
+          detail: "NEXT SAFE MERGE = PR #11 before PR #12",
+          requiresHuman: true,
+          destructive: false,
+          relatedPr: 11,
+          relatedTask: "T049",
+          evidence: ["GitHub PR stack"],
+        },
+        commandPalette: [
+          {
+            id: "refresh_all",
+            label: "Refresh all",
+            available: true,
+            reason: null,
+            requiresHuman: false,
+          },
+        ],
+        humanDecisions: [],
+        releaseStack: {
+          status: "OK",
+          nodes: [
+            {
+              prNumber: 4,
+              title: "unrelated",
+              base: "main",
+              head: "feat/old",
+              dependsOn: [],
+              readyState: "READY",
+            },
+            {
+              prNumber: 11,
+              title: "T047",
+              base: "feat/x200-human-action-center",
+              head: "feat/x200-operational-mirror",
+              dependsOn: [],
+              readyState: "DRAFT",
+            },
+            {
+              prNumber: 12,
+              title: "T048",
+              base: "feat/x200-operational-mirror",
+              head: "feat/x200-boot-autostart",
+              dependsOn: [11],
+              readyState: "DRAFT",
+            },
+          ],
+          mergeOrder: [11, 12],
+          nextSafeMerge: 11,
+          nextSafeMergeReason:
+            "PR #11 is the verified stacked predecessor of PR #12",
+          requiresApproval: true,
+          warning: null,
+        },
+        ciInspector: {
+          status: "OK",
+          runId: 1,
+          runNumber: 1,
+          runUrl: "https://github.com/clevonegroup911/clevones.com/actions/runs/1",
+          runStatus: "completed",
+          runConclusion: "success",
+          durationMs: 1000,
+          jobs: [],
+          failedStep: null,
+          errorCategory: null,
+          suggestedNextAction: null,
+          fetchedAt: new Date().toISOString(),
+          warning: null,
+        },
+        diffInspector: {
+          status: "UNKNOWN",
+          filesChanged: 0,
+          added: 0,
+          modified: 0,
+          deleted: 0,
+          linesAdded: 0,
+          linesDeleted: 0,
+          files: [],
+          commits: [],
+          summaryRedacted: null,
+          warning: null,
+        },
+        cursorAgent: { status: "NOT_ACTIVE", note: "e2e" },
+        autopilotLive: { serviceState: "IDLE", agentRunning: false },
+        taskControl: [],
+        notifications: [],
+        errorIntelligence: [],
+        logs: [],
+        mainHead: "mainsha",
+        openPrCount: 3,
+        worktreePath: null,
+        databaseState: "configured",
+        backupState: "NOT_AVAILABLE",
+        migrationState: "NOT_AVAILABLE",
+        incidentState: "none",
+        deployedProductionSha: null,
+      },
+    };
+
+    await page.route("**/api/admin/x200/status", async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "Cache-Control": "no-store" },
+        body: JSON.stringify(interactiveSnapshot),
+      });
+    });
+
+    let previewPosts = 0;
+    let executePosts = 0;
+    await page.route("**/api/admin/x200/human-actions", async (route) => {
+      if (route.request().method() !== "POST") {
+        await route.continue();
+        return;
+      }
+      const body = route.request().postDataJSON() as {
+        previewOnly?: boolean;
+        action?: string;
+        reason?: string;
+        mfaCode?: string;
+        typedPhrase?: string;
+        secondConfirmation?: boolean;
+      };
+      if (body.previewOnly) {
+        previewPosts += 1;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            code: "PREVIEW",
+            message: "Preview ready — no action executed.",
+            preview: {
+              action: body.action,
+              target: "PR #12",
+              environment: "LOCAL",
+              prNumber: 12,
+              exactSha: "abcdef1",
+              currentRemoteSha: "abcdef1",
+              expectedChanges: ["Execute controlled action"],
+              risks: ["Risk=MEDIUM"],
+              preconditions: ["SUPER_ADMIN", "reason"],
+              humanGate: "not required",
+              mfaRequired: body.action === "MERGE_PR" || body.action === "DEPLOY_PRODUCTION",
+              typedConfirmationRequired: body.action === "DEPLOY_PRODUCTION",
+              typedPhrase:
+                body.action === "DEPLOY_PRODUCTION"
+                  ? "DEPLOY PRODUCTION abcdef1"
+                  : null,
+              rollback: null,
+              source: "human-actions executor (previewOnly — no mutation)",
+              verificationStatus: "PREVIEW_ONLY",
+              approvalRequirement: body.action === "DEPLOY_PRODUCTION" ? "CRITICAL" : "MEDIUM",
+            },
+          }),
+        });
+        return;
+      }
+      if (body.action === "MERGE_PR" && !body.mfaCode) {
+        await route.fulfill({
+          status: 401,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: false,
+            code: "MFA_REQUIRED",
+            message: "MFA / re-auth requis",
+          }),
+        });
+        return;
+      }
+      if (body.action === "RUN_HEALTH_CHECKS") {
+        await route.fulfill({
+          status: 400,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: false,
+            code: "HEALTH_FAILED",
+            message: "probe failed",
+          }),
+        });
+        return;
+      }
+      executePosts += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          code: "RECORDED",
+          message: "PR #12 is now ready for review.",
+          receipt: {
+            actionId: "receipt-t049",
+            idempotencyKey: "e2e",
+            actor: "e2e@admin",
+            action: body.action,
+            environment: "LOCAL",
+            startedAt: new Date().toISOString(),
+            finishedAt: new Date().toISOString(),
+            durationMs: 12,
+            result: "SUCCESS",
+            before: { draft: true },
+            after: { draft: false, remoteVerified: true },
+            refs: { pr: "12" },
+            auditId: "audit-t049",
+            code: "RECORDED",
+            message: "PR #12 is now ready for review.",
+          },
+        }),
+      });
+    });
+
+    await page.goto("/admin/x200");
+    await page.getByTestId("x200-auto-refresh").selectOption("0");
+    await page.getByTestId("x200-refresh-now").click();
+    await expect(page.getByTestId("x200-actor-role")).toContainText("SUPER_ADMIN");
+
+    await page.getByTestId("x200-tab-GITHUB").click();
+    await expect(page.getByTestId("x200-next-safe-merge")).toHaveText("#11");
+    await expect(page.getByTestId("x200-next-safe-merge")).not.toHaveText("#4");
+    await expect(page.getByTestId("x200-open-pr")).toBeVisible();
+    await expect(page.getByTestId("x200-open-actions")).toBeVisible();
+    await expect(page.getByTestId("x200-open-latest-ci")).toBeVisible();
+    await page.getByTestId("x200-refresh-github").click();
+
+    await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
+    await page.getByTestId("x200-mark-ready").click();
+    await expect(page.getByTestId("x200-preview-drawer-root")).toBeVisible();
+    await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await expect(page.getByTestId("x200-preview-field-action")).toContainText(
+      "MARK_READY_FOR_REVIEW",
+    );
+    await expect(page.getByTestId("x200-action-toast")).toContainText(
+      "Preview ready — no action executed.",
+    );
+    expect(previewPosts).toBeGreaterThan(0);
+    expect(executePosts).toBe(0);
+
+    await expect(page.getByTestId("x200-confirm-execute")).toBeDisabled();
+    await expect(page.getByTestId("x200-confirm-disabled-reason")).toBeVisible();
+
+    await page.getByTestId("x200-human-reason").fill("ready for review");
+    await page.getByTestId("x200-confirm-execute").evaluate((node) => {
+      const button = node as HTMLButtonElement;
+      button.click();
+      button.click();
+    });
+    await expect(page.getByTestId("x200-action-receipt")).toBeVisible();
+    await expect(page.getByTestId("x200-action-toast")).toContainText("SUCCESS");
+    expect(executePosts).toBe(1);
+    await dismissNextjsOverlay(page);
+    await page.getByTestId("x200-copy-receipt").click({ force: true });
+    await page.getByTestId("x200-preview-copy").click({ force: true });
+    await page.getByTestId("x200-preview-close").click({ force: true });
+    await expect(page.getByTestId("x200-action-preview")).toHaveCount(0);
+
+    await page.getByTestId("x200-tab-RELEASE").click();
+    await page.getByTestId("x200-merge-preview").click();
+    await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await expect(page.getByTestId("x200-confirm-execute")).toBeDisabled();
+    await expect(page.getByTestId("x200-confirm-disabled-reason")).toContainText(
+      "MFA",
+    );
+    await page.getByTestId("x200-preview-close").click({ force: true });
+
+    await page.getByTestId("x200-tab-DEPLOY").click();
+    await page.getByTestId("x200-deploy-preview").click();
+    await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await expect(page.getByTestId("x200-confirm-disabled-reason")).toBeVisible();
+    await page.getByTestId("x200-preview-close").click({ force: true });
+
+    await page.getByTestId("x200-tab-INCIDENTS").click();
+    await page.getByTestId("x200-incident-RUN_HEALTH_CHECKS").click();
+    await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await dismissNextjsOverlay(page);
+    await page.getByTestId("x200-confirm-execute").click({ force: true });
+    // Both the drawer failure panel and toast are visible; assert each explicitly.
+    await expect(page.getByTestId("x200-preview-failed")).toBeVisible();
+    await expect(page.getByTestId("x200-action-toast")).toBeVisible();
+    await page.getByTestId("x200-copy-error").click({ force: true });
+    await page.getByTestId("x200-preview-close").click({ force: true });
+
+    await page.getByTestId("x200-tab-AUTOMATION").click();
+    await expect(page.getByTestId("x200-action-AUTOPILOT_START")).toBeVisible();
+    const startTitle = await page
+      .getByTestId("x200-action-AUTOPILOT_START")
+      .getAttribute("title");
+    expect(startTitle && startTitle.length > 0).toBeTruthy();
+
+    await page.keyboard.press("Control+KeyK");
+    await expect(page.getByTestId("x200-command-palette")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("x200-command-palette")).toHaveCount(0);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByTestId("x200-tab-HUMAN_ACTIONS").click();
+    await page.getByTestId("x200-mark-ready").click();
+    await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await page.getByTestId("x200-preview-close").click({ force: true });
+
+    await captureSafeEvidence(
+      page,
+      `${testInfo.project.name}-x200-interactive-console.png`,
+    );
+    await page.unrouteAll({ behavior: "ignoreErrors" });
   });
 });

@@ -72,6 +72,63 @@ test("parseBacklogJson counts statuses and picks current EN_COURS task", () => {
   assert.equal(result.repository, "clevonegroup911/clevones.com");
 });
 
+test("runtime lease overlays claimExpiresAt without inventing backlog history", async () => {
+  const { applyRuntimeLeaseToBacklog, parseRuntimeLeaseJson } = await import(
+    "@/lib/x200/sources"
+  );
+  const backlog = parseBacklogJson(
+    JSON.stringify({
+      tasks: [
+        {
+          id: "T048",
+          title: "Boot",
+          status: "EN_COURS",
+          priority: "P0",
+          attempts: 1,
+          requiresHuman: false,
+          evidence: [],
+          dependencies: [],
+          claim: {
+            workerId: "local:fedora",
+            expiresAt: "2026-09-13T12:00:00Z",
+          },
+          lastTransitionReason: "réservation par local:fedora",
+        },
+      ],
+      history: [],
+    }),
+  );
+  const runtime = parseRuntimeLeaseJson(
+    JSON.stringify({
+      schemaVersion: 1,
+      taskId: "T048",
+      workerId: "local:fedora",
+      expiresAt: "2026-09-15T18:00:00.000Z",
+      renewedAt: "2026-09-15T16:00:00.000Z",
+      heartbeatAt: "2026-09-15T16:00:00.000Z",
+    }),
+  );
+  assert.equal(runtime.status, "OK");
+  const merged = applyRuntimeLeaseToBacklog(backlog, runtime.lease);
+  assert.equal(merged.currentTask?.claimExpiresAt, "2026-09-15T18:00:00.000Z");
+  assert.equal(merged.currentTask?.claimWorkerId, "local:fedora");
+  assert.equal(
+    merged.currentTask?.lastTransitionReason,
+    "réservation par local:fedora",
+  );
+  assert.equal(
+    parseRuntimeLeaseJson(
+      JSON.stringify({
+        taskId: "T048",
+        workerId: "local:fedora",
+        expiresAt: "2099-01-01T00:00:00.000Z",
+        token: "nope",
+      }),
+    ).status,
+    "INVALID",
+  );
+});
+
 test("parseBacklogJson returns INVALID for broken JSON without inventing counts", () => {
   const result = parseBacklogJson("{not-json");
   assert.equal(result.status, "INVALID");

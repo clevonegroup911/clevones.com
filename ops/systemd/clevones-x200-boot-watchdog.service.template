@@ -1,0 +1,12 @@
+[Unit]
+Description=CLEVONE X200 boot health watchdog (bounded recovery)
+Documentation=file://{{REPO_ROOT}}/docs/X200_BOOT_AUTOSTART.md
+
+[Service]
+Type=oneshot
+WorkingDirectory={{REPO_ROOT}}
+Environment=X200_BOOT_WATCHDOG=1
+ExecStart={{NODE_BIN}} {{REPO_ROOT}}/scripts/x200-boot-watchdog.mjs
+Nice=10
+StandardOutput=journal
+StandardError=journal

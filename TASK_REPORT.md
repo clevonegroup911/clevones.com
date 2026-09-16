@@ -6,7 +6,7 @@
 
 ## ID
 
-T047
+T049
 
 ## Statut
 
@@ -14,51 +14,33 @@ TERMINÉE
 
 ## Objectif
 
-Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Universal Action Console) avec faits vérifiés, sources, freshness, inspecteurs, operator view, next-safe-action et Human Gates — sans données inventées, faux SUCCESS, shell libre ni bypass.
+Make /admin/x200 a true interactive console: every clickable control has a visible effect, Preview opens an on-screen drawer without executing, Confirm & Execute is gated and verified, and NEXT SAFE MERGE is derived from GitHub stack truth.
 
 ## Résultat
 
-Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
+T049 clôturée (CI FULL SUCCESS). AUTOPLAN : aucun écart automatique vs PRODUCT_GOAL ; T001–T049 TERMINÉE ; PRODUCT_COMPLETE re-épinglé sur HEAD `907167b`. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/mirror/*`
-- `app/admin/x200/operational-mirror-panels.tsx`
-- `app/admin/x200/error.tsx`
-- `app/admin/x200/loading.tsx`
-- `reports/tasks/T047.md`
+- `app/admin/x200/action-console.tsx`
+- `reports/tasks/T049.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts`
-- `app/admin/x200/control-center-client.tsx`
-- `app/admin/x200/human-action-panels.tsx`
-- `app/admin/x200/page.tsx`
-- `tests/e2e/x200-control-center.spec.ts`
-- `tests/e2e/dev-server.ts` / `env.ts`
-- `middleware.ts`
-- `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
+- Control Center / actions / mirror / e2e T049
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
 
 ## Commandes
 
-- npm run x200:validate
-- npm test
-- npm run x200:test
-- npm run lint
-- npx tsc --noEmit
-- npx prisma validate
-- npm run build
-- npx playwright test
-- npm run x200:scan-secrets
-- git diff --check
+- npm run x200:quality-gate -- --task T049
+- CI FULL quality run 34989022886
+- npm run x200:next → NO_READY_TASK
+- AUTOPLAN audit + PRODUCT_COMPLETE pin
 
 ## Tests réussis
 
-- mirror unit 8 PASS
-- quality-gate local PASS
-- CI FULL quality SUCCESS run 34782004736 (feature close `7de8fd1`)
-- CI FULL quality SUCCESS run 34782911788 (recovery tip `8c873db`)
+- CI FULL quality SUCCESS head 53e2ec7 run 34989022886
+- x200:validate PASS
 
 ## Tests échoués
 
@@ -66,48 +48,43 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 
 ## Lint
 
-- PASS
+PASS
 
 ## Type-check
 
-- PASS
+PASS
 
 ## Build
 
-- PASS — aucun déploiement
+PASS — aucun déploiement
 
 ## Sécurité
 
-- SECRET_VALUES_EXPOSED=NO
-- ARBITRARY_SHELL=NO
-- HUMAN_GATE_BYPASS=NO
-- MERGED=NO
-- DEPLOYED=NO
+- MERGED=NO DEPLOYED=NO
+- gates humaines restantes : SMTP réel, PSP live, GCP alerts, merge main, deploy/migrate prod, MFA prod
 
 ## Commit
 
-- feat/x200-operational-mirror @ 8c873db (+ PRODUCT_COMPLETE local after AUTOPLAN)
+907167b close T049 ; tip contexte AUTOPLAN
 
 ## Pull Request
 
-- PR #11 https://github.com/clevonegroup911/clevones.com/pull/11
+draft PR #12
 
 ## Preuves
 
-- reports/tasks/T047.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788
-- mode=FULL headSha=8c873db96fd66880feb0e8ecba4bee064b86ff58
-- prior FULL https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736 headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
-- .x200/PRODUCT_COMPLETE.json valid for current HEAD + PRODUCT_GOAL hash
+- https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886
+- reports/tasks/T049.md
+- .x200/PRODUCT_COMPLETE.json (local, head=907167b)
 
 ## Risques
 
-- aucun automatique
+aucun automatique
 
 ## Blocage
 
-- aucun automatique — gates humains/externes seulement
+gates humaines / externes uniquement
 
 ## Prochaine tâche prête
 
-- aucune (PRODUCT_COMPLETE)
+NO_READY_TASK

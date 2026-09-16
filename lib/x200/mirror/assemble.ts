@@ -217,6 +217,8 @@ export async function assembleOperationalMirror(input: {
         : pr,
     ),
     currentPrNumber: input.github.prNumber,
+    githubStatus: input.github.status,
+    openPrsSource: openPrsRes.source,
   });
 
   const ciInspector =

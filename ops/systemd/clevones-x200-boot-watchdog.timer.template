@@ -1,0 +1,12 @@
+[Unit]
+Description=CLEVONE X200 boot watchdog timer (~60s)
+
+[Timer]
+OnBootSec=90
+OnUnitActiveSec=60
+AccuracySec=15
+Persistent=false
+Unit=clevones-x200-boot-watchdog.service
+
+[Install]
+WantedBy=timers.target

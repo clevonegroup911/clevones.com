@@ -88,6 +88,8 @@ async function main() {
   // Keep `next dev` for Playwright: `next start` + NODE_ENV=production forces Secure
   // cookies that break http://127.0.0.1 e2e sessions. X200_E2E skips costly remote
   // mirror fetches to reduce next-dev flake under FULL CI load.
+  // NEXT_DIST_DIR=.next-e2e (see e2eAppEnv) avoids rewriting CI `next build` manifests
+  // in `.next/`, which previously caused loadManifest "Unexpected end of JSON input".
   const child = spawn(
     NEXT_BIN,
     ["dev", "--hostname", "127.0.0.1", "--port", String(E2E_PORT)],
@@ -96,7 +98,9 @@ async function main() {
       stdio: "inherit",
     },
   );
-  process.stderr.write("e2e webServer mode=next dev (X200_E2E remote skip enabled)\n");
+  process.stderr.write(
+    `e2e webServer mode=next dev distDir=${env.NEXT_DIST_DIR || ".next"} (X200_E2E remote skip enabled)\n`,
+  );
 
   child.on("exit", (code) => {
     process.exit(code ?? 1);

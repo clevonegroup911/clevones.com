@@ -3,7 +3,12 @@ import { spawnSync } from "node:child_process";
 
 import { utcDateStamp } from "./lib/x100-backlog.mjs";
 import { isCliEntry } from "./lib/x100-fs.mjs";
-import { mutateBacklogAtomic, resumeInspection } from "./lib/x200-claim.mjs";
+import {
+  DEFAULT_RUNTIME_LEASE_PATH,
+  mutateBacklogAtomic,
+  resumeInspection,
+} from "./lib/x200-claim.mjs";
+import { readRuntimeLease } from "./lib/x200-runtime-lease.mjs";
 
 function gitDirty() {
   const run = spawnSync("git", ["status", "--porcelain"], { encoding: "utf8" });
@@ -20,18 +25,24 @@ function parseArgs(argv) {
   };
 }
 
-export function runResume({ filePath = "backlog.json", apply = false } = {}) {
+export function runResume({
+  filePath = "backlog.json",
+  apply = false,
+  runtimeLeasePath = DEFAULT_RUNTIME_LEASE_PATH,
+} = {}) {
   const dirty = gitDirty();
   return mutateBacklogAtomic({
     filePath,
     dryRun: !apply,
-    mutator(data) {
-      const inspection = resumeInspection(data, { gitDirty: dirty });
+    runtimeLeasePath,
+    mutator(data, { runtimeLease } = {}) {
+      const inspection = resumeInspection(data, { gitDirty: dirty, runtimeLease });
       if (!apply) {
-        return { ok: true, data, inspection };
+        return { ok: true, data, inspection, skipBacklogWrite: true };
       }
 
       let next = data;
+      let clearedLease = false;
       for (const finding of inspection.active) {
         const task = next.tasks.find((item) => item.id === finding.id);
         if (!task) {
@@ -51,6 +62,7 @@ export function runResume({ filePath = "backlog.json", apply = false } = {}) {
             ...next,
             tasks: next.tasks.map((item) => (item.id === blocked.id ? blocked : item)),
           };
+          clearedLease = true;
           continue;
         }
         if (finding.expired && !finding.gitDirty) {
@@ -66,19 +78,34 @@ export function runResume({ filePath = "backlog.json", apply = false } = {}) {
             ...next,
             tasks: next.tasks.map((item) => (item.id === ready.id ? ready : item)),
           };
+          clearedLease = true;
         }
       }
-      return { ok: true, data: next, inspection };
+      return {
+        ok: true,
+        data: next,
+        inspection,
+        clearRuntimeLease: clearedLease,
+      };
     },
   });
 }
 
 async function main(argv) {
   const options = parseArgs(argv);
+  const runtime = readRuntimeLease();
   const result = runResume(options);
-  const inspection = result.inspection || resumeInspection({ tasks: [] });
+  const inspection = result.inspection || resumeInspection({ tasks: [] }, {
+    runtimeLease: runtime.ok ? runtime.lease : null,
+  });
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ ok: result.ok, error: result.error, inspection, wrote: result.wrote }, null, 2)}\n`);
+    process.stdout.write(`${JSON.stringify({
+      ok: result.ok,
+      error: result.error,
+      inspection,
+      wrote: result.wrote,
+      runtimeLease: runtime.ok ? runtime.lease : null,
+    }, null, 2)}\n`);
   } else {
     process.stdout.write(`RESUME_${result.ok ? "OK" : "FAIL"} dirty=${gitDirty()}\n`);
     process.stdout.write("exactly-once=no\n");

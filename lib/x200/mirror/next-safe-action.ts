@@ -87,6 +87,7 @@ export function computeNextSafeAction(input: {
   }
 
   if (
+    input.releaseStack.status === "OK" &&
     input.releaseStack.nextSafeMerge != null &&
     input.github.prNumber != null &&
     input.releaseStack.nextSafeMerge !== input.github.prNumber
