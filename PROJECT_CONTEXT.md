@@ -8,8 +8,8 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 |---|---|---|
 | Projet | clevones.com | CONFIRMÉ |
 | Dépôt GitHub | clevonegroup911/clevones.com | CONFIRMÉ |
-| Workspace local | branche `feat/x200-control-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
-| HEAD travail | `feat/x200-control-center` tip (T044 TERMINÉE; see `.x200/PRODUCT_COMPLETE.json`) | CONFIRMÉ |
+| Workspace local | branche `feat/x200-human-action-center`, remote `origin` | CONFIRMÉ (session 2026-09-13) |
+| HEAD travail | `feat/x200-human-action-center` @ `49d0c36` (T046 TERMINÉE) | CONFIRMÉ |
 | Produit | site institutionnel Next.js + `/admin` MFA + portail USER + CMS/docs/analytics/paiements sandbox + `/health` + Control Center `/admin/x200` | CONFIRMÉ dans le dépôt |
 | Gouvernance | X200 AUTOPLAN + FAST-LANE (alias `x100:*`) | CONFIRMÉ |
 | Langues | FR / EN dans le site public | INDIQUÉ par le dépôt |
@@ -39,17 +39,16 @@ Maintenir un marqueur `.x200/PRODUCT_COMPLETE.json` **niveau dépôt** (impléme
 
 | ID | État | Classe |
 |---|---|---|
-| T001–T044 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
+| T001–T046 | `TERMINÉE` avec preuves dans `backlog.json` | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
-| Control Center | `/admin/x200` interactif + actions sûres locales (T045) ; télémétrie Fedora (T043) | CONFIRMÉ dépôt |
+| Control Center | `/admin/x200` interactif (T045) + Human Action Center (T046) ; télémétrie Fedora | CONFIRMÉ dépôt |
 | PRODUCT_COMPLETE | local `.x200/` ; valide seulement si `head` + `goalHash` courants | CONFIRMÉ règle X200 |
 
 Preuves CI récentes (CONFIRMÉ) :
 
-- T042 FULL quality SUCCESS `31af13b` / run [34759082358](https://github.com/clevonegroup911/clevones.com/actions/runs/34759082358)
-- T043 FULL quality SUCCESS `9317276` / run [34763250287](https://github.com/clevonegroup911/clevones.com/actions/runs/34763250287)
-- T044 FAST quality SUCCESS `424a842` / run [34763905161](https://github.com/clevonegroup911/clevones.com/actions/runs/34763905161)
+- T045 FULL quality SUCCESS `42fecbe` / run [34771780343](https://github.com/clevonegroup911/clevones.com/actions/runs/34771780343)
+- T046 FULL quality SUCCESS `49d0c36` / run [34775412790](https://github.com/clevonegroup911/clevones.com/actions/runs/34775412790) ; draft PR [#10](https://github.com/clevonegroup911/clevones.com/pull/10)
 
 ## Écarts restants vs PRODUCT_GOAL
 
@@ -63,7 +62,7 @@ Aucun écart **automatique** restant au registre. Les écarts restants sont des 
 | PSP live (M-PESA / RAWBANK / Stripe) | Gateway sandbox complète ; pas de webhooks/clés réseau |
 | Alertes GCP / uptime | Documentées ; non provisionnées |
 | Timer backup production | Unités `ops/systemd/` préparées ; **non activées** |
-| Merge `main` / PR ready | PR draft #8 ; pas de merge auto |
+| Merge `main` / PR ready | PR drafts #8/#9/#10 ; pas de merge auto |
 | Deploy + migrations production | Migrations CI/éphémères seulement |
 | MFA / secrets production | Enrollment et `.env` VM = gate |
 | SMS | Seulement si canal réel autorisé |

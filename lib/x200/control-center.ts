@@ -26,6 +26,10 @@ import {
   buildControlPlaneSnapshot,
   readRecentControlActions,
 } from "@/lib/x200/control-actions";
+import {
+  buildHumanActionPlaneSnapshot,
+  loadHumanActionPlaneExtras,
+} from "@/lib/x200/actions/plane";
 import type {
   ControlCenterSnapshot,
   ControlCenterSources,
@@ -299,6 +303,7 @@ export function buildControlCenterFatalSnapshot(
     control: emptyControlPlane(),
     progress: emptyProgress(),
     lastUpdate: generatedAt,
+    humanActions: null,
   };
 }
 
@@ -395,6 +400,15 @@ async function assembleControlCenterSnapshot(options?: {
     git,
     github,
     humanGate,
+    telemetryStale:
+      fedora.autopilotLiveState === "STALE"
+        ? true
+        : fedora.fedoraTelemetry === "OK"
+          ? false
+          : fedora.fedoraTelemetry === "MISSING"
+            ? null
+            : null,
+    telemetryStatus: fedora.fedoraTelemetry,
   });
 
   const pipeline = derivePipeline({
@@ -460,6 +474,30 @@ async function assembleControlCenterSnapshot(options?: {
     fedoraStale: fedora.autopilotLiveState === "STALE",
   });
 
+  const extras = await loadHumanActionPlaneExtras().catch(() => ({
+    recentReceipts: [],
+    activeIncident: null,
+  }));
+  const appOriginConfigured = Boolean(process.env.APP_ORIGIN?.trim());
+  const localAllowListActive =
+    process.env.NODE_ENV !== "production" &&
+    Boolean(process.env.X200_LOCAL_ALLOWED_ORIGINS?.trim());
+  const humanActions = buildHumanActionPlaneSnapshot({
+    actorRole: options?.actorRole ?? "UNKNOWN",
+    git,
+    github,
+    humanGate,
+    productComplete,
+    fedora,
+    currentTask: sanitizedCurrent,
+    systemHealth,
+    csrfStatus: appOriginConfigured ? "OK" : "CONFIG_MISSING",
+    appOriginConfigured,
+    localAllowListActive,
+    recentReceipts: extras.recentReceipts,
+    activeIncident: extras.activeIncident,
+  });
+
   let snapshot: ControlCenterSnapshot = {
     generatedAt,
     sources,
@@ -496,6 +534,7 @@ async function assembleControlCenterSnapshot(options?: {
     control,
     progress,
     lastUpdate: generatedAt,
+    humanActions,
   };
 
   const secretHits = assertNoSecretsInPayload(snapshot);
