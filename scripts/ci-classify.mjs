@@ -2,9 +2,29 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
-const MODES = Object.freeze({ METADATA: "METADATA", FAST: "FAST", FULL: "FULL" });
+const MODES = Object.freeze({
+  METADATA: "METADATA",
+  UI_FAST: "UI_FAST",
+  FAST: "FAST",
+  FULL: "FULL",
+});
 
 const METADATA_PATHS = new Set(["backlog.json", "BACKLOG.md", "TASK_REPORT.md"]);
+
+// UI_FAST is intentionally conservative. It is only used for presentation-only
+// surfaces during draft iteration. Any ready-for-review / push gate is still FULL.
+const UI_FAST_PATTERNS = [
+  /^components\/.*\.(?:tsx|jsx|css)$/,
+  /^app\/(?!api\/)(?!admin\/).*\.(?:tsx|jsx|css)$/,
+  /^public\//,
+];
+
+// Admin surfaces are sensitive by default. Only explicitly read-only X200 panels
+// can use UI_FAST. Action consoles, auth, startup, release/deploy and control logic
+// stay on FULL even while the PR is a draft.
+const ADMIN_UI_FAST_PATTERNS = [
+  /^app\/admin\/x200\/(?:agentic-model-infographic|agentic-panels)\.tsx$/,
+];
 
 const FULL_PATTERNS = [
   /^\.github\/workflows\//,
@@ -14,7 +34,6 @@ const FULL_PATTERNS = [
   /^package(-lock)?\.json$/,
   /^prisma\//,
   /^lib\/auth\//,
-  /^app\/admin\//,
   /^tests\/e2e\//,
   /^playwright\.config\.ts$/,
   /^middleware\.ts$/,
@@ -81,21 +100,38 @@ function isMetadataPath(path) {
   return METADATA_PATHS.has(path) || path.startsWith("reports/tasks/");
 }
 
+function isAdminUiFastPath(path) {
+  return ADMIN_UI_FAST_PATTERNS.some((pattern) => pattern.test(path));
+}
+
+function isUiFastPath(path) {
+  return isAdminUiFastPath(path) || UI_FAST_PATTERNS.some((pattern) => pattern.test(path));
+}
+
 function requiresFull(path) {
+  if (path.startsWith("app/admin/") && !isAdminUiFastPath(path)) return true;
   return FULL_PATTERNS.some((pattern) => pattern.test(path));
 }
 
 export function classifyChangedFiles({ files, base, forceFull = false, premerge = false } = {}) {
   if (forceFull || premerge) return { mode: MODES.FULL, reason: forceFull ? "forced" : "premerge" };
   if (!Array.isArray(files) || files.length === 0) return { mode: MODES.FULL, reason: "unknown-or-empty-diff" };
+
   const fullFile = files.find(requiresFull);
   if (fullFile) return { mode: MODES.FULL, reason: `sensitive-control:${fullFile}` };
+
+  if (files.includes("backlog.json") && !backlogChangeIsRuntimeMetadata(base)) {
+    return { mode: MODES.FULL, reason: "backlog-policy-change" };
+  }
+
   if (files.every(isMetadataPath)) {
-    if (files.includes("backlog.json") && !backlogChangeIsRuntimeMetadata(base)) {
-      return { mode: MODES.FULL, reason: "backlog-policy-change" };
-    }
     return { mode: MODES.METADATA, reason: "runtime-metadata-only" };
   }
+
+  if (files.every((path) => isMetadataPath(path) || isUiFastPath(path))) {
+    return { mode: MODES.UI_FAST, reason: "presentation-only-ui" };
+  }
+
   return { mode: MODES.FAST, reason: "ordinary-code" };
 }
 
