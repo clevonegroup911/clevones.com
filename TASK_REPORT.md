@@ -41,8 +41,10 @@ Conflits PR #13 résolus. Control Center T049 conservé. Série agentique renum�
 
 ## Tests réussis
 
-- x200:validate PASS
+- x200:validate / doctor / secrets / x200:test PASS
+- lint / tsc / unit(263) / build PASS
 - mapping IDs T065–T080 + Control Center T049 présents
+- CI FULL run 35071262846 : quality FAIL (playwright=fail; all other required steps pass)
 
 ## Tests échoués
 
@@ -50,7 +52,7 @@ Conflits PR #13 résolus. Control Center T049 conservé. Série agentique renum�
 
 ## Lint
 
-- pending local gate
+- PASS local
 
 ## Type-check
 
@@ -58,7 +60,7 @@ PASS
 
 ## Build
 
-- pending local gate
+- PASS local
 
 ## Sécurité
 
@@ -77,7 +79,7 @@ PASS
 ## Preuves
 
 - recovery tag `recovery/pr13-pre-conflict-resolve-469988a`
-- CI post-rebase (à enregistrer)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/35071262846 (FULL, playwright fail)
 
 ## Risques
 
