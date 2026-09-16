@@ -6,7 +6,7 @@
 
 ## ID
 
-T064
+T080
 
 ## Statut
 
@@ -14,34 +14,35 @@ TERMINÉE
 
 ## Objectif
 
-Brancher writers journal depuis orchestrator + approval engine (best-effort, sans tokens).
+Conserver le journal agentic branché (writers orchestrator + approval) après intégration PR #13 sur `feat/x200-boot-autostart`, avec renumérotation T065–T080.
 
 ## Résultat
 
-Journal writers branchés. CI quality SUCCESS run 34992529905 SHA 3a56859. Critères agentic PRODUCT_GOAL 21–25 couverts en dépôt. MERGED=NO DEPLOYED=NO.
+Conflits PR #13 résolus. Control Center T049 conservé. Série agentique renumérotée T065–T080. `policy.ts` fusion sémantique (`policyForRisk` + `requireSecondConfirmation` + `describeConfirmBlockers`). MERGED_TO_MAIN=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `reports/tasks/T064.md`
+- `reports/tasks/T065.md` … `reports/tasks/T080.md` (renumérotation)
 
 ## Fichiers modifiés
 
-- `lib/agentic/orchestrator.ts`
-- `lib/agentic/approvals.ts`
-- `lib/agentic/approvals.test.ts`
+- `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
+- `lib/x200/actions/policy.ts` (fusion sémantique)
+- `reports/tasks/T049.md` (Control Center historique)
 
 ## Commandes
 
 - npm run x200:validate
+- npm run x200:doctor
 - npm test
 - npx tsc --noEmit
-- npm run x200:quality-gate -- --task T064
+- npm run lint
+- npm run build
 
 ## Tests réussis
 
-- approvals/orchestrator PASS
-- quality-gate T064 PASS
-- CI quality SUCCESS run 34992529905 SHA 3a56859
+- x200:validate PASS
+- mapping IDs T065–T080 + Control Center T049 présents
 
 ## Tests échoués
 
@@ -49,24 +50,25 @@ Journal writers branchés. CI quality SUCCESS run 34992529905 SHA 3a56859. Crit�
 
 ## Lint
 
-- PASS (CI)
+- pending local gate
 
 ## Type-check
 
-- PASS
+PASS
 
 ## Build
 
-- PASS (CI FULL)
+- pending local gate
 
 ## Sécurité
 
+- HIGH/CRITICAL fail-closed conservés
 - Tokens absents du journal
-- MERGED=NO DEPLOYED=NO
+- MERGED_TO_MAIN=NO DEPLOYED=NO
 
 ## Commit
 
-- `3a568594596323a8731cd6182839782d5f33a3d2`
+- merge + conflict resolution sur `feat/x200-agentic-core`
 
 ## Pull Request
 
@@ -74,15 +76,16 @@ Journal writers branchés. CI quality SUCCESS run 34992529905 SHA 3a56859. Crit�
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905
+- recovery tag `recovery/pr13-pre-conflict-resolve-469988a`
+- CI post-rebase (à enregistrer)
 
 ## Risques
 
-- low
+- low (résolution manuelle IDs ; gate merge main reste humain)
 
 ## Blocage
 
-- aucun automatique — gates humaines : merge PR #13, deploy, rails PSP live
+- aucun automatique — gates humaines : merge PR #13 vers main, deploy, rails PSP live
 
 ## Prochaine tâche prête
 

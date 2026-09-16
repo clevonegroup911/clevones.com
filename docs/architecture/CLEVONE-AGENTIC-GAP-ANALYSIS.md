@@ -1,11 +1,11 @@
 # CLEVONE Agentic Business Platform — Gap Analysis
 
-**Date :** 2026-09-15 (post T064)
+**Date :** 2026-09-15 (post T080)
 **Base :** `feat/x200-agentic-core` @ `3a56859`
 
 ## État
 
-T001–T064 `TERMINÉE` sur la branche agentic (registry → orchestrator → approvals → providers → observability → Finance/Commercial/DMS → journal → outcomes → proof hook → journal writers).
+T001–T065 + T065–T080 `TERMINÉE` sur la branche agentic (registry → orchestrator → approvals → providers → observability → Finance/Commercial/DMS → journal → outcomes → proof hook → journal writers).
 
 PRODUCT_GOAL critères **21–25** : CONFIRMÉ en dépôt (implémenté + testé + CI). MERGED=NO DEPLOYED=NO.
 

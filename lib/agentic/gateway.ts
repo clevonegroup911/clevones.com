@@ -135,7 +135,7 @@ const DEFAULT_HANDLERS: Partial<Record<BusinessToolId, ToolHandler>> = {
   }),
   /**
    * Recommendation only — never activates VERIFIED payments or moves money.
-   * Deterministic stub for gateway unit tests; T053 wires real scoring.
+   * Deterministic stub for gateway unit tests; T069 wires real scoring.
    */
   "payments.reconcile.recommend": (input) => {
     const amountCents =

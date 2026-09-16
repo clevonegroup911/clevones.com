@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-09-16",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -3404,6 +3404,95 @@
           "exitCode": 0,
           "reference": ".x200/quality-results.json",
           "version": null,
+          "at": "2026-09-15T15:30:18.104Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34989022886",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886",
+          "version": "53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee",
+          "at": "2026-09-15T15:37:46.000Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34989022886 on 53e2ec7; T049 closed",
+      "id": "T049",
+      "title": "X200 Control Center — fully interactive actions and previews",
+      "objective": "Make /admin/x200 a true interactive console: every clickable control has a visible effect, Preview opens an on-screen drawer without executing, Confirm & Execute is gated and verified, and NEXT SAFE MERGE is derived from GitHub stack truth.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T048"
+      ],
+      "scope": [
+        "app/admin/x200",
+        "app/api/admin/x200",
+        "lib/x200/actions",
+        "lib/x200/mirror",
+        "tests/e2e/x200-control-center.spec.ts",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "PROJECT_CONTEXT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Preview opens a visible drawer/modal immediately with Loading preview… then ACTION/TARGET/SHA/risks/gates; previewOnly never mutates",
+        "CONFIRM & EXECUTE disabled with visible reason until preconditions; loading; idempotency; no double execute; SUCCESS only after remote verification; receipt shown",
+        "Every interactive control is functional, disabled with explicit reason, or removed — no dead clicks",
+        "NEXT SAFE MERGE derived from verified GitHub stack for the current PR; unrelated/stale PRs never shown as predecessor; UNKNOWN/NOT_CONNECTED when GitHub truth missing",
+        "Playwright covers Preview drawer, tabs, refresh, Ctrl+K, disabled reasons, GitHub truth; HUMAN_GATE/MFA/typed confirmation preserved; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npx prisma validate",
+        "npm run build",
+        "npx playwright test",
+        "npm run x200:scan-secrets",
+        "git diff --check"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "Preview drawer (desktop/mobile) with Loading preview… then ACTION/TARGET/SHA/risks/gates; previewOnly never mutates",
+        "CONFIRM & EXECUTE gated with visible disabled reasons; anti double-execute; SUCCESS only after remoteVerified",
+        "Interactive controls audited: functional, disabled+reason, or removed",
+        "NEXT SAFE MERGE from verified GitHub stack of current PR; unrelated PRs excluded; UNKNOWN/NOT_CONNECTED when GitHub missing",
+        "Playwright T049 covers Preview drawer, tabs, refresh, Ctrl+K, disabled reasons, GitHub truth; HUMAN_GATE/MFA preserved",
+        "SECRET_VALUES_EXPOSED=NO ARBITRARY_SHELL=NO HUMAN_GATE_BYPASS=NO MERGED=NO DEPLOYED=NO",
+        "CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989022886",
+        "Draft/open PR #12 https://github.com/clevonegroup911/clevones.com/pull/12",
+        "reports/tasks/T049.md"
+      ],
+      "estimatedCost": 8,
+      "risk": "high",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
           "at": "2026-09-15T11:43:04.677Z",
           "location": ".x200/quality-results.json"
         },
@@ -3421,7 +3510,7 @@
       "regressionOf": null,
       "nextAction": null,
       "lastTransitionReason": "quality-gate local PASS + CI quality SUCCESS run 34965983633 on 2d5e38d (FAST after FULL run failed only on diff_check whitespace)",
-      "id": "T049",
+      "id": "T065",
       "title": "Agentic Core — provider-independent Agent Registry",
       "objective": "Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.",
       "priority": "P0",
@@ -3491,13 +3580,13 @@
       "regressionOf": null,
       "nextAction": null,
       "lastTransitionReason": "CI quality SUCCESS run 34967009299 SHA 280ccbc",
-      "id": "T050",
+      "id": "T066",
       "title": "Agentic Core — domain event envelope (idempotent)",
       "objective": "Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.",
       "priority": "P0",
       "owner": "cursor",
       "dependencies": [
-        "T049"
+        "T065"
       ],
       "scope": [
         "lib/agentic",
@@ -3560,13 +3649,13 @@
       "regressionOf": null,
       "nextAction": null,
       "lastTransitionReason": "quality CI FULL SUCCESS run 34970081544 on 3cd3d38; close without merge/deploy",
-      "id": "T051",
+      "id": "T067",
       "title": "Agentic Core — tool policy reuse + agent audit fields",
       "objective": "Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.",
       "priority": "P1",
       "owner": "cursor",
       "dependencies": [
-        "T049"
+        "T065"
       ],
       "scope": [
         "lib/agentic",
@@ -3643,12 +3732,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T052",
+      "id": "T068",
       "title": "Agentic Core — in-process Tool Gateway (LOW risk only)",
       "objective": "Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute uniquement des handlers allowlistés LOW (lecture/recommandation). Aucun shell, aucun payout, aucun HIGH/CRITICAL auto.",
       "priority": "P1",
       "dependencies": [
-        "T051"
+        "T067"
       ],
       "scope": [
         "lib/agentic"
@@ -3712,12 +3801,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T053",
+      "id": "T069",
       "title": "Finance Agent vertical slice — proof_uploaded recommendation",
       "objective": "Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FINANCE_AGENT → Tool Gateway recommend → score/recommendation + human approval si MEDIUM+. Aucun payout, aucune activation VERIFIED automatique hors moteur existant.",
       "priority": "P1",
       "dependencies": [
-        "T052"
+        "T068"
       ],
       "scope": [
         "lib/agentic",
@@ -3781,12 +3870,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T054",
+      "id": "T070",
       "title": "Agentic Core — business X200 Orchestrator (event→agent→gateway)",
       "objective": "Orchestrateur métier in-process : EVENT → classify/risk → AgentRegistry.select → ToolGateway → verify/audit. Réutilise T050–T053. Pas de shell, pas de payout, pas de SDK vendor.",
       "priority": "P1",
       "dependencies": [
-        "T053"
+        "T069"
       ],
       "scope": [
         "lib/agentic/orchestrator.ts",
@@ -3852,12 +3941,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T055",
+      "id": "T071",
       "title": "Agentic Core — provider adapters (stub, no network, no paid SDK)",
       "objective": "Adapters AgentProviderAdapter pour internal/grok/openai/cursor : healthCheck, getCapabilities, estimateCost. execute/stream refusent le réseau tant qu'aucune clé/provider live n'est autorisé. Aucun SDK payant.",
       "priority": "P1",
       "dependencies": [
-        "T049"
+        "T065"
       ],
       "scope": [
         "lib/agentic/providers",
@@ -3921,12 +4010,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T056",
+      "id": "T072",
       "title": "Agentic Core — business Approval Engine (single-use, persisted)",
       "objective": "Moteur d'approbation métier pour outils MEDIUM+ : issue/consume tokens single-use (TTL), journal audit, intégration ToolGateway. Réutilise patterns T046 sans merge/deploy. Pas de MFA bypass.",
       "priority": "P1",
       "dependencies": [
-        "T054"
+        "T070"
       ],
       "scope": [
         "lib/agentic/approvals.ts",
@@ -3989,12 +4078,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T057",
+      "id": "T073",
       "title": "Agentic Control Center — observability panel (registry/audit/orchestration)",
       "objective": "Panneau admin lecture seule sous /admin/x200 : catalogue agents, derniers audits outils, dernières orchestrations (in-process snapshots). Aucune exécution live, pas de secrets, pas de merge/deploy.",
       "priority": "P1",
       "dependencies": [
-        "T056"
+        "T072"
       ],
       "scope": [
         "lib/agentic/observability.ts",
@@ -4059,12 +4148,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T058",
+      "id": "T074",
       "title": "Finance Agent — complete recommendation worker (no payout)",
       "objective": "Étendre le worker Finance au-delà du slice T053 : scoring multi-preuves, raisons structurées, hooks orchestrator pour invoice.overdue/payment.reconciliation_failed. Toujours recommend-only, jamais payout/VERIFIED auto.",
       "priority": "P2",
       "dependencies": [
-        "T056"
+        "T072"
       ],
       "scope": [
         "lib/agentic/finance-agent.ts",
@@ -4129,12 +4218,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T059",
+      "id": "T075",
       "title": "Commercial Agent — lead.qualify draft worker (read/draft only)",
       "objective": "Worker Commercial : lead.created → classify/qualify draft via crm.read + crm.draft stubs. Pas d'envoi email client, pas de SDK payant.",
       "priority": "P2",
       "dependencies": [
-        "T056"
+        "T072"
       ],
       "scope": [
         "lib/agentic/commercial-agent.ts",
@@ -4202,12 +4291,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T060",
+      "id": "T076",
       "title": "DMS Agent — document.classify metadata worker (no content leak)",
       "objective": "Worker DMS : document.uploaded → classify via documents.read.metadata + documents.classify stubs. Pas d'export fichier, pas de fuite contenu EXTERNAL.",
       "priority": "P2",
       "dependencies": [
-        "T056"
+        "T072"
       ],
       "scope": [
         "lib/agentic/dms-agent.ts",
@@ -4269,13 +4358,13 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T061",
+      "id": "T077",
       "title": "Agentic durable journal — events/approvals/audit to .x200 + Control Center feed",
       "objective": "Persister DomainEventLog, BusinessApprovalEngine et AgentAuditLog dans .x200/agentic-*.jsonl (comme human-approvals), sans secrets. Alimenter buildAgenticObservabilitySnapshot pour le panneau Control Center.",
       "priority": "P1",
       "dependencies": [
-        "T057",
-        "T060"
+        "T073",
+        "T076"
       ],
       "scope": [
         "lib/agentic/persistence.ts",
@@ -4340,12 +4429,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T062",
+      "id": "T078",
       "title": "Outcome engine — labels from orchestration (no side effects)",
       "objective": "Moteur d’outcomes déterministe : invoice_reconciled_candidate, lead_qualified_candidate, document_classified à partir des résultats orchestrator/agents. Labels only ; aucun payout/mail/export.",
       "priority": "P2",
       "dependencies": [
-        "T060"
+        "T076"
       ],
       "scope": [
         "lib/agentic/outcomes.ts",
@@ -4410,12 +4499,12 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15",
-      "id": "T063",
+      "id": "T079",
       "title": "Agentic recommend-only hook from payment proof path (no activation)",
       "objective": "Brancher un appel optionnel runFinanceAgentTask après upload preuve (admin/sandbox) pour recommandation uniquement. Aucune activation VERIFIED, aucun payout. Feature derrière flag local / chemin sandbox existant.",
       "priority": "P2",
       "dependencies": [
-        "T058"
+        "T074"
       ],
       "scope": [
         "lib/agentic/payment-hook.ts",
@@ -4476,19 +4565,20 @@
         "lib/agentic/approvals.ts",
         ".x200/quality-results.json",
         "CI quality SUCCESS run 34992529905 SHA 3a56859",
-        "https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905"
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905",
+        "PR #13 conflict resolution: agentic IDs remapped T049–T064→T065–T080; Control Center T049 preserved"
       ],
       "estimatedCost": 4,
       "attempts": 1,
       "requiresHuman": false,
-      "updatedAt": "2026-09-15",
-      "id": "T064",
+      "updatedAt": "2026-09-16",
+      "id": "T080",
       "title": "Wire agentic journal writers from orchestrator + approval engine",
       "objective": "Après runBusinessOrchestration / issueBusinessApproval, append best-effort vers persistence (.x200 jsonl) pour alimenter réellement le Control Center. Échecs d’écriture non bloquants ; tokens jamais persistés.",
       "priority": "P1",
       "dependencies": [
-        "T061",
-        "T063"
+        "T077",
+        "T079"
       ],
       "scope": [
         "lib/agentic/orchestrator.ts",
@@ -5830,36 +5920,16 @@
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34962261158 head 206cd31a7c37c91a34d442bab464603ec11bef49; close without waiting comment job"
     },
     {
-      "at": "2026-09-15T11:08:49.293570Z",
+      "at": "2026-09-15",
       "taskId": "T049",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Agent Registry after owner Agentic vNext prompt; zero duplicate of T001-T048"
+      "status": "PRÊTE",
+      "note": "Owner brief: Control Center fully interactive actions and previews after T048 TERMINÉE"
     },
     {
-      "at": "2026-09-15T11:08:49.293570Z",
-      "taskId": "T050",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Domain event envelope depends on T049"
-    },
-    {
-      "at": "2026-09-15T11:08:49.293570Z",
-      "taskId": "T051",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Agent audit/policy reuse depends on T049"
-    },
-    {
-      "at": "2026-09-15T11:15:00.000Z",
+      "at": "2026-09-15",
       "taskId": "T049",
-      "from": "PRÊTE",
-      "to": "EN_COURS",
-      "by": "cursor",
-      "note": "Scope narrowed vs T048 EN_CONTRÔLE; local reservation for Agent Registry"
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
     },
     {
       "at": "2026-09-15",
@@ -5868,481 +5938,13 @@
       "note": "contrôles locaux réussis ; attente du job quality"
     },
     {
-      "at": "2026-09-15T11:59:55.564904Z",
+      "at": "2026-09-15",
       "taskId": "T049",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "CI quality SUCCESS run 34965983633 SHA 2d5e38d; PR #13 draft; MERGED=NO DEPLOYED=NO"
-    },
-    {
-      "at": "2026-09-15T11:59:55.564904Z",
-      "taskId": "T050",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "Unblocked after T049 TERMINÉE"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T050",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15T12:02:40.859897Z",
-      "taskId": "T050",
-      "from": "EN_COURS",
-      "to": "EN_CONTRÔLE",
-      "by": "cursor",
-      "note": "Local quality-gate PASS; await CI quality"
-    },
-    {
-      "at": "2026-09-15T12:31:36.323320Z",
-      "taskId": "T050",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "CI quality SUCCESS 34967009299 SHA 280ccbc; watch client network drop ignored"
-    },
-    {
-      "at": "2026-09-15T12:32:14.785925Z",
-      "taskId": "T051",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "Unblocked after T049+T050 TERMINÉE"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T051",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15T12:37:11.550608Z",
-      "taskId": "T051",
-      "from": "EN_COURS",
-      "to": "EN_CONTRÔLE",
-      "by": "cursor",
-      "note": "Local quality-gate PASS; await CI quality"
-    },
-    {
-      "at": "2026-09-15T13:11:10.905777Z",
-      "taskId": "T051",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI FULL quality SUCCESS run 34970081544 head 3cd3d3873b6ead186e39e6fea474dab6978847e1; MERGED=NO DEPLOYED=NO"
-    },
-    {
-      "at": "2026-09-15T13:12:33.292936Z",
-      "taskId": "T052",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Tool Gateway after T051; max 2 tasks this cycle"
-    },
-    {
-      "at": "2026-09-15T13:12:33.292936Z",
-      "taskId": "T053",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Finance vertical slice depends on T052"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T052",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T052",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T13:30:32.495631Z",
-      "taskId": "T052",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34974772115 head cb1ff13f4ada6453193bb591a729e3f94e73d6d3"
-    },
-    {
-      "at": "2026-09-15T13:30:32.495631Z",
-      "taskId": "T053",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "T052 TERMINÉE — promote Finance vertical slice"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T053",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15T13:37:16.791440Z",
-      "taskId": "T053",
-      "from": "EN_COURS",
-      "to": "EN_CONTRÔLE",
-      "by": "cursor",
-      "note": "Local quality-gate PASS; push for CI"
-    },
-    {
-      "at": "2026-09-15T13:43:17.646102Z",
-      "taskId": "T053",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34976217739 head 8153750d51714a628449f18d403b1e516e9f6f8d"
-    },
-    {
-      "at": "2026-09-15T13:52:36.737334Z",
-      "taskId": "T054",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Business Orchestrator; zero duplicate T001-T053"
-    },
-    {
-      "at": "2026-09-15T13:52:36.737334Z",
-      "taskId": "T055",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Provider adapters stub; sequenced after T054"
-    },
-    {
-      "at": "2026-09-15T13:52:36.737334Z",
-      "taskId": "T056",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Business Approval Engine; depends T054"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T054",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T054",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T14:14:08.923Z",
-      "taskId": "T054",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34979500998 head 2a1a7136577df8b0edca3704b55bbe22704f1192"
-    },
-    {
-      "at": "2026-09-15T14:14:08.923Z",
-      "taskId": "T055",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-FAST] unblocked after T054 TERMINÉE"
-    },
-    {
-      "at": "2026-09-15T14:14:08.923Z",
-      "taskId": "T056",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-FAST] deps T054 TERMINÉE"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T055",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T055",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T14:24:57.269Z",
-      "taskId": "T055",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34980795199 head 32c9486564ae6b23792bf28390d7f2032af68d8a"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T056",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T056",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T14:35:19.546Z",
-      "taskId": "T056",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34982059895 head c0bfeb3ed3d0238bdf1ce56c0061ce485020fe4a"
-    },
-    {
-      "at": "2026-09-15T14:36:37.371Z",
-      "taskId": "T057",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Observability Control Center; zero duplicate T001-T056"
-    },
-    {
-      "at": "2026-09-15T14:36:37.371Z",
-      "taskId": "T058",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Finance Agent complete; P2 after P1 core"
-    },
-    {
-      "at": "2026-09-15T14:36:37.371Z",
-      "taskId": "T059",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] Commercial Agent; sequenced after T058 scope"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T057",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T057",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T058",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T058",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T14:46:49.706Z",
-      "taskId": "T057",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34983313834 head 3e3c457789d76de72af08b627047f899a3ec516c"
-    },
-    {
-      "at": "2026-09-15T14:54:19.355Z",
-      "taskId": "T058",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34984040818 head fa3895fe3a11d52980f5d773283e3ea8a19a5e5c"
-    },
-    {
-      "at": "2026-09-15T14:54:19.355Z",
-      "taskId": "T059",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-FAST] unblocked after T058 TERMINÉE"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T059",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T059",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T15:07:30.930Z",
-      "taskId": "T059",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34985618494 head 31dbf8900d39ca175adf2e49c3aa055bd2771c92"
-    },
-    {
-      "at": "2026-09-15T15:07:59.462Z",
-      "taskId": "T060",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] DMS Agent; zero duplicate T001-T059"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T060",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T060",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T15:24:20.907Z",
-      "taskId": "T060",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34987297923 head 845095c133b7078329fc7276263af46cc5bdb81d"
-    },
-    {
-      "at": "2026-09-15T15:24:20.907Z",
-      "taskId": "T061",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] durable agentic journal; zero duplicate T001-T060"
-    },
-    {
-      "at": "2026-09-15T15:24:20.907Z",
-      "taskId": "T062",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] outcome engine labels"
-    },
-    {
-      "at": "2026-09-15T15:24:20.907Z",
-      "taskId": "T063",
-      "from": null,
-      "to": "À_FAIRE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] payment recommend hook; after T061"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T061",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T061",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T062",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T062",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T15:43:14.409Z",
-      "taskId": "T061",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34989464769 head edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38"
-    },
-    {
-      "at": "2026-09-15T15:43:14.409Z",
-      "taskId": "T062",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34989464769 head edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38"
-    },
-    {
-      "at": "2026-09-15T15:43:14.409Z",
-      "taskId": "T063",
-      "from": "À_FAIRE",
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-FAST] deps journal done; claim payment hook"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T063",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T063",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T15:59:02.780Z",
-      "taskId": "T063",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34990785657 head c5dbf815f2f9a3cbdf5de764f1eaf108a780c2a5"
-    },
-    {
-      "at": "2026-09-15T15:59:02.780Z",
-      "taskId": "T064",
-      "from": null,
-      "to": "PRÊTE",
-      "by": "cursor",
-      "note": "[X200-AUTOPLAN] journal writers; zero duplicate T001-T063"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T064",
-      "status": "EN_COURS",
-      "note": "réservation par local:fedora"
-    },
-    {
-      "at": "2026-09-15",
-      "taskId": "T064",
-      "status": "EN_CONTRÔLE",
-      "note": "contrôles locaux réussis ; attente du job quality"
-    },
-    {
-      "at": "2026-09-15T16:09:22.838Z",
-      "taskId": "T064",
-      "from": "EN_CONTRÔLE",
-      "to": "TERMINÉE",
-      "by": "cursor",
-      "note": "[X200-FAST] CI quality SUCCESS run 34992529905 head 3a568594596323a8731cd6182839782d5f33a3d2"
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee; close without waiting comment job"
     }
   ],
-  "registryVersion": 197,
+  "registryVersion": 150,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

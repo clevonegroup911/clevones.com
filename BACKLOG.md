@@ -3,9 +3,9 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 197
+- Registre : 150
 - Mode : single-executor
-- Mis à jour : 2026-09-15
+- Mis à jour : 2026-09-16
 
 ## Compteurs
 
@@ -15,7 +15,7 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 64
+- TERMINÉE : 65
 - ANNULÉE : 0
 
 ## Tâches
@@ -70,19 +70,20 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T046 | P0 | TERMINÉE | X200 Human Action Center — approvals, release, deploy and recovery | non |
 | T047 | P0 | TERMINÉE | X200 Operational Mirror + Universal Action Console | non |
 | T048 | P0 | TERMINÉE | X200 Boot Orchestrator — automatic startup and self-recovery | non |
-| T049 | P0 | TERMINÉE | Agentic Core — provider-independent Agent Registry | non |
-| T050 | P0 | TERMINÉE | Agentic Core — domain event envelope (idempotent) | non |
-| T051 | P1 | TERMINÉE | Agentic Core — tool policy reuse + agent audit fields | non |
-| T052 | P1 | TERMINÉE | Agentic Core — in-process Tool Gateway (LOW risk only) | non |
-| T053 | P1 | TERMINÉE | Finance Agent vertical slice — proof_uploaded recommendation | non |
-| T054 | P1 | TERMINÉE | Agentic Core — business X200 Orchestrator (event→agent→gateway) | non |
-| T055 | P1 | TERMINÉE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
-| T056 | P1 | TERMINÉE | Agentic Core — business Approval Engine (single-use, persisted) | non |
-| T057 | P1 | TERMINÉE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
-| T058 | P2 | TERMINÉE | Finance Agent — complete recommendation worker (no payout) | non |
-| T059 | P2 | TERMINÉE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
-| T060 | P2 | TERMINÉE | DMS Agent — document.classify metadata worker (no content leak) | non |
-| T061 | P1 | TERMINÉE | Agentic durable journal — events/approvals/audit to .x200 + Control Center feed | non |
-| T062 | P2 | TERMINÉE | Outcome engine — labels from orchestration (no side effects) | non |
-| T063 | P2 | TERMINÉE | Agentic recommend-only hook from payment proof path (no activation) | non |
-| T064 | P1 | TERMINÉE | Wire agentic journal writers from orchestrator + approval engine | non |
+| T049 | P0 | TERMINÉE | X200 Control Center — fully interactive actions and previews | non |
+| T065 | P0 | TERMINÉE | Agentic Core — provider-independent Agent Registry | non |
+| T066 | P0 | TERMINÉE | Agentic Core — domain event envelope (idempotent) | non |
+| T067 | P1 | TERMINÉE | Agentic Core — tool policy reuse + agent audit fields | non |
+| T068 | P1 | TERMINÉE | Agentic Core — in-process Tool Gateway (LOW risk only) | non |
+| T069 | P1 | TERMINÉE | Finance Agent vertical slice — proof_uploaded recommendation | non |
+| T070 | P1 | TERMINÉE | Agentic Core — business X200 Orchestrator (event→agent→gateway) | non |
+| T071 | P1 | TERMINÉE | Agentic Core — provider adapters (stub, no network, no paid SDK) | non |
+| T072 | P1 | TERMINÉE | Agentic Core — business Approval Engine (single-use, persisted) | non |
+| T073 | P1 | TERMINÉE | Agentic Control Center — observability panel (registry/audit/orchestration) | non |
+| T074 | P2 | TERMINÉE | Finance Agent — complete recommendation worker (no payout) | non |
+| T075 | P2 | TERMINÉE | Commercial Agent — lead.qualify draft worker (read/draft only) | non |
+| T076 | P2 | TERMINÉE | DMS Agent — document.classify metadata worker (no content leak) | non |
+| T077 | P1 | TERMINÉE | Agentic durable journal — events/approvals/audit to .x200 + Control Center feed | non |
+| T078 | P2 | TERMINÉE | Outcome engine — labels from orchestration (no side effects) | non |
+| T079 | P2 | TERMINÉE | Agentic recommend-only hook from payment proof path (no activation) | non |
+| T080 | P1 | TERMINÉE | Wire agentic journal writers from orchestrator + approval engine | non |

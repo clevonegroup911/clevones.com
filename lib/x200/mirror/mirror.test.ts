@@ -178,6 +178,74 @@ describe("T047 operational mirror", () => {
     assert.equal(stack.nextSafeMerge, 9);
   });
 
+  it("does not treat unrelated open PRs as stacked predecessors", () => {
+    const stack = buildReleaseStack({
+      openPrs: [
+        {
+          number: 4,
+          title: "unrelated",
+          base: "main",
+          head: "feat/old-unrelated",
+          headSha: "aaa",
+          draft: false,
+          mergeable: "MERGEABLE",
+          ciConclusion: "success",
+          url: null,
+        },
+        {
+          number: 11,
+          title: "T047",
+          base: "feat/x200-human-action-center",
+          head: "feat/x200-operational-mirror",
+          headSha: "bbb",
+          draft: true,
+          mergeable: null,
+          ciConclusion: "success",
+          url: null,
+        },
+        {
+          number: 12,
+          title: "T048",
+          base: "feat/x200-operational-mirror",
+          head: "feat/x200-boot-autostart",
+          headSha: "ccc",
+          draft: true,
+          mergeable: null,
+          ciConclusion: "success",
+          url: null,
+        },
+      ],
+      currentPrNumber: 12,
+    });
+    assert.equal(stack.status, "OK");
+    assert.equal(stack.nextSafeMerge, 11);
+    assert.ok(!stack.mergeOrder.includes(4));
+    assert.notEqual(stack.nextSafeMerge, 4);
+  });
+
+  it("returns NOT_CONNECTED without inventing a predecessor PR", () => {
+    const stack = buildReleaseStack({
+      openPrs: [
+        {
+          number: 4,
+          title: "stale",
+          base: "main",
+          head: "feat/stale",
+          headSha: "ddd",
+          draft: false,
+          mergeable: null,
+          ciConclusion: null,
+          url: null,
+        },
+      ],
+      currentPrNumber: 12,
+      openPrsSource: "NOT_CONNECTED",
+    });
+    assert.equal(stack.status, "NOT_CONNECTED");
+    assert.equal(stack.nextSafeMerge, null);
+    assert.match(stack.nextSafeMergeReason ?? "", /NOT_CONNECTED/);
+  });
+
   it("redacts secret-looking diff paths and content", () => {
     assert.equal(shouldRedactDiffPath(".env.local"), true);
     assert.equal(shouldRedactDiffPath("lib/x200/mirror/facts.ts"), false);

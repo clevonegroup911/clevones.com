@@ -34,6 +34,7 @@ export type PolicyRequirements = {
   requireReason: boolean;
   requireMfa: boolean;
   requireTypedPhrase: boolean;
+  requireSecondConfirmation: boolean;
   requireCooldown: boolean;
   typedPhrase: string | null;
   approvalTtlMs: number;
@@ -55,6 +56,7 @@ export function policyForRisk(risk: ActionRisk): PolicyRequirements {
         requireReason: false,
         requireMfa: false,
         requireTypedPhrase: false,
+        requireSecondConfirmation: false,
         requireCooldown: false,
         typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
@@ -66,6 +68,7 @@ export function policyForRisk(risk: ActionRisk): PolicyRequirements {
         requireReason: true,
         requireMfa: false,
         requireTypedPhrase: false,
+        requireSecondConfirmation: false,
         requireCooldown: false,
         typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
@@ -77,6 +80,7 @@ export function policyForRisk(risk: ActionRisk): PolicyRequirements {
         requireReason: true,
         requireMfa: true,
         requireTypedPhrase: false,
+        requireSecondConfirmation: false,
         requireCooldown: false,
         typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
@@ -88,6 +92,7 @@ export function policyForRisk(risk: ActionRisk): PolicyRequirements {
         requireReason: true,
         requireMfa: true,
         requireTypedPhrase: true,
+        requireSecondConfirmation: true,
         requireCooldown: true,
         typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
@@ -143,6 +148,38 @@ export function isControlActionsEnvEnabled(
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
   return envFlagTrue(env, "X200_CONTROL_ACTIONS_ENABLED");
+}
+
+export function describeConfirmBlockers(input: {
+  policy: PolicyRequirements;
+  canExecute: boolean;
+  executeBlockReason: string | null;
+  reason: string;
+  mfaCode: string;
+  typedPhrase: string;
+  secondConfirm: boolean;
+}): string[] {
+  const blockers: string[] = [];
+  if (!input.canExecute) {
+    blockers.push(input.executeBlockReason ?? "Execution blocked");
+  }
+  if (input.policy.requireReason && input.reason.trim().length < 3) {
+    blockers.push("Justification required (min 3 characters)");
+  }
+  if (input.policy.requireMfa && !input.mfaCode.trim()) {
+    blockers.push("MFA / re-auth required");
+  }
+  if (
+    input.policy.requireTypedPhrase &&
+    input.policy.typedPhrase &&
+    input.typedPhrase !== input.policy.typedPhrase
+  ) {
+    blockers.push(`Typed confirmation required: ${input.policy.typedPhrase}`);
+  }
+  if (input.policy.requireSecondConfirmation && !input.secondConfirm) {
+    blockers.push("Second confirmation required for this critical action");
+  }
+  return blockers;
 }
 
 function envFlagTrue(env: NodeJS.ProcessEnv, key: string): boolean {
