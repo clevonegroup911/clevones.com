@@ -8,7 +8,7 @@ import type {
   HumanActionType,
 } from "@/lib/x200/actions/types";
 
-type TabId =
+export type TabId =
   | "OVERVIEW"
   | "TASKS"
   | "AUTOMATION"
@@ -17,10 +17,23 @@ type TabId =
   | "DEPLOY"
   | "DATABASE"
   | "INCIDENTS"
-  | "AUDIT";
+  | "AUDIT"
+  | "SOURCES"
+  | "GITHUB"
+  | "CI"
+  | "CHANGES"
+  | "OPERATOR"
+  | "LOGS"
+  | "NOTIFICATIONS"
+  | "ERRORS";
 
 export const X200_TABS: Array<{ id: TabId; label: string }> = [
   { id: "OVERVIEW", label: "OVERVIEW" },
+  { id: "OPERATOR", label: "OPERATOR" },
+  { id: "SOURCES", label: "SOURCES" },
+  { id: "GITHUB", label: "GITHUB" },
+  { id: "CI", label: "CI" },
+  { id: "CHANGES", label: "CHANGES" },
   { id: "TASKS", label: "TASKS" },
   { id: "AUTOMATION", label: "AUTOMATION" },
   { id: "HUMAN_ACTIONS", label: "HUMAN ACTIONS" },
@@ -28,6 +41,9 @@ export const X200_TABS: Array<{ id: TabId; label: string }> = [
   { id: "DEPLOY", label: "DEPLOY" },
   { id: "DATABASE", label: "DATABASE" },
   { id: "INCIDENTS", label: "INCIDENTS" },
+  { id: "LOGS", label: "LOGS" },
+  { id: "NOTIFICATIONS", label: "NOTIFY" },
+  { id: "ERRORS", label: "ERRORS" },
   { id: "AUDIT", label: "AUDIT" },
 ];
 
@@ -221,9 +237,11 @@ export function HumanActionPanels({
 
   if (!plane) {
     return (
-      <p className="text-sm text-gray-muted" data-testid="x200-human-plane-missing">
-        Human Action plane unavailable
-      </p>
+      <div className="space-y-4" data-testid="x200-human-actions">
+        <p className="text-sm text-gray-muted" data-testid="x200-human-plane-missing">
+          Human Action plane unavailable
+        </p>
+      </div>
     );
   }
 
@@ -716,5 +734,3 @@ export function HumanActionPanels({
 
   return null;
 }
-
-export type { TabId };

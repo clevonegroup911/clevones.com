@@ -186,6 +186,31 @@ Conditions :
 - jamais de shell/SQL/rm libre ; jamais de bypass Human Gate
 - CI/mocks refusent merge/deploy/migrate/restore réels
 
+### Operational Mirror (T047)
+
+`/admin/x200` expose un **miroir opérationnel** : Global Command Center (VALUE/SOURCE/TIMESTAMP/FRESHNESS/VERIFICATION), matrice SOURCES, GitHub/CI/Diff inspectors, AUTOPILOT live, Operator View, NEXT SAFE ACTION déterministe, palette Ctrl+K, notifications, error intelligence, logs contrôlés.
+
+Règles :
+
+- aucune donnée inventée ; UNKNOWN / NOT_CONNECTED / NOT_AVAILABLE explicites
+- conflits = `SOURCE_CONFLICT` (jamais de choix silencieux)
+- SUCCESS distant seulement après vérification remote (merge `merged=true`, etc.)
+- fetches parallèles avec timeout ; une source en échec → DEGRADED, pas de crash
+- pas de shell libre, pas de bypass Human Gate
+- `error.tsx` / `loading.tsx` pour résilience hot-reload / 404 transient
+
+GitHub remote transport :
+
+- `GITHUB_SOURCE=REST_AUTHENTICATED` si `GITHUB_TOKEN`/`GH_TOKEN` explicite
+- sinon localement `GITHUB_SOURCE=GH_CLI_AUTHENTICATED` via `gh api` (execFile argv fixes, jamais `gh auth token`, jamais shell)
+- sinon `NOT_CONNECTED` — jamais de vérité inventée après un HTTP 403 anonymisé
+
+AUTOPILOT liveness :
+
+- télémétrie fraîche + `systemctl --user show clevones-x200-autopilot.service`
+- télémétrie stale → le service systemd est autoritatif pour la liveness ; `agentRunning` historique ne verrouille pas Start/Stop/Run
+- `SERVICE_ACTIVE_TELEMETRY_STALE` = DEGRADED, pas de progrès agent inventé
+
 ## Règles AUTOPLAN
 
 AUTOPLAN :
