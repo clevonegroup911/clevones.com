@@ -14,17 +14,18 @@ TERMINÉE
 
 ## Objectif
 
-Aligner CI FULL sur le HEAD exact de PR #13 ; corriger le flaky Playwright mobile (CONFIRM désactivé sans justification) sans rejouer T081–T083.
+Preuves CI FULL alignées sur le HEAD exact de PR #13 ; T081–T083 non rejouées.
 
 ## Résultat
 
-SHA alignés avant correctif Playwright :
+Alignement vérifié (pré-docs) :
 
 ```text
-HEAD = 6ac63d7b57c5386ac3e96e06a117eddb42b81169
+HEAD_LOCAL = HEAD_REMOTE = PR_HEAD_SHA = CI_CHECKED_SHA
+= adfe16792d68389669f50b58b958d96436915141
 ```
 
-`6ac63d7` = métadonnées only après code FULL `d3486a2`. FULL pré-merge run 35219274560 a échoué (`playwright` : `x200-preview-failed` absent car CONFIRM forcé sur bouton disabled). Correctif e2e : fill justification avant CONFIRM. MERGED=NO DEPLOYED=NO.
+FULL quality SUCCESS run 35221058608 (lint, typecheck, tests, build, playwright, audit, secrets). Correctif e2e Confirm/RUN_HEALTH_CHECKS inclus. PR hors draft, MERGEABLE/CLEAN. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -32,64 +33,71 @@ HEAD = 6ac63d7b57c5386ac3e96e06a117eddb42b81169
 
 ## Fichiers modifiés
 
-- `tests/e2e/x200-control-center.spec.ts`
+- `tests/e2e/x200-control-center.spec.ts` (stabilization Confirm)
 - `TASK_REPORT.md` / `backlog.json` / `BACKLOG.md` (preuves)
 
 ## Commandes
 
 - gh pr ready 13
-- gh run 35219274560 (FULL fail playwright)
-- git push (ce correctif) → attendre FULL sur nouveau HEAD
+- gh run 35221058608
+- npm run x200:scan-secrets → SCAN_SECRETS_OK
 
 ## Tests réussis
 
-- CI METADATA/FAST 35217028393 sur `6ac63d7` : quality SUCCESS
-- CI FULL 35216773612 sur `d3486a2` : quality SUCCESS (code T081–T083)
-- Lint/typecheck/unit/build/audit : PASS sur FULL 35219274560 ; playwright FAIL (corrigé ici)
+- FULL run 35221058608 sur `adfe167…` :
+  - lint=success
+  - typecheck=success
+  - tests=success
+  - build=success
+  - playwright=success
+  - audit=success
+  - secrets=success
+  - doctor/prisma/db_integration=success
 
 ## Tests échoués
 
-- Playwright mobile T049 preview-failed sur `6ac63d7` FULL (corrigé localement, revalidation CI en cours)
+- aucun sur `adfe167…`
 
 ## Lint
 
-- PASS (35219274560)
+- PASS
 
 ## Type-check
 
-- PASS (35219274560)
+- PASS
 
 ## Build
 
-- PASS (35219274560)
+- PASS
 
 ## Sécurité
 
-- secrets scan PASS ; audit PASS (35219274560)
+- SCAN_SECRETS_OK (fixtures only)
 - MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- tip `feat/x200-agentic-core` (PR #13 head — verify via `git rev-parse HEAD`)
+- `adfe16792d68389669f50b58b958d96436915141` (FULL SUCCESS)
+- tip docs sync : voir `git rev-parse HEAD` / PR headRefOid après push de ce rapport
 
 ## Pull Request
 
-- https://github.com/clevonegroup911/clevones.com/pull/13 (ready for review)
+- https://github.com/clevonegroup911/clevones.com/pull/13
 
 ## Preuves
 
-- Alignement antérieur : LOCAL=REMOTE=PR=`6ac63d7…`
-- FULL fail : https://github.com/clevonegroup911/clevones.com/actions/runs/35219274560
-- Base `feat/x200-boot-autostart` @ `937c909` ancêtre (à jour)
-- T081/T082/T083 TERMINÉE (pas de rejeu)
+- https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608
+- Base `feat/x200-boot-autostart` @ `937c909` ancêtre (0 commit manquant)
+- T081/T082/T083 = TERMINÉE
+- Untracked only `.podman-storage.conf` (non versionné)
 
 ## Risques
 
-- medium — tip change après correctif e2e ; FULL tip requis avant merge
+- low
 
 ## Blocage
 
-- attendre quality FULL SUCCESS exactement sur le HEAD courant après push
+- aucun pour fusion (après CI FULL du tip docs si ce commit change le HEAD)
 
 ## Prochaine tâche prête
 

@@ -4626,11 +4626,21 @@
           "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
           "at": "2026-09-17T11:40:57.984Z",
           "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
       "id": "T081",
       "title": "Redact STALE Fedora telemetry identity in Control Center",
       "objective": "When Fedora AUTOPILOT telemetry is STALE or unverified, never present historical head/branch/taskId as live executor identity; surface EXECUTEUR_INDISPONIBLE / STALE with last-sync age only.",
@@ -4662,7 +4672,9 @@
       "status": "TERMINÉE",
       "evidence": [
         "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
-        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
       ],
       "estimatedCost": 2,
       "risk": "medium",
@@ -4697,11 +4709,21 @@
           "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
           "at": "2026-09-17T11:40:57.984Z",
           "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
       "id": "T082",
       "title": "Bind Control Center CI SUCCESS to matching commit SHA",
       "objective": "CI SUCCESS in /admin/x200 must refer only to a workflow run whose head SHA matches the displayed git/PR commit; older branch successes must not validate a newer commit.",
@@ -4733,7 +4755,9 @@
       "status": "TERMINÉE",
       "evidence": [
         "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
-        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
       ],
       "estimatedCost": 3,
       "risk": "medium",
@@ -4768,11 +4792,21 @@
           "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
           "at": "2026-09-17T11:40:57.984Z",
           "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
       "nextAction": null,
-      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
       "id": "T083",
       "title": "Durable task checkpoint for verified resume",
       "objective": "Persist a verified checkpoint on EN_COURS tasks so resume after lease expiry restarts from the last checked point with a new execution id, without replaying uncertain external effects.",
@@ -4801,7 +4835,9 @@
       "status": "TERMINÉE",
       "evidence": [
         "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
-        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
       ],
       "estimatedCost": 3,
       "risk": "medium",
@@ -6230,9 +6266,15 @@
       "taskId": "T083",
       "status": "TERMINÉE",
       "note": "[X200] PR#13 FULL premerge playwright fail on 6ac63d7 (RUN_HEALTH_CHECKS confirm without reason); e2e fix without replaying T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200] align proofs FULL adfe16792d68389669f50b58b958d96436915141 run 35221058608"
     }
   ],
-  "registryVersion": 164,
+  "registryVersion": 165,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
