@@ -12,6 +12,7 @@ import {
 import {
   deriveLiveStateFromTelemetry,
   parseTelemetryJson,
+  redactStaleExecutorIdentity,
 } from "@/lib/x200/telemetry";
 
 test("telemetry writer creates JSON without secrets", () => {
@@ -97,6 +98,28 @@ test("deriveLiveStateFromTelemetry marks STALE and never invents RUNNING on old 
     { nowMs: Date.parse("2026-09-13T10:01:00.000Z"), staleMs: 180_000 },
   );
   assert.equal(idle.liveState, "IDLE");
+});
+
+test("redactStaleExecutorIdentity clears head/branch/taskId only when STALE", () => {
+  const live = redactStaleExecutorIdentity({
+    head: "abc1234deadbeef",
+    branch: "feat/x200-control-center",
+    taskId: "T043",
+    stale: false,
+  });
+  assert.equal(live.head, "abc1234deadbeef");
+  assert.equal(live.branch, "feat/x200-control-center");
+  assert.equal(live.taskId, "T043");
+
+  const stale = redactStaleExecutorIdentity({
+    head: "abc1234deadbeef",
+    branch: "feat/x200-control-center",
+    taskId: "T043",
+    stale: true,
+  });
+  assert.equal(stale.head, null);
+  assert.equal(stale.branch, null);
+  assert.equal(stale.taskId, null);
 });
 
 test("telemetry path stays under .x200", () => {

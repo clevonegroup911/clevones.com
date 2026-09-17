@@ -841,6 +841,12 @@ export function ControlCenterClient({
         </Card>
 
         <Card title="ACTIVE AGENT" testId="card-active-agent">
+          {snapshot.fedora.autopilotLiveState === "STALE" ? (
+            <p className="text-sm text-amber-200" data-testid="executor-unavailable">
+              EXECUTEUR_INDISPONIBLE — télémétrie STALE (ne pas traiter head/branch historiques
+              comme identité live)
+            </p>
+          ) : null}
           <p className="text-sm text-white">
             host={display(snapshot.fedora.host)} · pid=
             {display(snapshot.fedora.pid)}
@@ -851,6 +857,9 @@ export function ControlCenterClient({
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             Heartbeat: {display(progress.heartbeatAge)}
+            {snapshot.fedora.autopilotLiveState === "STALE" && snapshot.fedora.updatedAt
+              ? ` · lastSync=${snapshot.fedora.updatedAt}`
+              : ""}
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             lastEvent={display(snapshot.fedora.lastEvent)}
@@ -860,9 +869,9 @@ export function ControlCenterClient({
             branch={display(snapshot.fedora.branch)} · HEAD=
             {snapshot.fedora.head
               ? snapshot.fedora.head.slice(0, 7)
-              : snapshot.git.head
-                ? snapshot.git.head.slice(0, 7)
-                : "N/A"}
+              : snapshot.fedora.autopilotLiveState === "STALE"
+                ? "INCONNU (STALE)"
+                : "INCONNU"}
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             FEDORA={snapshot.fedora.fedoraTelemetry} · LIVE=

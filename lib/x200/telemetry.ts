@@ -118,6 +118,22 @@ export function deriveLiveStateFromTelemetry(
   return { liveState: "IDLE", ageMs, stale: false };
 }
 
+/**
+ * STALE telemetry must never present historical head/branch/taskId as the live executor.
+ * Keep updatedAt / ageMs / lastEvent for last-sync diagnostics.
+ */
+export function redactStaleExecutorIdentity(input: {
+  head: string | null;
+  branch: string | null;
+  taskId: string | null;
+  stale: boolean;
+}): { head: string | null; branch: string | null; taskId: string | null } {
+  if (!input.stale) {
+    return { head: input.head, branch: input.branch, taskId: input.taskId };
+  }
+  return { head: null, branch: null, taskId: null };
+}
+
 function emptyServiceFields(): Pick<
   AutopilotLiveState,
   | "serviceActiveState"
@@ -292,6 +308,15 @@ export async function readFedoraTelemetrySnapshot(
       : service.warning,
   ].filter(Boolean);
 
+  // STALE telemetry must not present historical head/branch/task as live identity.
+  // Keep updatedAt/ageMs/lastEvent for "last sync" diagnostics only.
+  const identity = redactStaleExecutorIdentity({
+    head: parsed.data.head,
+    branch: parsed.data.branch,
+    taskId: parsed.data.taskId,
+    stale: derived.stale,
+  });
+
   return attachService({
     fedoraTelemetry: "OK",
     autopilotLiveState: liveState,
@@ -303,12 +328,12 @@ export async function readFedoraTelemetrySnapshot(
       : parsed.data.pid,
     host: parsed.data.host,
     mode: parsed.data.mode,
-    head: parsed.data.head,
-    branch: parsed.data.branch,
+    head: identity.head,
+    branch: identity.branch,
     lastEvent: parsed.data.lastEvent,
     cycle: parsed.data.cycle,
     agentRunning: reconciled.agentRunningForControl,
-    taskId: derived.stale ? null : parsed.data.taskId,
+    taskId: identity.taskId,
     ...emptyServiceFields(),
     telemetryState: reconciled.telemetryState,
     agentRunningVerified: reconciled.agentRunningVerified,

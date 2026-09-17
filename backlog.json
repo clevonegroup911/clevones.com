@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-16",
+  "updatedAt": "2026-09-17",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -4598,6 +4598,161 @@
       ],
       "status": "TERMINÉE",
       "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:21:08.828Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "id": "T081",
+      "title": "Redact STALE Fedora telemetry identity in Control Center",
+      "objective": "When Fedora AUTOPILOT telemetry is STALE or unverified, never present historical head/branch/taskId as live executor identity; surface EXECUTEUR_INDISPONIBLE / STALE with last-sync age only.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T049",
+        "T043"
+      ],
+      "scope": [
+        "lib/x200/telemetry.ts",
+        "lib/x200/telemetry.test.ts",
+        "app/admin/x200/control-center-client.tsx",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "readFedoraTelemetrySnapshot nulls head, branch and taskId when autopilotLiveState is STALE",
+        "Control Center ACTIVE AGENT does not display a stale telemetry SHA as current HEAD; shows STALE/EXECUTEUR_INDISPONIBLE and last sync age",
+        "Fresh telemetry still exposes head/branch/taskId; agentRunning remains false when STALE after reconcile",
+        "Unit tests cover STALE redaction; no secrets in telemetry payloads"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/telemetry.test.ts"
+      ],
+      "status": "EN_CONTRÔLE",
+      "evidence": [],
+      "estimatedCost": 2,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "capture run.head_sha and gate CI SUCCESS on SHA match",
+      "lastTransitionReason": "[X200-AUTOPLAN] master-prompt §10/§16: CI not bound to commit SHA",
+      "id": "T082",
+      "title": "Bind Control Center CI SUCCESS to matching commit SHA",
+      "objective": "CI SUCCESS in /admin/x200 must refer only to a workflow run whose head SHA matches the displayed git/PR commit; older branch successes must not validate a newer commit.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T042",
+        "T049"
+      ],
+      "scope": [
+        "lib/x200/github.ts",
+        "lib/x200/types.ts",
+        "lib/x200/derive.ts",
+        "lib/x200/control-center.ts",
+        "app/admin/x200",
+        "lib/x200/github-client.test.ts",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "GithubSnapshot exposes ciLatestHeadSha (or equivalent) from the workflow run when available",
+        "UI/system health treats CI as SUCCESS only when run head SHA matches git.head or prHeadSha; otherwise UNKNOWN / mismatch explicit",
+        "An older successful run on the same branch never validates a newer local/PR commit",
+        "Unavailable GitHub remains NOT_CONNECTED / NON_ACCESSIBLE without inventing success"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "npx tsx --test lib/x200/github-client.test.ts lib/x200/control-center.test.ts"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 3,
+      "risk": "medium",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [],
+      "regressionOf": null,
+      "nextAction": "add checkpoint field + resume preserve tests",
+      "lastTransitionReason": "[X200-AUTOPLAN] master-prompt §7: checkpoint field missing for verified resume",
+      "id": "T083",
+      "title": "Durable task checkpoint for verified resume",
+      "objective": "Persist a verified checkpoint on EN_COURS tasks so resume after lease expiry restarts from the last checked point with a new execution id, without replaying uncertain external effects.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T017"
+      ],
+      "scope": [
+        "scripts/lib/x200-claim.mjs",
+        "scripts/lib/x100-backlog.mjs",
+        "scripts/x200-runtime-lease.test.mjs",
+        "scripts/x200-governance.test.mjs",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "Task schema supports optional checkpoint { at, summary, evidenceRefs, nextAction } without breaking migration",
+        "Claim/resume path preserves checkpoint across lease expiry; new leaseId/execution id on re-claim",
+        "Third automatic resume path blocked per attempt policy; sensitive uncertain external actions stay blocked",
+        "Governance tests cover checkpoint preserve + mutual exclusion unchanged"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "node --test scripts/x200-runtime-lease.test.mjs scripts/x200-governance.test.mjs"
+      ],
+      "status": "PRÊTE",
+      "evidence": [],
+      "estimatedCost": 3,
+      "risk": "medium",
+      "attempts": 0,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
     }
   ],
   "history": [
@@ -5942,9 +6097,39 @@
       "taskId": "T049",
       "status": "TERMINÉE",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 150,
+  "registryVersion": 154,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

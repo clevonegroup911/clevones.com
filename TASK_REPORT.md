@@ -6,72 +6,68 @@
 
 ## ID
 
-T080
+T081
 
 ## Statut
 
-TERMINÉE
+EN_CONTRÔLE
 
 ## Objectif
 
-Conserver le journal agentic branché (writers orchestrator + approval) après intégration PR #13 sur `feat/x200-boot-autostart`, avec renumérotation T065–T080.
+Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie Fedora est STALE, et afficher EXECUTEUR_INDISPONIBLE / INCONNU (STALE) dans le Control Center.
 
 ## Résultat
 
-Conflits PR #13 résolus. Control Center T049 conservé. Série agentique renumérotée T065–T080. `policy.ts` fusion sémantique (`policyForRisk` + `requireSecondConfirmation` + `describeConfirmBlockers`). MERGED_TO_MAIN=NO DEPLOYED=NO.
+`redactStaleExecutorIdentity` appliqué dans `readFedoraTelemetrySnapshot`. UI ACTIVE AGENT n’utilise plus `git.head` comme fallback d’identité Fedora. MERGED_TO_MAIN=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `reports/tasks/T065.md` … `reports/tasks/T080.md` (renumérotation)
+- `reports/tasks/T081.md`
 
 ## Fichiers modifiés
 
-- `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
-- `lib/x200/actions/policy.ts` (fusion sémantique)
-- `reports/tasks/T049.md` (Control Center historique)
+- `lib/x200/telemetry.ts`
+- `lib/x200/telemetry.test.ts`
+- `app/admin/x200/control-center-client.tsx`
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
 
 ## Commandes
 
 - npm run x200:validate
-- npm run x200:doctor
-- npm test
-- npx tsc --noEmit
-- npm run lint
-- npm run build
+- npm run x200:test
+- node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/telemetry.test.ts
+- npm run x200:quality-gate -- --task T081
 
 ## Tests réussis
 
-- x200:validate / doctor / secrets / x200:test PASS
-- lint / tsc / unit(263) / build PASS
-- mapping IDs T065–T080 + Control Center T049 présents
-- CI FULL run 35071262846 : quality FAIL (playwright=fail)
-- CI FULL run 35104010847 : quality SUCCESS (playwright=pass) on 477011d
+- x200:validate / x200:test PASS
+- telemetry.test.ts PASS (5)
+- QUALITY_GATE_OK T081
 
 ## Tests échoués
 
-- aucun (Playwright recovery: Operational Mirror STARTUP nav fixed locally — 38/38 e2e PASS)
+- aucun
 
 ## Lint
 
-- PASS local
+- non relancé globalement (delta UI/TS ciblé ; ReadLints clean)
 
 ## Type-check
 
-PASS
+- non relancé globalement cette étape
 
 ## Build
 
-- PASS local
+- non relancé cette étape
 
 ## Sécurité
 
-- HIGH/CRITICAL fail-closed conservés
-- Tokens absents du journal
-- MERGED_TO_MAIN=NO DEPLOYED=NO
+- Pas de secret exposé
+- Identité STALE redactée
 
 ## Commit
 
-- merge + conflict resolution sur `feat/x200-agentic-core`
+- (à pousser sur feat/x200-agentic-core)
 
 ## Pull Request
 
@@ -79,18 +75,17 @@ PASS
 
 ## Preuves
 
-- recovery tag `recovery/pr13-pre-conflict-resolve-469988a`
-- https://github.com/clevonegroup911/clevones.com/actions/runs/35071262846 (FULL, playwright fail on 7b1cf94 — root cause: STARTUP nav via BOOT badge mid-gesture race)
-- Playwright recovery FULL SUCCESS run 35104010847 head 477011d (Playwright + quality SUCCESS)
+- `.x200/quality-results.json` QUALITY_GATE_OK T081
+- reports/tasks/T081.md
 
 ## Risques
 
-- low (résolution manuelle IDs ; gate merge main reste humain)
+- low
 
 ## Blocage
 
-- aucun automatique — gates humaines : merge PR #13 vers main, deploy, rails PSP live
+- attente job `quality` sur le SHA de commit T081
 
 ## Prochaine tâche prête
 
-- aucune (NO_READY_TASK)
+- T082 (Bind Control Center CI SUCCESS to matching commit SHA)
