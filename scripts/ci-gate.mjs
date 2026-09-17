@@ -16,6 +16,19 @@ const REQUIRED_BY_MODE = Object.freeze({
     "diff_check",
     "secrets",
   ]),
+  UI_FAST: Object.freeze([
+    "classify",
+    "backlog",
+    "x100_tests",
+    "task_report",
+    "tests",
+    "lint",
+    "typecheck",
+    "build",
+    "playwright_ui",
+    "diff_check",
+    "secrets",
+  ]),
   FAST: Object.freeze([
     "classify",
     "backlog",
@@ -56,9 +69,7 @@ function loadResults() {
 
 function statusOf(steps, name) {
   const step = steps.find((item) => item.name === name);
-  if (!step) {
-    return "skipped";
-  }
+  if (!step) return "skipped";
   return step.exitCode === 0 ? "pass" : "fail";
 }
 
@@ -76,9 +87,7 @@ export function buildSummary(results, requestedMode = process.env.X200_CI_MODE) 
     .map((step) => step.name);
 
   for (const name of required) {
-    if (statusOf(steps, name) !== "pass" && !failed.includes(name)) {
-      failed.push(name);
-    }
+    if (statusOf(steps, name) !== "pass" && !failed.includes(name)) failed.push(name);
   }
 
   const checks = {};

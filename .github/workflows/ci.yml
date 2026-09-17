@@ -1,8 +1,9 @@
 name: X200 CI
 
 # FAST-LANE: one stable required job named `quality`.
-# Draft PR iterations use the latest delta. A PR that is ready to merge is
-# forced through FULL so incremental evidence cannot substitute pre-merge proof.
+# Draft PR iterations are classified as METADATA, UI_FAST, FAST or FULL.
+# Any ready-for-review PR and any push gate is forced through FULL, so reduced
+# draft evidence can never substitute the pre-merge release proof.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
@@ -140,14 +141,21 @@ jobs:
           'npx prisma migrate deploy && npm run test:mfa:postgres'
 
       - name: Build
-        if: steps.classify.outputs.mode == 'FULL'
+        if: steps.classify.outputs.mode == 'FULL' || steps.classify.outputs.mode == 'UI_FAST'
         continue-on-error: true
         run: node scripts/ci-step.mjs build -- npm run build
 
       - name: Install Playwright Chromium
-        if: steps.classify.outputs.mode == 'FULL'
+        if: steps.classify.outputs.mode == 'FULL' || steps.classify.outputs.mode == 'UI_FAST'
         continue-on-error: true
         run: npx playwright install --with-deps chromium
+
+      - name: Run targeted UI Playwright tests
+        if: steps.classify.outputs.mode == 'UI_FAST'
+        continue-on-error: true
+        run: >-
+          node scripts/ci-step.mjs playwright_ui --
+          npx playwright test tests/e2e/x200-control-center.spec.ts
 
       - name: Run Playwright evidence tests
         if: steps.classify.outputs.mode == 'FULL'
@@ -155,7 +163,7 @@ jobs:
         run: node scripts/ci-step.mjs playwright -- npx playwright test
 
       - name: Collect Playwright evidence
-        if: always() && steps.classify.outputs.mode == 'FULL'
+        if: always() && (steps.classify.outputs.mode == 'FULL' || steps.classify.outputs.mode == 'UI_FAST')
         continue-on-error: true
         run: |
           mkdir -p ci-artifact/playwright
