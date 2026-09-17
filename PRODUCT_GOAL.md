@@ -30,6 +30,11 @@ Le produit n'est considéré comme fini que lorsque les éléments applicables s
 18. Backlog cohérent : aucune tâche automatique nécessaire restante pour satisfaire ces critères.
 19. Les seules actions restantes éventuelles sont des gates humaines explicites réellement sensibles, des dépendances externes indisponibles ou des évolutions futures hors objectif actuel.
 20. Le marqueur `.x200/PRODUCT_COMPLETE.json` n'est valide que s'il correspond au HEAD courant, au hash courant de ce document et contient des preuves vérifiables.
+21. Un registre d'agents indépendant des fournisseurs existe : workers internes et adapters Grok/OpenAI/Cursor interchangeables, sans SDK dispersé dans l'application.
+22. Les événements métier portent corrélation, idempotence, source, acteur et audit ; une action ne s'exécute pas deux fois par accident.
+23. Les agents n'accèdent aux systèmes sensibles que via un Tool Gateway (allowlist, policy, risque, approbation, audit). Aucun mouvement d'argent automatique.
+24. Les contenus externes (email, PDF, web, utilisateur) sont traités comme DATA : ils ne peuvent pas modifier SYSTEM/DEVELOPER/BUSINESS policy.
+25. Un premier vertical slice finance (preuve → recommandation de rapprochement) peut s'exécuter sans payout sortant. Les rails live restent des gates humaines.
 
 ## Règle de vérité
 

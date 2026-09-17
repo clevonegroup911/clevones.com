@@ -1,7 +1,9 @@
 import { createPageMetadata } from "@/lib/metadata";
 
+import { AgenticObservabilityPanels } from "@/app/admin/x200/agentic-panels";
 import { ControlCenterClient } from "@/app/admin/x200/control-center-client";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { buildAgenticObservabilitySnapshot, loadAgenticObservabilitySnapshot } from "@/lib/agentic/observability";
 import {
   buildControlCenterFatalSnapshot,
   getControlCenterSnapshot,
@@ -27,10 +29,22 @@ export default async function AdminX200ControlCenterPage() {
     snapshot = buildControlCenterFatalSnapshot(error);
   }
 
+  let agenticSnapshot;
+  try {
+    agenticSnapshot = await loadAgenticObservabilitySnapshot();
+  } catch {
+    agenticSnapshot = buildAgenticObservabilitySnapshot();
+  }
+
   return (
-    <ControlCenterClient
-      snapshot={snapshot}
-      actorRole={actor.role}
-    />
+    <>
+      <ControlCenterClient
+        snapshot={snapshot}
+        actorRole={actor.role}
+      />
+      <div className="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <AgenticObservabilityPanels snapshot={agenticSnapshot} />
+      </div>
+    </>
   );
 }

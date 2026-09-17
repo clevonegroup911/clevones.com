@@ -262,6 +262,8 @@ export function buildControlCenterFatalSnapshot(
       ciLatestStatus: null,
       ciLatestUrl: null,
       ciLatestName: null,
+      ciLatestHeadSha: null,
+      ciShaMatch: "UNKNOWN" as const,
       githubSource: "NOT_CONNECTED",
     },
     fedora: {
@@ -367,6 +369,7 @@ async function assembleControlCenterSnapshot(options?: {
   const github = await readGithubSnapshot({
     repository: backlog.repository,
     branch: git.branch,
+    expectedSha: git.head,
   });
   if (github.warning) warnings.push(github.warning);
 

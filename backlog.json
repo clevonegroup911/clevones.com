@@ -2,7 +2,7 @@
   "schemaVersion": "2.0.0",
   "project": "clevones.com",
   "repository": "clevonegroup911/clevones.com",
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-09-17",
   "allowedStatuses": [
     "À_FAIRE",
     "PRÊTE",
@@ -3477,6 +3477,1373 @@
       "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T11:43:04.677Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 34965983633",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633",
+          "version": "2d5e38d",
+          "at": "2026-09-15T11:59:55.564904Z",
+          "location": "github-actions:quality FAST"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality-gate local PASS + CI quality SUCCESS run 34965983633 on 2d5e38d (FAST after FULL run failed only on diff_check whitespace)",
+      "id": "T065",
+      "title": "Agentic Core — provider-independent Agent Registry",
+      "objective": "Introduire un registre d'agents indépendant des fournisseurs (internal/Grok/OpenAI/Cursor) avec capacités, outils allowlistés, coût, confiance, limites de risque et barrière anti-prompt-injection. Aucun SDK vendor, aucun appel réseau, aucun payout.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [],
+      "scope": [
+        "lib/agentic",
+        "docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md"
+      ],
+      "acceptanceCriteria": [
+        "Catalogue workers: CLEVONE_FINANCE_AGENT, CLEVONE_COMMERCIAL_AGENT, CLEVONE_DMS_AGENT, CLEVONE_ADMIN_AGENT, CURSOR_DEV_WORKER, GROK_WORKER, OPENAI_WORKER",
+        "select() respecte capacités, allowlist outils, maxRisk, confidentialité (pas d'envoi auto vers Grok/OpenAI)",
+        "EXTERNAL/USER ne peuvent pas register/disable; registry frozen par défaut",
+        "Aucun import SDK vendor; unit tests passent; x200:validate passe",
+        "MERGED=NO DEPLOYED=NO; pas de mouvement d'argent"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npm run x200:test",
+        "npx tsc --noEmit",
+        "npm run lint",
+        "npm run x200:scan-secrets"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "lib/agentic/registry.ts",
+        "lib/agentic/registry.test.ts",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34965983633",
+        "https://github.com/clevonegroup911/clevones.com/pull/13"
+      ],
+      "estimatedCost": 5,
+      "risk": "low",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T050",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T12:02:40.859897Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "gh run view 34967009299",
+          "result": "success",
+          "exitCode": 0,
+          "reference": "34967009299",
+          "version": "280ccbcbda2da50d9f80158c47ce895c19f65309",
+          "at": "2026-09-15T12:31:36.323320Z",
+          "location": "https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "CI quality SUCCESS run 34967009299 SHA 280ccbc",
+      "id": "T066",
+      "title": "Agentic Core — domain event envelope (idempotent)",
+      "objective": "Ajouter un modèle d'événement métier générique (correlationId, idempotencyKey, source, actor, risk) réutilisant les patterns ClevoneGatewayEvent, sans bus distribué ni nouvelle infra.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T065"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/payments/clevone-events.ts"
+      ],
+      "acceptanceCriteria": [
+        "Envelope unique: eventType, idempotencyKey, correlationId, source, actor, timestamp",
+        "Idempotence: la même clé ne produit pas deux effets",
+        "Réutilise ClevoneGatewayEvent pour les paiements; pas de duplication du moteur de rapprochement",
+        "Pas de webhooks live ni workers asynchrones obligatoires",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "lib/agentic/events.ts",
+        "lib/agentic/events.test.ts",
+        "lib/agentic/payment-events.ts",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34967009299"
+      ],
+      "estimatedCost": 5,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T051",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T12:37:11.550608Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34970081544",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544",
+          "version": "3cd3d3873b6ead186e39e6fea474dab6978847e1",
+          "at": "2026-09-15T13:11:10.905777Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI FULL SUCCESS run 34970081544 on 3cd3d38; close without merge/deploy",
+      "id": "T067",
+      "title": "Agentic Core — tool policy reuse + agent audit fields",
+      "objective": "Étendre l'audit et réutiliser la policy X200 (LOW/MEDIUM/HIGH/CRITICAL) pour les actions d'agents métier, avec rédaction des secrets. Pas de nouvel executor shell, pas de payout.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T065"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/x200/actions/policy.ts",
+        "lib/admin/audit.ts",
+        "lib/x200/actions/audit.ts"
+      ],
+      "acceptanceCriteria": [
+        "Journal agentique: agent_id, provider, action, tool, risk, approval_required, status — sans secrets",
+        "Réutilise riskForAction / policyForAction; pas de second moteur de risque",
+        "Allowlist d'outils métier distincte de HUMAN_ACTION_TYPES ops",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "lib/agentic/tools.ts",
+        "lib/agentic/tools.test.ts",
+        "lib/agentic/audit.ts",
+        "lib/x200/actions/policy.ts",
+        "CI quality SUCCESS FULL run 34970081544 SHA 3cd3d38",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34970081544",
+        "PR draft https://github.com/clevonegroup911/clevones.com/pull/13"
+      ],
+      "estimatedCost": 5,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T13:17:23.636Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34974772115",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34974772115",
+          "version": "cb1ff13f4ada6453193bb591a729e3f94e73d6d3",
+          "at": "2026-09-15T13:30:32.495631Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34974772115 on cb1ff13; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "CI quality SUCCESS run 34974772115 SHA cb1ff13",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34974772115",
+        "lib/agentic/gateway.ts"
+      ],
+      "estimatedCost": 5,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T068",
+      "title": "Agentic Core — in-process Tool Gateway (LOW risk only)",
+      "objective": "Exécuteur Tool Gateway in-process qui applique evaluateAgentTool puis exécute uniquement des handlers allowlistés LOW (lecture/recommandation). Aucun shell, aucun payout, aucun HIGH/CRITICAL auto.",
+      "priority": "P1",
+      "dependencies": [
+        "T067"
+      ],
+      "scope": [
+        "lib/agentic"
+      ],
+      "acceptanceCriteria": [
+        "Gateway invoke(tool, agent, input) refuse outils non allowlistés et risques > LOW sans approval token",
+        "Handlers in-process: payments.reconcile.recommend (stub déterministe), audit.read (no-op safe), documents.read.metadata (stub)",
+        "Journal AgentAuditLog pour chaque invoke (allow/deny/execute)",
+        "Réutilise evaluateAgentTool + policyForBusinessTool; pas de second moteur de risque",
+        "MERGED=NO DEPLOYED=NO; pas de mouvement d'argent"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate -- --task T053",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T13:37:16.791440Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34976217739",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34976217739",
+          "version": "8153750d51714a628449f18d403b1e516e9f6f8d",
+          "at": "2026-09-15T13:43:17.646102Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34976217739 on 8153750; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/finance-slice.ts",
+        "lib/agentic/finance-slice.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34976217739 SHA 8153750",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34976217739"
+      ],
+      "estimatedCost": 5,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T069",
+      "title": "Finance Agent vertical slice — proof_uploaded recommendation",
+      "objective": "Premier vertical slice: événement payment.proof_uploaded → select CLEVONE_FINANCE_AGENT → Tool Gateway recommend → score/recommendation + human approval si MEDIUM+. Aucun payout, aucune activation VERIFIED automatique hors moteur existant.",
+      "priority": "P1",
+      "dependencies": [
+        "T068"
+      ],
+      "scope": [
+        "lib/agentic",
+        "lib/payments"
+      ],
+      "acceptanceCriteria": [
+        "Workflow recordé: proof_uploaded → DomainEventLog → AgentRegistry.select → gateway.invoke(payments.reconcile.recommend)",
+        "Réutilise lib/payments reconciliation scoring; ne duplique pas persist/activation",
+        "HIGH confidence → recommendation only; MEDIUM/LOW → approvalRequired=true",
+        "Audit trail agent_id/provider/tool/risk; MERGED=NO DEPLOYED=NO; no money movement"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:01:52.857Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34979500998",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34979500998",
+          "version": "2a1a7136577df8b0edca3704b55bbe22704f1192",
+          "at": "2026-09-15T14:14:08.923Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34979500998 on 2a1a713; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/orchestrator.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34979500998 SHA 2a1a713",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34979500998"
+      ],
+      "estimatedCost": 6,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T070",
+      "title": "Agentic Core — business X200 Orchestrator (event→agent→gateway)",
+      "objective": "Orchestrateur métier in-process : EVENT → classify/risk → AgentRegistry.select → ToolGateway → verify/audit. Réutilise T050–T053. Pas de shell, pas de payout, pas de SDK vendor.",
+      "priority": "P1",
+      "dependencies": [
+        "T069"
+      ],
+      "scope": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/orchestrator.test.ts",
+        "lib/agentic/index.ts",
+        "docs/architecture/CLEVONE-AGENTIC-GAP-ANALYSIS.md"
+      ],
+      "acceptanceCriteria": [
+        "API runBusinessOrchestration(event|task) avec étapes tracées: classify, risk, select, execute, verify, audit",
+        "payment.proof_uploaded délègue à runFinanceProofUploadedSlice sans duplication du moteur payments",
+        "HIGH/CRITICAL → status blocked_pending_human sans exécution automatique",
+        "Idempotence via DomainEventLog ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:18:02.760Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34980795199",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34980795199",
+          "version": "32c9486564ae6b23792bf28390d7f2032af68d8a",
+          "at": "2026-09-15T14:24:57.269Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34980795199 on 32c9486; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/providers/index.ts",
+        "lib/agentic/providers.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34980795199 SHA 32c9486",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34980795199"
+      ],
+      "estimatedCost": 4,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T071",
+      "title": "Agentic Core — provider adapters (stub, no network, no paid SDK)",
+      "objective": "Adapters AgentProviderAdapter pour internal/grok/openai/cursor : healthCheck, getCapabilities, estimateCost. execute/stream refusent le réseau tant qu'aucune clé/provider live n'est autorisé. Aucun SDK payant.",
+      "priority": "P1",
+      "dependencies": [
+        "T065"
+      ],
+      "scope": [
+        "lib/agentic/providers",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "createProviderAdapter(id) pour internal|grok|openai|cursor|future",
+        "healthCheck/getCapabilities/estimateCost purs ; execute/stream → PROVIDER_LIVE_DISABLED sans appel réseau",
+        "Aucun import openai/xai/@cursor SDK ; tests unitaires ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:29:36.309Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34982059895",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34982059895",
+          "version": "c0bfeb3ed3d0238bdf1ce56c0061ce485020fe4a",
+          "at": "2026-09-15T14:35:19.546Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34982059895 on c0bfeb3; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/approvals.ts",
+        "lib/agentic/approvals.test.ts",
+        "lib/agentic/gateway.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34982059895 SHA c0bfeb3",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34982059895"
+      ],
+      "estimatedCost": 6,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T072",
+      "title": "Agentic Core — business Approval Engine (single-use, persisted)",
+      "objective": "Moteur d'approbation métier pour outils MEDIUM+ : issue/consume tokens single-use (TTL), journal audit, intégration ToolGateway. Réutilise patterns T046 sans merge/deploy. Pas de MFA bypass.",
+      "priority": "P1",
+      "dependencies": [
+        "T070"
+      ],
+      "scope": [
+        "lib/agentic/approvals.ts",
+        "lib/agentic/approvals.test.ts",
+        "lib/agentic/gateway.ts",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "issueBusinessApproval / consumeBusinessApproval avec TTL, agentId, tool, reason",
+        "Replay token → APPROVAL_CONSUMED ; mismatch agent/tool refusés",
+        "ToolGateway accepte les approvals issus du moteur ; secrets rédigés dans l'audit",
+        "MERGED=NO DEPLOYED=NO ; pas de payout"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:40:23.268Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34983313834",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34983313834",
+          "version": "3e3c457789d76de72af08b627047f899a3ec516c",
+          "at": "2026-09-15T14:46:49.706Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/observability.ts",
+        "app/admin/x200/agentic-panels.tsx",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34983313834 SHA 3e3c457",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34983313834"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T073",
+      "title": "Agentic Control Center — observability panel (registry/audit/orchestration)",
+      "objective": "Panneau admin lecture seule sous /admin/x200 : catalogue agents, derniers audits outils, dernières orchestrations (in-process snapshots). Aucune exécution live, pas de secrets, pas de merge/deploy.",
+      "priority": "P1",
+      "dependencies": [
+        "T072"
+      ],
+      "scope": [
+        "lib/agentic/observability.ts",
+        "lib/agentic/observability.test.ts",
+        "app/admin/x200/agentic-panels.tsx",
+        "app/admin/x200/page.tsx"
+      ],
+      "acceptanceCriteria": [
+        "Snapshot read-only: agents (id/provider/status/cost), audit tool récents, dernières étapes orchestration",
+        "Panneau rendu dans Control Center sans exposer tokens/secrets",
+        "Aucun appel provider live ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "low",
+      "estimatedCost": 5,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34983313834 on 3e3c457; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T14:46:18.934Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34984040818",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818",
+          "version": "fa3895fe3a11d52980f5d773283e3ea8a19a5e5c",
+          "at": "2026-09-15T14:54:19.355Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/finance-agent.ts",
+        "lib/agentic/finance-agent.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34984040818 SHA fa3895f",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34984040818"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T074",
+      "title": "Finance Agent — complete recommendation worker (no payout)",
+      "objective": "Étendre le worker Finance au-delà du slice T053 : scoring multi-preuves, raisons structurées, hooks orchestrator pour invoice.overdue/payment.reconciliation_failed. Toujours recommend-only, jamais payout/VERIFIED auto.",
+      "priority": "P2",
+      "dependencies": [
+        "T072"
+      ],
+      "scope": [
+        "lib/agentic/finance-agent.ts",
+        "lib/agentic/finance-agent.test.ts",
+        "lib/agentic/finance-slice.ts",
+        "lib/agentic/orchestrator.ts"
+      ],
+      "acceptanceCriteria": [
+        "Worker finance-agent expose recommend() réutilisé par orchestrator pour proof_uploaded et reconciliation_failed",
+        "moneyMoved/verifiedActivated toujours false ; HUMAN_REVIEW paths conservés",
+        "Tests unitaires ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium",
+      "estimatedCost": 7,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34984040818 on fa3895f; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:01:18.660Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34985618494",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34985618494",
+          "version": "31dbf8900d39ca175adf2e49c3aa055bd2771c92",
+          "at": "2026-09-15T15:07:30.930Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/commercial-agent.ts",
+        "lib/agentic/commercial-agent.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34985618494 SHA 31dbf89",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34985618494"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T075",
+      "title": "Commercial Agent — lead.qualify draft worker (read/draft only)",
+      "objective": "Worker Commercial : lead.created → classify/qualify draft via crm.read + crm.draft stubs. Pas d'envoi email client, pas de SDK payant.",
+      "priority": "P2",
+      "dependencies": [
+        "T072"
+      ],
+      "scope": [
+        "lib/agentic/commercial-agent.ts",
+        "lib/agentic/commercial-agent.test.ts",
+        "lib/agentic/gateway.ts",
+        "lib/agentic/orchestrator.ts"
+      ],
+      "acceptanceCriteria": [
+        "Handler crm.draft stub + commercial-agent.recommendQualify",
+        "Orchestrator lead.created délègue au commercial agent ; approval MEDIUM+",
+        "Aucun envoi mail ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium",
+      "estimatedCost": 6,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34985618494 on 31dbf89; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:15:48.712Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34987297923",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34987297923",
+          "version": "845095c133b7078329fc7276263af46cc5bdb81d",
+          "at": "2026-09-15T15:24:20.907Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34987297923 on 845095c; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/dms-agent.ts",
+        "lib/agentic/dms-agent.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34987297923 SHA 845095c",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34987297923"
+      ],
+      "estimatedCost": 6,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T076",
+      "title": "DMS Agent — document.classify metadata worker (no content leak)",
+      "objective": "Worker DMS : document.uploaded → classify via documents.read.metadata + documents.classify stubs. Pas d'export fichier, pas de fuite contenu EXTERNAL.",
+      "priority": "P2",
+      "dependencies": [
+        "T072"
+      ],
+      "scope": [
+        "lib/agentic/dms-agent.ts",
+        "lib/agentic/dms-agent.test.ts",
+        "lib/agentic/gateway.ts",
+        "lib/agentic/orchestrator.ts"
+      ],
+      "acceptanceCriteria": [
+        "Handler documents.classify stub + dms-agent.recommendClassify",
+        "Orchestrator document.uploaded délègue au DMS agent ; approval MEDIUM+",
+        "Aucun echo de bytes/contenu ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:30:35.081Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34989464769",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769",
+          "version": "edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38",
+          "at": "2026-09-15T15:43:14.409Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/persistence.ts",
+        "lib/agentic/persistence.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34989464769 SHA edc7bbd",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T077",
+      "title": "Agentic durable journal — events/approvals/audit to .x200 + Control Center feed",
+      "objective": "Persister DomainEventLog, BusinessApprovalEngine et AgentAuditLog dans .x200/agentic-*.jsonl (comme human-approvals), sans secrets. Alimenter buildAgenticObservabilitySnapshot pour le panneau Control Center.",
+      "priority": "P1",
+      "dependencies": [
+        "T073",
+        "T076"
+      ],
+      "scope": [
+        "lib/agentic/persistence.ts",
+        "lib/agentic/persistence.test.ts",
+        "lib/agentic/observability.ts",
+        "app/admin/x200/page.tsx"
+      ],
+      "acceptanceCriteria": [
+        "Append-only jsonl pour events, approvals (tokenDigest only), audits ; reload au démarrage snapshot",
+        "Control Center agentic panel affiche entrées persistées ; tokens absents des fichiers",
+        "MERGED=NO DEPLOYED=NO ; pas de Prisma/migration"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "low",
+      "estimatedCost": 5,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34989464769 on edc7bbd; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:34:51.358Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34989464769",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769",
+          "version": "edc7bbdbdd5c21574aa38eeabaee2f60ff9e1a38",
+          "at": "2026-09-15T15:43:14.409Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/outcomes.ts",
+        "lib/agentic/outcomes.test.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34989464769 SHA edc7bbd",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34989464769"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T078",
+      "title": "Outcome engine — labels from orchestration (no side effects)",
+      "objective": "Moteur d’outcomes déterministe : invoice_reconciled_candidate, lead_qualified_candidate, document_classified à partir des résultats orchestrator/agents. Labels only ; aucun payout/mail/export.",
+      "priority": "P2",
+      "dependencies": [
+        "T076"
+      ],
+      "scope": [
+        "lib/agentic/outcomes.ts",
+        "lib/agentic/outcomes.test.ts",
+        "lib/agentic/index.ts"
+      ],
+      "acceptanceCriteria": [
+        "deriveAgenticOutcome(result) pour finance/commercial/dms avec codes stables",
+        "Jamais moneyMoved/emailSent/exported true ; tests unitaires",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "low",
+      "estimatedCost": 3,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34989464769 on edc7bbd; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T15:47:08.361Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34990785657",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34990785657",
+          "version": "c5dbf815f2f9a3cbdf5de764f1eaf108a780c2a5",
+          "at": "2026-09-15T15:59:02.780Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/payment-hook.ts",
+        "lib/agentic/payment-hook.test.ts",
+        "lib/payments/persist.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34990785657 SHA c5dbf81",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34990785657"
+      ],
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-15",
+      "id": "T079",
+      "title": "Agentic recommend-only hook from payment proof path (no activation)",
+      "objective": "Brancher un appel optionnel runFinanceAgentTask après upload preuve (admin/sandbox) pour recommandation uniquement. Aucune activation VERIFIED, aucun payout. Feature derrière flag local / chemin sandbox existant.",
+      "priority": "P2",
+      "dependencies": [
+        "T074"
+      ],
+      "scope": [
+        "lib/agentic/payment-hook.ts",
+        "lib/agentic/payment-hook.test.ts",
+        "lib/payments"
+      ],
+      "acceptanceCriteria": [
+        "Hook recommend-only après preuve ; moneyMoved/verifiedActivated false",
+        "Désactivable ; n’altère pas le moteur reconciliation existant",
+        "MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "medium",
+      "estimatedCost": 6,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34990785657 on c5dbf81; MERGED=NO DEPLOYED=NO"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-15T16:03:00.382Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI workflow_dispatch / actions run 34992529905",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905",
+          "version": "3a568594596323a8731cd6182839782d5f33a3d2",
+          "at": "2026-09-15T16:09:22.838Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "quality CI SUCCESS run 34992529905 on 3a56859; MERGED=NO DEPLOYED=NO",
+      "owner": "cursor",
+      "evidence": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/approvals.ts",
+        ".x200/quality-results.json",
+        "CI quality SUCCESS run 34992529905 SHA 3a56859",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/34992529905",
+        "PR #13 conflict resolution: agentic IDs remapped T049–T064→T065–T080; Control Center T049 preserved"
+      ],
+      "estimatedCost": 4,
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-16",
+      "id": "T080",
+      "title": "Wire agentic journal writers from orchestrator + approval engine",
+      "objective": "Après runBusinessOrchestration / issueBusinessApproval, append best-effort vers persistence (.x200 jsonl) pour alimenter réellement le Control Center. Échecs d’écriture non bloquants ; tokens jamais persistés.",
+      "priority": "P1",
+      "dependencies": [
+        "T077",
+        "T079"
+      ],
+      "scope": [
+        "lib/agentic/orchestrator.ts",
+        "lib/agentic/approvals.ts",
+        "lib/agentic/orchestrator.test.ts",
+        "lib/agentic/approvals.test.ts"
+      ],
+      "acceptanceCriteria": [
+        "Orchestration completed/pending appende agentic-orchestrations.jsonl (best-effort)",
+        "issueBusinessApproval appende agentic-approvals.jsonl sans token brut",
+        "Tests ; MERGED=NO DEPLOYED=NO"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "status": "TERMINÉE",
+      "risk": "low"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:21:08.828Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
+      "id": "T081",
+      "title": "Redact STALE Fedora telemetry identity in Control Center",
+      "objective": "When Fedora AUTOPILOT telemetry is STALE or unverified, never present historical head/branch/taskId as live executor identity; surface EXECUTEUR_INDISPONIBLE / STALE with last-sync age only.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T049",
+        "T043"
+      ],
+      "scope": [
+        "lib/x200/telemetry.ts",
+        "lib/x200/telemetry.test.ts",
+        "app/admin/x200/control-center-client.tsx",
+        "backlog.json",
+        "TASK_REPORT.md",
+        "reports/tasks"
+      ],
+      "acceptanceCriteria": [
+        "readFedoraTelemetrySnapshot nulls head, branch and taskId when autopilotLiveState is STALE",
+        "Control Center ACTIVE AGENT does not display a stale telemetry SHA as current HEAD; shows STALE/EXECUTEUR_INDISPONIBLE and last sync age",
+        "Fresh telemetry still exposes head/branch/taskId; agentRunning remains false when STALE after reconcile",
+        "Unit tests cover STALE redaction; no secrets in telemetry payloads"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/telemetry.test.ts"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
+      ],
+      "estimatedCost": 2,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:25:23.834Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
+      "id": "T082",
+      "title": "Bind Control Center CI SUCCESS to matching commit SHA",
+      "objective": "CI SUCCESS in /admin/x200 must refer only to a workflow run whose head SHA matches the displayed git/PR commit; older branch successes must not validate a newer commit.",
+      "priority": "P0",
+      "owner": "cursor",
+      "dependencies": [
+        "T042",
+        "T049"
+      ],
+      "scope": [
+        "lib/x200/github.ts",
+        "lib/x200/types.ts",
+        "lib/x200/derive.ts",
+        "lib/x200/control-center.ts",
+        "lib/x200/github-client.test.ts",
+        "lib/x200/control-center.test.ts"
+      ],
+      "acceptanceCriteria": [
+        "GithubSnapshot exposes ciLatestHeadSha (or equivalent) from the workflow run when available",
+        "UI/system health treats CI as SUCCESS only when run head SHA matches git.head or prHeadSha; otherwise UNKNOWN / mismatch explicit",
+        "An older successful run on the same branch never validates a newer local/PR commit",
+        "Unavailable GitHub remains NOT_CONNECTED / NON_ACCESSIBLE without inventing success"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/github-client.test.ts lib/x200/control-center.test.ts"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
+      ],
+      "estimatedCost": 3,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
+    },
+    {
+      "project": "clevones.com",
+      "sourceRef": null,
+      "lastFailureCause": null,
+      "consecutiveSameCauseFailures": 0,
+      "blockedReason": null,
+      "claim": null,
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:30:08.752Z",
+          "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request FULL run 35221058608",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+          "version": "adfe16792d68389669f50b58b958d96436915141",
+          "at": "2026-09-17T12:33:13.693Z",
+          "location": "github-actions:quality FULL"
+        }
+      ],
+      "regressionOf": null,
+      "nextAction": null,
+      "lastTransitionReason": "[X200] PR#13 FULL SUCCESS adfe16792d68389669f50b58b958d96436915141 run 35221058608; tasks remain TERMINÉE",
+      "id": "T083",
+      "title": "Durable task checkpoint for verified resume",
+      "objective": "Persist a verified checkpoint on EN_COURS tasks so resume after lease expiry restarts from the last checked point with a new execution id, without replaying uncertain external effects.",
+      "priority": "P1",
+      "owner": "cursor",
+      "dependencies": [
+        "T017"
+      ],
+      "scope": [
+        "scripts/lib/x200-claim.mjs",
+        "scripts/lib/x100-backlog.mjs",
+        "scripts/x200-runtime-lease.test.mjs",
+        "scripts/x200-governance.test.mjs"
+      ],
+      "acceptanceCriteria": [
+        "Task schema supports optional checkpoint { at, summary, evidenceRefs, nextAction } without breaking migration",
+        "Claim/resume path preserves checkpoint across lease expiry; new leaseId/execution id on re-claim",
+        "Third automatic resume path blocked per attempt policy; sensitive uncertain external actions stay blocked",
+        "Governance tests cover checkpoint preserve + mutual exclusion unchanged"
+      ],
+      "tests": [
+        "npm run x200:validate",
+        "npm run x200:test",
+        "node --test scripts/x200-runtime-lease.test.mjs scripts/x200-governance.test.mjs"
+      ],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35221058608",
+        "head:adfe16792d68389669f50b58b958d96436915141"
+      ],
+      "estimatedCost": 3,
+      "risk": "medium",
+      "attempts": 1,
+      "requiresHuman": false,
+      "updatedAt": "2026-09-17"
     }
   ],
   "history": [
@@ -4821,9 +6188,93 @@
       "taskId": "T049",
       "status": "TERMINÉE",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 34989022886 head 53e2ec7ebd8f97fb1a1f3df4f98576392fd65aee; close without waiting comment job"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "PRÊTE",
+      "note": "[X200-AUTOPLAN] created from master-prompt Phase0 differential"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200] PR#13 FULL premerge playwright fail on 6ac63d7 (RUN_HEALTH_CHECKS confirm without reason); e2e fix without replaying T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200] align proofs FULL adfe16792d68389669f50b58b958d96436915141 run 35221058608"
     }
   ],
-  "registryVersion": 149,
+  "registryVersion": 165,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

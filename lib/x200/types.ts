@@ -205,6 +205,13 @@ export type GithubSnapshot = {
   ciLatestStatus: string | null;
   ciLatestUrl: string | null;
   ciLatestName: string | null;
+  /** Workflow run head SHA when GitHub provides it. */
+  ciLatestHeadSha: string | null;
+  /**
+   * Whether ciLatestHeadSha matches the displayed git/PR commit.
+   * MISMATCH ⇒ do not treat CI SUCCESS as validating the current commit.
+   */
+  ciShaMatch: "MATCH" | "MISMATCH" | "UNKNOWN" | "NOT_CONNECTED";
   /** How remote GitHub truth was obtained (never invent credentials). */
   githubSource?:
     | "REST_AUTHENTICATED"

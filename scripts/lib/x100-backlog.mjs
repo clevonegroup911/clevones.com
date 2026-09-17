@@ -5,6 +5,9 @@ export const EXECUTION_MODE = "single-executor";
 export const DEFAULT_LEASE_SECONDS = 7200;
 export const SAME_CAUSE_FAILURE_LIMIT = 3;
 
+/** Default automatic resumes after the first claim (master prompt §7). */
+export const DEFAULT_MAX_AUTOMATIC_ATTEMPTS = 2;
+
 export const ALLOWED_STATUSES = Object.freeze([
   "À_FAIRE",
   "PRÊTE",
@@ -158,10 +161,34 @@ export function applyTaskDefaults(task, project) {
     regressionOf: task.regressionOf ?? null,
     nextAction: task.nextAction ?? null,
     lastTransitionReason: task.lastTransitionReason ?? null,
+    checkpoint: normalizeCheckpoint(task.checkpoint),
+    maxAutomaticAttempts: Number.isInteger(task.maxAutomaticAttempts)
+      ? task.maxAutomaticAttempts
+      : DEFAULT_MAX_AUTOMATIC_ATTEMPTS,
     ...task,
     project: isNonEmptyString(task.project) ? task.project : project,
     evidenceRecords: Array.isArray(task.evidenceRecords) ? task.evidenceRecords : [],
     claim: task.claim ?? null,
+    checkpoint: normalizeCheckpoint(task.checkpoint),
+    maxAutomaticAttempts: Number.isInteger(task.maxAutomaticAttempts)
+      ? task.maxAutomaticAttempts
+      : DEFAULT_MAX_AUTOMATIC_ATTEMPTS,
+  };
+}
+
+export function normalizeCheckpoint(value) {
+  if (value == null) return null;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  if (!isNonEmptyString(value.at) || !isNonEmptyString(value.summary)) return null;
+  return {
+    at: value.at.trim(),
+    summary: value.summary.trim().slice(0, 500),
+    evidenceRefs: Array.isArray(value.evidenceRefs)
+      ? value.evidenceRefs.filter((item) => typeof item === "string").slice(0, 20)
+      : [],
+    nextAction: isNonEmptyString(value.nextAction)
+      ? value.nextAction.trim().slice(0, 300)
+      : null,
   };
 }
 
@@ -426,11 +453,23 @@ export function validateTask(task, index) {
   if (!Number.isInteger(task.attempts) || task.attempts < 0) {
     errors.push(`${label}: attempts doit être un entier >= 0`);
   }
+  if (
+    task.maxAutomaticAttempts != null
+    && (!Number.isInteger(task.maxAutomaticAttempts) || task.maxAutomaticAttempts < 0)
+  ) {
+    errors.push(`${label}: maxAutomaticAttempts doit être un entier >= 0`);
+  }
   if (typeof task.requiresHuman !== "boolean") {
     errors.push(`${label}: requiresHuman doit être un booléen`);
   }
   if (!isNonEmptyString(task.updatedAt)) {
     errors.push(`${label}: updatedAt doit être une chaîne non vide`);
+  }
+  if (task.checkpoint != null) {
+    const normalized = normalizeCheckpoint(task.checkpoint);
+    if (!normalized) {
+      errors.push(`${label}: checkpoint invalide (at + summary requis)`);
+    }
   }
 
   if (Array.isArray(task.evidenceRecords)) {
@@ -857,7 +896,9 @@ export function createTaskDocument(overrides = {}) {
     estimatedCost: 1,
     risk: "low",
     attempts: 0,
+    maxAutomaticAttempts: DEFAULT_MAX_AUTOMATIC_ATTEMPTS,
     requiresHuman: false,
+    checkpoint: null,
     updatedAt: utcDateStamp(),
     ...overrides,
   }, overrides.project || "clevones.com");

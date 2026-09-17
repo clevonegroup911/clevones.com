@@ -46,13 +46,8 @@ export function riskForAction(action: HumanActionType): ActionRisk {
   return RISK_BY_ACTION[action];
 }
 
-export function policyForAction(
-  action: HumanActionType,
-  options: { shortSha?: string | null } = {},
-): PolicyRequirements {
-  const risk = riskForAction(action);
-  const shortSha = options.shortSha?.slice(0, 7) ?? null;
-
+/** Shared LOW/MEDIUM/HIGH/CRITICAL ladder. Typed phrases stay action-specific. */
+export function policyForRisk(risk: ActionRisk): PolicyRequirements {
   switch (risk) {
     case "LOW":
       return {
@@ -90,25 +85,7 @@ export function policyForAction(
         typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
       };
-    case "CRITICAL": {
-      let typedPhrase: string | null = null;
-      if (action === "DEPLOY_PRODUCTION") {
-        typedPhrase = shortSha
-          ? `DEPLOY PRODUCTION ${shortSha}`
-          : "DEPLOY PRODUCTION";
-      } else if (action === "APPLY_MIGRATION") {
-        typedPhrase = "MIGRATE PRODUCTION";
-      } else if (action === "RESTORE_BACKUP") {
-        typedPhrase = "RESTORE PRODUCTION";
-      } else if (action === "ROLLBACK") {
-        typedPhrase = shortSha ? `ROLLBACK ${shortSha}` : "ROLLBACK";
-      } else if (action === "ENABLE_PAYMENT_LIVE") {
-        typedPhrase = "ENABLE PAYMENT LIVE";
-      } else if (action === "ROTATE_CREDENTIALS") {
-        typedPhrase = "ROTATE CREDENTIALS";
-      } else {
-        typedPhrase = `CONFIRM ${action}`;
-      }
+    case "CRITICAL":
       return {
         risk,
         requireConfirmation: true,
@@ -117,11 +94,42 @@ export function policyForAction(
         requireTypedPhrase: true,
         requireSecondConfirmation: true,
         requireCooldown: true,
-        typedPhrase,
+        typedPhrase: null,
         approvalTtlMs: APPROVAL_TTL_MS,
       };
-    }
   }
+}
+
+export function policyForAction(
+  action: HumanActionType,
+  options: { shortSha?: string | null } = {},
+): PolicyRequirements {
+  const risk = riskForAction(action);
+  const base = policyForRisk(risk);
+  if (risk !== "CRITICAL") {
+    return base;
+  }
+
+  const shortSha = options.shortSha?.slice(0, 7) ?? null;
+  let typedPhrase: string | null = null;
+  if (action === "DEPLOY_PRODUCTION") {
+    typedPhrase = shortSha
+      ? `DEPLOY PRODUCTION ${shortSha}`
+      : "DEPLOY PRODUCTION";
+  } else if (action === "APPLY_MIGRATION") {
+    typedPhrase = "MIGRATE PRODUCTION";
+  } else if (action === "RESTORE_BACKUP") {
+    typedPhrase = "RESTORE PRODUCTION";
+  } else if (action === "ROLLBACK") {
+    typedPhrase = shortSha ? `ROLLBACK ${shortSha}` : "ROLLBACK";
+  } else if (action === "ENABLE_PAYMENT_LIVE") {
+    typedPhrase = "ENABLE PAYMENT LIVE";
+  } else if (action === "ROTATE_CREDENTIALS") {
+    typedPhrase = "ROTATE CREDENTIALS";
+  } else {
+    typedPhrase = `CONFIRM ${action}`;
+  }
+  return { ...base, typedPhrase };
 }
 
 export function isHumanActionsEnvEnabled(

@@ -64,3 +64,11 @@ Décisions datées. Ne pas y coller de secrets.
 - **Champs permanents** : `owner = human` et `requiresHuman = true` restent.
 - **Hors périmètre** : activation timer/cron sur la VM production, redémarrage PostgreSQL/PM2/Nginx, restauration vers `clevones_prod`, suppression des dumps T004/T005, merge `main`, déploiement, T014/T015.
 - **Conséquences** : T011 peut passer `À_FAIRE` → `PRÊTE` → `EN_COURS` → `EN_CONTRÔLE` si les contrôles hors production passent. L’activation réelle du timer exige une **nouvelle** autorisation.
+
+## 2026-09-15 — CLEVONE Agentic Business Platform (owner prompt)
+
+- **Décision** : étendre le produit vers une infrastructure métier agentique multi-IA, sans reconstruire le site, l’auth, les paiements sandbox ni X200 Autopilot.
+- **Preuve** : prompt propriétaire « MULTI-AI X200 vNEXT » session 2026-09-15.
+- **Vérité de reprise** : l’état canonique n’est pas le `main` local périmé ; c’est `origin/feat/x200-boot-autostart` (T001–T047 `TERMINÉE`, T048 implémenté).
+- **Conséquences** : T048 passe en `EN_CONTRÔLE` sans rejeu ; T065–T067 ajoutées (ex-T049–T051 renumérotées après collision Control Center T049) ; aucun SDK IA payant, aucun payout, aucun merge `main`, aucun deploy automatique.
+- **Hors périmètre immédiat** : P2 Finance/Commercial/DMS agents applicatifs tant que T065–T067 ne sont pas `TERMINÉE`.

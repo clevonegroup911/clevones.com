@@ -200,6 +200,26 @@ export async function persistProofAndDecision(
   });
 
   await persistDecision(decision, client);
+
+  // Optional recommend-only agentic hook (disabled unless AGENTIC_PROOF_RECOMMEND_HOOK=1).
+  // Never blocks persistence; never activates VERIFIED.
+  try {
+    const { maybeRunAgenticProofRecommend } = await import(
+      "@/lib/agentic/payment-hook"
+    );
+    await maybeRunAgenticProofRecommend({
+      paymentId: proof.paymentId,
+      proofId: proof.id,
+      invoiceId: proof.invoiceId,
+      reference: proof.reference,
+      amountCents: proof.amountCents,
+      currency: proof.currency,
+      expectedAmountCents: proof.amountCents ?? 0,
+      expectedCurrency: (proof.currency ?? "USD").toUpperCase(),
+    });
+  } catch {
+    // Swallow — payment persistence must not depend on agentic plane.
+  }
 }
 
 export async function persistDecision(

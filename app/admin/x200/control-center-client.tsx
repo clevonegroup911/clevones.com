@@ -46,6 +46,35 @@ type RefreshInterval = 5 | 15 | 30 | 0;
 
 type ConnectionStatus = "LIVE" | "IDLE" | "DEGRADED" | "HIDDEN";
 
+/** Isolated ticker — must not live in ControlCenterClient or the whole tree re-renders at 1 Hz. */
+function NextRefreshCountdown({
+  refreshInterval,
+  nextRefreshAt,
+}: {
+  refreshInterval: RefreshInterval;
+  nextRefreshAt: number | null;
+}) {
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    if (refreshInterval === 0) {
+      return;
+    }
+    const tick = window.setInterval(() => setNowTick(Date.now()), 1000);
+    return () => window.clearInterval(tick);
+  }, [refreshInterval]);
+
+  const label =
+    refreshInterval === 0 || nextRefreshAt == null
+      ? "Off"
+      : `${Math.max(0, Math.ceil((nextRefreshAt - nowTick) / 1000))}s`;
+
+  return (
+    <span className="inline-block min-w-[5.5rem] tabular-nums text-gray-muted">
+      Next: {label}
+    </span>
+  );
+}
+
 const FILTERS: Array<{ id: FilterId; label: string }> = [
   { id: "all", label: "Toutes" },
   { id: "en_cours", label: "En cours" },
@@ -214,7 +243,6 @@ export function ControlCenterClient({
     ok: boolean;
     message: string;
   } | null>(null);
-  const [nowTick, setNowTick] = useState(() => Date.now());
   const [activeTab, setActiveTab] = useState<TabId>("OVERVIEW");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const openPreviewRef = useRef<(action: HumanActionType) => void>(() => {});
@@ -327,11 +355,6 @@ export function ControlCenterClient({
   }, [refresh]);
 
   useEffect(() => {
-    const tick = window.setInterval(() => setNowTick(Date.now()), 1000);
-    return () => window.clearInterval(tick);
-  }, []);
-
-  useEffect(() => {
     if (refreshInterval === 0) {
       return;
     }
@@ -396,10 +419,6 @@ export function ControlCenterClient({
 
   const effectiveNextRefreshAt =
     refreshInterval === 0 ? null : nextRefreshAt;
-  const nextRefreshLabel =
-    effectiveNextRefreshAt == null
-      ? "Off"
-      : `${Math.max(0, Math.ceil((effectiveNextRefreshAt - nowTick) / 1000))}s`;
   const connectionDisplay =
     refreshInterval === 0 && connection !== "HIDDEN" && connection !== "DEGRADED"
       ? "IDLE"
@@ -452,7 +471,10 @@ export function ControlCenterClient({
             <span className="text-gray-muted">
               Last refresh: {new Date(lastRefreshAt).toLocaleTimeString()}
             </span>
-            <span className="text-gray-muted">Next: {nextRefreshLabel}</span>
+            <NextRefreshCountdown
+              refreshInterval={refreshInterval}
+              nextRefreshAt={effectiveNextRefreshAt}
+            />
             <span className="text-gray-muted">
               Latency: {latencyMs == null ? "N/A" : `${latencyMs} ms`}
             </span>
@@ -481,12 +503,17 @@ export function ControlCenterClient({
                 ? ` · ${lastHumanMeta.durationMs}ms`
                 : ""}
             </span>
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {/*
+              Keep BootBadge out of the metrics flex-wrap: the 1s "Next: Ns"
+              countdown changes text width and shifts the badge mid-click,
+              which drops Playwright (and user) clicks on the moving target.
+            */}
             <BootBadge
               snapshot={snapshot}
               onOpenStartup={() => setActiveTab("STARTUP")}
             />
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               data-testid="x200-refresh-now"
@@ -814,6 +841,12 @@ export function ControlCenterClient({
         </Card>
 
         <Card title="ACTIVE AGENT" testId="card-active-agent">
+          {snapshot.fedora.autopilotLiveState === "STALE" ? (
+            <p className="text-sm text-amber-200" data-testid="executor-unavailable">
+              EXECUTEUR_INDISPONIBLE — télémétrie STALE (ne pas traiter head/branch historiques
+              comme identité live)
+            </p>
+          ) : null}
           <p className="text-sm text-white">
             host={display(snapshot.fedora.host)} · pid=
             {display(snapshot.fedora.pid)}
@@ -824,6 +857,9 @@ export function ControlCenterClient({
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             Heartbeat: {display(progress.heartbeatAge)}
+            {snapshot.fedora.autopilotLiveState === "STALE" && snapshot.fedora.updatedAt
+              ? ` · lastSync=${snapshot.fedora.updatedAt}`
+              : ""}
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             lastEvent={display(snapshot.fedora.lastEvent)}
@@ -833,9 +869,9 @@ export function ControlCenterClient({
             branch={display(snapshot.fedora.branch)} · HEAD=
             {snapshot.fedora.head
               ? snapshot.fedora.head.slice(0, 7)
-              : snapshot.git.head
-                ? snapshot.git.head.slice(0, 7)
-                : "N/A"}
+              : snapshot.fedora.autopilotLiveState === "STALE"
+                ? "INCONNU (STALE)"
+                : "INCONNU"}
           </p>
           <p className="mt-1 text-xs text-gray-muted">
             FEDORA={snapshot.fedora.fedoraTelemetry} · LIVE=

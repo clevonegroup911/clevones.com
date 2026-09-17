@@ -14,6 +14,7 @@ export type {
 export { HUMAN_ACTION_TYPES } from "@/lib/x200/actions/types";
 export {
   policyForAction,
+  policyForRisk,
   riskForAction,
   isHumanActionsEnvEnabled,
   isProductionActionsEnvEnabled,

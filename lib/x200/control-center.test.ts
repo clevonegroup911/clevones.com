@@ -267,6 +267,8 @@ test("deriveBlockers includes telemetry INFO and never invents CI failure", () =
       ciLatestStatus: null,
       ciLatestUrl: null,
       ciLatestName: null,
+      ciLatestHeadSha: null,
+      ciShaMatch: "UNKNOWN" as const,
     } satisfies GithubSnapshot,
     git: {
       status: "OK",
@@ -340,6 +342,8 @@ test("activity feed redacts token-like strings and payload secret scan catches g
       ciLatestStatus: null,
       ciLatestUrl: null,
       ciLatestName: null,
+      ciLatestHeadSha: null,
+      ciShaMatch: "UNKNOWN" as const,
     },
     humanGate: {
       status: "MISSING",

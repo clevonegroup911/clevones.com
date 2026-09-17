@@ -2,6 +2,9 @@
  * Événements CLEVONE de rapprochement persistés via le modèle Prisma
  * `ClevoneGatewayEvent` (réutilisation documentée — pas de modèle additif T030).
  *
+ * L'enveloppe agentique générique vit dans `lib/agentic/events.ts`.
+ * Ne pas dupliquer le moteur d'idempotence de `lib/payments/persist.ts`.
+ *
  * Payload JSON :
  * { reference, amountCents, currency, source, authenticated: true }
  */

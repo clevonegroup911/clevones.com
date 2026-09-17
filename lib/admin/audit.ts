@@ -30,6 +30,7 @@ export const auditActions = {
   HUMAN_REVIEW_APPROVED: "HUMAN_REVIEW_APPROVED",
   HUMAN_REVIEW_REJECTED: "HUMAN_REVIEW_REJECTED",
   PAYMENT_VERIFIED_ACTIVATED: "PAYMENT_VERIFIED_ACTIVATED",
+  AGENT_TOOL_EVALUATED: "AGENT_TOOL_EVALUATED",
 } as const;
 
 export type AuditAction = (typeof auditActions)[keyof typeof auditActions];
