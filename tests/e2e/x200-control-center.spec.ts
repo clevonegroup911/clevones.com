@@ -1483,15 +1483,22 @@ test.describe("x200 interactive action console T049", () => {
     await page.getByTestId("x200-tab-INCIDENTS").click();
     await page.getByTestId("x200-incident-RUN_HEALTH_CHECKS").click();
     await expect(page.getByTestId("x200-action-preview")).toBeVisible();
+    await expect(page.getByTestId("x200-preview-loading")).toHaveCount(0);
+    await expect(page.getByTestId("x200-preview-field-action")).toContainText(
+      "RUN_HEALTH_CHECKS",
+    );
     await dismissNextjsOverlay(page);
-    // RUN_HEALTH_CHECKS requires a justification; force-clicking a disabled
-    // CONFIRM button does not invoke React handlers (mobile flake).
-    await page.getByTestId("x200-human-reason").fill("e2e health probe failure path");
-    await expect(page.getByTestId("x200-confirm-execute")).toBeEnabled();
-    await page.getByTestId("x200-confirm-execute").click({ force: true });
-    // Both the drawer failure panel and toast are visible; assert each explicitly.
+    // LOW risk: no reason field. Wait until Confirm is enabled (preview ready),
+    // then click — force-clicking during PREPARING/busy is a no-op flake.
+    const confirm = page.getByTestId("x200-confirm-execute");
+    await expect(confirm).toBeEnabled({ timeout: 20_000 });
+    await confirm.scrollIntoViewIfNeeded();
+    await confirm.click();
+    await expect(page.getByTestId("x200-action-toast")).toContainText(
+      /FAILED|HEALTH_FAILED/,
+      { timeout: 20_000 },
+    );
     await expect(page.getByTestId("x200-preview-failed")).toBeVisible();
-    await expect(page.getByTestId("x200-action-toast")).toBeVisible();
     await page.getByTestId("x200-copy-error").click({ force: true });
     await page.getByTestId("x200-preview-close").click({ force: true });
 
