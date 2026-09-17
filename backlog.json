@@ -4616,11 +4616,21 @@
           "version": null,
           "at": "2026-09-17T11:21:08.828Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
       "id": "T081",
       "title": "Redact STALE Fedora telemetry identity in Control Center",
       "objective": "When Fedora AUTOPILOT telemetry is STALE or unverified, never present historical head/branch/taskId as live executor identity; surface EXECUTEUR_INDISPONIBLE / STALE with last-sync age only.",
@@ -4649,8 +4659,11 @@
         "npm run x200:test",
         "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/telemetry.test.ts"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+      ],
       "estimatedCost": 2,
       "risk": "medium",
       "attempts": 1,
@@ -4674,11 +4687,21 @@
           "version": null,
           "at": "2026-09-17T11:25:23.834Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
       "id": "T082",
       "title": "Bind Control Center CI SUCCESS to matching commit SHA",
       "objective": "CI SUCCESS in /admin/x200 must refer only to a workflow run whose head SHA matches the displayed git/PR commit; older branch successes must not validate a newer commit.",
@@ -4707,8 +4730,11 @@
         "npm run x200:test",
         "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/github-client.test.ts lib/x200/control-center.test.ts"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+      ],
       "estimatedCost": 3,
       "risk": "medium",
       "attempts": 1,
@@ -4732,11 +4758,21 @@
           "version": null,
           "at": "2026-09-17T11:30:08.752Z",
           "location": ".x200/quality-results.json"
+        },
+        {
+          "type": "ci",
+          "command": "X200 CI pull_request / actions run 35216773612",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+          "version": "d3486a2056f67cb8cc9acab6626ac719baaf9c2e",
+          "at": "2026-09-17T11:40:57.984Z",
+          "location": "github-actions:quality FULL"
         }
       ],
       "regressionOf": null,
-      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
-      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
+      "nextAction": null,
+      "lastTransitionReason": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083",
       "id": "T083",
       "title": "Durable task checkpoint for verified resume",
       "objective": "Persist a verified checkpoint on EN_COURS tasks so resume after lease expiry restarts from the last checked point with a new execution id, without replaying uncertain external effects.",
@@ -4762,8 +4798,11 @@
         "npm run x200:test",
         "node --test scripts/x200-runtime-lease.test.mjs scripts/x200-governance.test.mjs"
       ],
-      "status": "EN_CONTRÔLE",
-      "evidence": [],
+      "status": "TERMINÉE",
+      "evidence": [
+        "https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612",
+        "head:d3486a2056f67cb8cc9acab6626ac719baaf9c2e"
+      ],
       "estimatedCost": 3,
       "risk": "medium",
       "attempts": 1,
@@ -6167,9 +6206,27 @@
       "taskId": "T083",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T081",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
     }
   ],
-  "registryVersion": 162,
+  "registryVersion": 163,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

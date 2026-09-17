@@ -18,7 +18,7 @@ Point de reprise versionné. Classer tout fait : **CONFIRMÉ**, **INDIQUÉ**, **
 
 ## Objectif courant
 
-T001–T049 (incl. Control Center interactif) et fondations agentiques T065–T080 `TERMINÉE` sur la branche de travail. Aucune tâche automatique `PRÊTE`. Rails live, merge `main` et deploy restent des gates humaines. Marqueur `.x200/PRODUCT_COMPLETE.json` éventuel doit être réaligné après le SHA post-rebase.
+T001–T049, T065–T083 `TERMINÉE` sur `feat/x200-agentic-core`. Aucune tâche automatique `PRÊTE`. Rails live, merge `main` et deploy restent des gates humaines. Marqueur `.x200/PRODUCT_COMPLETE.json` éventuel doit être réaligné après le SHA courant si un niveau dépôt est revalidé.
 
 ## Stack (CONFIRMÉ dans le dépôt)
 
@@ -42,7 +42,7 @@ T001–T049 (incl. Control Center interactif) et fondations agentiques T065–T0
 |---|---|---|
 | T001–T048 | `TERMINÉE` | CONFIRMÉ registre |
 | T049 | `TERMINÉE` Control Center fully interactive | CONFIRMÉ registre |
-| T065–T080 | `TERMINÉE` fondations agentic (ex-T049–T064 renumérotées) | CONFIRMÉ registre |
+| T065–T083 | `TERMINÉE` fondations agentic + truthfulness T081–T083 | CONFIRMÉ registre |
 | Relais ChatGPT | absent | CONFIRMÉ |
 | Production | non accédée cette session | NON_ACCESSIBLE |
 | Draft PR | [#13](https://github.com/clevonegroup911/clevones.com/pull/13) | CONFIRMÉ |

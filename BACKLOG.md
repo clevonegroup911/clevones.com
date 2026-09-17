@@ -3,19 +3,19 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 162
+- Registre : 163
 - Mode : single-executor
 - Mis à jour : 2026-09-17
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 3
+- EN_CONTRÔLE : 0
 - PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
-- TERMINÉE : 65
+- TERMINÉE : 68
 - ANNULÉE : 0
 
 ## Tâches
@@ -87,6 +87,6 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T078 | P2 | TERMINÉE | Outcome engine — labels from orchestration (no side effects) | non |
 | T079 | P2 | TERMINÉE | Agentic recommend-only hook from payment proof path (no activation) | non |
 | T080 | P1 | TERMINÉE | Wire agentic journal writers from orchestrator + approval engine | non |
-| T081 | P0 | EN_CONTRÔLE | Redact STALE Fedora telemetry identity in Control Center | non |
-| T082 | P0 | EN_CONTRÔLE | Bind Control Center CI SUCCESS to matching commit SHA | non |
-| T083 | P1 | EN_CONTRÔLE | Durable task checkpoint for verified resume | non |
+| T081 | P0 | TERMINÉE | Redact STALE Fedora telemetry identity in Control Center | non |
+| T082 | P0 | TERMINÉE | Bind Control Center CI SUCCESS to matching commit SHA | non |
+| T083 | P1 | TERMINÉE | Durable task checkpoint for verified resume | non |
