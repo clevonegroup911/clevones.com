@@ -4664,10 +4664,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:25:23.834Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "capture run.head_sha and gate CI SUCCESS on SHA match",
-      "lastTransitionReason": "[X200-AUTOPLAN] master-prompt §10/§16: CI not bound to commit SHA",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T082",
       "title": "Bind Control Center CI SUCCESS to matching commit SHA",
       "objective": "CI SUCCESS in /admin/x200 must refer only to a workflow run whose head SHA matches the displayed git/PR commit; older branch successes must not validate a newer commit.",
@@ -4682,11 +4693,8 @@
         "lib/x200/types.ts",
         "lib/x200/derive.ts",
         "lib/x200/control-center.ts",
-        "app/admin/x200",
         "lib/x200/github-client.test.ts",
-        "backlog.json",
-        "TASK_REPORT.md",
-        "reports/tasks"
+        "lib/x200/control-center.test.ts"
       ],
       "acceptanceCriteria": [
         "GithubSnapshot exposes ciLatestHeadSha (or equivalent) from the workflow run when available",
@@ -4697,13 +4705,13 @@
       "tests": [
         "npm run x200:validate",
         "npm run x200:test",
-        "npx tsx --test lib/x200/github-client.test.ts lib/x200/control-center.test.ts"
+        "node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/github-client.test.ts lib/x200/control-center.test.ts"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 3,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-17"
     },
@@ -6127,9 +6135,21 @@
       "taskId": "T081",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T082",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 154,
+  "registryVersion": 159,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

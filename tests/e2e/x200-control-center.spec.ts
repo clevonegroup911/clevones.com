@@ -482,6 +482,8 @@ test.describe("x200 human actions", () => {
             ciLatestStatus: null,
             ciLatestUrl: null,
             ciLatestName: null,
+            ciLatestHeadSha: null,
+            ciShaMatch: "UNKNOWN" as const,
             githubSource: "NOT_CONNECTED",
           },
           fedora: {
@@ -1101,6 +1103,8 @@ test.describe("x200 interactive action console T049", () => {
         ciLatestStatus: "completed",
         ciLatestUrl: "https://github.com/clevonegroup911/clevones.com/actions/runs/1",
         ciLatestName: "quality",
+        ciLatestHeadSha: null,
+        ciShaMatch: "UNKNOWN" as const,
         githubSource: "REST_AUTHENTICATED",
       },
       fedora: {

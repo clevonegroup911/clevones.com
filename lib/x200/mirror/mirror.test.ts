@@ -64,6 +64,8 @@ describe("T047 operational mirror", () => {
         ciLatestStatus: "completed",
         ciLatestUrl: null,
         ciLatestName: "CI",
+        ciLatestHeadSha: null,
+        ciShaMatch: "UNKNOWN" as const,
       },
       fedora: {
         fedoraTelemetry: "OK",
@@ -324,6 +326,8 @@ describe("T047 operational mirror", () => {
         ciLatestStatus: "completed",
         ciLatestUrl: null,
         ciLatestName: "CI",
+        ciLatestHeadSha: null,
+        ciShaMatch: "UNKNOWN" as const,
       },
       humanGate: {
         status: "MISSING",
@@ -366,6 +370,8 @@ describe("T047 operational mirror", () => {
         ciLatestStatus: "completed",
         ciLatestUrl: null,
         ciLatestName: null,
+        ciLatestHeadSha: null,
+        ciShaMatch: "UNKNOWN" as const,
       },
       humanGate: {
         status: "OK",
@@ -438,6 +444,8 @@ describe("T047 operational mirror", () => {
         ciLatestStatus: "completed",
         ciLatestUrl: "https://example.test",
         ciLatestName: "CI",
+        ciLatestHeadSha: null,
+        ciShaMatch: "UNKNOWN" as const,
       },
       warnings: ["boom", "boom"],
       currentTaskId: "T047",

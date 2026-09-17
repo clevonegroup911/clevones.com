@@ -63,6 +63,8 @@ test("activity feed must not leave MFA_ENCRYPTION_KEY name unredacted", () => {
       ciLatestStatus: null,
       ciLatestUrl: null,
       ciLatestName: null,
+      ciLatestHeadSha: null,
+      ciShaMatch: "UNKNOWN" as const,
     },
     humanGate: {
       status: "MISSING",

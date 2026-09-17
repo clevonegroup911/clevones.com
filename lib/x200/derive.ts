@@ -38,7 +38,11 @@ export function computeSystemHealth(input: {
   git: Pick<GitSnapshot, "status" | "dirty">;
   github: Pick<
     GithubSnapshot,
-    "status" | "ciLatestConclusion" | "ciLatestStatus"
+    | "status"
+    | "ciLatestConclusion"
+    | "ciLatestStatus"
+    | "ciLatestHeadSha"
+    | "ciShaMatch"
   >;
   humanGate: Pick<HumanGateSnapshot, "present" | "status">;
   /** When true, critical Fedora telemetry is stale → at least DEGRADED. */
@@ -101,17 +105,26 @@ export function computeSystemHealth(input: {
   });
 
   const ciConclusion = input.github.ciLatestConclusion;
+  const ciShaMatch = input.github.ciShaMatch ?? "UNKNOWN";
+  const ciBoundToCommit = ciShaMatch === "MATCH";
   const ciKnown =
     input.github.status === "OK" &&
     typeof ciConclusion === "string" &&
-    ciConclusion.length > 0;
+    ciConclusion.length > 0 &&
+    ciBoundToCommit;
   criteria.push({
     id: "ci_success",
     label: "CI latest success",
-    passed: ciKnown ? ciConclusion === "success" : null,
-    detail: ciKnown
-      ? `conclusion=${ciConclusion}`
-      : `github=${input.github.status}; ci=${ciConclusion ?? "N/A"}`,
+    passed: ciKnown
+      ? ciConclusion === "success"
+      : ciShaMatch === "MISMATCH"
+        ? false
+        : null,
+    detail: ciShaMatch === "MISMATCH"
+      ? `ciShaMatch=MISMATCH head=${input.github.ciLatestHeadSha?.slice(0, 7) ?? "N/A"}`
+      : ciKnown
+        ? `conclusion=${ciConclusion}; shaMatch=${ciShaMatch}`
+        : `github=${input.github.status}; ci=${ciConclusion ?? "N/A"}; shaMatch=${ciShaMatch}`,
   });
 
   const gatePresent =

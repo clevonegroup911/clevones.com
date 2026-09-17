@@ -32,16 +32,115 @@ function emptyGithub(
     ciLatestStatus: null,
     ciLatestUrl: null,
     ciLatestName: null,
+    ciLatestHeadSha: null,
+    ciShaMatch: status === "NOT_CONNECTED" ? "NOT_CONNECTED" : "UNKNOWN",
     githubSource: source,
+  };
+}
+
+function asRunRecord(
+  item: unknown,
+): Record<string, unknown> | null {
+  if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+  return item as Record<string, unknown>;
+}
+
+function runHeadSha(run: Record<string, unknown>): string | null {
+  return typeof run.head_sha === "string" && run.head_sha.trim()
+    ? run.head_sha.trim()
+    : null;
+}
+
+function shaEquals(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b) return false;
+  const left = a.trim().toLowerCase();
+  const right = b.trim().toLowerCase();
+  if (!left || !right) return false;
+  return left === right || left.startsWith(right) || right.startsWith(left);
+}
+
+/**
+ * Prefer a workflow run whose head_sha matches the displayed commit.
+ * Never treat a newer commit as validated by an older branch SUCCESS.
+ */
+export function selectWorkflowRunForCommit(
+  runs: unknown[],
+  expectedSha: string | null,
+): {
+  run: Record<string, unknown> | null;
+  ciShaMatch: GithubSnapshot["ciShaMatch"];
+} {
+  const normalized = runs.map(asRunRecord).filter(Boolean) as Record<
+    string,
+    unknown
+  >[];
+  if (normalized.length === 0) {
+    return { run: null, ciShaMatch: expectedSha ? "UNKNOWN" : "UNKNOWN" };
+  }
+
+  if (expectedSha) {
+    const match = normalized.find((run) => shaEquals(runHeadSha(run), expectedSha));
+    if (match) {
+      return { run: match, ciShaMatch: "MATCH" };
+    }
+  }
+
+  const latest = normalized[0]!;
+  const latestSha = runHeadSha(latest);
+  if (!expectedSha || !latestSha) {
+    return { run: latest, ciShaMatch: "UNKNOWN" };
+  }
+  return {
+    run: latest,
+    ciShaMatch: shaEquals(latestSha, expectedSha) ? "MATCH" : "MISMATCH",
+  };
+}
+
+/**
+ * Bind CI fields to a displayed commit. On MISMATCH, clear conclusion so UI/health
+ * cannot advertise CI SUCCESS for the wrong SHA (raw run metadata stays via warning).
+ */
+export function bindCiToDisplayedCommit(
+  snapshot: GithubSnapshot,
+  expectedSha: string | null,
+): GithubSnapshot {
+  if (snapshot.status === "NOT_CONNECTED") {
+    return { ...snapshot, ciShaMatch: "NOT_CONNECTED" };
+  }
+
+  const runSha = snapshot.ciLatestHeadSha;
+  if (!expectedSha || !runSha) {
+    return {
+      ...snapshot,
+      ciShaMatch: snapshot.ciShaMatch === "MATCH" ? "MATCH" : "UNKNOWN",
+    };
+  }
+
+  if (shaEquals(runSha, expectedSha)) {
+    return { ...snapshot, ciShaMatch: "MATCH" };
+  }
+
+  const shortRun = runSha.slice(0, 7);
+  const shortExpected = expectedSha.slice(0, 7);
+  const mismatchWarning = `CI SHA mismatch: run ${shortRun} ≠ displayed ${shortExpected} — SUCCESS not applied to current commit`;
+  return {
+    ...snapshot,
+    ciShaMatch: "MISMATCH",
+    // Do not present SUCCESS for a different commit.
+    ciLatestConclusion: null,
+    warning: [snapshot.warning, mismatchWarning].filter(Boolean).join("; "),
   };
 }
 
 export async function readGithubSnapshot(options: {
   repository?: string | null;
   branch?: string | null;
+  /** Local HEAD or PR head — used to select/bind the CI run. */
+  expectedSha?: string | null;
 }): Promise<GithubSnapshot> {
   const repository = options.repository?.trim() || DEFAULT_REPO;
   const branch = options.branch?.trim() || null;
+  const expectedSha = options.expectedSha?.trim() || null;
 
   if (!isValidGithubRepository(repository)) {
     return emptyGithub(
@@ -111,6 +210,8 @@ export async function readGithubSnapshot(options: {
     };
   }
 
+  const commitForCi = expectedSha || snapshot.prHeadSha;
+
   const runsUrl = `https://api.github.com/repos/${repository}/actions/runs?branch=${encodeURIComponent(
     branch,
   )}&per_page=5`;
@@ -120,6 +221,7 @@ export async function readGithubSnapshot(options: {
       ...snapshot,
       status: snapshot.prNumber ? "OK" : "NOT_CONNECTED",
       githubSource: snapshot.prNumber ? snapshot.githubSource : runsRes.source,
+      ciShaMatch: "NOT_CONNECTED",
       warning: [snapshot.warning, `CI lookup unavailable: ${runsRes.error}`]
         .filter(Boolean)
         .join("; "),
@@ -135,11 +237,9 @@ export async function readGithubSnapshot(options: {
   const runs = Array.isArray(runsBody?.workflow_runs)
     ? runsBody.workflow_runs
     : [];
-  const run =
-    runs.find(
-      (item): item is Record<string, unknown> =>
-        Boolean(item && typeof item === "object" && !Array.isArray(item)),
-    ) ?? null;
+
+  const selected = selectWorkflowRunForCommit(runs, commitForCi);
+  const run = selected.run;
 
   if (run) {
     snapshot = {
@@ -152,8 +252,10 @@ export async function readGithubSnapshot(options: {
       ciLatestStatus: typeof run.status === "string" ? run.status : null,
       ciLatestUrl: typeof run.html_url === "string" ? run.html_url : null,
       ciLatestName: typeof run.name === "string" ? run.name : null,
+      ciLatestHeadSha: runHeadSha(run),
+      ciShaMatch: selected.ciShaMatch,
     };
   }
 
-  return snapshot;
+  return bindCiToDisplayedCommit(snapshot, commitForCi);
 }

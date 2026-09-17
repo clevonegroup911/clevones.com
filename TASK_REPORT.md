@@ -6,7 +6,7 @@
 
 ## ID
 
-T081
+T082
 
 ## Statut
 
@@ -14,35 +14,34 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie Fedora est STALE, et afficher EXECUTEUR_INDISPONIBLE / INCONNU (STALE) dans le Control Center.
+Lier le SUCCESS CI du Control Center au SHA du commit affiché ; un ancien run de branche ne valide pas un commit plus récent.
 
 ## Résultat
 
-`redactStaleExecutorIdentity` appliqué dans `readFedoraTelemetrySnapshot`. UI ACTIVE AGENT n’utilise plus `git.head` comme fallback d’identité Fedora. MERGED_TO_MAIN=NO DEPLOYED=NO.
+`selectWorkflowRunForCommit` + `bindCiToDisplayedCommit` ; MISMATCH efface `ciLatestConclusion` et alerte. Health exige `ciShaMatch=MATCH`. MERGED_TO_MAIN=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `reports/tasks/T081.md`
+- `reports/tasks/T082.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/telemetry.ts`
-- `lib/x200/telemetry.test.ts`
-- `app/admin/x200/control-center-client.tsx`
-- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
+- `lib/x200/github.ts`
+- `lib/x200/types.ts`
+- `lib/x200/derive.ts`
+- `lib/x200/control-center.ts`
+- `lib/x200/github-client.test.ts`
+- fixtures Control Center / mirror / e2e / human-actions
+- `backlog.json` / `TASK_REPORT.md`
 
 ## Commandes
 
-- npm run x200:validate
-- npm run x200:test
-- node --require ./scripts/mfa-test-server-only.cjs --import tsx --test --test-concurrency=1 lib/x200/telemetry.test.ts
-- npm run x200:quality-gate -- --task T081
+- npm run x200:quality-gate -- --task T082
 
 ## Tests réussis
 
-- x200:validate / x200:test PASS
-- telemetry.test.ts PASS (5)
-- QUALITY_GATE_OK T081
+- QUALITY_GATE_OK T082
+- github-client + control-center tests PASS
 
 ## Tests échoués
 
@@ -50,7 +49,7 @@ Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie 
 
 ## Lint
 
-- non relancé globalement (delta UI/TS ciblé ; ReadLints clean)
+- non relancé globalement (delta lib/x200 ; tests unitaires PASS)
 
 ## Type-check
 
@@ -62,8 +61,8 @@ Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie 
 
 ## Sécurité
 
-- Pas de secret exposé
-- Identité STALE redactée
+- Pas de faux CI SUCCESS sur SHA mismatch
+- NOT_CONNECTED conservé si GitHub inaccessible
 
 ## Commit
 
@@ -75,8 +74,7 @@ Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie 
 
 ## Preuves
 
-- `.x200/quality-results.json` QUALITY_GATE_OK T081
-- reports/tasks/T081.md
+- `.x200/quality-results.json` QUALITY_GATE_OK T082
 
 ## Risques
 
@@ -84,8 +82,8 @@ Redacter l’identité exécuteur (head/branch/taskId) lorsque la télémétrie 
 
 ## Blocage
 
-- attente job `quality` sur le SHA de commit T081
+- attente job `quality` sur le SHA de commit T082
 
 ## Prochaine tâche prête
 
-- T082 (Bind Control Center CI SUCCESS to matching commit SHA)
+- T083 (Durable task checkpoint for verified resume)

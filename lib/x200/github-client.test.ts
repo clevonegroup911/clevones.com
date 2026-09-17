@@ -8,6 +8,10 @@ import {
   isValidPositiveInt,
 } from "@/lib/x200/github-client";
 import {
+  bindCiToDisplayedCommit,
+  selectWorkflowRunForCommit,
+} from "@/lib/x200/github";
+import {
   reconcileAutopilotLiveness,
   type AutopilotServiceSnapshot,
 } from "@/lib/x200/autopilot-service";
@@ -115,5 +119,83 @@ describe("T047 autopilot telemetry/service reconciliation", () => {
     assert.equal(r.agentRunningForControl, false);
     assert.equal(r.agentRunningVerified, null);
     assert.equal(r.code, "SERVICE_ACTIVE_TELEMETRY_STALE");
+  });
+});
+
+describe("T082 CI commit binding", () => {
+  it("prefers a run matching the expected SHA over a newer unrelated success", () => {
+    const { run, ciShaMatch } = selectWorkflowRunForCommit(
+      [
+        { id: 2, run_number: 20, head_sha: "bbbbbbbb", conclusion: "success", status: "completed" },
+        { id: 1, run_number: 19, head_sha: "aaaaaaaa", conclusion: "success", status: "completed" },
+      ],
+      "aaaaaaaa",
+    );
+    assert.equal(ciShaMatch, "MATCH");
+    assert.equal(run?.id, 1);
+  });
+
+  it("marks MISMATCH when latest SUCCESS is for another commit", () => {
+    const { run, ciShaMatch } = selectWorkflowRunForCommit(
+      [{ id: 9, run_number: 9, head_sha: "oldold01", conclusion: "success", status: "completed" }],
+      "newnew01deadbeef",
+    );
+    assert.equal(ciShaMatch, "MISMATCH");
+    assert.equal(run?.id, 9);
+
+    const bound = bindCiToDisplayedCommit(
+      {
+        status: "OK",
+        warning: null,
+        repository: "org/repo",
+        prNumber: 1,
+        prTitle: "t",
+        prState: "open",
+        prDraft: true,
+        prMergeable: "MERGEABLE",
+        prHeadSha: "newnew01deadbeef",
+        prUrl: null,
+        ciLatestRunId: 9,
+        ciLatestRunNumber: 9,
+        ciLatestConclusion: "success",
+        ciLatestStatus: "completed",
+        ciLatestUrl: null,
+        ciLatestName: "quality",
+        ciLatestHeadSha: "oldold01",
+        ciShaMatch: "MISMATCH",
+      },
+      "newnew01deadbeef",
+    );
+    assert.equal(bound.ciShaMatch, "MISMATCH");
+    assert.equal(bound.ciLatestConclusion, null);
+    assert.match(bound.warning || "", /CI SHA mismatch/);
+  });
+
+  it("keeps SUCCESS when run SHA matches displayed commit", () => {
+    const bound = bindCiToDisplayedCommit(
+      {
+        status: "OK",
+        warning: null,
+        repository: "org/repo",
+        prNumber: 1,
+        prTitle: "t",
+        prState: "open",
+        prDraft: true,
+        prMergeable: "MERGEABLE",
+        prHeadSha: "abc1234deadbeef",
+        prUrl: null,
+        ciLatestRunId: 1,
+        ciLatestRunNumber: 1,
+        ciLatestConclusion: "success",
+        ciLatestStatus: "completed",
+        ciLatestUrl: null,
+        ciLatestName: "quality",
+        ciLatestHeadSha: "abc1234deadbeef",
+        ciShaMatch: "UNKNOWN",
+      },
+      "abc1234deadbeef",
+    );
+    assert.equal(bound.ciShaMatch, "MATCH");
+    assert.equal(bound.ciLatestConclusion, "success");
   });
 });
