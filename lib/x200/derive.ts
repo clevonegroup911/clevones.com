@@ -36,14 +36,8 @@ export function computeSystemHealth(input: {
   backlogStatus: SourceStatus;
   counts: TaskCounts | null;
   git: Pick<GitSnapshot, "status" | "dirty">;
-  github: Pick<
-    GithubSnapshot,
-    | "status"
-    | "ciLatestConclusion"
-    | "ciLatestStatus"
-    | "ciLatestHeadSha"
-    | "ciShaMatch"
-  >;
+  github: Pick<GithubSnapshot, "status" | "ciLatestConclusion" | "ciLatestStatus"> &
+    Partial<Pick<GithubSnapshot, "ciLatestHeadSha" | "ciShaMatch">>;
   humanGate: Pick<HumanGateSnapshot, "present" | "status">;
   /** When true, critical Fedora telemetry is stale → at least DEGRADED. */
   telemetryStale?: boolean | null;
