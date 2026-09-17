@@ -18,7 +18,9 @@ import {
   claimTask,
   ensureRuntimeLeaseForActiveClaims,
   mutateBacklogAtomic,
+  releaseTask,
   resumeInspection,
+  setTaskCheckpoint,
 } from "./lib/x200-claim.mjs";
 import {
   buildRuntimeLease,
@@ -280,4 +282,86 @@ test("renew while another worker holds the lease is still refused", () => {
   });
   assert.equal(second.ok, false);
   assert.equal(second.error, "LOCK_HELD");
+});
+
+test("checkpoint survives release and re-claim with a new executionId", () => {
+  const backlog = createBacklogDocument([
+    createTaskDocument({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }),
+    createTaskDocument({
+      id: "T002",
+      status: "PRÊTE",
+      dependencies: ["T001"],
+      maxAutomaticAttempts: 2,
+    }),
+  ]);
+  const first = claimTask(backlog, { taskId: "T002", workerId: "worker-a" });
+  assert.equal(first.ok, true);
+  const executionId1 = first.task.claim.executionId;
+  assert.ok(executionId1);
+
+  const withCp = setTaskCheckpoint(first.data, {
+    taskId: "T002",
+    workerId: "worker-a",
+    token: first.task.claim.token,
+    runtimeLease: first.runtimeLease,
+    checkpoint: {
+      summary: "quality-gate local PASS",
+      evidenceRefs: [".x200/quality-results.json"],
+      nextAction: "push and await quality CI",
+    },
+  });
+  assert.equal(withCp.ok, true);
+  assert.equal(withCp.task.checkpoint.summary, "quality-gate local PASS");
+
+  const foreign = setTaskCheckpoint(withCp.data, {
+    taskId: "T002",
+    workerId: "worker-b",
+    checkpoint: { summary: "hijack" },
+  });
+  assert.equal(foreign.ok, false);
+
+  const released = releaseTask(withCp.data, {
+    taskId: "T002",
+    workerId: "worker-a",
+    token: first.task.claim.token,
+  });
+  assert.equal(released.ok, true);
+  assert.equal(released.task.status, "PRÊTE");
+  assert.equal(released.task.checkpoint.summary, "quality-gate local PASS");
+
+  const second = claimTask(released.data, { taskId: "T002", workerId: "worker-b" });
+  assert.equal(second.ok, true);
+  assert.equal(second.task.checkpoint.summary, "quality-gate local PASS");
+  assert.equal(second.task.nextAction, "push and await quality CI");
+  assert.ok(second.task.claim.executionId);
+  assert.notEqual(second.task.claim.executionId, executionId1);
+});
+
+test("third automatic resume is refused (maxAutomaticAttempts=2)", () => {
+  let backlog = createBacklogDocument([
+    createTaskDocument({ id: "T001", status: "TERMINÉE", evidence: ["ok"] }),
+    createTaskDocument({
+      id: "T002",
+      status: "PRÊTE",
+      dependencies: ["T001"],
+      maxAutomaticAttempts: 2,
+      attempts: 0,
+    }),
+  ]);
+
+  for (let i = 0; i < 3; i += 1) {
+    const claimed = claimTask(backlog, { taskId: "T002", workerId: `worker-${i}` });
+    assert.equal(claimed.ok, true, `claim ${i + 1} should succeed`);
+    const released = releaseTask(claimed.data, {
+      taskId: "T002",
+      workerId: `worker-${i}`,
+      token: claimed.task.claim.token,
+    });
+    assert.equal(released.ok, true);
+    backlog = released.data;
+  }
+
+  const blocked = claimTask(backlog, { taskId: "T002", workerId: "worker-x" });
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.error, "MAX_AUTOMATIC_ATTEMPTS");
 });

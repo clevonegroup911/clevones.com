@@ -4722,10 +4722,21 @@
       "consecutiveSameCauseFailures": 0,
       "blockedReason": null,
       "claim": null,
-      "evidenceRecords": [],
+      "evidenceRecords": [
+        {
+          "type": "control",
+          "command": "npm run x200:quality-gate",
+          "result": "pass",
+          "exitCode": 0,
+          "reference": ".x200/quality-results.json",
+          "version": null,
+          "at": "2026-09-17T11:30:08.752Z",
+          "location": ".x200/quality-results.json"
+        }
+      ],
       "regressionOf": null,
-      "nextAction": "add checkpoint field + resume preserve tests",
-      "lastTransitionReason": "[X200-AUTOPLAN] master-prompt §7: checkpoint field missing for verified resume",
+      "nextAction": "réconcilier le job quality puis clôturer et continuer dans le même cycle",
+      "lastTransitionReason": "contrôles locaux réussis ; attente du job quality",
       "id": "T083",
       "title": "Durable task checkpoint for verified resume",
       "objective": "Persist a verified checkpoint on EN_COURS tasks so resume after lease expiry restarts from the last checked point with a new execution id, without replaying uncertain external effects.",
@@ -4738,10 +4749,7 @@
         "scripts/lib/x200-claim.mjs",
         "scripts/lib/x100-backlog.mjs",
         "scripts/x200-runtime-lease.test.mjs",
-        "scripts/x200-governance.test.mjs",
-        "backlog.json",
-        "TASK_REPORT.md",
-        "reports/tasks"
+        "scripts/x200-governance.test.mjs"
       ],
       "acceptanceCriteria": [
         "Task schema supports optional checkpoint { at, summary, evidenceRefs, nextAction } without breaking migration",
@@ -4754,11 +4762,11 @@
         "npm run x200:test",
         "node --test scripts/x200-runtime-lease.test.mjs scripts/x200-governance.test.mjs"
       ],
-      "status": "PRÊTE",
+      "status": "EN_CONTRÔLE",
       "evidence": [],
       "estimatedCost": 3,
       "risk": "medium",
-      "attempts": 0,
+      "attempts": 1,
       "requiresHuman": false,
       "updatedAt": "2026-09-17"
     }
@@ -6147,9 +6155,21 @@
       "taskId": "T082",
       "status": "EN_CONTRÔLE",
       "note": "contrôles locaux réussis ; attente du job quality"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "EN_COURS",
+      "note": "réservation par local:fedora"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "EN_CONTRÔLE",
+      "note": "contrôles locaux réussis ; attente du job quality"
     }
   ],
-  "registryVersion": 159,
+  "registryVersion": 162,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,

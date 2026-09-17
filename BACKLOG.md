@@ -3,15 +3,15 @@
 Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 
 - Schéma : 2.0.0
-- Registre : 159
+- Registre : 162
 - Mode : single-executor
 - Mis à jour : 2026-09-17
 
 ## Compteurs
 
 - EN_COURS : 0
-- EN_CONTRÔLE : 2
-- PRÊTE : 1
+- EN_CONTRÔLE : 3
+- PRÊTE : 0
 - BLOQUÉE : 0
 - ÉCHOUÉE : 0
 - À_FAIRE : 0
@@ -89,4 +89,4 @@ Vue générée depuis `backlog.json`. Ne pas éditer à la main.
 | T080 | P1 | TERMINÉE | Wire agentic journal writers from orchestrator + approval engine | non |
 | T081 | P0 | EN_CONTRÔLE | Redact STALE Fedora telemetry identity in Control Center | non |
 | T082 | P0 | EN_CONTRÔLE | Bind Control Center CI SUCCESS to matching commit SHA | non |
-| T083 | P1 | PRÊTE | Durable task checkpoint for verified resume | non |
+| T083 | P1 | EN_CONTRÔLE | Durable task checkpoint for verified resume | non |

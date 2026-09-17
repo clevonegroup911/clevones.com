@@ -6,7 +6,7 @@
 
 ## ID
 
-T082
+T083
 
 ## Statut
 
@@ -14,34 +14,31 @@ EN_CONTRÔLE
 
 ## Objectif
 
-Lier le SUCCESS CI du Control Center au SHA du commit affiché ; un ancien run de branche ne valide pas un commit plus récent.
+Checkpoint durable + limite de reprises automatiques pour reprise vérifiée après expiration de bail.
 
 ## Résultat
 
-`selectWorkflowRunForCommit` + `bindCiToDisplayedCommit` ; MISMATCH efface `ciLatestConclusion` et alerte. Health exige `ciShaMatch=MATCH`. MERGED_TO_MAIN=NO DEPLOYED=NO.
+`normalizeCheckpoint` / `setTaskCheckpoint` ; préservation sur release/re-claim ; `executionId` renouvelé ; `MAX_AUTOMATIC_ATTEMPTS` après 1+2. MERGED_TO_MAIN=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `reports/tasks/T082.md`
+- `reports/tasks/T083.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/github.ts`
-- `lib/x200/types.ts`
-- `lib/x200/derive.ts`
-- `lib/x200/control-center.ts`
-- `lib/x200/github-client.test.ts`
-- fixtures Control Center / mirror / e2e / human-actions
-- `backlog.json` / `TASK_REPORT.md`
+- `scripts/lib/x100-backlog.mjs`
+- `scripts/lib/x200-claim.mjs`
+- `scripts/x200-runtime-lease.test.mjs`
+- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md`
 
 ## Commandes
 
-- npm run x200:quality-gate -- --task T082
+- npm run x200:quality-gate -- --task T083
 
 ## Tests réussis
 
-- QUALITY_GATE_OK T082
-- github-client + control-center tests PASS
+- QUALITY_GATE_OK T083
+- lease + governance tests PASS (incl. checkpoint + MAX_AUTOMATIC_ATTEMPTS)
 
 ## Tests échoués
 
@@ -49,20 +46,20 @@ Lier le SUCCESS CI du Control Center au SHA du commit affiché ; un ancien run d
 
 ## Lint
 
-- non relancé globalement (delta lib/x200 ; tests unitaires PASS)
+- N/A scripts .mjs
 
 ## Type-check
 
-- non relancé globalement cette étape
+- N/A scripts .mjs
 
 ## Build
 
-- non relancé cette étape
+- non requis (gouvernance scripts)
 
 ## Sécurité
 
-- Pas de faux CI SUCCESS sur SHA mismatch
-- NOT_CONNECTED conservé si GitHub inaccessible
+- Seul le détenteur du bail peut écrire un checkpoint
+- Pas de secret dans checkpoint
 
 ## Commit
 
@@ -74,7 +71,7 @@ Lier le SUCCESS CI du Control Center au SHA du commit affiché ; un ancien run d
 
 ## Preuves
 
-- `.x200/quality-results.json` QUALITY_GATE_OK T082
+- `.x200/quality-results.json` QUALITY_GATE_OK T083
 
 ## Risques
 
@@ -82,8 +79,8 @@ Lier le SUCCESS CI du Control Center au SHA du commit affiché ; un ancien run d
 
 ## Blocage
 
-- attente job `quality` sur le SHA de commit T082
+- attente job `quality` sur le SHA final T081–T083
 
 ## Prochaine tâche prête
 
-- T083 (Durable task checkpoint for verified resume)
+- aucune automatique après clôture T081–T083 (gates humaines restantes)

@@ -6,8 +6,10 @@ import {
   canMarkTerminee,
   claimMatches,
   createEvidenceRecord,
+  DEFAULT_MAX_AUTOMATIC_ATTEMPTS,
   incrementRegistryVersion,
   isClaimExpired,
+  normalizeCheckpoint,
   SAME_CAUSE_FAILURE_LIMIT,
   selectNextTaskResult,
   utcDateStamp,
@@ -287,6 +289,21 @@ export function claimTask(data, {
     return { ok: false, error: "trois échecs identiques" };
   }
 
+  const maxAutomatic =
+    Number.isInteger(task.maxAutomaticAttempts)
+      ? task.maxAutomaticAttempts
+      : DEFAULT_MAX_AUTOMATIC_ATTEMPTS;
+  // attempts increments on claim: allow initial + maxAutomatic resumes.
+  if (task.attempts >= maxAutomatic + 1) {
+    return {
+      ok: false,
+      error: "MAX_AUTOMATIC_ATTEMPTS",
+      attempts: task.attempts,
+      maxAutomaticAttempts: maxAutomatic,
+      hint: "passer BLOQUÉE / intervention humaine — reprises automatiques épuisées",
+    };
+  }
+
   const active = activeWork(data);
   const activeInProgress = active.filter((item) => item.status === "EN_COURS");
   if (activeInProgress.length >= (data.wipLimits?.maxActiveTasks || 3)) {
@@ -312,14 +329,18 @@ export function claimTask(data, {
     status: "EN_COURS",
     attempts: task.attempts + 1,
     lastTransitionReason: `réservation par ${workerId}`,
-    nextAction: "exécuter le périmètre puis quality-gate",
+    nextAction: task.checkpoint?.nextAction
+      || "exécuter le périmètre puis quality-gate",
     updatedAt: utcDateStamp(now),
+    // Preserve verified checkpoint across lease expiry / re-claim.
+    checkpoint: normalizeCheckpoint(task.checkpoint),
     claim: {
       workerId,
       token: newClaimToken(),
       claimedAt,
       expiresAt,
       leaseSeconds: seconds,
+      executionId: randomBytes(8).toString("hex"),
     },
   };
 
@@ -359,8 +380,10 @@ export function releaseTask(data, { taskId, workerId, token, now = new Date() } 
     ...task,
     status: "PRÊTE",
     claim: null,
+    // Checkpoint survives release so resume continues from last verified point.
+    checkpoint: normalizeCheckpoint(task.checkpoint),
     lastTransitionReason: "réservation relâchée",
-    nextAction: "sélectionner à nouveau",
+    nextAction: task.checkpoint?.nextAction || "sélectionner à nouveau",
     updatedAt: utcDateStamp(now),
   };
   return {
@@ -369,6 +392,57 @@ export function releaseTask(data, { taskId, workerId, token, now = new Date() } 
     task: released,
     data: replaceTask(data, released),
     clearRuntimeLease: true,
+  };
+}
+
+/**
+ * Persist a verified checkpoint. Only the current claim holder may write.
+ * Does not bump attempts or change status.
+ */
+export function setTaskCheckpoint(data, {
+  taskId,
+  workerId,
+  token,
+  checkpoint,
+  now = new Date(),
+  runtimeLease = null,
+} = {}) {
+  const task = data.tasks.find((item) => item.id === taskId);
+  if (!task) {
+    return { ok: false, error: `tâche introuvable (${taskId})` };
+  }
+  if (task.status !== "EN_COURS") {
+    return { ok: false, error: `checkpoint interdit depuis ${task.status}` };
+  }
+  const effectiveClaim = mergeClaimWithRuntime(task.claim, runtimeLease, task.id);
+  if (!effectiveClaim) {
+    return { ok: false, error: "aucune réservation" };
+  }
+  if (isClaimExpired(effectiveClaim, now)) {
+    return { ok: false, error: "jeton de réservation expiré" };
+  }
+  if (!claimMatches(effectiveClaim, { workerId, token })) {
+    return { ok: false, error: "jeton ou travailleur non reconnus" };
+  }
+  const normalized = normalizeCheckpoint({
+    ...checkpoint,
+    at: checkpoint?.at || utcNow(now),
+  });
+  if (!normalized) {
+    return { ok: false, error: "checkpoint invalide (at + summary requis)" };
+  }
+  const updated = {
+    ...task,
+    checkpoint: normalized,
+    nextAction: normalized.nextAction || task.nextAction,
+    lastTransitionReason: "checkpoint vérifié enregistré",
+    updatedAt: utcDateStamp(now),
+  };
+  return {
+    ok: true,
+    action: "checkpoint",
+    task: updated,
+    data: replaceTask(data, updated),
   };
 }
 
