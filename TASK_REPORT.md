@@ -14,77 +14,83 @@ TERMINÉE
 
 ## Objectif
 
-Checkpoint durable + limite de reprises automatiques ; clôture T081–T083 après CI FULL SUCCESS.
+Aligner CI FULL sur le HEAD exact de PR #13 ; corriger le flaky Playwright mobile (CONFIRM désactivé sans justification) sans rejouer T081–T083.
 
 ## Résultat
 
-T081–T083 `TERMINÉE` sur head `d3486a2` — quality SUCCESS run 35216773612. MERGED_TO_MAIN=NO DEPLOYED=NO.
+SHA alignés avant correctif Playwright :
+
+```text
+HEAD = 6ac63d7b57c5386ac3e96e06a117eddb42b81169
+```
+
+`6ac63d7` = métadonnées only après code FULL `d3486a2`. FULL pré-merge run 35219274560 a échoué (`playwright` : `x200-preview-failed` absent car CONFIRM forcé sur bouton disabled). Correctif e2e : fill justification avant CONFIRM. MERGED=NO DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `reports/tasks/T081.md`
-- `reports/tasks/T082.md`
-- `reports/tasks/T083.md`
+- aucun
 
 ## Fichiers modifiés
 
-- `lib/x200/telemetry.ts` / Control Center ACTIVE AGENT (T081)
-- `lib/x200/github.ts` / derive / types (T082)
-- `scripts/lib/x100-backlog.mjs` / `x200-claim.mjs` (T083)
-- `backlog.json` / `BACKLOG.md` / `TASK_REPORT.md` / `PROJECT_CONTEXT.md`
+- `tests/e2e/x200-control-center.spec.ts`
+- `TASK_REPORT.md` / `backlog.json` / `BACKLOG.md` (preuves)
 
 ## Commandes
 
-- npm run x200:validate
-- npm run x200:quality-gate -- --task T081|T082|T083
-- gh run 35216773612
+- gh pr ready 13
+- gh run 35219274560 (FULL fail playwright)
+- git push (ce correctif) → attendre FULL sur nouveau HEAD
 
 ## Tests réussis
 
-- quality-gates locaux PASS
-- CI FULL quality SUCCESS run 35216773612 head d3486a2 (playwright=pass, typecheck=pass after follow-up fix)
+- CI METADATA/FAST 35217028393 sur `6ac63d7` : quality SUCCESS
+- CI FULL 35216773612 sur `d3486a2` : quality SUCCESS (code T081–T083)
+- Lint/typecheck/unit/build/audit : PASS sur FULL 35219274560 ; playwright FAIL (corrigé ici)
 
 ## Tests échoués
 
-- aucun sur le SHA final
+- Playwright mobile T049 preview-failed sur `6ac63d7` FULL (corrigé localement, revalidation CI en cours)
 
 ## Lint
 
-- PASS CI
+- PASS (35219274560)
 
 ## Type-check
 
-- PASS CI (d3486a2)
+- PASS (35219274560)
 
 ## Build
 
-- PASS CI
+- PASS (35219274560)
 
 ## Sécurité
 
-- Secrets scan PASS CI
-- Pas de faux SUCCESS CI / télémétrie STALE
+- secrets scan PASS ; audit PASS (35219274560)
+- MERGED=NO DEPLOYED=NO
 
 ## Commit
 
-- `d3486a2056f67cb8cc9acab6626ac719baaf9c2e`
+- tip `feat/x200-agentic-core` (PR #13 head — verify via `git rev-parse HEAD`)
 
 ## Pull Request
 
-- https://github.com/clevonegroup911/clevones.com/pull/13 (draft)
+- https://github.com/clevonegroup911/clevones.com/pull/13 (ready for review)
 
 ## Preuves
 
-- https://github.com/clevonegroup911/clevones.com/actions/runs/35216773612
+- Alignement antérieur : LOCAL=REMOTE=PR=`6ac63d7…`
+- FULL fail : https://github.com/clevonegroup911/clevones.com/actions/runs/35219274560
+- Base `feat/x200-boot-autostart` @ `937c909` ancêtre (à jour)
+- T081/T082/T083 TERMINÉE (pas de rejeu)
 
 ## Risques
 
-- low
+- medium — tip change après correctif e2e ; FULL tip requis avant merge
 
 ## Blocage
 
-- aucun automatique — gates humaines : merge PR #13, deploy, rails PSP live, SMTP réel
+- attendre quality FULL SUCCESS exactement sur le HEAD courant après push
 
 ## Prochaine tâche prête
 
-- aucune (NO_READY_TASK)
+- aucune automatique

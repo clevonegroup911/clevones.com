@@ -6224,9 +6224,15 @@
       "taskId": "T083",
       "status": "TERMINÉE",
       "note": "[X200-FAST] CI FULL quality SUCCESS run 35216773612 head d3486a2056f67cb8cc9acab6626ac719baaf9c2e; close T081–T083"
+    },
+    {
+      "at": "2026-09-17",
+      "taskId": "T083",
+      "status": "TERMINÉE",
+      "note": "[X200] PR#13 FULL premerge playwright fail on 6ac63d7 (RUN_HEALTH_CHECKS confirm without reason); e2e fix without replaying T081–T083"
     }
   ],
-  "registryVersion": 163,
+  "registryVersion": 164,
   "executionMode": "single-executor",
   "claimPolicy": {
     "leaseSeconds": 7200,
