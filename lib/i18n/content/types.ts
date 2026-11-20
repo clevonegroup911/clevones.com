@@ -23,22 +23,27 @@ import type {
 } from "@/lib/i18n/content/pages";
 
 export type ShellNavLabels = {
+  /** Primary menu — 5 entries. */
   main: Record<
+    Extract<
+      PageKey,
+      "solutions" | "clevoneDms" | "about" | "governance" | "contact"
+    >,
+    string
+  >;
+  /** "More" menu. */
+  secondary: Record<
     Extract<
       PageKey,
       | "challenge"
       | "positioning"
-      | "solutions"
       | "methodology"
-      | "governance"
       | "ecosystem"
       | "evidence"
-      | "contact"
+      | "whyNow"
+      | "faq"
+      | "insights"
     >,
-    string
-  >;
-  secondary: Record<
-    Extract<PageKey, "whyNow" | "about" | "faq" | "insights">,
     string
   >;
   legal: Record<Extract<PageKey, "legal" | "privacy">, string>;

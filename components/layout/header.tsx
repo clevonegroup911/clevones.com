@@ -20,18 +20,9 @@ import { cn } from "@/lib/utils";
 
 function isActiveNavItem(pathname: string, item: LocalizedNavItem) {
   if (item.pageKey) {
-    if (findPageKeyByPath(pathname) === item.pageKey) {
-      return true;
-    }
-
-    if (
-      item.pageKey === "solutions" &&
-      (pathname === item.href || pathname.startsWith(`${item.href}/`))
-    ) {
-      return true;
-    }
-
-    return false;
+    // CLEVONE DMS (/domaines/clevone-dms, /solutions/clevone-dms) has its own
+    // entry, so it highlights CLEVONE DMS rather than Solutions.
+    return findPageKeyByPath(pathname) === item.pageKey;
   }
 
   if (item.href === "/") {
@@ -286,6 +277,9 @@ export function Header() {
               aria-label={shell.secondaryNavigationLabel}
               className="mt-2 border-t border-border-subtle/50 pt-2"
             >
+              <p className="px-3 pt-2 pb-1 text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
+                {shell.footerSecondary}
+              </p>
               {navigation.secondary.map((item) => (
                 <Link
                   key={item.pageKey ?? item.href}

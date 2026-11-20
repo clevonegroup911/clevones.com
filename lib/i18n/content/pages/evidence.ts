@@ -90,19 +90,19 @@ export const evidencePageContent = {
     architecture: {
       eyebrow: "Architecture",
       title: "A published coordination model",
-      description: "Platform architecture explains how territory, actors, flows, modules, and execution relate.",
+      description: "The coordination model explains how territory, actors, flows, modules, and execution relate.",
       paragraphs: [
-        "The hub-and-perimeter model and entity mandates are documented on the Platform page.",
+        "The hub-and-perimeter model and entity mandates are documented on the Ecosystem page.",
         "No invented partners or metrics are needed to evaluate the model. The architecture is readable as structure.",
       ],
-      link: { href: "/ecosystem", label: "Explore the Platform" },
+      link: { href: "/ecosystem", label: "Explore the Ecosystem" },
     },
     documentation: {
       eyebrow: "Documentation",
       title: "Institutional pages as source of truth",
       description: "Public documentation lives in bilingual institutional pages with honest publication status.",
       paragraphs: [
-        "Positioning, About, Solutions, Methodology, Governance, Platform, FAQ, and Legal/Privacy pages are versioned institutional surfaces.",
+        "Positioning, About, Solutions, Methodology, Governance, Ecosystem, FAQ, and Legal/Privacy pages are versioned institutional surfaces.",
         "Insights publish strategic notes. Where full article bodies are forthcoming, the site says so.",
       ],
       items: [
@@ -201,13 +201,13 @@ export const evidencePageContent = {
       title: "Documented product journey",
       description: "What exists is the CEOS institutional journey. Future work is only what prior missions have recorded.",
       paragraphs: [
-        "Delivered surfaces include Home, Challenge, Why Now, Positioning, About, Solutions, Methodology, Governance, Platform, Evidence, FAQ, Contact, Legal, and Privacy.",
+        "Delivered surfaces include Home, Challenge, Why Now, Positioning, About, Solutions, Methodology, Governance, Ecosystem, Evidence, FAQ, Contact, Legal, and Privacy.",
         "No commercial product roadmap or growth targets are claimed here.",
       ],
       items: [
         {
           title: "Narrative journey",
-          description: "Challenge → Why Now → Positioning → About → Solutions → Methodology → Governance → Platform → Evidence → FAQ → Contact.",
+          description: "Challenge → Why Now → Positioning → About → Solutions → Methodology → Governance → Ecosystem → Evidence → FAQ → Contact.",
         },
         {
           title: "Evidence distinct from Insights",
@@ -256,19 +256,19 @@ export const evidencePageContent = {
     architecture: {
       eyebrow: "Architecture",
       title: "Un modèle de coordination publié",
-      description: "L'architecture de plateforme explique comment territoire, acteurs, flux, modules et exécution se relient.",
+      description: "Le modèle de coordination explique comment territoire, acteurs, flux, modules et exécution se relient.",
       paragraphs: [
-        "Le modèle hub et périphérie et les mandats des entités sont documentés sur la page Plateforme.",
+        "Le modèle hub et périphérie et les mandats des entités sont documentés sur la page Écosystème.",
         "Aucun partenaire inventé ni métrique n'est nécessaire pour évaluer le modèle. L'architecture se lit comme une structure.",
       ],
-      link: { href: "/ecosysteme", label: "Explorer la Plateforme" },
+      link: { href: "/ecosysteme", label: "Explorer l'Écosystème" },
     },
     documentation: {
       eyebrow: "Documentation",
       title: "Les pages institutionnelles comme source de vérité",
       description: "La documentation publique vit dans des pages institutionnelles bilingues avec un statut de publication honnête.",
       paragraphs: [
-        "Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Plateforme, FAQ et Mentions / Confidentialité sont des surfaces institutionnelles versionnées.",
+        "Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Écosystème, FAQ et Mentions / Confidentialité sont des surfaces institutionnelles versionnées.",
         "Analyses publie des notes stratégiques. Lorsque le corps complet d'un article est à venir, le site le dit.",
       ],
       items: [
@@ -367,13 +367,13 @@ export const evidencePageContent = {
       title: "Parcours produit documenté",
       description: "Ce qui existe est le parcours institutionnel CEOS. Le futur n'est énoncé que s'il a déjà été consigné dans les missions antérieures.",
       paragraphs: [
-        "Les surfaces livrées incluent Accueil, Défi, Pourquoi maintenant, Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Plateforme, Preuves, FAQ, Contact, Mentions et Confidentialité.",
+        "Les surfaces livrées incluent Accueil, Défi, Pourquoi maintenant, Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Écosystème, Preuves, FAQ, Contact, Mentions et Confidentialité.",
         "Aucune feuille de route commerciale ni cible de croissance n'est revendiquée ici.",
       ],
       items: [
         {
           title: "Parcours narratif",
-          description: "Défi → Pourquoi maintenant → Positionnement → À propos → Solutions → Méthodologie → Gouvernance → Plateforme → Preuves → FAQ → Contact.",
+          description: "Défi → Pourquoi maintenant → Positionnement → À propos → Solutions → Méthodologie → Gouvernance → Écosystème → Preuves → FAQ → Contact.",
         },
         {
           title: "Preuves distinctes des Analyses",
