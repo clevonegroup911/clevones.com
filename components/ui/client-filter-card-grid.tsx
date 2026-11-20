@@ -18,7 +18,7 @@ export function ClientFilterCardGrid({ filters }: ClientFilterCardGridProps) {
           key={filter.title}
           variant="outlined"
           padding="md"
-          className="border-border-subtle/60 bg-white/[0.02] transition-colors hover:border-gold/20 hover:bg-white/[0.04]"
+          className="border-border-subtle/60 bg-foreground/[0.02] transition-colors hover:border-gold/20 hover:bg-foreground/[0.04]"
         >
           <CardTitle className="text-foreground">{filter.title}</CardTitle>
           <CardDescription className="text-gray-muted">

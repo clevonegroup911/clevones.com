@@ -9,7 +9,7 @@ import { formControlResponsive } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
 
 export const formControlClassName = cn(
-  "w-full min-w-0 rounded-sm border border-border-subtle bg-surface px-4 text-white outline-none transition-colors placeholder:text-gray-muted/60 focus:border-gold/40 focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-50",
+  "w-full min-w-0 rounded-sm border border-border-subtle bg-surface px-4 text-foreground outline-none transition-colors placeholder:text-gray-muted/60 focus:border-gold/40 focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-50",
   formControlResponsive,
 );
 

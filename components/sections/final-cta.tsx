@@ -16,7 +16,7 @@ export async function FinalCtaSection() {
           href: finalCta.initiative.href,
           label: finalCta.initiative.label,
           variant: "outline",
-          className: "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
+          className: "border-border text-foreground hover:bg-navy-hover w-full sm:w-auto",
         },
       ]}
     />

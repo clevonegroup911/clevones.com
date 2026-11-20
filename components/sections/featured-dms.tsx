@@ -49,7 +49,7 @@ export function FeaturedDmsSection({
           <CardDescription className="mt-4 max-w-3xl text-base">
             {content.description}
           </CardDescription>
-          <p className="mt-8 text-xs font-semibold tracking-[0.15em] text-white uppercase">
+          <p className="mt-8 text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
             {content.capabilitiesLabel}
           </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

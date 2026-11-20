@@ -37,7 +37,7 @@ function EntityCard({
       className={cn(
         "relative h-full transition-colors",
         isCentral &&
-          "border-gold/25 bg-surface-elevated shadow-[0_0_40px_-12px_rgba(212,160,23,0.15)]",
+          "border-gold/25 bg-surface-elevated shadow-[0_0_40px_-12px_rgba(212,157,54,0.15)]",
         isOperational && "border-gold/30 bg-gold-subtle/30",
         !isCentral && !isOperational && "hover:border-border-subtle",
         className,

@@ -93,7 +93,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-subtle/50 bg-surface-elevated/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border-subtle/50 bg-surface-elevated/95 backdrop-blur-xl">
       <Container className="flex h-16 items-center justify-between gap-3 sm:h-[4.5rem] sm:gap-4">
         <BrandLogo
           variant="header"
@@ -112,8 +112,8 @@ export function Header() {
               className={cn(
                 "text-sm font-medium transition-colors focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
                 isActiveNavItem(pathname, item)
-                  ? "text-white"
-                  : "text-gray-muted hover:text-white focus-visible:text-white",
+                  ? "text-foreground"
+                  : "text-gray-muted hover:text-foreground focus-visible:text-foreground",
               )}
             >
               {item.label}
@@ -126,8 +126,8 @@ export function Header() {
                 className={cn(
                   "inline-flex items-center gap-1 text-sm font-medium transition-colors focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
                   secondaryActive || isMoreOpen
-                    ? "text-white"
-                    : "text-gray-muted hover:text-white",
+                    ? "text-foreground"
+                    : "text-gray-muted hover:text-foreground",
                 )}
                 aria-expanded={isMoreOpen}
                 aria-haspopup="true"
@@ -166,8 +166,8 @@ export function Header() {
                       className={cn(
                         "block px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/40",
                         isActiveNavItem(pathname, item)
-                          ? "bg-white/5 text-white"
-                          : "text-gray-muted hover:bg-white/5 hover:text-white",
+                          ? "bg-foreground/5 text-foreground"
+                          : "text-gray-muted hover:bg-foreground/5 hover:text-foreground",
                       )}
                       onClick={() => setIsMoreOpen(false)}
                     >
@@ -185,7 +185,7 @@ export function Header() {
           <ButtonLink
             href={shell.cta.href}
             size="md"
-            variant="secondary"
+            variant="primary"
             className="hidden px-5 xl:inline-flex"
           >
             {shell.cta.label}
@@ -193,7 +193,7 @@ export function Header() {
           <ButtonLink
             href={shell.cta.href}
             size="md"
-            variant="secondary"
+            variant="primary"
             className="px-5 xl:hidden"
           >
             {shell.cta.shortLabel}
@@ -202,7 +202,7 @@ export function Header() {
 
         <button
           type="button"
-          className="inline-flex h-11 w-11 shrink-0 touch-manipulation items-center justify-center rounded-sm border border-border-subtle text-white transition-colors hover:border-gold/30 hover:bg-white/5 lg:hidden"
+          className="inline-flex h-11 w-11 shrink-0 touch-manipulation items-center justify-center rounded-sm border border-border-subtle text-foreground transition-colors hover:border-gold/30 hover:bg-foreground/5 lg:hidden"
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
           aria-label={isOpen ? shell.closeMenu : shell.openMenu}
@@ -246,7 +246,7 @@ export function Header() {
       <div
         id="mobile-menu"
         className={cn(
-          "border-t border-border-subtle/50 bg-surface-elevated/98 backdrop-blur-xl lg:hidden",
+          "border-t border-border-subtle/50 bg-surface-elevated lg:hidden",
           isOpen
             ? "fixed inset-x-0 top-16 z-50 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain"
             : "hidden",
@@ -261,10 +261,10 @@ export function Header() {
                 href={item.href}
                 aria-current={isActiveNavItem(pathname, item) ? "page" : undefined}
                 className={cn(
-                  "touch-target flex items-center rounded-sm px-3 py-3 text-base font-medium transition-colors hover:bg-white/5 focus-visible:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
+                  "touch-target flex items-center rounded-sm px-3 py-3 text-base font-medium transition-colors hover:bg-foreground/5 focus-visible:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
                   isActiveNavItem(pathname, item)
-                    ? "bg-white/5 text-white"
-                    : "text-gray-muted hover:text-white focus-visible:text-white",
+                    ? "bg-foreground/5 text-foreground"
+                    : "text-gray-muted hover:text-foreground focus-visible:text-foreground",
                 )}
                 onClick={closeMenu}
               >
@@ -286,10 +286,10 @@ export function Header() {
                   href={item.href}
                   aria-current={isActiveNavItem(pathname, item) ? "page" : undefined}
                   className={cn(
-                    "touch-target flex items-center rounded-sm px-3 py-3 text-base font-medium transition-colors hover:bg-white/5 focus-visible:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
+                    "touch-target flex items-center rounded-sm px-3 py-3 text-base font-medium transition-colors hover:bg-foreground/5 focus-visible:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
                     isActiveNavItem(pathname, item)
-                      ? "bg-white/5 text-white"
-                      : "text-gray-muted hover:text-white focus-visible:text-white",
+                      ? "bg-foreground/5 text-foreground"
+                      : "text-gray-muted hover:text-foreground focus-visible:text-foreground",
                   )}
                   onClick={closeMenu}
                 >
@@ -305,7 +305,7 @@ export function Header() {
             <ButtonLink
               href={shell.cta.href}
               size="lg"
-              variant="secondary"
+              variant="primary"
               className="w-full"
               onClick={closeMenu}
             >

@@ -56,7 +56,7 @@ export function CompanyContact({
         <span className="text-muted">{phoneLabel}: </span>
         <a
           href={company.phone.href}
-          className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+          className="text-gray-muted transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
         >
           {company.phone.display}
         </a>
@@ -66,7 +66,7 @@ export function CompanyContact({
         <a
           href={company.email.href}
           className={cn(
-            "text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
+            "text-gray-muted transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
             breakUrl,
           )}
         >
