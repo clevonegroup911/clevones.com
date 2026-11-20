@@ -6,9 +6,10 @@ export function initiativeEmailTemplate(
   locale: "fr" | "en" = "en",
 ): EmailMessage {
   const intro =
-    locale === "fr"
+    prepared.intro?.[locale] ??
+    (locale === "fr"
       ? "Nouvelle soumission d'initiative structurée."
-      : "New structured initiative submission.";
+      : "New structured initiative submission.");
 
   const text = [
     intro,

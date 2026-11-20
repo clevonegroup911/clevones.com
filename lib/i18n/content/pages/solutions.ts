@@ -33,6 +33,8 @@ export type SolutionsPageContent = {
     note: string;
     href: string;
     cta: string;
+    quoteHref?: string;
+    quoteCta?: string;
   };
 };
 
@@ -95,10 +97,11 @@ export const solutionsPageContent = {
       ],
     },
     cta: {
-      title: "See how engagement is sequenced",
-      description: "Five steps from territorial reading to strategic reporting.",
+      title: "A product or service need?",
+      description: "Request a quote, or present a multi-party initiative.",
       actions: [
-        { href: "/methodology", label: "See the methodology" },
+        { href: "/contact?intent=product", label: "Request a quote" },
+        { href: "/contact", label: "Present an initiative", variant: "outline" },
       ],
     },
     featuredProduct: {
@@ -123,9 +126,11 @@ export const solutionsPageContent = {
         "Users & Permissions",
         "Cloud Synchronization",
       ],
-      note: "Capabilities describe the product architecture and roadmap.",
+      note: "Capabilities describe the product scope and roadmap. Contact us to check availability for your organization.",
       href: "/solutions/clevone-dms",
       cta: "Explore CLEVONE DMS",
+      quoteHref: "/contact?intent=product",
+      quoteCta: "Request a quote",
     },
   },
   fr: {
@@ -184,11 +189,11 @@ export const solutionsPageContent = {
       ],
     },
     cta: {
-      title: "Voir comment l'engagement est séquencé",
-      description:
-        "Cinq étapes, de la lecture territoriale au reporting stratégique.",
+      title: "Un besoin de produit ou de service ?",
+      description: "Demandez un devis, ou présentez une initiative multi-acteurs.",
       actions: [
-        { href: "/methodologie", label: "Voir la méthodologie" },
+        { href: "/collaboration?intent=product", label: "Demander un devis" },
+        { href: "/collaboration", label: "Présenter une initiative", variant: "outline" },
       ],
     },
     featuredProduct: {
@@ -213,9 +218,11 @@ export const solutionsPageContent = {
         "Utilisateurs et permissions",
         "Synchronisation cloud",
       ],
-      note: "Les capacités décrivent l'architecture produit et la feuille de route.",
+      note: "Les fonctions présentées décrivent le périmètre du produit et sa feuille de route. Contactez-nous pour connaître sa disponibilité pour votre organisation.",
       href: "/domaines/clevone-dms",
       cta: "Découvrir CLEVONE DMS",
+      quoteHref: "/collaboration?intent=product",
+      quoteCta: "Demander un devis",
     },
   },
 } as const satisfies LocalizedPageContent<SolutionsPageContent>;

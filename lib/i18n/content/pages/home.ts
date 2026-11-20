@@ -118,6 +118,8 @@ export type HomePageContent = {
     note: string;
     href: string;
     cta: string;
+    quoteHref?: string;
+    quoteCta?: string;
   };
   filters: {
     eyebrow: string;
@@ -498,6 +500,8 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       note: "The functions listed describe the product scope and roadmap. Contact us to check availability for your organization.",
       href: "/solutions/clevone-dms",
       cta: "Explore CLEVONE DMS",
+      quoteHref: "/contact?intent=product",
+      quoteCta: "Request a quote",
     },
     filters: {
       eyebrow: "Engagement criteria",
@@ -794,6 +798,8 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       note: "Les fonctions présentées décrivent le périmètre du produit et sa feuille de route. Contactez-nous pour connaître sa disponibilité pour votre organisation.",
       href: "/domaines/clevone-dms",
       cta: "Découvrir CLEVONE DMS",
+      quoteHref: "/collaboration?intent=product",
+      quoteCta: "Demander un devis",
     },
     filters: {
       eyebrow: "Critères d'engagement",

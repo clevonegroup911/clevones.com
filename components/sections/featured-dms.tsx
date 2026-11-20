@@ -17,6 +17,9 @@ export type FeaturedDmsContent = {
   note: string;
   href: string;
   cta: string;
+  /** Product inquiry / quote path (contact form, intent=product). */
+  quoteHref?: string;
+  quoteCta?: string;
 };
 
 export function FeaturedDmsSection({
@@ -62,7 +65,12 @@ export function FeaturedDmsSection({
           <p className="mt-6 text-xs leading-relaxed text-navy-muted">
             {content.note}
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {content.quoteHref && content.quoteCta ? (
+              <ButtonLink href={content.quoteHref} className={buttonFullMobile}>
+                {content.quoteCta}
+              </ButtonLink>
+            ) : null}
             <ButtonLink
               href={content.href}
               variant="secondary"

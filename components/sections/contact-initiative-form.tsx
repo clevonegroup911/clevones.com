@@ -26,11 +26,13 @@ import {
 import { getContent, getLocaleFromPath } from "@/lib/i18n";
 import type { ContactIntent } from "@/lib/i18n/content/pages/contact";
 
+type GovernanceContactIntent = Exclude<ContactIntent, "product">;
+
 type ContactInitiativeFormProps = {
-  intent?: ContactIntent;
+  intent?: GovernanceContactIntent;
 };
 
-function createInitialForm(intent: ContactIntent): InitiativeSubmission {
+function createInitialForm(intent: GovernanceContactIntent): InitiativeSubmission {
   return {
     ...emptyInitiativeSubmission(),
     initiativeStage:
@@ -76,7 +78,7 @@ export function ContactInitiativeForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const validationErrors = validateInitiativeSubmission(form);
+    const validationErrors = validateInitiativeSubmission(form, intent);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -91,7 +93,7 @@ export function ContactInitiativeForm({
     setSubmitError(null);
 
     try {
-      const result = await submitInitiativeSubmission(form);
+      const result = await submitInitiativeSubmission(form, intent);
       setSuccessMessage(result.message);
       setSubmitted(true);
       setForm(createInitialForm(intent));
@@ -565,9 +567,7 @@ export function ContactInitiativeForm({
 
         <div className="flex flex-col-reverse gap-4 border-t border-border-subtle pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-relaxed text-pretty text-muted">
-            {formContent.requiredNotice.split("*")[0]}
-            <span className="text-gold-muted">*</span>. Submissions are
-            {formContent.requiredNotice.split("*")[1]}
+            {formContent.requiredNotice}
           </p>
           <Button
             type="submit"
