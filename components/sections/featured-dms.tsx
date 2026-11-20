@@ -1,5 +1,5 @@
 import { ButtonLink } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -42,10 +42,6 @@ export function FeaturedDmsSection({
           <div className={cardAccentLine} aria-hidden />
           <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
             {content.type}
-          </p>
-          <CardTitle className="mt-3 text-xl sm:text-2xl">{content.name}</CardTitle>
-          <p className="mt-2 text-sm font-medium text-gold-muted">
-            {content.positioning}
           </p>
           <CardDescription className="mt-4 max-w-3xl text-base">
             {content.description}
