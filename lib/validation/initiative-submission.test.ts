@@ -45,7 +45,8 @@ test("product inquiry: valid payload parses", () => {
 });
 
 test("product inquiry: missing required field is reported", () => {
-  const { need: _need, ...withoutNeed } = validProduct;
+  const withoutNeed: Partial<typeof validProduct> = { ...validProduct };
+  delete withoutNeed.need;
   const parsed = initiativeSubmissionSchema.safeParse(withoutNeed);
   assert.equal(parsed.success, false);
   if (!parsed.success) {

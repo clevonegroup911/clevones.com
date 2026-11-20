@@ -35,6 +35,9 @@
 
   --color-white: #ffffff;
 
+  /* Error text — light red on the dark admin; overridden per scope below. */
+  --color-danger: #f87171;
+
   /* Semantic surfaces — default (dark) kept for /admin and the portal.
      The public site applies `.site-light` (see below). */
   --color-background: var(--color-charcoal);
@@ -89,6 +92,7 @@
   --color-border: #c3cedd;
   --color-border-subtle: #dde3ec;
   --color-charcoal: #173766;
+  --color-danger: #b91c1c;
   color: var(--color-foreground);
   background-color: var(--color-background);
 }
@@ -110,6 +114,7 @@
   --color-border: #3b5a8c;
   --color-border-subtle: #2f4f82;
   --color-navy-hover: #1f4580;
+  --color-danger: #fca5a5;
   color: var(--color-foreground);
 }
 

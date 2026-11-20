@@ -297,7 +297,7 @@ export function ContactProductForm() {
             className={cn(
               "rounded-sm border px-4 py-4",
               errors.privacyConsent
-                ? "border-red-600/60 bg-red-600/5"
+                ? "border-danger/60 bg-danger/5"
                 : "border-border-subtle bg-surface",
             )}
           >
@@ -327,7 +327,7 @@ export function ContactProductForm() {
             {errors.privacyConsent ? (
               <p
                 id="privacyConsent-error"
-                className="mt-3 text-xs text-red-700"
+                className="mt-3 text-xs text-danger"
                 role="alert"
               >
                 {errors.privacyConsent}
@@ -338,14 +338,14 @@ export function ContactProductForm() {
 
         {submitError ? (
           <div
-            className="rounded-sm border border-red-600/40 bg-red-600/5 px-4 py-4"
+            className="rounded-sm border border-danger/40 bg-danger/5 px-4 py-4"
             role="alert"
             aria-live="assertive"
           >
-            <p className="text-sm font-medium text-red-700">
+            <p className="text-sm font-medium text-danger">
               {page.form.errorTitle}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-red-700">
+            <p className="mt-2 text-sm leading-relaxed text-danger">
               {submitError}
             </p>
           </div>
