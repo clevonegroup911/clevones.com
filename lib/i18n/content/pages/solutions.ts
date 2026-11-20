@@ -45,22 +45,22 @@ export const solutionsPageContent = {
     meta: {
       title: "Solutions",
       description:
-        "Clevones designs governed territorial architectures across its lawful fields of intervention.",
+        "CLEVONE SARL's products and services across its nine fields of activity — software, trade, logistics, energy, media, education, advisory and more.",
     },
     hero: {
-      eyebrow: "Domains",
-      title: "Where CLEVONES may design territorial architectures.",
+      eyebrow: "Solutions",
+      title: "Products and services for businesses and institutions.",
       subtitle:
-        "These are legal fields of intervention — not a menu of generic services.",
-      tagline: "One mandate. Several domains.",
+        "Software such as CLEVONE DMS, trade and distribution, logistics and advisory — within the fields set by our statutes.",
+      tagline: "One company. Nine fields of activity.",
     },
     introduction: {
       eyebrow: "Approach",
-      title: "Architecture in lawful fields — not multi-service operation",
+      title: "What we offer",
       paragraphs: [
-        "Corporate purpose defines where we may design and coordinate territorial architectures.",
-        "Domains expand capacity through the platform, specialized entities, or subsidiaries when required.",
-        "The governance platform remains a coordination layer — not an operator.",
+        "CLEVONE SARL develops, sells and operates products and services in the fields set by its corporate purpose.",
+        "Regulated activities (transport, energy, some advisory work) are carried out only once the required authorizations or approvals are obtained.",
+        "When we coordinate a multi-party initiative, we hold no stake in its execution.",
       ],
     },
     domains: {
@@ -77,20 +77,20 @@ export const solutionsPageContent = {
     },
     howEngagementWorks: {
       eyebrow: "Engagement",
-      title: "Architecture before execution",
+      title: "How we work with you",
       steps: [
         {
-          title: "Read the territory",
-          description: "Non-sensitive view of actors, constraints, and context.",
+          title: "Understand the need",
+          description: "Your organization, your constraints, what you want to achieve.",
         },
         {
-          title: "Design flows and governance",
-          description: "Map circulation. Define roles, reporting, and compliance.",
+          title: "Propose a solution",
+          description: "A product, a service or a coordination mission — with a clear scope and quote.",
         },
         {
-          title: "Coordinate delivery",
+          title: "Deliver and follow up",
           description:
-            "Align legitimate actors — and ecosystem entities when needed — without informal brokerage.",
+            "Deployment, training and support; for coordination missions, documented reporting.",
         },
       ],
     },
@@ -132,22 +132,22 @@ export const solutionsPageContent = {
     meta: {
       title: "Solutions",
       description:
-        "Clevones conçoit des architectures territoriales gouvernées dans ses champs d'intervention licites.",
+        "Les produits et services de CLEVONE SARL dans ses neuf domaines d'activité — logiciels, commerce, logistique, énergie, médias, éducation, conseil et plus.",
     },
     hero: {
-      eyebrow: "Domaines",
-      title: "Où CLEVONES peut concevoir des architectures territoriales.",
+      eyebrow: "Solutions",
+      title: "Des produits et services pour les entreprises et les institutions.",
       subtitle:
-        "Ce sont des champs juridiques d'intervention — pas un menu de services génériques.",
-      tagline: "Un mandat. Plusieurs domaines.",
+        "Des logiciels comme CLEVONE DMS, du commerce et de la distribution, de la logistique et du conseil — dans les domaines fixés par nos statuts.",
+      tagline: "Une société. Neuf domaines d'activité.",
     },
     introduction: {
       eyebrow: "Approche",
-      title: "Architecture dans des champs licites — pas une opération multiservices",
+      title: "Ce que nous proposons",
       paragraphs: [
-        "L'objet social définit où nous pouvons concevoir et coordonner des architectures territoriales.",
-        "Les domaines élargissent la capacité via la plateforme, des entités spécialisées ou des filiales si besoin.",
-        "La plateforme de gouvernance reste une couche de coordination — pas un opérateur.",
+        "CLEVONE SARL développe, vend et exploite des produits et services dans les domaines fixés par son objet social.",
+        "Les activités réglementées (transport, énergie, certains conseils) ne sont exercées qu'après obtention des autorisations ou agréments requis.",
+        "Quand nous coordonnons une initiative multi-acteurs, nous ne sommes pas partie prenante de son exécution.",
       ],
     },
     domains: {
@@ -164,22 +164,22 @@ export const solutionsPageContent = {
     },
     howEngagementWorks: {
       eyebrow: "Engagement",
-      title: "L'architecture avant l'exécution",
+      title: "Comment nous travaillons avec vous",
       steps: [
         {
-          title: "Lire le territoire",
+          title: "Comprendre le besoin",
           description:
-            "Vue non sensible des acteurs, contraintes et du contexte.",
+            "Votre organisation, vos contraintes, ce que vous voulez obtenir.",
         },
         {
-          title: "Concevoir flux et gouvernance",
+          title: "Proposer une solution",
           description:
-            "Cartographier la circulation. Définir rôles, reporting et conformité.",
+            "Un produit, un service ou une mission de coordination — avec un périmètre et un devis clairs.",
         },
         {
-          title: "Coordonner la livraison",
+          title: "Livrer et suivre",
           description:
-            "Aligner les acteurs légitimes — et les entités de l'écosystème si besoin — sans courtage informel.",
+            "Déploiement, formation et accompagnement ; pour les missions de coordination, un reporting documenté.",
         },
       ],
     },

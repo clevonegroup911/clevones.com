@@ -1,3 +1,7 @@
+import {
+  governanceAcknowledgmentText,
+  governanceAcknowledgmentTextFr,
+} from "@/lib/constants/brand-positioning";
 import type { HeroContent, LocalizedPageContent, PageMeta } from "./types";
 
 export type ContactIntent = "initiative" | "eligibility" | "collaboration";
@@ -64,7 +68,7 @@ export const contactPageContent = {
       },
     },
     form: {
-      governanceAcknowledgment: "I understand that Clevones is a neutral governance platform — not an operator, trader, or direct intermediary.",
+      governanceAcknowledgment: governanceAcknowledgmentText,
       submitLabel: "Submit initiative",
       sections: { organization: "Organization", actorType: "Actor type", initiative: "Initiative", confirmation: "Confirmation" },
       fields: {
@@ -160,7 +164,7 @@ export const contactPageContent = {
       },
     },
     form: {
-      governanceAcknowledgment: "Je comprends que Clevones est une plateforme neutre de gouvernance — non un opérateur, un négociant ou un intermédiaire direct.",
+      governanceAcknowledgment: governanceAcknowledgmentTextFr,
       submitLabel: "Soumettre l'initiative",
       sections: { organization: "Organisation", actorType: "Type d'acteur", initiative: "Initiative", confirmation: "Confirmation" },
       fields: {

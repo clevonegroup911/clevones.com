@@ -71,25 +71,25 @@ export type EcosystemPageContent = {
 export const ecosystemPageContent = {
   en: {
     meta: {
-      title: "Platform — How CLEVONES Works",
+      title: "Ecosystem — CLEVONE activity lines and coordination model",
       description:
-        "How CLEVONES functions as a neutral coordination layer: territory, actors, flows, data, coordination, decision, execution, and measurement — without operational substitution.",
+        "CLEVONE SARL's activity lines and how its coordination missions work: territory, actors, flows, data, decision, execution and measurement — with execution kept separate from coordination.",
     },
     breadcrumb: {
       home: "Home",
-      current: "Platform",
+      current: "Ecosystem",
       navLabel: "Breadcrumb",
     },
     hero: {
-      eyebrow: "Platform",
-      title: "One hub. Clear roles. Governed coordination.",
+      eyebrow: "Ecosystem",
+      title: "One company, several activity lines, one coordination model.",
       subtitle:
-        "CLEVONES connects territory, actors, flows, and decisions — before execution, without substituting operators.",
+        "In a coordination mission, CLEVONE connects actors, information and decisions — and holds no stake in the execution of that initiative.",
       tagline: "Model first. Coordination before improvisation.",
       actions: [
         {
           href: "#architecture",
-          label: "See how the platform works",
+          label: "See how coordination works",
         },
       ],
     },
@@ -136,11 +136,11 @@ export const ecosystemPageContent = {
         },
         {
           title: "Platform",
-          description: "CLEVONES provides the neutral hub where rules, documentation, and coordination align actors.",
+          description: "In a coordination mission, CLEVONE provides the neutral hub where rules, documentation and coordination align actors.",
         },
         {
           title: "Execution",
-          description: "Operational delivery stays with specialized or field entities. The governance platform does not execute extraction.",
+          description: "Delivery stays with the actors who carry the initiative. Any CLEVONE operational role is declared and kept separate.",
         },
         {
           title: "Evidence",
@@ -192,7 +192,7 @@ export const ecosystemPageContent = {
           href: "https://clevones.com",
           role: "Congolese technology and business company",
           description:
-            "The legal entity and institutional hub — digital platforms, commercial software, logistics, industry, energy, media, education, and advisory, with a strategic vision of Governance Architecture for Territorial Economic Flows.",
+            "The legal entity: software and digital services, trade and distribution, logistics, industry, energy, media, education, advisory and events.",
           operational: false,
           central: true,
         },
@@ -291,7 +291,7 @@ export const ecosystemPageContent = {
         },
         {
           title: "Separation of execution",
-          description: "Operational delivery stays with specialized or field entities. The hub preserves neutrality.",
+          description: "In a coordination mission, delivery stays with the actors who carry it. Any CLEVONE operational role is declared in advance and kept separate.",
         },
       ],
       doctrineLink: {
@@ -307,25 +307,25 @@ export const ecosystemPageContent = {
   },
   fr: {
     meta: {
-      title: "Plateforme — Comment fonctionne CLEVONES",
+      title: "Écosystème — lignes d'activité et modèle de coordination de CLEVONE",
       description:
-        "Comment CLEVONES fonctionne comme couche neutre de coordination : territoire, acteurs, flux, données, coordination, décision, exécution et mesure — sans substitution opérationnelle.",
+        "Les lignes d'activité de CLEVONE SARL et le fonctionnement de ses missions de coordination : territoire, acteurs, flux, données, décision, exécution et mesure — l'exécution restant séparée de la coordination.",
     },
     breadcrumb: {
       home: "Accueil",
-      current: "Plateforme",
+      current: "Écosystème",
       navLabel: "Fil d'Ariane",
     },
     hero: {
-      eyebrow: "Plateforme",
-      title: "Un hub. Des rôles clairs. Une coordination gouvernée.",
+      eyebrow: "Écosystème",
+      title: "Une société, plusieurs lignes d'activité, un modèle de coordination.",
       subtitle:
-        "CLEVONES relie territoire, acteurs, flux et décisions — avant l'exécution, sans se substituer aux opérateurs.",
+        "Dans une mission de coordination, CLEVONE relie acteurs, informations et décisions — et n'est pas partie prenante de l'exécution de cette initiative.",
       tagline: "Le modèle d'abord. La coordination avant l'improvisation.",
       actions: [
         {
           href: "#architecture",
-          label: "Voir comment fonctionne la plateforme",
+          label: "Voir comment fonctionne la coordination",
         },
       ],
     },
@@ -372,11 +372,11 @@ export const ecosystemPageContent = {
         },
         {
           title: "Plateforme",
-          description: "CLEVONES fournit le hub neutre où règles, documentation et coordination alignent les acteurs.",
+          description: "Dans une mission de coordination, CLEVONE fournit le hub neutre où règles, documentation et coordination alignent les acteurs.",
         },
         {
           title: "Exécution",
-          description: "La livraison opérationnelle reste aux entités spécialisées ou de terrain. La plateforme de gouvernance n'exécute pas l'extraction.",
+          description: "La livraison reste aux acteurs qui portent l'initiative. Tout rôle opérationnel de CLEVONE est déclaré et séparé.",
         },
         {
           title: "Preuves",
@@ -428,7 +428,7 @@ export const ecosystemPageContent = {
           href: "https://clevones.com",
           role: "Société congolaise de technologies et d'affaires",
           description:
-            "La personne morale et le hub institutionnel — plateformes numériques, progiciels, logistique, industrie, énergie, médias, éducation et conseil, avec la vision stratégique Architecture de gouvernance des flux économiques territoriaux.",
+            "La personne morale : logiciels et services numériques, commerce et distribution, logistique, industrie, énergie, médias, éducation, conseil et événementiel.",
           operational: false,
           central: true,
         },
@@ -527,7 +527,7 @@ export const ecosystemPageContent = {
         },
         {
           title: "Séparation de l'exécution",
-          description: "La livraison opérationnelle reste aux entités spécialisées ou de terrain. Le hub préserve la neutralité.",
+          description: "Dans une mission de coordination, la livraison reste aux acteurs qui la portent. Tout rôle opérationnel de CLEVONE est déclaré à l'avance et séparé.",
         },
       ],
       doctrineLink: {

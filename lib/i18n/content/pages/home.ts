@@ -1,7 +1,13 @@
 import {
   clevoneMiningSeparationDisclaimer,
   clevoneMiningSeparationDisclaimerFr,
+  clevonesIsLabels,
+  clevonesIsNotLabels,
 } from "@/lib/constants/brand-positioning";
+import {
+  companyDefinitionEn,
+  companyDefinitionFr,
+} from "@/lib/constants/company";
 import { interventionDomains } from "@/lib/constants/corporate-purpose";
 import { insightsPageContent } from "@/lib/i18n/content/pages/insights";
 import {
@@ -342,27 +348,13 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     positioning: {
       eyebrow: "Positioning",
-      title: "What Clevones is — and is not",
+      title: "What CLEVONE does — and the rule when it coordinates",
       description:
-        "Clevones exercises a role of architecture, structuring, and coordination for territorial economic flows — as platform of coordination and ecosystem integrator. The governance platform never intervenes as a direct operator.",
-      isLabel: "Clevones is",
-      isNotLabel: "Clevones is not",
-      is: [
-        "Architect of flows",
-        "Territorial structurer",
-        "Coordination platform",
-        "Neutral governance layer",
-        "Ecosystem integrator",
-        "Strategic reporting interface",
-      ],
-      isNot: [
-        "Operator",
-        "Trader",
-        "Resource exploiter",
-        "Direct intermediary",
-        "Informal broker",
-        "Generic services vendor",
-      ],
+        "CLEVONE SARL develops, sells and operates products and services. When it coordinates a multi-party initiative, it is not also the operator, trader or paid intermediary of that initiative.",
+      isLabel: "In a coordination mission, CLEVONE is",
+      isNotLabel: "In a coordination mission, CLEVONE is not",
+      is: clevonesIsLabels,
+      isNot: clevonesIsNotLabels,
     },
     structuralProblem: {
       eyebrow: "The challenge",
@@ -436,7 +428,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       eyebrow: "Strategic pillars",
       title: "Foundations of institutional intervention",
       description:
-        "Six principles govern every dimension of Clevones' territorial governance architecture.",
+        "Six principles guide our coordination and governance missions.",
       items: [
         {
           title: "Governance",
@@ -446,7 +438,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Neutrality",
           description:
-            "Independent positioning without operational bias, commercial interest, or actor substitution.",
+            "In a coordination mission, no stake in the execution of the initiative we coordinate.",
         },
         {
           title: "Compliance",
@@ -509,7 +501,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     filters: {
       eyebrow: "Engagement criteria",
-      title: "Clevones is not designed for every actor.",
+      title: "Coordination missions are not for every initiative.",
       description:
         "Engagement follows a deliberate filtering process. Only actors meeting institutional criteria proceed to structured coordination.",
       items: [
@@ -531,7 +523,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Institutional compatibility",
           description:
-            "Fit with neutral governance protocols and non-operational coordination requirements.",
+            "Fit with neutral coordination protocols, in which CLEVONE holds no stake in execution.",
         },
         {
           title: "Coordination maturity",
@@ -555,10 +547,10 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       articles: insightsPageContent.en.articles.slice(0, 3),
     },
     whyClevones: {
-      eyebrow: "Why Clevones",
-      title: "A neutral layer for territorial economic coordination.",
+      eyebrow: "Why CLEVONE",
+      title: "Products and services — and a neutral role when we coordinate.",
       description:
-        "Clevones exercises a role of architecture, structuring, and coordination for territorial economic flows — as platform of coordination and ecosystem integrator. The governance platform never intervenes as a direct operator.",
+        "CLEVONE SARL develops, sells and operates products and services. When it coordinates a multi-party initiative, it is not also the operator, trader or paid intermediary of that initiative.",
       principles: [
         {
           title: "Governance",
@@ -568,7 +560,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Neutrality",
           description:
-            "Independent positioning without operational bias, commercial interest, or actor substitution.",
+            "In a coordination mission, no stake in the execution of the initiative we coordinate.",
         },
         {
           title: "Institutional Credibility",
@@ -594,8 +586,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     meta: {
       title: "CLEVONES | Technology, Business & Digital Infrastructure",
-      description:
-        "CLEVONE SARL is a Congolese multi-sector company that develops technological, digital, commercial, logistics, institutional, media, educational and advisory solutions.",
+      description: companyDefinitionEn,
     },
   },
   fr: {
@@ -652,11 +643,11 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     positioning: {
       eyebrow: "Positionnement",
-      title: "Ce qu'est Clevones — et ce qu'elle n'est pas",
+      title: "Ce que fait CLEVONE — et la règle quand elle coordonne",
       description:
-        "Clevones exerce un rôle d'architecture, de structuration et de coordination des flux économiques territoriaux, en tant que plateforme de coordination et intégrateur d'écosystèmes. La plateforme de gouvernance n'intervient jamais comme opérateur direct.",
-      isLabel: "Clevones est",
-      isNotLabel: "Clevones n'est pas",
+        "CLEVONE SARL développe, vend et exploite des produits et services. Quand elle coordonne une initiative multi-acteurs, elle n'en est pas en même temps l'opérateur, le négociant ou l'intermédiaire rémunéré.",
+      isLabel: "Dans une mission de coordination, CLEVONE est",
+      isNotLabel: "Dans une mission de coordination, CLEVONE n'est pas",
       is: positionnementIs,
       isNot: positionnementIsNot,
     },
@@ -733,7 +724,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       eyebrow: "Piliers stratégiques",
       title: "Fondements de l'intervention institutionnelle",
       description:
-        "Six principes gouvernent chaque dimension de l'architecture de gouvernance territoriale de Clevones.",
+        "Six principes guident nos missions de coordination et de gouvernance.",
       items: [
         {
           title: "Gouvernance",
@@ -743,7 +734,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Neutralité",
           description:
-            "Un positionnement indépendant, sans biais opérationnel, intérêt commercial ni substitution aux acteurs.",
+            "Dans une mission de coordination, aucun intérêt dans l'exécution de l'initiative coordonnée.",
         },
         {
           title: "Conformité",
@@ -806,7 +797,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     filters: {
       eyebrow: "Critères d'engagement",
-      title: "Clevones n'est pas conçue pour tous les acteurs.",
+      title: "Les missions de coordination ne conviennent pas à toutes les initiatives.",
       description:
         "L'engagement suit un processus de sélection délibéré. Seuls les acteurs répondant aux critères institutionnels accèdent à une coordination structurée.",
       items: [
@@ -828,7 +819,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Compatibilité institutionnelle",
           description:
-            "Une adéquation avec les protocoles de gouvernance neutre et les exigences de coordination non opérationnelle.",
+            "Une adéquation avec des protocoles de coordination neutres, où CLEVONE n'a aucun intérêt dans l'exécution.",
         },
         {
           title: "Maturité de coordination",
@@ -880,10 +871,10 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       ],
     },
     whyClevones: {
-      eyebrow: "Pourquoi Clevones",
-      title: "Une couche neutre pour la coordination économique territoriale.",
+      eyebrow: "Pourquoi CLEVONE",
+      title: "Des produits et services — et un rôle neutre quand nous coordonnons.",
       description:
-        "Clevones exerce un rôle d'architecture, de structuration et de coordination des flux économiques territoriaux, en tant que plateforme de coordination et intégrateur d'écosystèmes. La plateforme de gouvernance n'intervient jamais comme opérateur direct.",
+        "CLEVONE SARL développe, vend et exploite des produits et services. Quand elle coordonne une initiative multi-acteurs, elle n'en est pas en même temps l'opérateur, le négociant ou l'intermédiaire rémunéré.",
       principles: [
         {
           title: "Gouvernance",
@@ -893,7 +884,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
         {
           title: "Neutralité",
           description:
-            "Un positionnement indépendant, sans biais opérationnel, intérêt commercial ni substitution aux acteurs.",
+            "Dans une mission de coordination, aucun intérêt dans l'exécution de l'initiative coordonnée.",
         },
         {
           title: "Crédibilité institutionnelle",
@@ -919,8 +910,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
     },
     meta: {
       title: "CLEVONES | Technologie, Business & Infrastructure Numérique",
-      description:
-        "CLEVONE SARL est une entreprise congolaise multisectorielle qui développe des solutions technologiques, numériques, commerciales, logistiques, institutionnelles, médiatiques, éducatives et de conseil.",
+      description: companyDefinitionFr,
     },
   },
 };

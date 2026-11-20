@@ -5,7 +5,7 @@ import { MethodologyPageContent } from "@/components/sections/methodology-page";
 export const metadata = createPageMetadata({
   title: "Methodology",
   description:
-    "The Clevones five-step governance framework: territorial reading, flow mapping, governance structuring, collaboration protocols, and strategic reporting.",
+    "The CLEVONE five-step framework for coordination missions: territorial reading, flow mapping, governance structuring, collaboration protocols, and strategic reporting.",
   path: "/methodology",
 });
 

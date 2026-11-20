@@ -56,7 +56,7 @@ export const governancePageContent = {
       paragraphs: [
         "Clevones does not coordinate through informal channels or undocumented arrangements.",
         "Every engagement starts with defined roles, responsibilities, and compliance expectations.",
-        "Governance design stays separate from operational execution. Clevones coordinates — it does not substitute legitimate actors.",
+        "In a coordination mission, governance design stays separate from execution: CLEVONE does not substitute the legitimate actors of that initiative.",
         "Compliance is a structural requirement, not an afterthought.",
       ],
     },
@@ -123,7 +123,7 @@ export const governancePageContent = {
       paragraphs: [
         "Clevones ne coordonne pas par des canaux informels ou des arrangements non documentés.",
         "Chaque engagement commence par des rôles, responsabilités et attentes de conformité définis.",
-        "La conception de la gouvernance reste distincte de l'exécution opérationnelle. Clevones coordonne — elle ne se substitue pas aux acteurs légitimes.",
+        "Dans une mission de coordination, la conception de la gouvernance reste distincte de l'exécution : CLEVONE ne se substitue pas aux acteurs légitimes de cette initiative.",
         "La conformité est une exigence structurelle, non une réflexion après coup.",
       ],
     },

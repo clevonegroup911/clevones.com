@@ -120,7 +120,7 @@ export const evidencePageContent = {
         },
         {
           title: "Positioning doctrine",
-          description: "What CLEVONES is and is not — without fabricated market claims.",
+          description: "What CLEVONE does, and the neutrality rule for coordination missions — without fabricated market claims.",
           href: "/positioning",
           label: "Open Positioning",
         },
@@ -145,7 +145,7 @@ export const evidencePageContent = {
         },
         {
           title: "No unverified operational claims",
-          description: "Clevone Mining is not presented as an operational mining unit. No separate legal registration is claimed except for CLEVONE SARL.",
+          description: "Ecosystem lines are not presented as market proof or as separate companies. No separate legal registration is claimed except for CLEVONE SARL.",
         },
       ],
     },
@@ -286,7 +286,7 @@ export const evidencePageContent = {
         },
         {
           title: "Doctrine de positionnement",
-          description: "Ce que CLEVONES est et n'est pas — sans revendications de marché inventées.",
+          description: "Ce que fait CLEVONE et la règle de neutralité des missions de coordination — sans revendications de marché inventées.",
           href: "/positionnement",
           label: "Ouvrir Positionnement",
         },
@@ -311,7 +311,7 @@ export const evidencePageContent = {
         },
         {
           title: "Pas d'affirmations opérationnelles non validées",
-          description: "Clevone Mining n'est pas présentée comme une unité minière opérationnelle. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
+          description: "Les lignes de l'écosystème ne sont présentées ni comme une preuve de marché ni comme des sociétés distinctes. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
         },
       ],
     },
