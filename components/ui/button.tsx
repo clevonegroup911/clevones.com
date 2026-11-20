@@ -12,9 +12,9 @@ const variantStyles: Record<ButtonVariant, string> = {
   secondary:
     "bg-gold text-charcoal hover:bg-gold-hover focus-visible:ring-gold/50",
   ghost:
-    "text-gray-muted hover:bg-white/5 hover:text-white focus-visible:ring-gold/30",
+    "text-gray-muted hover:bg-foreground/5 hover:text-foreground focus-visible:ring-gold/30",
   outline:
-    "border border-border-subtle bg-transparent text-foreground hover:border-gold/30 hover:bg-white/5 focus-visible:ring-gold/30",
+    "border border-border-subtle bg-transparent text-foreground hover:border-gold/30 hover:bg-foreground/5 focus-visible:ring-gold/30",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

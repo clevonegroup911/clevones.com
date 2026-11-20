@@ -13,7 +13,7 @@ const levelStyles = {
 
 const toneStyles = {
   default: "text-foreground",
-  inverse: "text-white",
+  inverse: "text-foreground",
   muted: "text-muted",
   gold: "text-gold",
 } as const;

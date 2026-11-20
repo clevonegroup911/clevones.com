@@ -109,17 +109,17 @@ export const whyNowPageContent = {
       title: "Urgency is not differentiation.",
       paragraphs: [
         "The problem and the timing are clear.",
-        "Next: why CLEVONES is different — what it is, and what it is not.",
+        "Next: what CLEVONE does, and the rule it applies when it coordinates.",
       ],
     },
     cta: {
-      title: "See how CLEVONES is different",
+      title: "See how CLEVONE works",
       description:
-        "Read the structural posture: neutral coordination, not operation.",
+        "When we coordinate, we hold no stake in execution.",
       actions: [
         {
           href: "/positioning",
-          label: "See how CLEVONES is different",
+          label: "See how CLEVONE works",
         },
       ],
     },
@@ -211,17 +211,17 @@ export const whyNowPageContent = {
       title: "L'urgence n'est pas la différenciation.",
       paragraphs: [
         "Le problème et le moment sont clairs.",
-        "Ensuite : pourquoi CLEVONES est différent — ce qu'il est, et ce qu'il n'est pas.",
+        "Ensuite : ce que fait CLEVONE, et la règle qu'elle applique quand elle coordonne.",
       ],
     },
     cta: {
-      title: "Voir ce qui distingue CLEVONES",
+      title: "Voir comment travaille CLEVONE",
       description:
-        "Lire la posture structurelle : coordination neutre, pas opération.",
+        "Quand nous coordonnons, nous ne sommes pas partie prenante de l'exécution.",
       actions: [
         {
           href: "/positionnement",
-          label: "Voir ce qui distingue CLEVONES",
+          label: "Voir comment travaille CLEVONE",
         },
       ],
     },

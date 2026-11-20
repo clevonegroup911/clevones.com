@@ -1,5 +1,14 @@
-import { company } from "@/lib/constants/company";
-import { objetSocialLegalFr } from "@/lib/constants/corporate-purpose";
+import {
+  company,
+  companyAddressLinesEn,
+  companyAddressLinesFr,
+  companyBrandStatementEn,
+  companyBrandStatementFr,
+} from "@/lib/constants/company";
+import {
+  objetSocialLegalEn,
+  objetSocialLegalFr,
+} from "@/lib/constants/corporate-purpose";
 import type { LocalizedPageContent, PageMeta } from "./types";
 
 export type LegalPageContent = {
@@ -12,6 +21,11 @@ export type LegalPageContent = {
     facts: readonly { label: string; value: string }[];
     addressLabel: string;
     addressLines: readonly string[];
+    /**
+     * Éditeur et responsable de la publication — décision D1 (2026-11-20) :
+     * la personne morale CLEVONE SARL, sans nom de personne physique.
+     */
+    publicationManager: { label: string; separator: string; lines: readonly string[] };
   };
   corporatePurpose: { title: string; intro: string; items: readonly string[]; closing: string };
   contact: {
@@ -36,8 +50,8 @@ export const legalPageContent = {
     eyebrow: "Légal",
     title: "Mentions légales",
     introduction: [
-      `Le site ${company.website} est édité par ${company.legalName}, ${company.legalForm.fr}, immatriculée en République Démocratique du Congo, dont le siège social est à Kisangani.`,
-      "L'objet social définit les champs juridiques dans lesquels la société et son écosystème peuvent intervenir. La vision stratégique oriente ce travail ; elle ne réduit pas la société à une activité unique.",
+      `Le site ${company.website} est édité par ${company.legalName}, ${company.legalForm.fr} régie par l'Acte uniforme OHADA relatif au droit des sociétés commerciales et du GIE (AUSCGIE), immatriculée en République Démocratique du Congo, dont le siège social est à Kisangani.`,
+      companyBrandStatementFr,
     ],
     identity: {
       title: "Identification de l'éditeur",
@@ -48,18 +62,26 @@ export const legalPageContent = {
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
         { label: "Date d'immatriculation", value: company.incorporationDateDisplay },
-        { label: "Capital social", value: company.shareCapital },
+        { label: company.inppLabel, value: company.inpp },
+        { label: company.onemLabel, value: company.onem },
+        { label: "Durée", value: company.duration.fr },
+        { label: "Exercice social", value: company.fiscalYear.fr },
       ],
       addressLabel: "Siège social",
-      addressLines: [
-        company.address.street,
-        company.address.commune,
-        `Ville de ${company.address.city}`,
-        company.address.countryFr,
-      ],
+      addressLines: companyAddressLinesFr,
+      publicationManager: {
+        label: "Éditeur et responsable de la publication",
+        separator: " : ",
+        lines: [
+          company.legalName,
+          `${company.rccmLabel} ${company.rccm}`,
+          `${company.nationalIdLabel} ${company.nationalId}`,
+          `Siège : ${companyAddressLinesFr.join(", ")}`,
+        ],
+      },
     },
     corporatePurpose: {
-      title: "Objet social",
+      title: "Objet social (résumé des statuts, art. 3)",
       intro: objetSocialLegalFr.intro,
       items: objetSocialLegalFr.items,
       closing: objetSocialLegalFr.closing,
@@ -82,8 +104,8 @@ export const legalPageContent = {
     eyebrow: "Legal",
     title: "Legal notice",
     introduction: [
-      `The website ${company.website} is published by ${company.legalName}, a ${company.legalForm.en}, incorporated in the Democratic Republic of the Congo, with its registered office in Kisangani.`,
-      "The corporate purpose defines the legal fields in which the company and its ecosystem may intervene. Strategic vision orients that work; it does not reduce the company to a single activity.",
+      `The website ${company.website} is published by ${company.legalName}, a ${company.legalForm.en} governed by the OHADA Uniform Act on commercial companies (AUSCGIE), registered in the Democratic Republic of the Congo, with its registered office in Kisangani.`,
+      companyBrandStatementEn,
     ],
     identity: {
       title: "Publisher identification",
@@ -93,34 +115,30 @@ export const legalPageContent = {
         { label: "Legal form", value: company.legalForm.en },
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
-        { label: "Incorporation date", value: company.incorporationDateDisplay },
-        { label: "Share capital", value: company.shareCapital },
+        { label: "Registration date", value: company.incorporationDateDisplay },
+        { label: company.inppLabel, value: company.inpp },
+        { label: company.onemLabel, value: company.onem },
+        { label: "Duration", value: company.duration.en },
+        { label: "Financial year", value: company.fiscalYear.en },
       ],
       addressLabel: "Registered office",
-      addressLines: [
-        company.address.street,
-        company.address.commune,
-        company.address.city,
-        company.address.countryEn,
-      ],
+      addressLines: companyAddressLinesEn,
+      publicationManager: {
+        label: "Publisher and publication manager",
+        separator: ": ",
+        lines: [
+          company.legalName,
+          `${company.rccmLabel} ${company.rccm}`,
+          `${company.nationalIdLabel} ${company.nationalId}`,
+          `Registered office: ${companyAddressLinesEn.join(", ")}`,
+        ],
+      },
     },
     corporatePurpose: {
-      title: "Corporate purpose",
-      intro: "The company has the following corporate purpose in the Democratic Republic of Congo and abroad:",
-      items: [
-        "technology, digital transformation, and the design and development of software, business applications, digital platforms, and IT services;",
-        "transport, logistics, and supply-chain management services;",
-        "industry, production, engineering, innovation, and the development of solutions for productive sectors;",
-        "energy and the development of solutions, services, and innovations in the energy sector;",
-        "media, communication, audiovisual production, publishing, content creation, and creative industries;",
-        "education, training, skills development, and capacity building;",
-        "strategic advisory, organization, management, and professional services, in compliance with applicable regulations;",
-        "support for companies, organizations, and institutions in their administrative, regulatory, compliance, and governance procedures;",
-        "sports, culture, and the organization, production, and promotion of sports, cultural, artistic, and professional events;",
-        "trade, distribution, e-commerce, sale, purchase, import, export, and marketing of goods, products, and services authorized by law.",
-      ],
-      closing:
-        "The company may also create subsidiaries, take equity participations in other companies, enter into partnerships, and carry out any commercial, financial, movable, or immovable operations directly or indirectly related to its corporate purpose or likely to promote its development, in compliance with applicable law.",
+      title: "Corporate purpose (summary of statutes, art. 3)",
+      intro: objetSocialLegalEn.intro,
+      items: objetSocialLegalEn.items,
+      closing: objetSocialLegalEn.closing,
     },
     contact: {
       title: "Contact",

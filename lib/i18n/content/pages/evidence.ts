@@ -63,7 +63,7 @@ export const evidencePageContent = {
     meta: {
       title: "Evidence — Documentation and System Credibility",
       description:
-        "Why decision-makers can evaluate CLEVONES through documented methodology, architecture, governance doctrine, versioned content, and transparent publication status — without fabricated case studies.",
+        "Why decision-makers can evaluate CLEVONE SARL through documented methodology, architecture, governance doctrine, versioned content, and transparent publication status — without fabricated case studies.",
     },
     breadcrumb: {
       home: "Home",
@@ -90,19 +90,19 @@ export const evidencePageContent = {
     architecture: {
       eyebrow: "Architecture",
       title: "A published coordination model",
-      description: "Platform architecture explains how territory, actors, flows, modules, and execution relate.",
+      description: "The coordination model explains how territory, actors, flows, modules, and execution relate.",
       paragraphs: [
-        "The hub-and-perimeter model and entity mandates are documented on the Platform page.",
+        "The hub-and-perimeter model and entity mandates are documented on the Ecosystem page.",
         "No invented partners or metrics are needed to evaluate the model. The architecture is readable as structure.",
       ],
-      link: { href: "/ecosystem", label: "Explore the Platform" },
+      link: { href: "/ecosystem", label: "Explore the Ecosystem" },
     },
     documentation: {
       eyebrow: "Documentation",
       title: "Institutional pages as source of truth",
       description: "Public documentation lives in bilingual institutional pages with honest publication status.",
       paragraphs: [
-        "Positioning, About, Solutions, Methodology, Governance, Platform, FAQ, and Legal/Privacy pages are versioned institutional surfaces.",
+        "Positioning, About, Solutions, Methodology, Governance, Ecosystem, FAQ, and Legal/Privacy pages are versioned institutional surfaces.",
         "Insights publish strategic notes. Where full article bodies are forthcoming, the site says so.",
       ],
       items: [
@@ -120,7 +120,7 @@ export const evidencePageContent = {
         },
         {
           title: "Positioning doctrine",
-          description: "What CLEVONES is and is not — without fabricated market claims.",
+          description: "What CLEVONE does, and the neutrality rule for coordination missions — without fabricated market claims.",
           href: "/positioning",
           label: "Open Positioning",
         },
@@ -131,7 +131,7 @@ export const evidencePageContent = {
       title: "What this site will not invent",
       description: "Institutional trust requires stating limits as clearly as strengths.",
       paragraphs: [
-        "CLEVONES does not present fabricated clients, awards, ratings, growth figures, partner logos, testimonials, or success stories.",
+        "CLEVONE SARL does not present fabricated clients, awards, ratings, growth figures, partner logos, testimonials, or success stories.",
         "Where a document is not yet published, status is disclosed. Evaluation should rest on what exists today.",
       ],
       items: [
@@ -145,7 +145,7 @@ export const evidencePageContent = {
         },
         {
           title: "No unverified operational claims",
-          description: "Clevone Mining is not presented as an operational mining unit. No separate legal registration is claimed except for CLEVONE SARL.",
+          description: "Ecosystem lines are not presented as market proof or as separate companies. No separate legal registration is claimed except for CLEVONE SARL.",
         },
       ],
     },
@@ -201,13 +201,13 @@ export const evidencePageContent = {
       title: "Documented product journey",
       description: "What exists is the CEOS institutional journey. Future work is only what prior missions have recorded.",
       paragraphs: [
-        "Delivered surfaces include Home, Challenge, Why Now, Positioning, About, Solutions, Methodology, Governance, Platform, Evidence, FAQ, Contact, Legal, and Privacy.",
+        "Delivered surfaces include Home, Challenge, Why Now, Positioning, About, Solutions, Methodology, Governance, Ecosystem, Evidence, FAQ, Contact, Legal, and Privacy.",
         "No commercial product roadmap or growth targets are claimed here.",
       ],
       items: [
         {
           title: "Narrative journey",
-          description: "Challenge → Why Now → Positioning → About → Solutions → Methodology → Governance → Platform → Evidence → FAQ → Contact.",
+          description: "Challenge → Why Now → Positioning → About → Solutions → Methodology → Governance → Ecosystem → Evidence → FAQ → Contact.",
         },
         {
           title: "Evidence distinct from Insights",
@@ -229,7 +229,7 @@ export const evidencePageContent = {
     meta: {
       title: "Preuves — Documentation et crédibilité du système",
       description:
-        "Pourquoi un décideur peut évaluer CLEVONES via une méthodologie, une architecture, une doctrine de gouvernance, un contenu versionné et un statut de publication transparent — sans cas inventés.",
+        "Pourquoi un décideur peut évaluer CLEVONE SARL via une méthodologie, une architecture, une doctrine de gouvernance, un contenu versionné et un statut de publication transparent — sans cas inventés.",
     },
     breadcrumb: {
       home: "Accueil",
@@ -256,19 +256,19 @@ export const evidencePageContent = {
     architecture: {
       eyebrow: "Architecture",
       title: "Un modèle de coordination publié",
-      description: "L'architecture de plateforme explique comment territoire, acteurs, flux, modules et exécution se relient.",
+      description: "Le modèle de coordination explique comment territoire, acteurs, flux, modules et exécution se relient.",
       paragraphs: [
-        "Le modèle hub et périphérie et les mandats des entités sont documentés sur la page Plateforme.",
+        "Le modèle hub et périphérie et les mandats des entités sont documentés sur la page Écosystème.",
         "Aucun partenaire inventé ni métrique n'est nécessaire pour évaluer le modèle. L'architecture se lit comme une structure.",
       ],
-      link: { href: "/ecosysteme", label: "Explorer la Plateforme" },
+      link: { href: "/ecosysteme", label: "Explorer l'Écosystème" },
     },
     documentation: {
       eyebrow: "Documentation",
       title: "Les pages institutionnelles comme source de vérité",
       description: "La documentation publique vit dans des pages institutionnelles bilingues avec un statut de publication honnête.",
       paragraphs: [
-        "Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Plateforme, FAQ et Mentions / Confidentialité sont des surfaces institutionnelles versionnées.",
+        "Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Écosystème, FAQ et Mentions / Confidentialité sont des surfaces institutionnelles versionnées.",
         "Analyses publie des notes stratégiques. Lorsque le corps complet d'un article est à venir, le site le dit.",
       ],
       items: [
@@ -286,7 +286,7 @@ export const evidencePageContent = {
         },
         {
           title: "Doctrine de positionnement",
-          description: "Ce que CLEVONES est et n'est pas — sans revendications de marché inventées.",
+          description: "Ce que fait CLEVONE et la règle de neutralité des missions de coordination — sans revendications de marché inventées.",
           href: "/positionnement",
           label: "Ouvrir Positionnement",
         },
@@ -297,7 +297,7 @@ export const evidencePageContent = {
       title: "Ce que ce site n'inventera pas",
       description: "La confiance institutionnelle exige d'énoncer les limites aussi clairement que les forces.",
       paragraphs: [
-        "CLEVONES ne présente pas de clients, awards, notes, chiffres de croissance, logos partenaires, témoignages ou success stories inventés.",
+        "CLEVONE SARL ne présente pas de clients, awards, notes, chiffres de croissance, logos partenaires, témoignages ou success stories inventés.",
         "Lorsqu'un document n'est pas encore publié, le statut est divulgué. L'évaluation doit reposer sur ce qui existe aujourd'hui.",
       ],
       items: [
@@ -311,7 +311,7 @@ export const evidencePageContent = {
         },
         {
           title: "Pas d'affirmations opérationnelles non validées",
-          description: "Clevone Mining n'est pas présentée comme une unité minière opérationnelle. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
+          description: "Les lignes de l'écosystème ne sont présentées ni comme une preuve de marché ni comme des sociétés distinctes. Aucune immatriculation juridique distincte n'est affirmée, hormis celle de CLEVONE SARL.",
         },
       ],
     },
@@ -367,13 +367,13 @@ export const evidencePageContent = {
       title: "Parcours produit documenté",
       description: "Ce qui existe est le parcours institutionnel CEOS. Le futur n'est énoncé que s'il a déjà été consigné dans les missions antérieures.",
       paragraphs: [
-        "Les surfaces livrées incluent Accueil, Défi, Pourquoi maintenant, Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Plateforme, Preuves, FAQ, Contact, Mentions et Confidentialité.",
+        "Les surfaces livrées incluent Accueil, Défi, Pourquoi maintenant, Positionnement, À propos, Solutions, Méthodologie, Gouvernance, Écosystème, Preuves, FAQ, Contact, Mentions et Confidentialité.",
         "Aucune feuille de route commerciale ni cible de croissance n'est revendiquée ici.",
       ],
       items: [
         {
           title: "Parcours narratif",
-          description: "Défi → Pourquoi maintenant → Positionnement → À propos → Solutions → Méthodologie → Gouvernance → Plateforme → Preuves → FAQ → Contact.",
+          description: "Défi → Pourquoi maintenant → Positionnement → À propos → Solutions → Méthodologie → Gouvernance → Écosystème → Preuves → FAQ → Contact.",
         },
         {
           title: "Preuves distinctes des Analyses",

@@ -1,10 +1,10 @@
 /**
- * CEOS navigation after Mission #003 — Platform + Evidence live.
+ * Public navigation (2026-11 refonte).
  *
- * Main: Challenge, Positioning, Solutions, Methodology, Governance,
- * Platform, Evidence, Contact.
+ * Main (5): Solutions, CLEVONE DMS, About, Governance, Contact.
  *
- * Secondary (More / mobile group): Why Now, About, FAQ, Insights.
+ * Secondary ("More" / mobile group): Challenge, Positioning, Methodology,
+ * Ecosystem, Evidence, Why Now, FAQ, Insights. URLs are unchanged.
  */
 import type { ShellContent } from "@/lib/i18n/content/types";
 import { getContent } from "@/lib/i18n/content";
@@ -27,19 +27,20 @@ export type LocalizedNavigation = {
 };
 
 export const mainNavigationKeys = [
-  "challenge",
-  "positioning",
   "solutions",
-  "methodology",
+  "clevoneDms",
+  "about",
   "governance",
-  "ecosystem",
-  "evidence",
   "contact",
 ] as const satisfies ReadonlyArray<keyof ShellContent["nav"]["main"]>;
 
 export const secondaryNavigationKeys = [
+  "challenge",
+  "positioning",
+  "methodology",
+  "ecosystem",
+  "evidence",
   "whyNow",
-  "about",
   "faq",
   "insights",
 ] as const satisfies ReadonlyArray<keyof ShellContent["nav"]["secondary"]>;

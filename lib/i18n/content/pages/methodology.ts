@@ -26,7 +26,7 @@ export type MethodologyPageContent = {
 
 export const methodologyPageContent = {
   en: {
-    meta: { title: "Methodology", description: "The Clevones Five-Step Governance Framework for territorial initiatives." },
+    meta: { title: "Methodology", description: "The CLEVONE Five-Step Governance Framework for territorial initiatives." },
     hero: {
       eyebrow: "Methodology",
       title: "Five steps. One governed sequence.",
@@ -36,7 +36,7 @@ export const methodologyPageContent = {
       eyebrow: "Introduction",
       title: "Structure before action",
       paragraphs: [
-        "Clevones does not improvise. Every engagement follows five sequential phases.",
+        "CLEVONE does not improvise. Every engagement follows five sequential phases.",
         "Each phase produces documented outputs. Governance is designed before execution begins.",
         "The same framework applies to every engagement — consistently, without exception.",
       ],
@@ -119,7 +119,7 @@ export const methodologyPageContent = {
       },
     ],
     principles: [
-      { title: "Neutrality", description: "No commercial interest, operational bias, or actor substitution." },
+      { title: "Neutrality", description: "In a coordination mission: no stake in the execution of the initiative coordinated." },
       { title: "Documentation", description: "Structured, auditable outputs — not verbal agreements." },
       { title: "Compliance", description: "Aligned with regulatory and institutional standards from day one." },
       { title: "Non-sensitive intelligence", description: "Territorial reading excludes proprietary or operational data." },
@@ -133,7 +133,7 @@ export const methodologyPageContent = {
     },
   },
   fr: {
-    meta: { title: "Méthodologie", description: "Le Cadre de gouvernance Clevones en cinq étapes pour les initiatives territoriales." },
+    meta: { title: "Méthodologie", description: "Le Cadre de gouvernance CLEVONE en cinq étapes pour les initiatives territoriales." },
     hero: {
       eyebrow: "Méthodologie",
       title: "Cinq étapes. Une séquence gouvernée.",
@@ -143,7 +143,7 @@ export const methodologyPageContent = {
       eyebrow: "Introduction",
       title: "La structure avant l'action",
       paragraphs: [
-        "Clevones n'improvise pas. Chaque engagement suit cinq phases séquentielles.",
+        "CLEVONE n'improvise pas. Chaque engagement suit cinq phases séquentielles.",
         "Chaque phase produit des livrables documentés. La gouvernance est conçue avant l'exécution.",
         "Le même cadre s'applique à chaque engagement — de manière constante, sans exception.",
       ],
@@ -226,7 +226,7 @@ export const methodologyPageContent = {
       },
     ],
     principles: [
-      { title: "Neutralité", description: "Aucun intérêt commercial, biais opérationnel ni substitution d'acteurs." },
+      { title: "Neutralité", description: "Dans une mission de coordination : aucun intérêt dans l'exécution de l'initiative coordonnée." },
       { title: "Documentation", description: "Des livrables structurés et auditables — non des accords verbaux." },
       { title: "Conformité", description: "Alignée dès le départ sur les normes réglementaires et institutionnelles." },
       { title: "Information non sensible", description: "La lecture territoriale exclut les données propriétaires ou opérationnelles." },

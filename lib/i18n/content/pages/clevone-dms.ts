@@ -111,11 +111,11 @@ export const clevoneDmsPageContent = {
       ],
     },
     cta: {
-      title: "Discuss CLEVONE DMS",
+      title: "Interested in CLEVONE DMS?",
       description:
-        "Institutions and enterprises may inquire about the product roadmap and intended deployment through official channels.",
+        "Ask about availability for your organization or request a quote.",
       actions: [
-        { href: "/contact", label: "Contact CLEVONE" },
+        { href: "/contact?intent=product", label: "Request a quote" },
         { href: "/solutions", label: "All solutions", variant: "outline" },
       ],
     },
@@ -172,11 +172,11 @@ export const clevoneDmsPageContent = {
       ],
     },
     cta: {
-      title: "Échanger sur CLEVONE DMS",
+      title: "CLEVONE DMS vous intéresse ?",
       description:
-        "Institutions et entreprises peuvent s'enquérir de la feuille de route et du déploiement visé par les canaux officiels.",
+        "Demandez sa disponibilité pour votre organisation ou un devis.",
       actions: [
-        { href: "/collaboration", label: "Contacter CLEVONE" },
+        { href: "/collaboration?intent=product", label: "Demander un devis" },
         { href: "/domaines", label: "Toutes les solutions", variant: "outline" },
       ],
     },

@@ -9,7 +9,7 @@ import { listDocumentsForActor } from "@/lib/documents/service";
 
 export const metadata = createPageMetadata({
   title: "Client portal",
-  description: "Authenticated private document portal for Clevones partners.",
+  description: "Authenticated private document portal for CLEVONE partners.",
   path: "/portal",
   robots: { index: false, follow: false },
 });

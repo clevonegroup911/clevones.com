@@ -9,7 +9,7 @@ import {
   CompanyEntityLink,
 } from "@/components/layout/company-contact";
 import { Container } from "@/components/ui/container";
-import { company } from "@/lib/constants/company";
+import { company, companyRegistrationLine } from "@/lib/constants/company";
 import {
   getContent,
   getLocaleFromPath,
@@ -43,7 +43,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
       />
       <Container className="py-10 sm:py-14 lg:py-20">
         <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-12 lg:gap-8">
-          <div className="min-w-0 lg:col-span-4">
+          <div className="min-w-0 lg:col-span-3">
             <BrandLogo
               variant="footer"
               href={resolvePagePath("home", locale) ?? "/"}
@@ -51,40 +51,10 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty text-gray-muted">
               {shell.description}
             </p>
-            <div className="mt-6 space-y-1 text-xs leading-relaxed text-navy-muted">
-              <p className="font-heading text-sm font-semibold tracking-tight text-white">
-                {company.legalName}
-              </p>
-              <p>
-                {company.rccmLabel} : {company.rccm}
-              </p>
-              <p>
-                {company.nationalIdLabel} : {company.nationalId}
-              </p>
-              <p>{shell.footerLocation}</p>
-              <p>
-                {shell.phoneLabel} :{" "}
-                <a
-                  href={company.phone.href}
-                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-                >
-                  {company.phone.display}
-                </a>
-              </p>
-              <p>
-                {shell.emailLabel} :{" "}
-                <a
-                  href={company.email.href}
-                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-                >
-                  {company.email.display}
-                </a>
-              </p>
-            </div>
           </div>
 
-          <div className="min-w-0 lg:col-span-2 lg:col-start-6">
-            <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+          <div className="min-w-0 lg:col-span-2">
+            <p className="text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
               {shell.footerNavigation}
             </p>
             <ul className="mt-4 space-y-2.5">
@@ -92,7 +62,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                 <li key={item.pageKey ?? item.href}>
                   <Link
                     href={item.href}
-                    className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                    className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                   >
                     {item.label}
                   </Link>
@@ -102,7 +72,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
           </div>
 
           <div className="min-w-0 lg:col-span-3">
-            <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+            <p className="text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
               {shell.footerEcosystem}
             </p>
             <ul className="mt-4 space-y-2.5">
@@ -116,7 +86,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                     internal={item.internal}
                     className="group inline-flex max-w-full flex-col text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                   >
-                    <span className="text-gray-muted transition-colors group-hover:text-white">
+                    <span className="text-gray-muted transition-colors group-hover:text-foreground">
                       {item.name}
                       {item.operational ? (
                         <span className="ml-1.5 text-[10px] font-semibold tracking-wide text-gold-muted uppercase">
@@ -139,7 +109,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
           </div>
 
           <div className="min-w-0 lg:col-span-2">
-            <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+            <p className="text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
               {shell.footerAccess}
             </p>
             {navigation.access.length > 0 ? (
@@ -148,7 +118,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                      className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                     >
                       {item.label}
                     </Link>
@@ -162,7 +132,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             )}
             {navigation.secondary.length > 0 ? (
               <div className="mt-8">
-                <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+                <p className="text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
                   {shell.footerSecondary}
                 </p>
                 <ul className="mt-4 space-y-2.5">
@@ -170,7 +140,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
                     <li key={item.pageKey ?? item.href}>
                       <Link
                         href={item.href}
-                        className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                        className="inline-flex min-h-9 items-center text-sm text-gray-muted transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                       >
                         {item.label}
                       </Link>
@@ -182,11 +152,12 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
           </div>
 
           <div className="min-w-0 lg:col-span-2">
-            <p className="text-xs font-semibold tracking-[0.15em] text-white uppercase">
+            <p className="text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
               {shell.footerContact}
             </p>
             <CompanyContact
               location={shell.footerLocation}
+              addressLines={shell.addressLines}
               phoneLabel={shell.phoneLabel}
               emailLabel={shell.emailLabel}
               className="mt-4"
@@ -194,22 +165,27 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-10 rounded-sm border border-border-subtle/40 bg-white/[0.02] px-4 py-4 sm:mt-12 sm:px-5">
+        <div className="mt-10 rounded-sm border border-border-subtle/40 bg-foreground/[0.02] px-4 py-4 sm:mt-12 sm:px-5">
           <p className="text-sm leading-relaxed text-pretty text-gray-muted">
             {shell.legalDisclaimer}
           </p>
         </div>
 
         <div className="mt-6 flex flex-col gap-4 border-t border-border-subtle/40 pt-6 text-sm text-gray-muted sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
-          <p className="text-pretty">
-            © {currentYear} {company.legalName}. {shell.allRightsReserved}
-          </p>
+          <div className="space-y-1">
+            <p className="text-pretty" data-testid="footer-registration">
+              {companyRegistrationLine}
+            </p>
+            <p className="text-pretty text-xs">
+              © {currentYear} {company.legalName}. {shell.allRightsReserved}
+            </p>
+          </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {navigation.legal.map((item) => (
               <Link
                 key={item.pageKey ?? item.href}
                 href={item.href}
-                className="inline-flex min-h-9 items-center transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                className="inline-flex min-h-9 items-center transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
               >
                 {item.label}
               </Link>

@@ -74,6 +74,61 @@ test("public contact has no live payment keys and accepts a fixture initiative",
   expect(checkout.status()).toBeGreaterThanOrEqual(400);
 });
 
+test("product inquiry path shows the short form without governance fields", async ({
+  page,
+}, testInfo) => {
+  const project = testInfo.project.name;
+
+  for (const path of ["/collaboration?intent=product", "/contact?intent=product"]) {
+    await page.goto(path);
+    const form = page.getByTestId("product-inquiry-form");
+    await expect(form).toBeVisible();
+    for (const name of [
+      "organizationName",
+      "contactPerson",
+      "professionalEmail",
+      "phone",
+      "location",
+      "estimatedUsers",
+    ]) {
+      await expect(form.locator(`input[name="${name}"]`)).toBeVisible();
+    }
+    await expect(form.locator('select[name="product"]')).toBeVisible();
+    await expect(form.locator('textarea[name="need"]')).toBeVisible();
+    await expect(form.locator('input[name="privacyConsent"]')).toBeVisible();
+    for (const name of [
+      "availableDocumentation",
+      "complianceStatus",
+      "territoryConcerned",
+      "governanceAcknowledgment",
+      "legalStatus",
+    ]) {
+      await expect(page.locator(`[name="${name}"]`)).toHaveCount(0);
+    }
+  }
+
+  await captureSafeEvidence(page, `${project}-contact-product.png`);
+});
+
+test("product inquiry submits successfully with fixture data", async ({ page }) => {
+  await page.goto("/collaboration?intent=product");
+  const form = page.getByTestId("product-inquiry-form");
+  await form.locator('input[name="organizationName"]').fill("E2E Fixture SARL");
+  await form.locator('input[name="contactPerson"]').fill("E2E Buyer");
+  await form
+    .locator('input[name="professionalEmail"]')
+    .fill("e2e.buyer@example.test");
+  await form.locator('input[name="location"]').fill("Kisangani, RDC");
+  await form.locator('select[name="product"]').selectOption("clevone-dms");
+  await form.locator('input[name="estimatedUsers"]').fill("8");
+  await form
+    .locator('textarea[name="need"]')
+    .fill("Fixture e2e : suivi des ventes et des stocks. Pas une donnée de production.");
+  await form.locator('input[name="privacyConsent"]').check();
+  await form.getByRole("button", { name: "Envoyer ma demande" }).click();
+  await expect(page.getByRole("status")).toContainText("Demande reçue");
+});
+
 test("authenticated admin can open CMS, analytics, and upload a private document", async ({
   page,
 }, testInfo) => {

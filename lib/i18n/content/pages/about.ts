@@ -2,6 +2,8 @@ import {
   company,
   companyAddressLinesEn,
   companyAddressLinesFr,
+  companyBrandStatementEn,
+  companyBrandStatementFr,
 } from "@/lib/constants/company";
 import {
   capacityVsPlatformClarification,
@@ -9,6 +11,7 @@ import {
   corporateVision,
   domainsFraming,
   interventionDomains,
+  objetSocialLegalEn,
   objetSocialLegalFr,
 } from "@/lib/constants/corporate-purpose";
 import type {
@@ -78,10 +81,10 @@ export const aboutPageContent = {
         "CLEVONE SARL is a Congolese multi-sector company based in Kisangani — technology, business software, logistics, industry, energy, media, education, and advisory.",
     },
     hero: {
-      eyebrow: "Company",
-      title: "CLEVONE SARL",
+      eyebrow: "About CLEVONE SARL",
+      title: "A Congolese company that builds software, trades and delivers services.",
       subtitle:
-        "A Congolese technology and business company based in Kisangani, building digital, commercial, and institutional infrastructure for Africa.",
+        "Based in Kisangani, CLEVONE SARL works in nine fields set by its statutes — from software and trade to logistics, energy, media, education, advisory and events.",
       tagline: "Kisangani · Democratic Republic of the Congo",
     },
     identity: {
@@ -91,7 +94,7 @@ export const aboutPageContent = {
         "CLEVONE SARL is the legal entity. CLEVONES is the public brand.",
       paragraphs: [
         "CLEVONE SARL is a limited liability company (multi-member SARL) incorporated in the Democratic Republic of the Congo, with its registered office in Kisangani, Commune de Makiso.",
-        "The public brand CLEVONES represents the company's institutional, technological, and commercial presence — software, platforms, logistics, industry, media, education, and advisory.",
+        `${companyBrandStatementEn} Statutes institute no acronym: CLEVONES is a brand.`,
         capacityVsPlatformClarification.en,
       ],
     },
@@ -100,7 +103,7 @@ export const aboutPageContent = {
       title: corporateMission.title,
       paragraphs: [
         corporateMission.statement,
-        "The company preserves documented, compliant structures. Operational field activity, where it exists, is presented separately from the CLEVONES institutional platform.",
+        "When CLEVONE coordinates a multi-party initiative, any operational role of another of its activities is declared in advance and kept separate from the mission.",
       ],
     },
     vision: {
@@ -108,7 +111,7 @@ export const aboutPageContent = {
       title: corporateVision.title,
       paragraphs: [
         corporateVision.statement,
-        `Strategic vision: ${company.strategicVision}. This orientation guides how CLEVONE SARL structures digital, commercial, and institutional systems. It is not the company's unique legal activity.`,
+        `Strategic orientation of our advisory and governance line: ${company.strategicVision}. It guides how we help institutions structure multi-party initiatives; it does not define the whole company.`,
       ],
     },
     activities: {
@@ -160,11 +163,19 @@ export const aboutPageContent = {
         { label: "Legal form", value: company.legalForm.en },
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
-        { label: "Incorporation date", value: company.incorporationDateDisplay },
-        { label: "Share capital", value: company.shareCapital },
+        { label: "Registration date", value: company.incorporationDateDisplay },
       ],
       addressLabel: "Registered office",
       addressLines: companyAddressLinesEn,
+      objetSocial: {
+        title: "Corporate purpose",
+        intro: objetSocialLegalEn.intro,
+        items: objetSocialLegalEn.items.slice(0, 9),
+        closing: objetSocialLegalEn.closing,
+        note: "The full summary, including corporate capacities, is in the legal notice.",
+        legalHref: "/legal-notice",
+        legalLabel: "Legal notice",
+      },
     },
     cta: {
       title: "Engage with CLEVONE SARL.",
@@ -183,10 +194,10 @@ export const aboutPageContent = {
         "CLEVONE SARL est une société congolaise multisectorielle basée à Kisangani — technologies, progiciels, logistique, industrie, énergie, médias, éducation et conseil.",
     },
     hero: {
-      eyebrow: "Société",
-      title: "CLEVONE SARL",
+      eyebrow: "À propos de CLEVONE SARL",
+      title: "Une société congolaise qui développe des logiciels, fait du commerce et fournit des services.",
       subtitle:
-        "Une entreprise congolaise de technologies et d'affaires basée à Kisangani, qui construit les infrastructures numériques, commerciales et institutionnelles de l'Afrique.",
+        "Basée à Kisangani, CLEVONE SARL intervient dans neuf domaines fixés par ses statuts — des logiciels et du commerce à la logistique, l'énergie, les médias, l'éducation, le conseil et l'événementiel.",
       tagline: "Kisangani · République Démocratique du Congo",
     },
     identity: {
@@ -196,24 +207,24 @@ export const aboutPageContent = {
         "CLEVONE SARL est la personne morale. CLEVONES est la marque publique.",
       paragraphs: [
         "CLEVONE SARL est une société à responsabilité limitée pluripersonnelle (SARL) immatriculée en République Démocratique du Congo, dont le siège social est à Kisangani, Commune de Makiso.",
-        "La marque publique CLEVONES représente la présence institutionnelle, technologique et commerciale de la société — logiciels, plateformes, logistique, industrie, médias, éducation et conseil.",
+        `${companyBrandStatementFr} Les statuts n'instituent aucun sigle : CLEVONES est une marque.`,
         capacityVsPlatformClarification.fr,
       ],
     },
     mission: {
       eyebrow: "Mission",
-      title: "Construire les infrastructures numériques, commerciales et institutionnelles de l'Afrique",
+      title: corporateMission.titleFr,
       paragraphs: [
         corporateMission.statementFr,
-        "La société préserve des structures documentées et conformes. L'activité opérationnelle de terrain, lorsqu'elle existe, est présentée séparément de la plateforme institutionnelle CLEVONES.",
+        "Quand CLEVONE coordonne une initiative multi-acteurs, tout rôle opérationnel d'une autre de ses activités est déclaré à l'avance et séparé de la mission.",
       ],
     },
     vision: {
       eyebrow: "Vision",
-      title: "Transformer le potentiel territorial en actifs économiques durables",
+      title: corporateVision.titleFr,
       paragraphs: [
         corporateVision.statementFr,
-        `Vision stratégique : ${company.strategicVisionFr}. Cette orientation guide la manière dont CLEVONE SARL structure les systèmes numériques, commerciaux et institutionnels. Elle n'est pas l'unique activité juridique de la société.`,
+        `Orientation stratégique de notre ligne conseil et gouvernance : ${company.strategicVisionFr}. Elle guide la façon dont nous aidons les institutions à structurer des initiatives multi-acteurs ; elle ne définit pas toute la société.`,
       ],
     },
     activities: {
@@ -266,16 +277,15 @@ export const aboutPageContent = {
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
         { label: "Date d'immatriculation", value: company.incorporationDateDisplay },
-        { label: "Capital social", value: company.shareCapital },
       ],
       addressLabel: "Siège social",
       addressLines: companyAddressLinesFr,
       objetSocial: {
         title: "Objet social",
         intro: objetSocialLegalFr.intro,
-        items: objetSocialLegalFr.items,
+        items: objetSocialLegalFr.items.slice(0, 9),
         closing: objetSocialLegalFr.closing,
-        note: "Le détail intégral figure également dans les mentions légales.",
+        note: "Le résumé complet, capacités sociétaires comprises, figure dans les mentions légales.",
         legalHref: "/mentions-legales",
         legalLabel: "Mentions légales",
       },

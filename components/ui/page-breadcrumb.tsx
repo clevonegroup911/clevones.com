@@ -48,7 +48,7 @@ export function PageBreadcrumb({
               ) : (
                 <Link
                   href={item.href}
-                  className="transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+                  className="transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
                 >
                   {item.label}
                 </Link>

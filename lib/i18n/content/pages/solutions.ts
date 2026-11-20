@@ -1,3 +1,7 @@
+import {
+  domainsFraming,
+  interventionDomains,
+} from "@/lib/constants/corporate-purpose";
 import type {
   CtaContent,
   HeroContent,
@@ -29,6 +33,8 @@ export type SolutionsPageContent = {
     note: string;
     href: string;
     cta: string;
+    quoteHref?: string;
+    quoteCta?: string;
   };
 };
 
@@ -41,105 +47,61 @@ export const solutionsPageContent = {
     meta: {
       title: "Solutions",
       description:
-        "Clevones designs governed territorial architectures across its lawful fields of intervention.",
+        "CLEVONE SARL's products and services across its nine fields of activity — software, trade, logistics, energy, media, education, advisory and more.",
     },
     hero: {
-      eyebrow: "Domains",
-      title: "Where CLEVONES may design territorial architectures.",
+      eyebrow: "Solutions",
+      title: "Products and services for businesses and institutions.",
       subtitle:
-        "These are legal fields of intervention — not a menu of generic services.",
-      tagline: "One mandate. Several domains.",
+        "Software such as CLEVONE DMS, trade and distribution, logistics and advisory — within the fields set by our statutes.",
+      tagline: "One company. Nine fields of activity.",
     },
     introduction: {
       eyebrow: "Approach",
-      title: "Architecture in lawful fields — not multi-service operation",
+      title: "What we offer",
       paragraphs: [
-        "Corporate purpose defines where we may design and coordinate territorial architectures.",
-        "Domains expand capacity through the platform, specialized entities, or subsidiaries when required.",
-        "The governance platform remains a coordination layer — not an operator.",
+        "CLEVONE SARL develops, sells and operates products and services in the fields set by its corporate purpose.",
+        "Regulated activities (transport, energy, some advisory work) are carried out only once the required authorizations or approvals are obtained.",
+        "When we coordinate a multi-party initiative, we hold no stake in its execution.",
       ],
     },
     domains: {
-      eyebrow: "Domains",
-      title: "Nine fields. One mandate.",
-      description:
-        "In each field we structure, coordinate, and report — without substituting operators.",
-      items: [
-        {
-          title: "Technology & digital transformation",
-          description:
-            "Digital systems that make coordination readable and auditable.",
-          ecosystemLink: "CLEVONET · CLEVONE DMS",
-        },
-        {
-          title: "Transport, logistics & supply chains",
-          description:
-            "Structure circulation systems without informal brokerage.",
-        },
-        {
-          title: "Industry & productive innovation",
-          description:
-            "Document productive initiatives for long-horizon territorial value.",
-          ecosystemLink: "Clevone Mining",
-        },
-        {
-          title: "Energy",
-          description:
-            "Coordinate energy-related initiatives as part of territorial infrastructure.",
-        },
-        {
-          title: "Media & creative industries",
-          description:
-            "Economic intelligence and communication that support institutional decisions.",
-          ecosystemLink: "CLEVODIA",
-        },
-        {
-          title: "Education & capacity building",
-          description:
-            "Skills and knowledge infrastructures that strengthen institutions.",
-          ecosystemLink: "Btlearn / BICUNI",
-        },
-        {
-          title: "Strategic advisory, compliance & governance",
-          description:
-            "Advisory and governance accompaniment within applicable law.",
-        },
-        {
-          title: "Sports, culture & professional events",
-          description:
-            "Structured platforms for territorial visibility and coordination.",
-        },
-        {
-          title: "Commerce & authorized distribution",
-          description:
-            "Lawful trade capacity via separated structures — never informal brokerage under the governance platform.",
-        },
-      ],
+      eyebrow: domainsFraming.eyebrow,
+      title: domainsFraming.title,
+      description: domainsFraming.description,
+      items: interventionDomains.map((domain) => ({
+        title: domain.title,
+        description: domain.regulatoryNote
+          ? `${domain.summary.replace(/\.$/, "")}, ${domain.regulatoryNote}.`
+          : domain.summary,
+        ecosystemLink: domain.ecosystemLink,
+      })),
     },
     howEngagementWorks: {
       eyebrow: "Engagement",
-      title: "Architecture before execution",
+      title: "How we work with you",
       steps: [
         {
-          title: "Read the territory",
-          description: "Non-sensitive view of actors, constraints, and context.",
+          title: "Understand the need",
+          description: "Your organization, your constraints, what you want to achieve.",
         },
         {
-          title: "Design flows and governance",
-          description: "Map circulation. Define roles, reporting, and compliance.",
+          title: "Propose a solution",
+          description: "A product, a service or a coordination mission — with a clear scope and quote.",
         },
         {
-          title: "Coordinate delivery",
+          title: "Deliver and follow up",
           description:
-            "Align legitimate actors — and ecosystem entities when needed — without informal brokerage.",
+            "Deployment, training and support; for coordination missions, documented reporting.",
         },
       ],
     },
     cta: {
-      title: "See how engagement is sequenced",
-      description: "Five steps from territorial reading to strategic reporting.",
+      title: "A product or service need?",
+      description: "Request a quote, or present a multi-party initiative.",
       actions: [
-        { href: "/methodology", label: "See the methodology" },
+        { href: "/contact?intent=product", label: "Request a quote" },
+        { href: "/contact", label: "Present an initiative", variant: "outline" },
       ],
     },
     featuredProduct: {
@@ -164,117 +126,74 @@ export const solutionsPageContent = {
         "Users & Permissions",
         "Cloud Synchronization",
       ],
-      note: "Capabilities describe the product architecture and roadmap.",
+      note: "Capabilities describe the product scope and roadmap. Contact us to check availability for your organization.",
       href: "/solutions/clevone-dms",
       cta: "Explore CLEVONE DMS",
+      quoteHref: "/contact?intent=product",
+      quoteCta: "Request a quote",
     },
   },
   fr: {
     meta: {
       title: "Solutions",
       description:
-        "Clevones conçoit des architectures territoriales gouvernées dans ses champs d'intervention licites.",
+        "Les produits et services de CLEVONE SARL dans ses neuf domaines d'activité — logiciels, commerce, logistique, énergie, médias, éducation, conseil et plus.",
     },
     hero: {
-      eyebrow: "Domaines",
-      title: "Où CLEVONES peut concevoir des architectures territoriales.",
+      eyebrow: "Solutions",
+      title: "Des produits et services pour les entreprises et les institutions.",
       subtitle:
-        "Ce sont des champs juridiques d'intervention — pas un menu de services génériques.",
-      tagline: "Un mandat. Plusieurs domaines.",
+        "Des logiciels comme CLEVONE DMS, du commerce et de la distribution, de la logistique et du conseil — dans les domaines fixés par nos statuts.",
+      tagline: "Une société. Neuf domaines d'activité.",
     },
     introduction: {
       eyebrow: "Approche",
-      title: "Architecture dans des champs licites — pas une opération multiservices",
+      title: "Ce que nous proposons",
       paragraphs: [
-        "L'objet social définit où nous pouvons concevoir et coordonner des architectures territoriales.",
-        "Les domaines élargissent la capacité via la plateforme, des entités spécialisées ou des filiales si besoin.",
-        "La plateforme de gouvernance reste une couche de coordination — pas un opérateur.",
+        "CLEVONE SARL développe, vend et exploite des produits et services dans les domaines fixés par son objet social.",
+        "Les activités réglementées (transport, énergie, certains conseils) ne sont exercées qu'après obtention des autorisations ou agréments requis.",
+        "Quand nous coordonnons une initiative multi-acteurs, nous ne sommes pas partie prenante de son exécution.",
       ],
     },
     domains: {
-      eyebrow: "Domaines",
-      title: "Neuf champs. Un mandat.",
-      description:
-        "Dans chaque champ, nous structurons, coordonnons et rendons compte — sans substituer les opérateurs.",
-      items: [
-        {
-          title: "Technologies et transformation numérique",
-          description:
-            "Des systèmes numériques qui rendent la coordination lisible et auditable.",
-          ecosystemLink: "CLEVONET · CLEVONE DMS",
-        },
-        {
-          title: "Transport, logistique et chaînes d'approvisionnement",
-          description:
-            "Structurer les systèmes de circulation sans courtage informel.",
-        },
-        {
-          title: "Industrie et innovation productive",
-          description:
-            "Documenter des initiatives productives pour une valeur territoriale de long terme.",
-          ecosystemLink: "Clevone Mining",
-        },
-        {
-          title: "Énergie",
-          description:
-            "Coordonner des initiatives énergétiques comme partie de l'infrastructure territoriale.",
-        },
-        {
-          title: "Médias et industries créatives",
-          description:
-            "Intelligence économique et communication au service de la décision institutionnelle.",
-          ecosystemLink: "CLEVODIA",
-        },
-        {
-          title: "Éducation et renforcement des capacités",
-          description:
-            "Compétences et infrastructures de savoir qui renforcent les institutions.",
-          ecosystemLink: "Btlearn / BICUNI",
-        },
-        {
-          title: "Conseil stratégique, conformité et gouvernance",
-          description:
-            "Conseil et accompagnement de gouvernance dans le respect du droit applicable.",
-        },
-        {
-          title: "Sports, culture et événements professionnels",
-          description:
-            "Plateformes structurées de visibilité et de coordination territoriales.",
-        },
-        {
-          title: "Commerce et distribution autorisée",
-          description:
-            "Capacité de commerce licite via des structures séparées — jamais de courtage informel sous la plateforme de gouvernance.",
-        },
-      ],
+      eyebrow: domainsFraming.eyebrowFr,
+      title: domainsFraming.titleFr,
+      description: domainsFraming.descriptionFr,
+      items: interventionDomains.map((domain) => ({
+        title: domain.titleFr,
+        description: domain.regulatoryNoteFr
+          ? `${domain.summaryFr.replace(/\.$/, "")}, ${domain.regulatoryNoteFr}.`
+          : domain.summaryFr,
+        ecosystemLink: domain.ecosystemLink,
+      })),
     },
     howEngagementWorks: {
       eyebrow: "Engagement",
-      title: "L'architecture avant l'exécution",
+      title: "Comment nous travaillons avec vous",
       steps: [
         {
-          title: "Lire le territoire",
+          title: "Comprendre le besoin",
           description:
-            "Vue non sensible des acteurs, contraintes et du contexte.",
+            "Votre organisation, vos contraintes, ce que vous voulez obtenir.",
         },
         {
-          title: "Concevoir flux et gouvernance",
+          title: "Proposer une solution",
           description:
-            "Cartographier la circulation. Définir rôles, reporting et conformité.",
+            "Un produit, un service ou une mission de coordination — avec un périmètre et un devis clairs.",
         },
         {
-          title: "Coordonner la livraison",
+          title: "Livrer et suivre",
           description:
-            "Aligner les acteurs légitimes — et les entités de l'écosystème si besoin — sans courtage informel.",
+            "Déploiement, formation et accompagnement ; pour les missions de coordination, un reporting documenté.",
         },
       ],
     },
     cta: {
-      title: "Voir comment l'engagement est séquencé",
-      description:
-        "Cinq étapes, de la lecture territoriale au reporting stratégique.",
+      title: "Un besoin de produit ou de service ?",
+      description: "Demandez un devis, ou présentez une initiative multi-acteurs.",
       actions: [
-        { href: "/methodologie", label: "Voir la méthodologie" },
+        { href: "/collaboration?intent=product", label: "Demander un devis" },
+        { href: "/collaboration", label: "Présenter une initiative", variant: "outline" },
       ],
     },
     featuredProduct: {
@@ -299,9 +218,11 @@ export const solutionsPageContent = {
         "Utilisateurs et permissions",
         "Synchronisation cloud",
       ],
-      note: "Les capacités décrivent l'architecture produit et la feuille de route.",
+      note: "Les fonctions présentées décrivent le périmètre du produit et sa feuille de route. Contactez-nous pour connaître sa disponibilité pour votre organisation.",
       href: "/domaines/clevone-dms",
       cta: "Découvrir CLEVONE DMS",
+      quoteHref: "/collaboration?intent=product",
+      quoteCta: "Demander un devis",
     },
   },
 } as const satisfies LocalizedPageContent<SolutionsPageContent>;

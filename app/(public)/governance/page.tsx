@@ -5,7 +5,7 @@ import { GovernancePageContent } from "@/components/sections/governance-page";
 export const metadata = createPageMetadata({
   title: "Governance",
   description:
-    "Governance, compliance, and controlled collaboration at Clevones — structure, documentation, accountability, and neutral coordination for territorial economic initiatives.",
+    "Governance, compliance and controlled collaboration in CLEVONE coordination missions — structure, documentation, accountability and neutral coordination.",
   path: "/governance",
 });
 

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ─── Clevones institutional design tokens ─────────────────────────────────── */
+/* ─── CLEVONE SARL institutional design tokens ─────────────────────────────────── */
 
 @theme {
   /* Typography */
@@ -9,19 +9,25 @@
   --font-heading: var(--font-libre-franklin), var(--font-source-sans),
     ui-sans-serif, system-ui, sans-serif;
 
-  /* Core palette */
-  --color-navy: #1a2b48;
-  --color-navy-hover: #243a5e;
-  --color-navy-light: #2e4566;
-  --color-navy-muted: #6b7d96;
+  /* Official palette — measured on the CLEVONE SARL logo
+     (public/brand/official/clevone-sarl-logo.png). */
+  --color-navy: #173766;
+  --color-navy-hover: #1f4580;
+  --color-navy-light: #2a5293;
+  /* Defaults below suit the dark admin/portal; `.site-light` overrides them. */
+  --color-navy-muted: #8798b3;
   --color-navy-subtle: #1e2a3d;
 
-  --color-gold: #d4a017;
-  --color-gold-hover: #e0b832;
-  --color-gold-muted: #c9a84c;
+  --color-gold: #d49d36;
+  --color-gold-hover: #c08a26;
+  --color-gold-muted: #e2b865;
   --color-gold-subtle: #2a2418;
 
-  --color-charcoal: #0a0d12;
+  --color-sky: #a6b5cc;
+  --color-cream: #f5f4f0;
+
+  /* Deep navy derived from #173766 — dark background of /admin and the portal. */
+  --color-charcoal: #0b1a30;
   --color-soft-white: #f1f5f9;
   --color-gray-muted: #94a3b8;
   --color-border: #1e2836;
@@ -29,7 +35,11 @@
 
   --color-white: #ffffff;
 
-  /* Semantic surfaces — premium dark institutional */
+  /* Error text — light red on the dark admin; overridden per scope below. */
+  --color-danger: #f87171;
+
+  /* Semantic surfaces — default (dark) kept for /admin and the portal.
+     The public site applies `.site-light` (see below). */
   --color-background: var(--color-charcoal);
   --color-foreground: var(--color-soft-white);
   --color-muted: var(--color-gray-muted);
@@ -62,6 +72,50 @@
   /* Radius — restrained, institutional */
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
+}
+
+/* ─── Public site: light theme (official logo is navy on transparent) ───── */
+.site-light {
+  --color-background: #ffffff;
+  --color-foreground: #173766;
+  --color-muted: #4a5b78;
+  --color-gray-muted: #4a5b78;
+  --color-soft-white: #173766;
+  --color-navy-muted: #5a6c8a;
+  --color-navy-subtle: #e8edf4;
+  /* Darkened gold derivative for small text on light surfaces (≥ 4.9:1). */
+  --color-gold-muted: #8a621e;
+  --color-gold-subtle: #f6ead2;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-surface-muted: #f5f4f0;
+  --color-border: #c3cedd;
+  --color-border-subtle: #dde3ec;
+  --color-charcoal: #173766;
+  --color-danger: #b91c1c;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
+
+/* Navy flat sections inside the light site (home hero, final calls). */
+.site-light .site-navy,
+.site-navy {
+  --color-background: #173766;
+  --color-foreground: #ffffff;
+  --color-muted: #d3dbe8;
+  --color-gray-muted: #c5cfdf;
+  --color-soft-white: #ffffff;
+  --color-navy-muted: #a6b5cc;
+  --color-gold-muted: #e2b865;
+  --color-gold-subtle: #1f4580;
+  --color-surface: #1f4580;
+  --color-surface-elevated: #1f4580;
+  --color-surface-muted: #1b3d73;
+  --color-border: #3b5a8c;
+  --color-border-subtle: #2f4f82;
+  --color-navy-hover: #1f4580;
+  --color-danger: #fca5a5;
+  color: var(--color-foreground);
 }
 
 @layer base {

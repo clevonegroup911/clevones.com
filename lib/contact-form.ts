@@ -1,6 +1,8 @@
 import type {
   ActorType,
+  GovernanceIntent,
   InitiativeStage,
+  ProductOption,
 } from "@/lib/constants/contact-form-options";
 import {
   formatInitiativeSubmissionErrors,
@@ -10,6 +12,7 @@ import {
 export {
   actorTypes,
   initiativeStages,
+  productOptions,
   type ActorType,
   type InitiativeStage,
 } from "@/lib/constants/contact-form-options";
@@ -40,10 +43,14 @@ export type InitiativeSubmissionErrors = Partial<
   Record<InitiativeSubmissionField, string>
 >;
 
-export function toInitiativeSubmissionPayload(data: InitiativeSubmission) {
+export function toInitiativeSubmissionPayload(
+  data: InitiativeSubmission,
+  intent: GovernanceIntent = "collaboration",
+) {
   const { governanceAcknowledgment, ...rest } = data;
 
   return {
+    intent,
     ...rest,
     complianceConfirmation: governanceAcknowledgment,
   };
@@ -51,9 +58,10 @@ export function toInitiativeSubmissionPayload(data: InitiativeSubmission) {
 
 export function validateInitiativeSubmission(
   data: InitiativeSubmission,
+  intent: GovernanceIntent = "collaboration",
 ): InitiativeSubmissionErrors {
   const parsed = initiativeSubmissionSchema.safeParse(
-    toInitiativeSubmissionPayload(data),
+    toInitiativeSubmissionPayload(data, intent),
   );
 
   if (parsed.success) {
@@ -129,13 +137,84 @@ function mapApiErrorsToFormErrors(
  */
 export async function submitInitiativeSubmission(
   data: InitiativeSubmission,
+  intent: GovernanceIntent = "collaboration",
+): Promise<InitiativeSubmissionApiSuccess> {
+  return postContactPayload(
+    toInitiativeSubmissionPayload(data, intent),
+    mapApiErrorsToFormErrors,
+  );
+}
+
+/* ─── Product inquiry / quote (short customer path) ─────────────────────── */
+
+export type ProductInquiry = {
+  organizationName: string;
+  contactPerson: string;
+  professionalEmail: string;
+  phone: string;
+  location: string;
+  product: ProductOption | "";
+  estimatedUsers: string;
+  need: string;
+  privacyConsent: boolean;
+};
+
+export type ProductInquiryField = keyof ProductInquiry;
+export type ProductInquiryErrors = Partial<Record<ProductInquiryField, string>>;
+
+export const emptyProductInquiry = (
+  product: ProductOption | "" = "",
+): ProductInquiry => ({
+  organizationName: "",
+  contactPerson: "",
+  professionalEmail: "",
+  phone: "",
+  location: "",
+  product,
+  estimatedUsers: "",
+  need: "",
+  privacyConsent: false,
+});
+
+export function toProductInquiryPayload(data: ProductInquiry) {
+  return { intent: "product" as const, ...data };
+}
+
+function mapProductErrors(errors: Record<string, string>): ProductInquiryErrors {
+  const mapped: ProductInquiryErrors = {};
+  const known = emptyProductInquiry();
+  for (const [field, message] of Object.entries(errors)) {
+    if (field in known) {
+      mapped[field as ProductInquiryField] = message;
+    }
+  }
+  return mapped;
+}
+
+export function validateProductInquiry(data: ProductInquiry): ProductInquiryErrors {
+  const parsed = initiativeSubmissionSchema.safeParse(toProductInquiryPayload(data));
+  if (parsed.success) {
+    return {};
+  }
+  return mapProductErrors(formatInitiativeSubmissionErrors(parsed.error));
+}
+
+export async function submitProductInquiry(
+  data: ProductInquiry,
+): Promise<InitiativeSubmissionApiSuccess> {
+  return postContactPayload(toProductInquiryPayload(data), mapProductErrors);
+}
+
+async function postContactPayload<E>(
+  payload: unknown,
+  mapErrors: (errors: Record<string, string>) => E,
 ): Promise<InitiativeSubmissionApiSuccess> {
   const response = await fetch("/api/initiative-submission", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(toInitiativeSubmissionPayload(data)),
+    body: JSON.stringify(payload),
   });
 
   let result: InitiativeSubmissionApiResponse;
@@ -153,9 +232,9 @@ export async function submitInitiativeSubmission(
   }
 
   if ("errors" in result) {
-    const formErrors = mapApiErrorsToFormErrors(result.errors);
+    const formErrors = mapErrors(result.errors);
     const error = new Error("Validation failed.") as Error & {
-      formErrors?: InitiativeSubmissionErrors;
+      formErrors?: E;
     };
     error.formErrors = formErrors;
     throw error;

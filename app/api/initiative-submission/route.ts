@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { resolveEmailProviderFromEnv, sendEmail } from "@/lib/email/send";
 import { initiativeEmailTemplate } from "@/lib/email/templates";
+import { readJsonBody } from "@/lib/http/read-json-body";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -11,11 +12,9 @@ import {
 } from "@/lib/validation/initiative-submission";
 
 export async function POST(request: Request) {
-  let body: unknown;
+  const json = await readJsonBody(request);
 
-  try {
-    body = await request.json();
-  } catch {
+  if (!json.ok) {
     return NextResponse.json(
       {
         success: false,
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsed = initiativeSubmissionSchema.safeParse(body);
+  const parsed = initiativeSubmissionSchema.safeParse(json.body);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -51,21 +50,26 @@ export async function POST(request: Request) {
       retryDelayMs: 0,
     });
 
+    const isProduct = submission.intent === "product";
+
     await trackAnalyticsEvent({
       name: "FORM_SUBMIT",
       path: "/api/initiative-submission",
-      label: "initiative",
+      label: isProduct ? "product" : "initiative",
     });
     await trackAnalyticsEvent({
       name: "COMMERCIAL_ACTION",
       path: "/api/initiative-submission",
-      label: submission.expectedCollaborationType.slice(0, 80),
+      label: isProduct
+        ? `product:${submission.product}`
+        : submission.expectedCollaborationType.slice(0, 80),
     });
 
     return NextResponse.json({
       success: true,
-      message:
-        "Your structured initiative has been received for institutional review.",
+      message: isProduct
+        ? "Your product inquiry has been received."
+        : "Your structured initiative has been received for institutional review.",
     });
   } catch {
     return NextResponse.json(
