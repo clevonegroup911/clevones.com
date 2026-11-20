@@ -22,10 +22,10 @@ export type LegalPageContent = {
     addressLabel: string;
     addressLines: readonly string[];
     /**
-     * Directeur de la publication — décision propriétaire D1 en attente.
-     * Laisser `undefined` : rien n'est rendu tant que D1 n'est pas tranchée.
+     * Éditeur et responsable de la publication — décision D1 (2026-11-20) :
+     * la personne morale CLEVONE SARL, sans nom de personne physique.
      */
-    publicationDirector?: { label: string; value: string };
+    publicationManager: { label: string; separator: string; lines: readonly string[] };
   };
   corporatePurpose: { title: string; intro: string; items: readonly string[]; closing: string };
   contact: {
@@ -69,6 +69,16 @@ export const legalPageContent = {
       ],
       addressLabel: "Siège social",
       addressLines: companyAddressLinesFr,
+      publicationManager: {
+        label: "Éditeur et responsable de la publication",
+        separator: " : ",
+        lines: [
+          company.legalName,
+          `${company.rccmLabel} ${company.rccm}`,
+          `${company.nationalIdLabel} ${company.nationalId}`,
+          `Siège : ${companyAddressLinesFr.join(", ")}`,
+        ],
+      },
     },
     corporatePurpose: {
       title: "Objet social (résumé des statuts, art. 3)",
@@ -113,6 +123,16 @@ export const legalPageContent = {
       ],
       addressLabel: "Registered office",
       addressLines: companyAddressLinesEn,
+      publicationManager: {
+        label: "Publisher and publication manager",
+        separator: ": ",
+        lines: [
+          company.legalName,
+          `${company.rccmLabel} ${company.rccm}`,
+          `${company.nationalIdLabel} ${company.nationalId}`,
+          `Registered office: ${companyAddressLinesEn.join(", ")}`,
+        ],
+      },
     },
     corporatePurpose: {
       title: "Corporate purpose (summary of statutes, art. 3)",

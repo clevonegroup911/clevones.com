@@ -37,14 +37,17 @@ export async function LegalPage() {
             </span>
             {page.identity.addressLines.join(", ")}
           </p>
-          {page.identity.publicationDirector ? (
-            <p>
-              <span className="font-medium text-foreground">
-                {page.identity.publicationDirector.label}.{" "}
+          <p data-testid="publication-manager">
+            <span className="font-medium text-foreground">
+              {page.identity.publicationManager.label}
+              {page.identity.publicationManager.separator}
+            </span>
+            {page.identity.publicationManager.lines.map((line, index) => (
+              <span key={line} className={index === 0 ? "text-foreground" : "block"}>
+                {line}
               </span>
-              {page.identity.publicationDirector.value}
-            </p>
-          ) : null}
+            ))}
+          </p>
           <h2 className="font-heading text-base font-semibold text-foreground">
             {page.corporatePurpose.title}
           </h2>
