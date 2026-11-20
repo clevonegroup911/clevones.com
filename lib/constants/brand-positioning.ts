@@ -40,13 +40,13 @@ export const clevonesNeutralityDisclaimerFr =
   "Clevones est une plateforme neutre de gouvernance et de coordination. Elle n'est pas un opérateur, un négociant, un exploitant de ressources, ni un intermédiaire direct." as const;
 
 export const clevoneMiningSeparationDisclaimer =
-  "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL." as const;
+  "Ecosystem lines are activities or projects of CLEVONE SARL. No separate legal registration is claimed on this site except for CLEVONE SARL." as const;
 
 export const clevoneMiningSeparationDisclaimerFr =
-  "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL." as const;
+  "Les lignes de l'écosystème sont des activités ou projets de CLEVONE SARL. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL." as const;
 
 export const clevoneMiningEcosystemDisclaimer =
-  "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL." as const;
+  "Ecosystem lines are activities or projects of CLEVONE SARL. No separate legal registration is claimed on this site except for CLEVONE SARL." as const;
 
 export const governanceAcknowledgmentText =
   "I understand that Clevones is a neutral governance and coordination platform, not an operator, trader, resource exploiter, or direct intermediary." as const;

@@ -24,14 +24,8 @@ export const siteConfig = {
     rccm: company.rccm,
     nationalId: company.nationalId,
     incorporationDate: company.incorporationDateDisplay,
-    shareCapital: company.shareCapital,
     city: company.address.city,
     country: company.address.countryEn,
-  },
-  cta: {
-    label: "Initiate a strategic collaboration",
-    shortLabel: "Start collaboration",
-    href: "/collaboration",
   },
 } as const;
 

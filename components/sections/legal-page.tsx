@@ -37,6 +37,14 @@ export async function LegalPage() {
             </span>
             {page.identity.addressLines.join(", ")}
           </p>
+          {page.identity.publicationDirector ? (
+            <p>
+              <span className="font-medium text-foreground">
+                {page.identity.publicationDirector.label}.{" "}
+              </span>
+              {page.identity.publicationDirector.value}
+            </p>
+          ) : null}
           <h2 className="font-heading text-base font-semibold text-foreground">
             {page.corporatePurpose.title}
           </h2>

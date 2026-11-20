@@ -1,5 +1,9 @@
 import { siteLegalDisclaimerFr } from "@/lib/constants/brand-positioning";
-import { company, companyDefinitionFr } from "@/lib/constants/company";
+import {
+  company,
+  companyAddressLinesFr,
+  companyDefinitionFr,
+} from "@/lib/constants/company";
 import {
   aboutPageContent,
   challengePageContent,
@@ -42,6 +46,7 @@ export const frContent = {
     description: companyDefinitionFr,
     legalDisclaimer: siteLegalDisclaimerFr,
     footerLocation: company.address.shortFr,
+    addressLines: companyAddressLinesFr,
     phoneLabel: "Tél.",
     emailLabel: "Email",
     cta: {

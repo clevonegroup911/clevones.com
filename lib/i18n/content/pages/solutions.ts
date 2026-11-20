@@ -1,3 +1,7 @@
+import {
+  domainsFraming,
+  interventionDomains,
+} from "@/lib/constants/corporate-purpose";
 import type {
   CtaContent,
   HeroContent,
@@ -60,61 +64,16 @@ export const solutionsPageContent = {
       ],
     },
     domains: {
-      eyebrow: "Domains",
-      title: "Nine fields. One mandate.",
-      description:
-        "In each field we structure, coordinate, and report — without substituting operators.",
-      items: [
-        {
-          title: "Technology & digital transformation",
-          description:
-            "Digital systems that make coordination readable and auditable.",
-          ecosystemLink: "CLEVONET · CLEVONE DMS",
-        },
-        {
-          title: "Transport, logistics & supply chains",
-          description:
-            "Structure circulation systems without informal brokerage.",
-        },
-        {
-          title: "Industry & productive innovation",
-          description:
-            "Document productive initiatives for long-horizon territorial value.",
-          ecosystemLink: "Clevone Mining",
-        },
-        {
-          title: "Energy",
-          description:
-            "Coordinate energy-related initiatives as part of territorial infrastructure.",
-        },
-        {
-          title: "Media & creative industries",
-          description:
-            "Economic intelligence and communication that support institutional decisions.",
-          ecosystemLink: "CLEVODIA",
-        },
-        {
-          title: "Education & capacity building",
-          description:
-            "Skills and knowledge infrastructures that strengthen institutions.",
-          ecosystemLink: "Btlearn / BICUNI",
-        },
-        {
-          title: "Strategic advisory, compliance & governance",
-          description:
-            "Advisory and governance accompaniment within applicable law.",
-        },
-        {
-          title: "Sports, culture & professional events",
-          description:
-            "Structured platforms for territorial visibility and coordination.",
-        },
-        {
-          title: "Commerce & authorized distribution",
-          description:
-            "Lawful trade capacity via separated structures — never informal brokerage under the governance platform.",
-        },
-      ],
+      eyebrow: domainsFraming.eyebrow,
+      title: domainsFraming.title,
+      description: domainsFraming.description,
+      items: interventionDomains.map((domain) => ({
+        title: domain.title,
+        description: domain.regulatoryNote
+          ? `${domain.summary.replace(/\.$/, "")}, ${domain.regulatoryNote}.`
+          : domain.summary,
+        ecosystemLink: domain.ecosystemLink,
+      })),
     },
     howEngagementWorks: {
       eyebrow: "Engagement",
@@ -192,61 +151,16 @@ export const solutionsPageContent = {
       ],
     },
     domains: {
-      eyebrow: "Domaines",
-      title: "Neuf champs. Un mandat.",
-      description:
-        "Dans chaque champ, nous structurons, coordonnons et rendons compte — sans substituer les opérateurs.",
-      items: [
-        {
-          title: "Technologies et transformation numérique",
-          description:
-            "Des systèmes numériques qui rendent la coordination lisible et auditable.",
-          ecosystemLink: "CLEVONET · CLEVONE DMS",
-        },
-        {
-          title: "Transport, logistique et chaînes d'approvisionnement",
-          description:
-            "Structurer les systèmes de circulation sans courtage informel.",
-        },
-        {
-          title: "Industrie et innovation productive",
-          description:
-            "Documenter des initiatives productives pour une valeur territoriale de long terme.",
-          ecosystemLink: "Clevone Mining",
-        },
-        {
-          title: "Énergie",
-          description:
-            "Coordonner des initiatives énergétiques comme partie de l'infrastructure territoriale.",
-        },
-        {
-          title: "Médias et industries créatives",
-          description:
-            "Intelligence économique et communication au service de la décision institutionnelle.",
-          ecosystemLink: "CLEVODIA",
-        },
-        {
-          title: "Éducation et renforcement des capacités",
-          description:
-            "Compétences et infrastructures de savoir qui renforcent les institutions.",
-          ecosystemLink: "Btlearn / BICUNI",
-        },
-        {
-          title: "Conseil stratégique, conformité et gouvernance",
-          description:
-            "Conseil et accompagnement de gouvernance dans le respect du droit applicable.",
-        },
-        {
-          title: "Sports, culture et événements professionnels",
-          description:
-            "Plateformes structurées de visibilité et de coordination territoriales.",
-        },
-        {
-          title: "Commerce et distribution autorisée",
-          description:
-            "Capacité de commerce licite via des structures séparées — jamais de courtage informel sous la plateforme de gouvernance.",
-        },
-      ],
+      eyebrow: domainsFraming.eyebrowFr,
+      title: domainsFraming.titleFr,
+      description: domainsFraming.descriptionFr,
+      items: interventionDomains.map((domain) => ({
+        title: domain.titleFr,
+        description: domain.regulatoryNoteFr
+          ? `${domain.summaryFr.replace(/\.$/, "")}, ${domain.regulatoryNoteFr}.`
+          : domain.summaryFr,
+        ecosystemLink: domain.ecosystemLink,
+      })),
     },
     howEngagementWorks: {
       eyebrow: "Engagement",

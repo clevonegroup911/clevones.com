@@ -149,7 +149,7 @@ export type HomePageContent = {
   meta: { title: string; description: string };
 };
 
-const enDomains = interventionDomains.slice(0, 6).map(
+const enDomains = interventionDomains.map(
   ({ id, title, architectureRole, ecosystemLink }) => ({
     id,
     title,
@@ -158,7 +158,7 @@ const enDomains = interventionDomains.slice(0, 6).map(
   }),
 );
 
-const frDomains = interventionDomains.slice(0, 6).map(
+const frDomains = interventionDomains.map(
   ({ id, titleFr, architectureRoleFr, ecosystemLink }) => ({
     id,
     title: titleFr,
@@ -384,13 +384,13 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       ],
     },
     domains: {
-      eyebrow: "Fields of intervention",
-      title: "Territorial architectures across strategic domains",
+      eyebrow: "Fields of activity",
+      title: "Nine fields of activity, one company",
       description:
-        "Clevones' corporate purpose defines where architectures of economic flows may be designed and coordinated — through the governance platform, specialized ecosystem entities, and subsidiaries when required. Domains expand capacity; they do not redefine Clevones as a multi-service operator.",
+        "Our statutes set nine fields: from software and trade to logistics, energy and events. Regulated activities are carried out only once the required authorizations are obtained.",
       items: enDomains,
       href: "/solutions",
-      linkLabel: "View all domains of intervention",
+      linkLabel: "See all fields of activity",
     },
     methodology: {
       eyebrow: "Methodology",
@@ -681,13 +681,13 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       ],
     },
     domains: {
-      eyebrow: "Champs d'intervention",
-      title: "Des architectures territoriales dans des domaines stratégiques",
+      eyebrow: "Domaines d'activité",
+      title: "Neuf domaines d'activité, une seule société",
       description:
-        "L'objet social de Clevones définit les domaines dans lesquels des architectures de flux économiques peuvent être conçues et coordonnées, par la plateforme de gouvernance, les entités spécialisées de l'écosystème et, lorsque nécessaire, les filiales. Ces domaines élargissent la capacité ; ils ne redéfinissent pas Clevones comme un opérateur multiservices.",
+        "Nos statuts fixent neuf domaines : des logiciels et du commerce à la logistique, l'énergie et l'événementiel. Les activités réglementées ne sont exercées qu'après obtention des autorisations requises.",
       items: frDomains,
       href: "/domaines",
-      linkLabel: "Voir tous les champs d'intervention",
+      linkLabel: "Voir tous les domaines d'activité",
     },
     methodology: {
       eyebrow: "Méthodologie",

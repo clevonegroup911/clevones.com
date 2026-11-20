@@ -9,6 +9,7 @@ import {
   corporateVision,
   domainsFraming,
   interventionDomains,
+  objetSocialLegalEn,
   objetSocialLegalFr,
 } from "@/lib/constants/corporate-purpose";
 import type {
@@ -108,7 +109,7 @@ export const aboutPageContent = {
       title: corporateVision.title,
       paragraphs: [
         corporateVision.statement,
-        `Strategic vision: ${company.strategicVision}. This orientation guides how CLEVONE SARL structures digital, commercial, and institutional systems. It is not the company's unique legal activity.`,
+        `Strategic orientation of our advisory and governance line: ${company.strategicVision}. It guides how we help institutions structure multi-party initiatives; it does not define the whole company.`,
       ],
     },
     activities: {
@@ -160,11 +161,19 @@ export const aboutPageContent = {
         { label: "Legal form", value: company.legalForm.en },
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
-        { label: "Incorporation date", value: company.incorporationDateDisplay },
-        { label: "Share capital", value: company.shareCapital },
+        { label: "Registration date", value: company.incorporationDateDisplay },
       ],
       addressLabel: "Registered office",
       addressLines: companyAddressLinesEn,
+      objetSocial: {
+        title: "Corporate purpose",
+        intro: objetSocialLegalEn.intro,
+        items: objetSocialLegalEn.items.slice(0, 9),
+        closing: objetSocialLegalEn.closing,
+        note: "The full summary, including corporate capacities, is in the legal notice.",
+        legalHref: "/legal-notice",
+        legalLabel: "Legal notice",
+      },
     },
     cta: {
       title: "Engage with CLEVONE SARL.",
@@ -202,7 +211,7 @@ export const aboutPageContent = {
     },
     mission: {
       eyebrow: "Mission",
-      title: "Construire les infrastructures numériques, commerciales et institutionnelles de l'Afrique",
+      title: corporateMission.titleFr,
       paragraphs: [
         corporateMission.statementFr,
         "La société préserve des structures documentées et conformes. L'activité opérationnelle de terrain, lorsqu'elle existe, est présentée séparément de la plateforme institutionnelle CLEVONES.",
@@ -210,10 +219,10 @@ export const aboutPageContent = {
     },
     vision: {
       eyebrow: "Vision",
-      title: "Transformer le potentiel territorial en actifs économiques durables",
+      title: corporateVision.titleFr,
       paragraphs: [
         corporateVision.statementFr,
-        `Vision stratégique : ${company.strategicVisionFr}. Cette orientation guide la manière dont CLEVONE SARL structure les systèmes numériques, commerciaux et institutionnels. Elle n'est pas l'unique activité juridique de la société.`,
+        `Orientation stratégique de notre ligne conseil et gouvernance : ${company.strategicVisionFr}. Elle guide la façon dont nous aidons les institutions à structurer des initiatives multi-acteurs ; elle ne définit pas toute la société.`,
       ],
     },
     activities: {
@@ -266,16 +275,15 @@ export const aboutPageContent = {
         { label: company.rccmLabel, value: company.rccm },
         { label: company.nationalIdLabel, value: company.nationalId },
         { label: "Date d'immatriculation", value: company.incorporationDateDisplay },
-        { label: "Capital social", value: company.shareCapital },
       ],
       addressLabel: "Siège social",
       addressLines: companyAddressLinesFr,
       objetSocial: {
         title: "Objet social",
         intro: objetSocialLegalFr.intro,
-        items: objetSocialLegalFr.items,
+        items: objetSocialLegalFr.items.slice(0, 9),
         closing: objetSocialLegalFr.closing,
-        note: "Le détail intégral figure également dans les mentions légales.",
+        note: "Le résumé complet, capacités sociétaires comprises, figure dans les mentions légales.",
         legalHref: "/mentions-legales",
         legalLabel: "Mentions légales",
       },

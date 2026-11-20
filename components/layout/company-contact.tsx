@@ -9,17 +9,21 @@ import { cn } from "@/lib/utils";
 
 type CompanyContactProps = {
   location: string;
+  /** Full registered office lines; when set, replaces the short location. */
+  addressLines?: readonly string[];
+  /** Show RCCM and ID Nat. (proof of legal existence). */
+  showRegistration?: boolean;
   phoneLabel?: string;
   emailLabel?: string;
-  showAddress?: boolean;
   className?: string;
 };
 
 export function CompanyContact({
   location,
+  addressLines,
+  showRegistration = false,
   phoneLabel = "Tel",
   emailLabel = "Email",
-  showAddress = false,
   className,
 }: CompanyContactProps) {
   return (
@@ -27,12 +31,25 @@ export function CompanyContact({
       <p className="font-heading text-base font-semibold tracking-tight text-foreground">
         {company.legalName}
       </p>
-      <p className="mt-2 text-sm leading-relaxed text-muted">{location}</p>
-      {showAddress ? (
-        <p className="mt-1 text-sm leading-relaxed text-muted">
-          {company.address.street}
-          <br />
-          {company.address.commune}
+      {addressLines && addressLines.length > 0 ? (
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          {addressLines.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+        </p>
+      ) : (
+        <p className="mt-2 text-sm leading-relaxed text-muted">{location}</p>
+      )}
+      {showRegistration ? (
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          <span className="block">
+            {company.rccmLabel} {company.rccm}
+          </span>
+          <span className="block">
+            {company.nationalIdLabel} {company.nationalId}
+          </span>
         </p>
       ) : null}
       <p className="mt-3 text-sm">

@@ -15,7 +15,8 @@ export async function ContactPageContent({
   intent = "collaboration",
 }: ContactPageContentProps) {
   const locale = getLocaleFromHeaders(await headers());
-  const page = getContent(locale).pages.contact;
+  const { shell, pages } = getContent(locale);
+  const page = pages.contact;
   const content = page.intents[intent];
 
   return (
@@ -37,7 +38,8 @@ export async function ContactPageContent({
               location={page.directory.location}
               phoneLabel={page.directory.phoneLabel}
               emailLabel={page.directory.emailLabel}
-              showAddress
+              addressLines={shell.addressLines}
+              showRegistration
               className="mt-4"
             />
           </div>

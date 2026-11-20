@@ -78,6 +78,8 @@ export type ShellContent = {
   description: string;
   legalDisclaimer: string;
   footerLocation: string;
+  /** Full registered office, one line per item (statuts, art. 4). */
+  addressLines: readonly string[];
   phoneLabel: string;
   emailLabel: string;
   cta: ShellCta;

@@ -271,7 +271,7 @@ export const ecosystemPageContent = {
       separationLabel: "Operational separation",
     },
     disclaimerEyebrow: "Clarification",
-    disclaimer: "Clevone Mining is presented as an ecosystem project / entity with distinct status. No separate legal registration is claimed on this site except for CLEVONE SARL.",
+    disclaimer: "Ecosystem lines are activities or projects of CLEVONE SARL. No separate legal registration is claimed on this site except for CLEVONE SARL.",
     decisionFlow: {
       eyebrow: "Governance of decisions",
       title: "How decisions circulate",
@@ -507,7 +507,7 @@ export const ecosystemPageContent = {
       separationLabel: "Séparation opérationnelle",
     },
     disclaimerEyebrow: "Précision",
-    disclaimer: "Clevone Mining est présentée comme un projet / une entité de l'écosystème à statut distinct. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
+    disclaimer: "Les lignes de l'écosystème sont des activités ou projets de CLEVONE SARL. Aucune immatriculation juridique distincte n'est affirmée sur ce site, hormis celle de CLEVONE SARL.",
     decisionFlow: {
       eyebrow: "Gouvernance des décisions",
       title: "Comment circulent les décisions",

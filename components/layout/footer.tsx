@@ -9,7 +9,7 @@ import {
   CompanyEntityLink,
 } from "@/components/layout/company-contact";
 import { Container } from "@/components/ui/container";
-import { company } from "@/lib/constants/company";
+import { company, companyRegistrationLine } from "@/lib/constants/company";
 import {
   getContent,
   getLocaleFromPath,
@@ -51,36 +51,6 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty text-gray-muted">
               {shell.description}
             </p>
-            <div className="mt-6 space-y-1 text-xs leading-relaxed text-navy-muted">
-              <p className="font-heading text-sm font-semibold tracking-tight text-white">
-                {company.legalName}
-              </p>
-              <p>
-                {company.rccmLabel} : {company.rccm}
-              </p>
-              <p>
-                {company.nationalIdLabel} : {company.nationalId}
-              </p>
-              <p>{shell.footerLocation}</p>
-              <p>
-                {shell.phoneLabel} :{" "}
-                <a
-                  href={company.phone.href}
-                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-                >
-                  {company.phone.display}
-                </a>
-              </p>
-              <p>
-                {shell.emailLabel} :{" "}
-                <a
-                  href={company.email.href}
-                  className="text-gray-muted transition-colors hover:text-white focus-visible:rounded-sm focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
-                >
-                  {company.email.display}
-                </a>
-              </p>
-            </div>
           </div>
 
           <div className="min-w-0 lg:col-span-2 lg:col-start-6">
@@ -187,6 +157,7 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
             </p>
             <CompanyContact
               location={shell.footerLocation}
+              addressLines={shell.addressLines}
               phoneLabel={shell.phoneLabel}
               emailLabel={shell.emailLabel}
               className="mt-4"
@@ -201,9 +172,14 @@ export function Footer({ reserveMobileCtaSpace = false }: FooterProps) {
         </div>
 
         <div className="mt-6 flex flex-col gap-4 border-t border-border-subtle/40 pt-6 text-sm text-gray-muted sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
-          <p className="text-pretty">
-            © {currentYear} {company.legalName}. {shell.allRightsReserved}
-          </p>
+          <div className="space-y-1">
+            <p className="text-pretty" data-testid="footer-registration">
+              {companyRegistrationLine}
+            </p>
+            <p className="text-pretty text-xs">
+              © {currentYear} {company.legalName}. {shell.allRightsReserved}
+            </p>
+          </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {navigation.legal.map((item) => (
               <Link
