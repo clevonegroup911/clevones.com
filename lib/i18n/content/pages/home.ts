@@ -326,7 +326,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
             "Business software, trade, distribution and logistics.",
         },
         {
-          title: "Institutional architecture",
+          title: "Governance and reporting",
           description:
             "Governance and reporting frameworks that institutions and funders can review.",
         },
@@ -623,7 +623,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
             "Logiciels de gestion, commerce, distribution et logistique.",
         },
         {
-          title: "Architecture institutionnelle",
+          title: "Gouvernance et reporting",
           description:
             "Des cadres de gouvernance et de reporting que les institutions et les financeurs peuvent examiner.",
         },

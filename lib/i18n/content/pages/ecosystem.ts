@@ -178,7 +178,7 @@ export const ecosystemPageContent = {
     modules: {
       eyebrow: "Modules",
       title: "Specialized entities connect through the hub",
-      description: "Each entity has a defined mandate. Coordination passes through CLEVONES.",
+      description: "Each entity has a defined mandate. Coordination passes through CLEVONE SARL.",
       communication:
         "Modules extend domain capacity — technology, business software, media and economic analysis, secure digital coordination, scientific knowledge, and certified education — around CLEVONE SARL.",
       rosterEyebrow: "Entity roster",
@@ -414,7 +414,7 @@ export const ecosystemPageContent = {
     modules: {
       eyebrow: "Modules",
       title: "Les entités spécialisées se connectent via le hub",
-      description: "Chaque entité a un mandat défini. La coordination passe par CLEVONES.",
+      description: "Chaque entité a un mandat défini. La coordination passe par CLEVONE SARL.",
       communication:
         "Les lignes d'activité étendent les capacités — technologies, progiciel, médias, infrastructure numérique, savoir scientifique et éducation certifiante — autour de CLEVONE SARL.",
       rosterEyebrow: "Registre des entités",

@@ -63,7 +63,7 @@ export const evidencePageContent = {
     meta: {
       title: "Evidence — Documentation and System Credibility",
       description:
-        "Why decision-makers can evaluate CLEVONES through documented methodology, architecture, governance doctrine, versioned content, and transparent publication status — without fabricated case studies.",
+        "Why decision-makers can evaluate CLEVONE SARL through documented methodology, architecture, governance doctrine, versioned content, and transparent publication status — without fabricated case studies.",
     },
     breadcrumb: {
       home: "Home",
@@ -131,7 +131,7 @@ export const evidencePageContent = {
       title: "What this site will not invent",
       description: "Institutional trust requires stating limits as clearly as strengths.",
       paragraphs: [
-        "CLEVONES does not present fabricated clients, awards, ratings, growth figures, partner logos, testimonials, or success stories.",
+        "CLEVONE SARL does not present fabricated clients, awards, ratings, growth figures, partner logos, testimonials, or success stories.",
         "Where a document is not yet published, status is disclosed. Evaluation should rest on what exists today.",
       ],
       items: [
@@ -229,7 +229,7 @@ export const evidencePageContent = {
     meta: {
       title: "Preuves — Documentation et crédibilité du système",
       description:
-        "Pourquoi un décideur peut évaluer CLEVONES via une méthodologie, une architecture, une doctrine de gouvernance, un contenu versionné et un statut de publication transparent — sans cas inventés.",
+        "Pourquoi un décideur peut évaluer CLEVONE SARL via une méthodologie, une architecture, une doctrine de gouvernance, un contenu versionné et un statut de publication transparent — sans cas inventés.",
     },
     breadcrumb: {
       home: "Accueil",
@@ -297,7 +297,7 @@ export const evidencePageContent = {
       title: "Ce que ce site n'inventera pas",
       description: "La confiance institutionnelle exige d'énoncer les limites aussi clairement que les forces.",
       paragraphs: [
-        "CLEVONES ne présente pas de clients, awards, notes, chiffres de croissance, logos partenaires, témoignages ou success stories inventés.",
+        "CLEVONE SARL ne présente pas de clients, awards, notes, chiffres de croissance, logos partenaires, témoignages ou success stories inventés.",
         "Lorsqu'un document n'est pas encore publié, le statut est divulgué. L'évaluation doit reposer sur ce qui existe aujourd'hui.",
       ],
       items: [

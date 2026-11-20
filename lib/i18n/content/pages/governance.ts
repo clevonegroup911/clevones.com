@@ -43,7 +43,7 @@ const clientFilters = {
 
 export const governancePageContent = {
   en: {
-    meta: { title: "Governance", description: "Clevones' governance doctrine, compliance principles, and institutional eligibility framework." },
+    meta: { title: "Governance", description: "CLEVONE's governance doctrine, compliance principles, and institutional eligibility framework." },
     hero: {
       eyebrow: "Governance",
       title: "Rules before discretion. Documentation before action.",
@@ -54,7 +54,7 @@ export const governancePageContent = {
       eyebrow: "Governance doctrine",
       title: "Structure before discretion. Documentation before action.",
       paragraphs: [
-        "Clevones does not coordinate through informal channels or undocumented arrangements.",
+        "CLEVONE does not coordinate through informal channels or undocumented arrangements.",
         "Every engagement starts with defined roles, responsibilities, and compliance expectations.",
         "In a coordination mission, governance design stays separate from execution: CLEVONE does not substitute the legitimate actors of that initiative.",
         "Compliance is a structural requirement, not an afterthought.",
@@ -78,21 +78,21 @@ export const governancePageContent = {
       eyebrow: "Data handling",
       title: "Clear information boundaries",
       paragraphs: [
-        "Clevones does not expose sensitive operational data. Proprietary logistics, confidential commercial information, and actor-specific intelligence are excluded by design.",
+        "CLEVONE does not expose sensitive operational data. Proprietary logistics, confidential commercial information, and actor-specific intelligence are excluded by design.",
         "The platform works only with structured, non-sensitive, authorized information — classified and cleared for institutional use.",
       ],
     },
     filtering: {
       eyebrow: "Client filtering framework",
       title: "Six criteria for engagement",
-      description: "Not every actor or initiative proceeds to coordination. Clevones applies six filters before governed engagement begins.",
+      description: "Not every actor or initiative proceeds to coordination. CLEVONE applies six filters before governed engagement begins.",
       filters: clientFilters.en,
     },
     notEligible: {
       eyebrow: "Not eligible",
       title: "Requests that may not be reviewed",
       paragraphs: [
-        "Clevones filters deliberately to protect institutional credibility. Speculative proposals, informal requests, and undocumented initiatives may not proceed.",
+        "CLEVONE filters deliberately to protect institutional credibility. Speculative proposals, informal requests, and undocumented initiatives may not proceed.",
         "This protects governance integrity — not a rejection of territorial potential. Actors should establish structural readiness before re-engaging.",
       ],
       exclusions: [
@@ -110,7 +110,7 @@ export const governancePageContent = {
     },
   },
   fr: {
-    meta: { title: "Gouvernance", description: "La doctrine de gouvernance, les principes de conformité et le cadre d'éligibilité institutionnelle de Clevones." },
+    meta: { title: "Gouvernance", description: "La doctrine de gouvernance, les principes de conformité et le cadre d'éligibilité institutionnelle de CLEVONE." },
     hero: {
       eyebrow: "Gouvernance",
       title: "Des règles avant la discrétion. De la documentation avant l'action.",
@@ -121,7 +121,7 @@ export const governancePageContent = {
       eyebrow: "Doctrine de gouvernance",
       title: "La structure avant la discrétion. La documentation avant l'action.",
       paragraphs: [
-        "Clevones ne coordonne pas par des canaux informels ou des arrangements non documentés.",
+        "CLEVONE ne coordonne pas par des canaux informels ou des arrangements non documentés.",
         "Chaque engagement commence par des rôles, responsabilités et attentes de conformité définis.",
         "Dans une mission de coordination, la conception de la gouvernance reste distincte de l'exécution : CLEVONE ne se substitue pas aux acteurs légitimes de cette initiative.",
         "La conformité est une exigence structurelle, non une réflexion après coup.",
@@ -145,21 +145,21 @@ export const governancePageContent = {
       eyebrow: "Traitement des données",
       title: "Des limites informationnelles claires",
       paragraphs: [
-        "Clevones n'expose pas de données opérationnelles sensibles. La logistique propriétaire, les informations commerciales confidentielles et les renseignements propres aux acteurs sont exclus par conception.",
+        "CLEVONE n'expose pas de données opérationnelles sensibles. La logistique propriétaire, les informations commerciales confidentielles et les renseignements propres aux acteurs sont exclus par conception.",
         "La plateforme travaille uniquement avec des informations structurées, non sensibles et autorisées — classifiées et validées pour un usage institutionnel.",
       ],
     },
     filtering: {
       eyebrow: "Cadre de sélection des acteurs",
       title: "Six critères d'engagement",
-      description: "Tout acteur ou toute initiative ne relève pas de la coordination. Clevones applique six filtres avant le début d'un engagement gouverné.",
+      description: "Tout acteur ou toute initiative ne relève pas de la coordination. CLEVONE applique six filtres avant le début d'un engagement gouverné.",
       filters: clientFilters.fr,
     },
     notEligible: {
       eyebrow: "Non éligible",
       title: "Demandes susceptibles de ne pas être examinées",
       paragraphs: [
-        "Clevones filtre délibérément pour protéger la crédibilité institutionnelle. Les propositions spéculatives, les demandes informelles et les initiatives non documentées peuvent ne pas aboutir.",
+        "CLEVONE filtre délibérément pour protéger la crédibilité institutionnelle. Les propositions spéculatives, les demandes informelles et les initiatives non documentées peuvent ne pas aboutir.",
         "Cela protège l'intégrité de la gouvernance — ce n'est pas un rejet du potentiel territorial. Les acteurs doivent établir leur préparation structurelle avant de se présenter à nouveau.",
       ],
       exclusions: [

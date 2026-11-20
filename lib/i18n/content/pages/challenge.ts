@@ -39,7 +39,7 @@ export const challengePageContent = {
     breadcrumb: { home: "Home", current: "Challenge", navLabel: "Breadcrumb" },
     hero: {
       eyebrow: "Challenge",
-      title: "Fragmented coordination blocks territorial value.",
+      title: "When actors work apart, local projects stall.",
       subtitle:
         "Projects stall when actors, information, and responsibilities stay disconnected.",
       tagline: "Structure before capital.",
@@ -152,7 +152,7 @@ export const challengePageContent = {
     breadcrumb: { home: "Accueil", current: "Défi", navLabel: "Fil d'Ariane" },
     hero: {
       eyebrow: "Défi",
-      title: "Une coordination fragmentée bloque la valeur territoriale.",
+      title: "Quand chaque acteur avance seul, les projets locaux s'enlisent.",
       subtitle:
         "Les projets s'enlisent quand acteurs, information et responsabilités restent déconnectés.",
       tagline: "La structure avant le capital.",

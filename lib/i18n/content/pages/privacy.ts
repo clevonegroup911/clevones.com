@@ -12,7 +12,7 @@ const email = "contact@clevones.com";
 
 export const privacyPageContent = {
   fr: {
-    meta: { title: "Politique de confidentialité", description: "Politique de confidentialité de Clevones : traitement, protection et droits relatifs aux données personnelles collectées via le site institutionnel." },
+    meta: { title: "Politique de confidentialité", description: "Politique de confidentialité de CLEVONE : traitement, protection et droits relatifs aux données personnelles collectées via le site institutionnel." },
     eyebrow: "Légal",
     title: "Politique de confidentialité",
     paragraphs: [
@@ -23,7 +23,7 @@ export const privacyPageContent = {
     contact: { prefix: "Pour exercer ces droits, contactez", email },
   },
   en: {
-    meta: { title: "Privacy policy", description: "Clevones privacy policy: processing, protection, and rights relating to personal data collected through the institutional website." },
+    meta: { title: "Privacy policy", description: "CLEVONE privacy policy: processing, protection, and rights relating to personal data collected through the institutional website." },
     eyebrow: "Legal",
     title: "Privacy policy",
     paragraphs: [
