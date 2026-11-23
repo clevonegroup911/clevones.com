@@ -14,6 +14,8 @@ Runbook local pour l’exploitation. Aucun secret, mot de passe, jeton ou conten
 | PostgreSQL | 15.19 |
 | Processus applicatif | PM2 `clevones-com` (online, PID inchangé pendant T004) |
 
+Version PostgreSQL production : À VÉRIFIER (`psql -V` sur la VM). Valeur 15.19 relevée lors de T004, non revérifiée depuis ; la base éphémère de CI est en PostgreSQL 18 (PR #17).
+
 T004 n’a pas modifié le code servi, n’a pas touché à `.env`, n’a pas exécuté `prisma migrate deploy`, n’a pas redémarré PM2, Nginx ou PostgreSQL, et n’a supprimé aucune ancienne sauvegarde.
 
 ## Sauvegarde vérifiée
