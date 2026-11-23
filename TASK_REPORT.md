@@ -102,6 +102,12 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 - reports/tasks/T084.md (commits par phase, tableau des contrastes WCAG)
 - tests/e2e/evidence/*-avant.png et *-apres.png (375 et 1280 px, ignorés par Git)
 
+## CI de la PR #16
+
+- Job `quality` en échec sur `a81fbf7` pour deux causes hors du code de la PR :
+  - `audit` : avis de sécurité sur des dépendances existantes → corrigé sur la branche séparée `chore/deps-audit` (commits `362f497`, `46f6992`, non poussés ; rapport `reports/deps-audit-2026-11-23.md`) ; migration Prisma 7 reportée en tâche T085 (non exécutée).
+  - `x100_tests` : test de sauvegarde PostgreSQL (clients 18 du runner ubuntu-26.04 contre service `postgres:16-alpine`, `SET transaction_timeout` refusé) — cause confirmée localement, correctif CI à choisir.
+
 ## Risques
 
 - La route publique `/api/initiative-submission` n'a ni limitation de débit ni contrôle d'origine (état antérieur conservé) : à traiter séparément.
