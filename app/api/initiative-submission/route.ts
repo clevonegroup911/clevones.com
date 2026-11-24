@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { resolveEmailProviderFromEnv, sendEmail } from "@/lib/email/send";
 import { initiativeEmailTemplate } from "@/lib/email/templates";
+import {
+  consumeContactSubmission,
+  getContactClientIp,
+} from "@/lib/contact-rate-limit";
+import { readJsonBody } from "@/lib/http/read-json-body";
+import { assertSameOriginMutation } from "@/lib/http/same-origin";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -11,11 +17,33 @@ import {
 } from "@/lib/validation/initiative-submission";
 
 export async function POST(request: Request) {
-  let body: unknown;
+  if (!assertSameOriginMutation(request).ok) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "This submission was refused. Please use the form on clevones.com.",
+      },
+      { status: 403 },
+    );
+  }
 
-  try {
-    body = await request.json();
-  } catch {
+  const rateLimit = consumeContactSubmission(getContactClientIp(request));
+  if (rateLimit.limited) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Too many submissions. Please try again in a few minutes.",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
+  const json = await readJsonBody(request);
+
+  if (!json.ok) {
     return NextResponse.json(
       {
         success: false,
@@ -26,7 +54,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsed = initiativeSubmissionSchema.safeParse(body);
+  const parsed = initiativeSubmissionSchema.safeParse(json.body);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -51,21 +79,26 @@ export async function POST(request: Request) {
       retryDelayMs: 0,
     });
 
+    const isProduct = submission.intent === "product";
+
     await trackAnalyticsEvent({
       name: "FORM_SUBMIT",
       path: "/api/initiative-submission",
-      label: "initiative",
+      label: isProduct ? "product" : "initiative",
     });
     await trackAnalyticsEvent({
       name: "COMMERCIAL_ACTION",
       path: "/api/initiative-submission",
-      label: submission.expectedCollaborationType.slice(0, 80),
+      label: isProduct
+        ? `product:${submission.product}`
+        : submission.expectedCollaborationType.slice(0, 80),
     });
 
     return NextResponse.json({
       success: true,
-      message:
-        "Your structured initiative has been received for institutional review.",
+      message: isProduct
+        ? "Your product inquiry has been received."
+        : "Your structured initiative has been received for institutional review.",
     });
   } catch {
     return NextResponse.json(

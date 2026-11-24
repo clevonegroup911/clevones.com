@@ -1,5 +1,9 @@
 import { siteLegalDisclaimerFr } from "@/lib/constants/brand-positioning";
-import { company, companyDefinitionFr } from "@/lib/constants/company";
+import {
+  company,
+  companyAddressLinesFr,
+  companyDefinitionFr,
+} from "@/lib/constants/company";
 import {
   aboutPageContent,
   challengePageContent,
@@ -42,27 +46,29 @@ export const frContent = {
     description: companyDefinitionFr,
     legalDisclaimer: siteLegalDisclaimerFr,
     footerLocation: company.address.shortFr,
+    addressLines: companyAddressLinesFr,
     phoneLabel: "Tél.",
     emailLabel: "Email",
     cta: {
-      label: "Commencer une conversation stratégique",
-      shortLabel: "Conversation stratégique",
-      href: "/collaboration",
+      label: "Demander un devis",
+      shortLabel: "Devis",
+      href: "/collaboration?intent=product",
     },
     nav: {
       main: {
-        challenge: "Défi",
-        positioning: "Positionnement",
         solutions: "Solutions",
-        methodology: "Méthodologie",
+        clevoneDms: "CLEVONE DMS",
+        about: "À propos",
         governance: "Gouvernance",
-        ecosystem: "Plateforme",
-        evidence: "Preuves",
         contact: "Contact",
       },
       secondary: {
+        challenge: "Défi",
+        positioning: "Positionnement",
+        methodology: "Méthodologie",
+        ecosystem: "Écosystème",
+        evidence: "Preuves",
         whyNow: "Pourquoi maintenant",
-        about: "À propos",
         faq: "FAQ",
         insights: "Analyses",
       },

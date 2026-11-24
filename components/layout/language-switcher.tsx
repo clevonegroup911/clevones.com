@@ -65,7 +65,7 @@ function LanguageOption({
       <span
         aria-current="true"
         lang={htmlLang}
-        className="inline-flex min-h-8 min-w-9 items-center justify-center rounded-sm bg-white/10 px-2.5 text-xs font-semibold tracking-wide text-white"
+        className="inline-flex min-h-8 min-w-9 items-center justify-center rounded-sm bg-foreground/10 px-2.5 text-xs font-semibold tracking-wide text-foreground"
       >
         {localeLabel}
       </span>
@@ -90,7 +90,7 @@ function LanguageOption({
       href={href}
       hrefLang={htmlLang}
       lang={htmlLang}
-      className="inline-flex min-h-8 min-w-9 items-center justify-center rounded-sm px-2.5 text-xs font-medium tracking-wide text-gray-muted transition-colors hover:bg-white/5 hover:text-white focus-visible:bg-white/5 focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+      className="inline-flex min-h-8 min-w-9 items-center justify-center rounded-sm px-2.5 text-xs font-medium tracking-wide text-gray-muted transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
     >
       {localeLabel}
     </Link>

@@ -26,11 +26,13 @@ import {
 import { getContent, getLocaleFromPath } from "@/lib/i18n";
 import type { ContactIntent } from "@/lib/i18n/content/pages/contact";
 
+type GovernanceContactIntent = Exclude<ContactIntent, "product">;
+
 type ContactInitiativeFormProps = {
-  intent?: ContactIntent;
+  intent?: GovernanceContactIntent;
 };
 
-function createInitialForm(intent: ContactIntent): InitiativeSubmission {
+function createInitialForm(intent: GovernanceContactIntent): InitiativeSubmission {
   return {
     ...emptyInitiativeSubmission(),
     initiativeStage:
@@ -76,7 +78,7 @@ export function ContactInitiativeForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const validationErrors = validateInitiativeSubmission(form);
+    const validationErrors = validateInitiativeSubmission(form, intent);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -91,7 +93,7 @@ export function ContactInitiativeForm({
     setSubmitError(null);
 
     try {
-      const result = await submitInitiativeSubmission(form);
+      const result = await submitInitiativeSubmission(form, intent);
       setSuccessMessage(result.message);
       setSubmitted(true);
       setForm(createInitialForm(intent));
@@ -130,7 +132,7 @@ export function ContactInitiativeForm({
         <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
           {formContent.success.eyebrow}
         </p>
-        <h2 className="mt-3 font-heading text-2xl font-semibold text-white">
+        <h2 className="mt-3 font-heading text-2xl font-semibold text-foreground">
           {formContent.success.title}
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-muted">
@@ -314,7 +316,7 @@ export function ContactInitiativeForm({
                       isSelected
                         ? "border-gold/40 bg-gold-subtle/30"
                         : "border-border-subtle bg-surface hover:border-gold/20",
-                      errors.actorType && !isSelected && "border-red-500/30",
+                      errors.actorType && !isSelected && "border-danger/30",
                     )}
                   >
                     <input
@@ -509,7 +511,7 @@ export function ContactInitiativeForm({
             className={cn(
               "rounded-sm border px-4 py-4",
               errors.governanceAcknowledgment
-                ? "border-red-500/60 bg-red-500/5"
+                ? "border-danger/60 bg-danger/5"
                 : "border-border-subtle bg-surface",
             )}
           >
@@ -539,7 +541,7 @@ export function ContactInitiativeForm({
             {errors.governanceAcknowledgment ? (
               <p
                 id="governanceAcknowledgment-error"
-                className="mt-3 text-xs text-red-400"
+                className="mt-3 text-xs text-danger"
                 role="alert"
               >
                 {errors.governanceAcknowledgment}
@@ -550,14 +552,14 @@ export function ContactInitiativeForm({
 
         {submitError ? (
           <div
-            className="rounded-sm border border-red-500/40 bg-red-500/5 px-4 py-4"
+            className="rounded-sm border border-danger/40 bg-danger/5 px-4 py-4"
             role="alert"
             aria-live="assertive"
           >
-            <p className="text-sm font-medium text-red-300">
+            <p className="text-sm font-medium text-danger">
               {formContent.errorTitle}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-red-200/90">
+            <p className="mt-2 text-sm leading-relaxed text-danger">
               {submitError}
             </p>
           </div>
@@ -565,9 +567,7 @@ export function ContactInitiativeForm({
 
         <div className="flex flex-col-reverse gap-4 border-t border-border-subtle pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-relaxed text-pretty text-muted">
-            {formContent.requiredNotice.split("*")[0]}
-            <span className="text-gold-muted">*</span>. Submissions are
-            {formContent.requiredNotice.split("*")[1]}
+            {formContent.requiredNotice}
           </p>
           <Button
             type="submit"

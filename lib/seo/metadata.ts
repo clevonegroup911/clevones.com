@@ -23,6 +23,8 @@ export const siteKeywords = [
   "logiciels de gestion RDC",
   "CLEVONE DMS",
   "Kisangani",
+  "Tshopo",
+  "commerce et distribution RDC",
   "transformation numérique RDC",
   "Congolese technology company",
   "digital infrastructure Africa",

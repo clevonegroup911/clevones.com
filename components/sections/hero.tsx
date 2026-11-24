@@ -73,7 +73,7 @@ export async function HeroSection() {
               variant="outline"
               size="lg"
               className={cn(
-                "border-border text-white hover:bg-navy-hover",
+                "border-border text-foreground hover:bg-navy-hover",
                 buttonFullMobile,
               )}
             >
@@ -91,7 +91,7 @@ export async function HeroSection() {
             {homeHero.benefits.map((benefit) => (
               <li key={benefit.title} className="group min-w-0">
                 <div className={cardAccentLine} aria-hidden />
-                <p className="font-heading text-base font-semibold tracking-tight text-white sm:text-lg">
+                <p className="font-heading text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   {benefit.title}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-gray-muted">

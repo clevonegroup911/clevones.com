@@ -6,19 +6,21 @@
  */
 
 export const corporateVision = {
-  title: "Transform territorial potential into durable economic assets",
+  title: "Turn local potential into lasting economic activity",
+  titleFr: "Transformer le potentiel local en activité économique durable",
   statement:
-    "CLEVONE SARL designs, structures, and coordinates digital, commercial, and institutional systems. Through technology, business software, logistics, industry, energy, media, education, and advisory, it converts complex territorial potential into durable economic value.",
+    "CLEVONE SARL builds software, trade and service capacity in the DRC so that local potential becomes lasting economic activity. Its advisory line also helps institutions structure multi-party initiatives, with clear roles and documented decisions.",
   statementFr:
-    "CLEVONE SARL conçoit, structure et coordonne des systèmes numériques, commerciaux et institutionnels. Grâce aux technologies, aux progiciels, à la logistique, à l'industrie, à l'énergie, aux médias, à l'éducation et au conseil, elle transforme le potentiel territorial en valeur économique durable.",
+    "CLEVONE SARL développe des capacités logicielles, commerciales et de services en RDC pour que le potentiel local devienne une activité économique durable. Sa ligne conseil aide aussi les institutions à structurer des initiatives multi-acteurs, avec des rôles clairs et des décisions documentées.",
 } as const;
 
 export const corporateMission = {
   title: "Build digital, commercial and institutional infrastructure for Africa",
+  titleFr: "Construire les infrastructures numériques, commerciales et institutionnelles de l'Afrique",
   statement:
-    "CLEVONE SARL is a Congolese multi-sector company based in Kisangani. It develops software and digital platforms, supports logistics and productive systems, and provides media, education, and advisory capabilities — for institutions, enterprises, and partners in the Democratic Republic of Congo and across Africa.",
+    "CLEVONE SARL is a Congolese multi-sector company based in Kisangani. It develops and sells software and digital services, trades and distributes goods, and works in logistics, industry, energy, media, education, advisory and events — for businesses, institutions and partners in the DRC and across Africa.",
   statementFr:
-    "CLEVONE SARL est une société congolaise multisectorielle basée à Kisangani. Elle développe des logiciels et des plateformes numériques, appuie la logistique et les systèmes productifs, et fournit des capacités médias, éducatives et de conseil — pour les institutions, les entreprises et les partenaires en République Démocratique du Congo et en Afrique.",
+    "CLEVONE SARL est une société congolaise multisectorielle basée à Kisangani. Elle développe et vend des logiciels et services numériques, fait du commerce et de la distribution, et intervient en logistique, industrie, énergie, médias, éducation, conseil et événementiel — pour les entreprises, les institutions et les partenaires en RDC et en Afrique.",
 } as const;
 
 /**
@@ -27,141 +29,218 @@ export const corporateMission = {
  * does not replace them as the unique legal activity.
  */
 export const domainsFraming = {
-  eyebrow: "Fields of intervention",
-  eyebrowFr: "Champs d'intervention",
-  title: "Lawful multi-sector capacity",
-  titleFr: "Une capacité juridique multisectorielle",
+  eyebrow: "Fields of activity",
+  eyebrowFr: "Domaines d'activité",
+  title: "Nine fields of activity, set by our statutes",
+  titleFr: "Neuf domaines d'activité, fixés par nos statuts",
   description:
-    "CLEVONE SARL's corporate purpose defines the domains in which the company may operate — directly, through its ecosystem, or via subsidiaries and partnerships. The strategic vision — Governance Architecture for Territorial Economic Flows — orients how digital, commercial, and institutional systems are structured. It is not the company's unique legal activity.",
+    "CLEVONE SARL's corporate purpose (statutes, art. 3) sets nine fields of activity. The company works in them with its own products and services, or with partners. Regulated activities are carried out only once the required authorizations are obtained.",
   descriptionFr:
-    "L'objet social de CLEVONE SARL définit les domaines dans lesquels la société peut intervenir — directement, via son écosystème, ou par filiales et partenariats. La vision stratégique — Architecture de gouvernance des flux économiques territoriaux — oriente la structuration des systèmes numériques, commerciaux et institutionnels. Elle n'est pas l'unique activité juridique de la société.",
+    "L'objet social de CLEVONE SARL (statuts, art. 3) fixe neuf domaines d'activité. La société y intervient avec ses propres produits et services, ou avec des partenaires. Les activités réglementées ne sont exercées qu'après obtention des autorisations requises.",
 } as const;
 
 export type InterventionDomain = {
   id: string;
+  /** Point of the objet social (statuts, art. 3) this domain reflects. */
+  statutePoint: number;
   title: string;
   titleFr: string;
-  /** How this domain serves territorial flow architecture — not a service pitch. */
+  /** What CLEVONE SARL does in this field, stated plainly. */
   architectureRole: string;
   architectureRoleFr: string;
-  /** Ecosystem entities that already embody this domain, when applicable. */
+  /** Short card line (solutions page). */
+  summary: string;
+  summaryFr: string;
+  /** Regulatory caveat — statuts, art. 3: authorization before exercise. */
+  regulatoryNote?: string;
+  regulatoryNoteFr?: string;
+  /** Public ecosystem surfaces that already embody this domain, when applicable. */
   ecosystemLink?: string;
 };
 
+export const regulatoryNote = {
+  authorizations: {
+    en: "subject to the required authorizations",
+    fr: "sous réserve des autorisations requises",
+  },
+  approvals: {
+    en: "subject to the required approvals",
+    fr: "sous réserve des agréments requis",
+  },
+  regulatedProfessions: {
+    en: "excluding activities reserved to regulated professions",
+    fr: "hors activités réservées aux professions réglementées",
+  },
+} as const;
+
+/** Points 1 to 9 of the objet social (statuts, art. 3). Points 10–11 are corporate capacities, see objetSocialLegal*. */
 export const interventionDomains: readonly InterventionDomain[] = [
   {
     id: "technology",
-    title: "Technology & digital transformation",
-    titleFr: "Technologies et transformation numérique",
+    statutePoint: 1,
+    title: "Technology & software",
+    titleFr: "Technologies et logiciels",
     architectureRole:
-      "Software, digital platforms, business systems, and technology services that make organizations and territories legible, auditable, and scalable.",
+      "Design, development, integration, operation, maintenance and sale of software, applications, platforms, digital services and IT infrastructure.",
     architectureRoleFr:
-      "Logiciels, plateformes numériques, systèmes d'entreprise et services technologiques qui rendent les organisations et les territoires lisibles, auditables et scalables.",
-    ecosystemLink: "CLEVONET · CLEVONE DMS",
+      "Conception, développement, intégration, exploitation, maintenance et commercialisation de logiciels, applications, plateformes, services numériques et infrastructures informatiques.",
+    summary: "Software, platforms and digital services — including CLEVONE DMS.",
+    summaryFr: "Logiciels, plateformes et services numériques — dont CLEVONE DMS.",
+    ecosystemLink: "CLEVONE DMS · CLEVONET",
   },
   {
     id: "logistics",
-    title: "Transport, logistics & supply chains",
-    titleFr: "Transport, logistique et chaînes d'approvisionnement",
+    statutePoint: 2,
+    title: "Transport & logistics",
+    titleFr: "Transport et logistique",
     architectureRole:
-      "Governance and structuring of circulation systems — corridors, supply chains, and logistics coordination without informal brokerage.",
+      "Transport, logistics, handling, supply chains and flow coordination, subject to the required authorizations.",
     architectureRoleFr:
-      "Gouvernance et structuration des systèmes de circulation — corridors, chaînes d'approvisionnement et coordination logistique, sans courtage informel.",
+      "Transport, logistique, manutention, chaînes d'approvisionnement et coordination des flux, sous réserve des autorisations requises.",
+    summary: "Transport, handling and supply chains.",
+    summaryFr: "Transport, manutention et chaînes d'approvisionnement.",
+    regulatoryNote: regulatoryNote.authorizations.en,
+    regulatoryNoteFr: regulatoryNote.authorizations.fr,
   },
   {
     id: "industry",
-    title: "Industry, production & productive innovation",
-    titleFr: "Industrie, production et innovation productive",
+    statutePoint: 3,
+    title: "Industry & production",
+    titleFr: "Industrie et production",
     architectureRole:
-      "Structuring of productive initiatives into documented, compliant architectures that can sustain long-horizon territorial value.",
+      "Production, processing, engineering and development of products and services for productive sectors.",
     architectureRoleFr:
-      "Structuration d'initiatives productives en architectures documentées et conformes, capables de soutenir une valeur territoriale de long terme.",
-    ecosystemLink: "Clevone Mining",
+      "Production, transformation, ingénierie et développement de produits et services pour les secteurs productifs.",
+    summary: "Production, processing and engineering for productive sectors.",
+    summaryFr: "Production, transformation et ingénierie pour les secteurs productifs.",
   },
   {
     id: "energy",
+    statutePoint: 4,
     title: "Energy",
     titleFr: "Énergie",
     architectureRole:
-      "Development and coordination of energy-related solutions and innovations as components of territorial economic infrastructure.",
+      "Energy solutions and equipment, energy efficiency and renewables, subject to the required approvals.",
     architectureRoleFr:
-      "Développement et coordination de solutions et d'innovations énergétiques comme composantes de l'infrastructure économique territoriale.",
+      "Solutions et équipements énergétiques, efficacité énergétique et renouvelables, sous réserve des agréments requis.",
+    summary: "Energy equipment, efficiency and renewables.",
+    summaryFr: "Équipements énergétiques, efficacité et renouvelables.",
+    regulatoryNote: regulatoryNote.approvals.en,
+    regulatoryNoteFr: regulatoryNote.approvals.fr,
   },
   {
     id: "media",
-    title: "Media, communication & creative industries",
-    titleFr: "Médias, communication et industries créatives",
+    statutePoint: 5,
+    title: "Media & communication",
+    titleFr: "Médias et communication",
     architectureRole:
-      "Economic intelligence, strategic communication, and content architectures that inform institutional decision-making.",
+      "Communication, audiovisual, publishing, content production and distribution, creative industries.",
     architectureRoleFr:
-      "Intelligence économique, communication stratégique et architectures de contenus qui éclairent la décision institutionnelle.",
+      "Communication, audiovisuel, édition, production et diffusion de contenus, industries créatives.",
+    summary: "Communication, audiovisual, publishing and content.",
+    summaryFr: "Communication, audiovisuel, édition et contenus.",
     ecosystemLink: "CLEVODIA",
   },
   {
     id: "education",
-    title: "Education, training & capacity building",
-    titleFr: "Éducation, formation et renforcement des capacités",
+    statutePoint: 6,
+    title: "Education & training",
+    titleFr: "Éducation et formation",
     architectureRole:
-      "Skills, knowledge infrastructures, and certified learning that strengthen the human and institutional capacity of territorial systems.",
+      "Education, vocational training, skills, applied research, scientific documentation and capacity building.",
     architectureRoleFr:
-      "Compétences, infrastructures de savoir et formations certifiantes qui renforcent la capacité humaine et institutionnelle des systèmes territoriaux.",
-    ecosystemLink: "Btlearn / BICUNI",
+      "Éducation, formation professionnelle, compétences, recherche appliquée, documentation scientifique et renforcement des capacités.",
+    summary: "Vocational training, skills and scientific documentation.",
+    summaryFr: "Formation professionnelle, compétences et documentation scientifique.",
+    ecosystemLink: "Btlearn · BICUNI",
   },
   {
     id: "advisory",
-    title: "Strategic advisory, compliance & governance",
-    titleFr: "Conseil stratégique, conformité et gouvernance",
+    statutePoint: 7,
+    title: "Advisory & governance",
+    titleFr: "Conseil et gouvernance",
     architectureRole:
-      "Strategic, organizational, administrative, and financial advisory — including regulatory, compliance, and governance accompaniment within applicable law.",
+      "Strategic, organizational, administrative and financial advisory; compliance, governance, transformation and project management support, excluding activities reserved to regulated professions.",
     architectureRoleFr:
-      "Conseil stratégique, organisationnel, administratif et financier — y compris l'accompagnement réglementaire, de conformité et de gouvernance, dans le respect du droit applicable.",
+      "Conseil stratégique, organisationnel, administratif et financier ; accompagnement en conformité, gouvernance, transformation et gestion de projets, hors activités réservées aux professions réglementées.",
+    summary: "Strategy, compliance, governance and project management.",
+    summaryFr: "Stratégie, conformité, gouvernance et gestion de projets.",
+    regulatoryNote: regulatoryNote.regulatedProfessions.en,
+    regulatoryNoteFr: regulatoryNote.regulatedProfessions.fr,
   },
   {
     id: "events",
-    title: "Sports, culture & professional events",
-    titleFr: "Sports, culture et événements professionnels",
+    statutePoint: 8,
+    title: "Sports, culture & events",
+    titleFr: "Sports, culture et événementiel",
     architectureRole:
-      "Organization and promotion of sporting, cultural, artistic, and professional events as structured platforms for territorial visibility and coordination.",
+      "Organization, production, management and promotion of sporting, cultural, artistic and professional events.",
     architectureRoleFr:
-      "Organisation et promotion d'événements sportifs, culturels, artistiques et professionnels comme plateformes structurées de visibilité et de coordination territoriales.",
+      "Organisation, production, gestion et promotion d'événements sportifs, culturels, artistiques et professionnels.",
+    summary: "Sporting, cultural and professional events.",
+    summaryFr: "Événements sportifs, culturels et professionnels.",
   },
   {
     id: "commerce",
-    title: "Commerce & authorized distribution",
-    titleFr: "Commerce et distribution autorisée",
+    statutePoint: 9,
+    title: "Trade & distribution",
+    titleFr: "Commerce et distribution",
     architectureRole:
-      "Corporate capacity for lawful trade, distribution, import, and export. Commercial execution, when it occurs, is exercised through structurally separated entities — never as informal brokerage under the Clevones governance platform.",
+      "General trade, distribution, purchase, sale, commercial representation and import-export of lawful goods, products and services.",
     architectureRoleFr:
-      "Capacité sociale pour le commerce, la distribution, l'importation et l'exportation autorisés. L'exécution commerciale, lorsqu'elle intervient, s'exerce via des entités structurellement séparées — jamais comme courtage informel sous la plateforme de gouvernance Clevones.",
+      "Commerce général, distribution, achat, vente, représentation commerciale et import-export de biens, produits et services licites.",
+    summary: "General trade, distribution and import-export.",
+    summaryFr: "Commerce général, distribution et import-export.",
   },
 ] as const;
 
 export const corporateDevelopmentClause = {
   title: "Subsidiaries, partnerships, and related operations",
   statement:
-    "CLEVONE SARL may create subsidiaries, take equity participations, conclude partnerships, and undertake commercial, financial, movable, or immovable operations that relate directly or indirectly to its corporate purpose, or that may favour its development, in accordance with applicable law.",
+    "CLEVONE SARL may create or acquire participations, subsidiaries, branches and joint ventures, and enter into partnerships, representation, subcontracting, cooperation and commercial agreements related to its corporate purpose, in accordance with applicable law.",
   statementFr:
-    "CLEVONE SARL peut créer des filiales, prendre des participations, conclure des partenariats et réaliser toutes opérations commerciales, financières, mobilières ou immobilières se rattachant directement ou indirectement à son objet social, ou susceptibles d'en favoriser le développement, dans le respect de la législation applicable.",
+    "CLEVONE SARL peut créer ou acquérir des participations, filiales, succursales et joint-ventures, et conclure des partenariats, représentations, sous-traitances, coopérations et conventions commerciales liés à son objet social, dans le respect de la législation applicable.",
 } as const;
 
-/** Full legal objet social text for mentions légales (verbatim structure, institutional register). */
+/** Objet social summary (statuts, art. 3) for the legal notice — 11 points. */
 export const objetSocialLegalFr = {
   intro:
-    "La société a pour objet, en République Démocratique du Congo et à l'étranger :",
+    "CLEVONE SARL a pour objet, en République Démocratique du Congo et à l'étranger :",
   items: [
-    "les technologies, la transformation numérique, la conception et le développement de logiciels, de progiciels, de plateformes numériques et de services informatiques ;",
-    "le transport, la logistique et les services de gestion des chaînes d'approvisionnement ;",
-    "l'industrie, la production, l'ingénierie, l'innovation et le développement de solutions destinées aux secteurs productifs ;",
-    "l'énergie et le développement de solutions, services et innovations dans le domaine énergétique ;",
-    "les médias, la communication, l'audiovisuel, l'édition, la création de contenus et les industries créatives ;",
-    "l'éducation, la formation, le développement des compétences et le renforcement des capacités ;",
-    "le conseil stratégique, l'organisation, la gestion et les services professionnels, dans le respect de la réglementation en vigueur ;",
-    "l'accompagnement des entreprises, des organisations et des institutions dans leurs démarches administratives, réglementaires, de conformité et de gouvernance ;",
-    "les sports, la culture, l'organisation, la production et la promotion d'événements sportifs, culturels, artistiques et professionnels ;",
-    "le commerce, la distribution, le e-commerce, la vente, l'achat, l'importation, l'exportation et la commercialisation de biens, produits et services autorisés par la loi.",
+    "les technologies et la transformation numérique : conception, développement, intégration, exploitation, maintenance et commercialisation de logiciels, applications, plateformes, services numériques, solutions informatiques, infrastructures et services technologiques ;",
+    "le transport, la logistique, la manutention, les chaînes d'approvisionnement, la coordination des flux et les services connexes, sous réserve des autorisations requises ;",
+    "l'industrie, la production, la transformation, l'innovation, l'ingénierie de solutions et le développement de produits et services pour les secteurs productifs ;",
+    "l'énergie, les solutions et équipements énergétiques, l'efficacité énergétique et les énergies renouvelables, sous réserve des agréments requis ;",
+    "les médias, la communication, l'audiovisuel, l'édition, la production et la diffusion de contenus, les industries créatives ;",
+    "l'éducation, la formation professionnelle, les compétences, la recherche appliquée, la documentation scientifique et le renforcement des capacités ;",
+    "le conseil stratégique, organisationnel, administratif et financier ; l'accompagnement en conformité, gouvernance, transformation et gestion de projets, hors activités réservées aux professions réglementées ;",
+    "les sports et la culture : organisation, production, gestion et promotion d'événements sportifs, culturels, artistiques et professionnels ;",
+    "le commerce général, la distribution, l'achat, la vente, la représentation commerciale et l'import-export de biens, produits et services licites ;",
+    "la création, l'acquisition et la gestion de participations, filiales, succursales et joint-ventures ;",
+    "les partenariats, la représentation, la sous-traitance, la coopération et les conventions commerciales.",
   ],
   closing:
-    "La société peut également créer des filiales, prendre des participations dans d'autres sociétés, conclure des partenariats et réaliser toutes opérations commerciales, financières, mobilières ou immobilières se rattachant directement ou indirectement à son objet social ou susceptibles d'en favoriser le développement dans le respect de la législation applicable.",
+    "Toute activité soumise à autorisation ne peut être exercée qu'après obtention des autorisations requises (statuts, art. 3). Activité principale déclarée au RCCM : commerce de détail.",
+} as const;
+
+export const objetSocialLegalEn = {
+  intro:
+    "CLEVONE SARL's corporate purpose, in the Democratic Republic of the Congo and abroad, covers:",
+  items: [
+    "technology and digital transformation: design, development, integration, operation, maintenance and sale of software, applications, platforms, digital services, IT solutions, infrastructure and technology services;",
+    "transport, logistics, handling, supply chains, flow coordination and related services, subject to the required authorizations;",
+    "industry, production, processing, innovation, solution engineering and development of products and services for productive sectors;",
+    "energy, energy solutions and equipment, energy efficiency and renewables, subject to the required approvals;",
+    "media, communication, audiovisual, publishing, content production and distribution, creative industries;",
+    "education, vocational training, skills, applied research, scientific documentation and capacity building;",
+    "strategic, organizational, administrative and financial advisory; compliance, governance, transformation and project management support, excluding activities reserved to regulated professions;",
+    "sports and culture: organization, production, management and promotion of sporting, cultural, artistic and professional events;",
+    "general trade, distribution, purchase, sale, commercial representation and import-export of lawful goods, products and services;",
+    "creation, acquisition and management of participations, subsidiaries, branches and joint ventures;",
+    "partnerships, representation, subcontracting, cooperation and commercial agreements.",
+  ],
+  closing:
+    "Any activity subject to authorization may only be carried out once the required authorizations have been obtained (statutes, art. 3). Main activity declared to the RCCM: retail trade.",
 } as const;
 
 /**
@@ -169,6 +248,6 @@ export const objetSocialLegalFr = {
  * Used wherever breadth of objet social could be misread as operational substitution.
  */
 export const capacityVsPlatformClarification = {
-  en: "CLEVONE SARL's corporate purpose defines the legal fields in which the company and its ecosystem may intervene. Strategic vision orients that work; it does not reduce the company to a single activity.",
-  fr: "L'objet social de CLEVONE SARL définit les champs juridiques dans lesquels la société et son écosystème peuvent intervenir. La vision stratégique oriente ce travail ; elle ne réduit pas la société à une activité unique.",
+  en: "CLEVONE SARL's corporate purpose (statutes, art. 3) sets the fields in which the company develops, sells and operates products and services. Activities subject to authorization are carried out only once the required authorizations are obtained.",
+  fr: "L'objet social de CLEVONE SARL (statuts, art. 3) fixe les domaines dans lesquels la société développe, vend et exploite des produits et services. Les activités soumises à autorisation ne sont exercées qu'après obtention des autorisations requises.",
 } as const;

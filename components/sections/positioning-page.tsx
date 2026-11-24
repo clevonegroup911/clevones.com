@@ -117,7 +117,7 @@ export async function PositioningPageContent() {
           variant: action.variant === "outline" ? "outline" : "secondary",
           className:
             action.variant === "outline"
-              ? "border-border text-white hover:bg-navy-hover w-full sm:w-auto"
+              ? "border-border text-foreground hover:bg-navy-hover w-full sm:w-auto"
               : "w-full max-w-md sm:w-auto",
         }))}
       />

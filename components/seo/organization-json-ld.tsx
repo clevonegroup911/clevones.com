@@ -17,7 +17,7 @@ export function OrganizationJsonLd() {
     name: company.brandName,
     legalName: company.legalName,
     url: company.website,
-    logo: `${siteConfig.url}/brand/clevones-mark.png`,
+    logo: `${siteConfig.url}/brand/official/clevone-sarl-logo.png`,
     description: siteConfig.description,
     email: company.email.display,
     telephone: company.phone.href.replace("tel:", ""),
@@ -26,6 +26,7 @@ export function OrganizationJsonLd() {
       "@type": "PostalAddress",
       streetAddress: companyStreetAddress,
       addressLocality: company.address.city,
+      addressRegion: company.address.region,
       addressCountry: company.address.countryCode,
     },
     identifier: [

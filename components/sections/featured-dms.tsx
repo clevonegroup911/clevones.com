@@ -1,5 +1,5 @@
 import { ButtonLink } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -17,6 +17,9 @@ export type FeaturedDmsContent = {
   note: string;
   href: string;
   cta: string;
+  /** Product inquiry / quote path (contact form, intent=product). */
+  quoteHref?: string;
+  quoteCta?: string;
 };
 
 export function FeaturedDmsSection({
@@ -43,14 +46,10 @@ export function FeaturedDmsSection({
           <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
             {content.type}
           </p>
-          <CardTitle className="mt-3 text-xl sm:text-2xl">{content.name}</CardTitle>
-          <p className="mt-2 text-sm font-medium text-gold-muted">
-            {content.positioning}
-          </p>
           <CardDescription className="mt-4 max-w-3xl text-base">
             {content.description}
           </CardDescription>
-          <p className="mt-8 text-xs font-semibold tracking-[0.15em] text-white uppercase">
+          <p className="mt-8 text-xs font-semibold tracking-[0.15em] text-foreground uppercase">
             {content.capabilitiesLabel}
           </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,7 +65,12 @@ export function FeaturedDmsSection({
           <p className="mt-6 text-xs leading-relaxed text-navy-muted">
             {content.note}
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {content.quoteHref && content.quoteCta ? (
+              <ButtonLink href={content.quoteHref} className={buttonFullMobile}>
+                {content.quoteCta}
+              </ButtonLink>
+            ) : null}
             <ButtonLink
               href={content.href}
               variant="secondary"

@@ -79,7 +79,7 @@ export function PageHero({
                   size="lg"
                   className={cn(
                     action.variant === "outline"
-                      ? "border-border text-white hover:bg-navy-hover"
+                      ? "border-border text-foreground hover:bg-navy-hover"
                       : undefined,
                     buttonFullMobile,
                   )}

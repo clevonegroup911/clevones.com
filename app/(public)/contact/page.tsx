@@ -1,12 +1,11 @@
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveContactIntent } from "@/lib/contact-page";
+import { getContent } from "@/lib/i18n";
 
 import { ContactPageContent } from "@/components/sections/contact-page";
 
 export const metadata = createPageMetadata({
-  title: "Contact",
-  description:
-    "Initiate a strategic collaboration with Clevones. Submit a structured, documented, and compliant initiative for institutional review.",
+  ...getContent("en").pages.contact.meta,
   path: "/contact",
 });
 

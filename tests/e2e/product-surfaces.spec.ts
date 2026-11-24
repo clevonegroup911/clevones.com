@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 import { loginE2eAdmin, readE2eRuntimeState } from "./admin-login";
+import { E2E_ORIGIN } from "./env";
 import { captureSafeEvidence } from "./safe-screenshot";
 
 test.describe.configure({ mode: "serial" });
@@ -49,6 +50,10 @@ test("public contact has no live payment keys and accepts a fixture initiative",
   await captureSafeEvidence(page, `${project}-contact-public.png`);
 
   const response = await page.request.post("/api/initiative-submission", {
+    headers: {
+      origin: E2E_ORIGIN,
+      "x-forwarded-for": `198.51.100.${project === "mobile" ? 21 : 11}${testInfo.retry}`,
+    },
     data: {
       organizationName: "E2E Fixture Org",
       legalStatus: "ASBL",
@@ -72,6 +77,94 @@ test("public contact has no live payment keys and accepts a fixture initiative",
 
   const checkout = await page.request.get("/checkout");
   expect(checkout.status()).toBeGreaterThanOrEqual(400);
+});
+
+test("product inquiry path shows the short form without governance fields", async ({
+  page,
+}, testInfo) => {
+  const project = testInfo.project.name;
+
+  for (const path of ["/collaboration?intent=product", "/contact?intent=product"]) {
+    await page.goto(path);
+    const form = page.getByTestId("product-inquiry-form");
+    await expect(form).toBeVisible();
+    for (const name of [
+      "organizationName",
+      "contactPerson",
+      "professionalEmail",
+      "phone",
+      "location",
+      "estimatedUsers",
+    ]) {
+      await expect(form.locator(`input[name="${name}"]`)).toBeVisible();
+    }
+    await expect(form.locator('select[name="product"]')).toBeVisible();
+    await expect(form.locator('textarea[name="need"]')).toBeVisible();
+    await expect(form.locator('input[name="privacyConsent"]')).toBeVisible();
+    for (const name of [
+      "availableDocumentation",
+      "complianceStatus",
+      "territoryConcerned",
+      "governanceAcknowledgment",
+      "legalStatus",
+    ]) {
+      await expect(page.locator(`[name="${name}"]`)).toHaveCount(0);
+    }
+  }
+
+  await captureSafeEvidence(page, `${project}-contact-product.png`);
+});
+
+test("product inquiry submits successfully with fixture data", async ({ page }) => {
+  await page.goto("/collaboration?intent=product");
+  const form = page.getByTestId("product-inquiry-form");
+  await form.locator('input[name="organizationName"]').fill("E2E Fixture SARL");
+  await form.locator('input[name="contactPerson"]').fill("E2E Buyer");
+  await form
+    .locator('input[name="professionalEmail"]')
+    .fill("e2e.buyer@example.test");
+  await form.locator('input[name="location"]').fill("Kisangani, RDC");
+  await form.locator('select[name="product"]').selectOption("clevone-dms");
+  await form.locator('input[name="estimatedUsers"]').fill("8");
+  await form
+    .locator('textarea[name="need"]')
+    .fill("Fixture e2e : suivi des ventes et des stocks. Pas une donnée de production.");
+  await form.locator('input[name="privacyConsent"]').check();
+  await form.getByRole("button", { name: "Envoyer ma demande" }).click();
+  await expect(page.getByRole("status")).toContainText("Demande reçue");
+});
+
+test("contact API refuses cross-origin posts and rate-limits per IP", async ({
+  page,
+}, testInfo) => {
+  const crossOrigin = await page.request.post("/api/initiative-submission", {
+    headers: { origin: "https://evil.example" },
+    data: {},
+  });
+  expect(crossOrigin.status()).toBe(403);
+  const refused = (await crossOrigin.json()) as { success?: boolean; error?: string };
+  expect(refused.success).toBe(false);
+  expect(refused.error ?? "").not.toMatch(/csrf|referer/i);
+
+  // Unique IP per project and retry so the quota never leaks into other tests.
+  const ip = `203.0.113.${testInfo.project.name === "mobile" ? 2 : 1}${testInfo.retry}`;
+  const headers = { origin: E2E_ORIGIN, "x-forwarded-for": ip };
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const response = await page.request.post("/api/initiative-submission", {
+      headers,
+      data: { intent: "product" },
+    });
+    expect(response.status()).toBe(400);
+  }
+  const limited = await page.request.post("/api/initiative-submission", {
+    headers,
+    data: { intent: "product" },
+  });
+  expect(limited.status()).toBe(429);
+  expect(Number(limited.headers()["retry-after"])).toBeGreaterThan(0);
+  const body = (await limited.json()) as { success?: boolean; error?: string };
+  expect(body.success).toBe(false);
+  expect(body.error).toMatch(/too many submissions/i);
 });
 
 test("authenticated admin can open CMS, analytics, and upload a private document", async ({

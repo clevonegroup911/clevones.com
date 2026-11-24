@@ -27,236 +27,209 @@ export type PositioningPageContent = {
 };
 
 /**
- * Positioning — Mission #004. Answers why CLEVONES is different.
- * Meta unchanged (SEO freeze).
+ * Positioning — doctrine 2026-11 : CLEVONE SARL is a multi-sector commercial
+ * company. Neutrality is a conflict-of-interest rule for coordination
+ * missions only (objet social, point 7) — not a global identity.
  */
 export const positioningPageContent = {
   en: {
     meta: {
       title: "Positioning",
       description:
-        "Clevones is an independent governance architecture platform for territorial economic flows — architect of flows, ecosystem integrator, not an operator, trader, or generic services vendor. Corporate purpose expands domains without replacing this vision.",
+        "CLEVONE SARL is a multi-sector commercial company that develops, sells and operates products and services. When it coordinates a multi-party initiative, it holds no stake in that initiative's execution.",
     },
     hero: {
       eyebrow: "Positioning",
-      title: "CLEVONES is different because it coordinates — it does not operate.",
+      title: "A multi-sector company, with a clear rule when we coordinate.",
       subtitle:
-        "We design the rules, roles, and reporting. Legitimate actors keep execution.",
-      tagline: "Neutral. Non-operational. Documented.",
+        "CLEVONE SARL develops, sells and operates products and services. When we coordinate an initiative, we keep out of its execution.",
+      tagline: "When we coordinate, we hold no stake in execution.",
     },
     definition: {
-      eyebrow: "Difference",
-      title: "Governance design upstream of execution",
+      eyebrow: "The rule",
+      title: "Neutrality applies to coordination missions",
       paragraphs: [
-        "CLEVONES structures territorial economic initiatives before capital and field activity move.",
-        "We map actors and flows, define who decides, and keep coordination documented.",
-        "We do not replace operators, traders, or resource actors under the governance platform.",
+        "CLEVONE SARL is a commercial company: it develops, sells and operates products and services, such as CLEVONE DMS.",
+        "When it coordinates or structures a multi-party initiative, it is not also the operator, trader or paid intermediary of that same initiative.",
+        "Any operational role of another CLEVONE activity or ecosystem entity is declared in advance and kept separate from the mission.",
       ],
     },
     isSection: {
-      eyebrow: "What CLEVONES is",
-      title: "Six roles. One posture.",
-      description: "Each role is coordination — not commercial operation.",
+      eyebrow: "In a coordination mission",
+      title: "What CLEVONE does",
+      description: "These roles apply to the coordination mission itself.",
       items: [
         {
-          title: "Architect of flows",
-          description: "Design how value is meant to circulate across a territory.",
+          title: "Coordinator",
+          description: "Brings the legitimate actors of the initiative together.",
         },
         {
-          title: "Territorial structurer",
-          description: "Turn local dynamics into documented, readable initiatives.",
+          title: "Structurer",
+          description: "Turns a local project into a documented, readable initiative.",
         },
         {
-          title: "Coordination platform",
-          description: "Give legitimate actors a neutral place to align.",
+          title: "Neutral meeting point",
+          description: "Gives each actor the same place to align.",
         },
         {
-          title: "Neutral governance layer",
-          description: "Exercise coordination without commercial bias.",
-        },
-        {
-          title: "Ecosystem integrator",
-          description: "Connect specialized entities under one mandate.",
+          title: "Governance designer",
+          description: "Sets who decides, who reports and on what basis.",
         },
         {
           title: "Reporting interface",
-          description: "Keep decisions and status readable over time.",
+          description: "Keeps decisions and status readable over time.",
         },
       ],
     },
     isNotSection: {
-      eyebrow: "What CLEVONES is not",
-      title: "Clear boundaries",
-      description: "These exclusions protect neutrality.",
+      eyebrow: "In a coordination mission",
+      title: "What CLEVONE is not",
+      description: "These limits apply to coordination missions only. They prevent conflicts of interest.",
       excludedLabel: "Excluded",
       items: [
         {
-          title: "Not an operator",
-          description: "No field execution under the governance platform.",
+          title: "Not the operator of that initiative",
+          description: "Field execution stays with the actors who carry it.",
         },
         {
-          title: "Not a trader",
-          description: "No buying, selling, or brokering as the governance platform.",
+          title: "Not a trader in that initiative",
+          description: "No buying or selling inside the initiative we coordinate.",
         },
         {
-          title: "Not a resource exploiter",
-          description: "No extraction or resource claims under the governance platform.",
-        },
-        {
-          title: "Not a direct intermediary",
-          description: "We structure collaboration. We do not insert into deals.",
+          title: "Not a paid intermediary in it",
+          description: "No commission on the deals we help structure.",
         },
         {
           title: "Not an informal broker",
           description: "Coordination follows documented protocols only.",
         },
         {
-          title: "Not a generic services vendor",
-          description: "Broad legal fields do not turn us into a multi-service operator.",
+          title: "No claim on its resources",
+          description: "We take no stake in the resources the initiative concerns.",
         },
       ],
     },
     distinction: {
-      eyebrow: "Why it matters",
-      title: "Neutrality is the product of the posture.",
+      eyebrow: "Why the rule exists",
+      title: "Separating coordination from execution protects trust.",
       paragraphs: [
-        "Actors who both structure and operate create conflicts of interest.",
-        "A non-operational posture protects trust with institutions, investors, and partners.",
-        "Serious counterparties engage because we do not compete with their execution role.",
+        "A coordinator who also executes the same initiative has a conflict of interest.",
+        "Declaring and separating any operational role lets institutions, funders and partners rely on the coordination.",
       ],
     },
     corporatePurpose: {
-      eyebrow: "Legal fields",
-      title: "Capacity expands domains. It does not redefine the role.",
+      eyebrow: "Our activities",
+      title: "Selling products and services is part of our purpose.",
       paragraphs: [
-        "Corporate purpose covers technology, logistics, industry, energy, media, education, advisory, events, and lawful commerce — plus subsidiaries and partnerships under applicable law.",
-        "These fields say where architectures may be designed. They do not convert CLEVONES into a generic operator.",
+        "Our corporate purpose covers technology and software, trade and distribution, logistics, industry, energy, media, education, advisory and events. Regulated activities are carried out only once the required authorizations are obtained.",
+        "The coordination rule does not limit these activities. It governs how they are kept apart from a coordination mission.",
       ],
     },
     miningDisclaimer: clevoneMiningSeparationDisclaimer,
     cta: {
-      title: "See why CLEVONES exists",
-      description: "Mission and vision — then the domains of intervention.",
-      actions: [{ href: "/about", label: "See why CLEVONES exists" }],
+      title: "Get to know CLEVONE SARL",
+      description: "Identity, mission and fields of activity.",
+      actions: [{ href: "/about", label: "About CLEVONE SARL" }],
     },
   },
   fr: {
     meta: {
       title: "Positionnement",
       description:
-        "Clevones est architecte des flux, structureur territorial, plateforme de coordination et intégrateur d'écosystèmes — ni opérateur, ni négociant, ni prestataire de services génériques. L'objet social élargit les champs d'intervention sans remplacer cette vision.",
+        "CLEVONE SARL est une société commerciale multisectorielle qui développe, vend et exploite des produits et services. Quand elle coordonne une initiative multi-acteurs, elle n'est pas partie prenante de son exécution.",
     },
     hero: {
       eyebrow: "Positionnement",
-      title:
-        "CLEVONES est différent parce qu'il coordonne — il n'opère pas.",
+      title: "Une société multisectorielle, avec une règle claire quand nous coordonnons.",
       subtitle:
-        "Nous concevons règles, rôles et reporting. Les acteurs légitimes gardent l'exécution.",
-      tagline: "Neutre. Non opérationnel. Documenté.",
+        "CLEVONE SARL développe, vend et exploite des produits et services. Quand nous coordonnons une initiative, nous restons hors de son exécution.",
+      tagline: "Quand nous coordonnons, nous ne sommes pas partie prenante de l'exécution.",
     },
     definition: {
-      eyebrow: "Différence",
-      title: "La conception de gouvernance en amont de l'exécution",
+      eyebrow: "La règle",
+      title: "La neutralité s'applique aux missions de coordination",
       paragraphs: [
-        "CLEVONES structure les initiatives économiques territoriales avant que le capital et le terrain n'avancent.",
-        "Nous cartographions acteurs et flux, définissons qui décide, et gardons la coordination documentée.",
-        "Nous ne remplaçons pas opérateurs, négociants ou acteurs de ressources sous la plateforme de gouvernance.",
+        "CLEVONE SARL est une société commerciale : elle développe, vend et exploite des produits et services, comme CLEVONE DMS.",
+        "Quand elle coordonne ou structure une initiative multi-acteurs, elle n'en est pas en même temps l'opérateur, le négociant ou l'intermédiaire rémunéré.",
+        "Tout rôle opérationnel d'une autre activité de CLEVONE ou d'une entité de l'écosystème est déclaré à l'avance et séparé de la mission.",
       ],
     },
     isSection: {
-      eyebrow: "Ce qu'est CLEVONES",
-      title: "Six rôles. Une posture.",
-      description: "Chaque rôle est de la coordination — pas de l'opération commerciale.",
+      eyebrow: "Dans une mission de coordination",
+      title: "Ce que fait CLEVONE",
+      description: "Ces rôles portent sur la mission de coordination elle-même.",
       items: [
         {
-          title: "Architecte des flux",
-          description:
-            "Concevoir comment la valeur est censée circuler sur un territoire.",
+          title: "Coordinateur",
+          description: "Réunit les acteurs légitimes de l'initiative.",
         },
         {
-          title: "Structureur territorial",
-          description:
-            "Transformer des dynamiques locales en initiatives documentées et lisibles.",
+          title: "Structureur",
+          description: "Transforme un projet local en initiative documentée et lisible.",
         },
         {
-          title: "Plateforme de coordination",
-          description:
-            "Offrir aux acteurs légitimes un lieu neutre pour s'aligner.",
+          title: "Point de rencontre neutre",
+          description: "Offre à chaque acteur le même lieu pour s'aligner.",
         },
         {
-          title: "Couche de gouvernance neutre",
-          description: "Exercer la coordination sans biais commercial.",
-        },
-        {
-          title: "Intégrateur d'écosystème",
-          description: "Relier des entités spécialisées sous un seul mandat.",
+          title: "Concepteur de gouvernance",
+          description: "Fixe qui décide, qui rend compte et sur quelle base.",
         },
         {
           title: "Interface de reporting",
-          description: "Garder décisions et statut lisibles dans le temps.",
+          description: "Garde décisions et statut lisibles dans le temps.",
         },
       ],
     },
     isNotSection: {
-      eyebrow: "Ce que CLEVONES n'est pas",
-      title: "Des frontières claires",
-      description: "Ces exclusions protègent la neutralité.",
+      eyebrow: "Dans une mission de coordination",
+      title: "Ce que CLEVONE n'est pas",
+      description: "Ces limites valent pour les missions de coordination. Elles évitent les conflits d'intérêts.",
       excludedLabel: "Exclu",
       items: [
         {
-          title: "Pas un opérateur",
-          description:
-            "Pas d'exécution de terrain sous la plateforme de gouvernance.",
+          title: "Pas l'opérateur de cette initiative",
+          description: "L'exécution reste aux acteurs qui la portent.",
         },
         {
-          title: "Pas un négociant",
-          description:
-            "Pas d'achat, de vente ou de courtage en tant que plateforme de gouvernance.",
+          title: "Pas négociant dans cette initiative",
+          description: "Ni achat ni vente au sein de l'initiative coordonnée.",
         },
         {
-          title: "Pas un exploitant de ressources",
-          description:
-            "Pas d'extraction ni de revendication de ressources sous la plateforme de gouvernance.",
+          title: "Pas intermédiaire rémunéré",
+          description: "Aucune commission sur les accords que nous aidons à structurer.",
         },
         {
-          title: "Pas un intermédiaire direct",
-          description:
-            "Nous structurons la collaboration. Nous ne nous insérons pas dans les deals.",
+          title: "Pas courtier informel",
+          description: "La coordination suit uniquement des protocoles documentés.",
         },
         {
-          title: "Pas un courtier informel",
-          description:
-            "La coordination suit uniquement des protocoles documentés.",
-        },
-        {
-          title: "Pas un prestataire de services génériques",
-          description:
-            "Des champs juridiques larges ne font pas de nous un opérateur multiservices.",
+          title: "Aucun droit sur ses ressources",
+          description: "Aucune participation aux ressources visées par l'initiative.",
         },
       ],
     },
     distinction: {
-      eyebrow: "Pourquoi c'est important",
-      title: "La neutralité est le produit de la posture.",
+      eyebrow: "Pourquoi cette règle",
+      title: "Séparer coordination et exécution protège la confiance.",
       paragraphs: [
-        "Les acteurs qui structurent et opèrent à la fois créent des conflits d'intérêt.",
-        "Une posture non opérationnelle protège la confiance des institutions, investisseurs et partenaires.",
-        "Les contreparties sérieuses s'engagent parce que nous ne concurrençons pas leur rôle d'exécution.",
+        "Un coordinateur qui exécute aussi la même initiative est en conflit d'intérêts.",
+        "Déclarer et séparer tout rôle opérationnel permet aux institutions, financeurs et partenaires de se fier à la coordination.",
       ],
     },
     corporatePurpose: {
-      eyebrow: "Champs juridiques",
-      title: "La capacité élargit les domaines. Elle ne redéfinit pas le rôle.",
+      eyebrow: "Nos activités",
+      title: "Vendre des produits et services fait partie de notre objet.",
       paragraphs: [
-        "L'objet social couvre technologies, logistique, industrie, énergie, médias, éducation, conseil, événements et commerce licite — plus filiales et partenariats selon le droit applicable.",
-        "Ces champs disent où des architectures peuvent être conçues. Ils ne convertissent pas CLEVONES en opérateur générique.",
+        "Notre objet social couvre technologie et logiciels, commerce et distribution, logistique, industrie, énergie, médias, éducation, conseil et événementiel. Les activités réglementées ne sont exercées qu'après obtention des autorisations requises.",
+        "La règle de coordination ne limite pas ces activités. Elle fixe comment elles restent séparées d'une mission de coordination.",
       ],
     },
     miningDisclaimer: clevoneMiningSeparationDisclaimerFr,
     cta: {
-      title: "Voir pourquoi CLEVONES existe",
-      description: "Mission et vision — puis les domaines d'intervention.",
-      actions: [{ href: "/mission", label: "Voir pourquoi CLEVONES existe" }],
+      title: "Mieux connaître CLEVONE SARL",
+      description: "Identité, mission et domaines d'activité.",
+      actions: [{ href: "/mission", label: "À propos de CLEVONE SARL" }],
     },
   },
 } as const satisfies LocalizedPageContent<PositioningPageContent>;

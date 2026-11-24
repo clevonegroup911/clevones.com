@@ -12,7 +12,7 @@ export const breakUrl = "break-all sm:break-normal";
 export const mobileCtaPadding =
   "pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] lg:pb-0";
 
-/** Decorative grid overlay for navy hero sections. */
+/** Decorative grid overlay for navy hero sections (white lines on navy only). */
 export const heroGridOverlayStyle = {
   backgroundImage:
     "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
@@ -26,7 +26,7 @@ export const heroGoldOrb =
   "pointer-events-none absolute -top-32 right-0 h-96 w-96 rounded-full bg-gold/[0.04] blur-3xl";
 
 export const pageCtaGradient =
-  "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,rgba(212,160,23,0.08),transparent)]";
+  "pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,rgba(212,157,54,0.08),transparent)]";
 
 export const heroSubtitle =
   "mt-6 max-w-3xl text-base leading-relaxed text-gray-muted sm:text-lg lg:text-xl lg:leading-relaxed";
@@ -47,12 +47,12 @@ export const proseStack = "mt-10 space-y-6 text-base leading-relaxed text-muted"
 
 /** Interactive text link with accessible focus ring. */
 export const textLink =
-  "inline-flex min-h-11 shrink-0 items-center text-sm font-medium text-gold-muted transition-colors hover:text-gold focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
+  "inline-flex min-h-11 shrink-0 items-center text-sm font-medium text-foreground underline decoration-gold decoration-2 underline-offset-4 transition-colors hover:decoration-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 /** Accessible inline link for legal and prose content. */
 export const proseLink =
-  "text-gold-muted underline underline-offset-2 transition-colors hover:text-gold focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
+  "text-foreground underline decoration-gold decoration-2 underline-offset-2 transition-colors hover:decoration-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 /** External domain link styling. */
 export const externalDomainLink =
-  "inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-gold-muted focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
+  "inline-block text-xs font-medium tracking-wide text-navy-muted transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";

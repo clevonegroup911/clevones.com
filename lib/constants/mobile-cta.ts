@@ -6,6 +6,8 @@ export const MOBILE_CTA_HIDDEN_PATHS = new Set([
   "/portal",
   "/confidentialite",
   "/mentions-legales",
+  "/privacy",
+  "/legal-notice",
 ]);
 
 /** Marker id for the first hero section on each page. */

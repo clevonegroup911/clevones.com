@@ -32,14 +32,14 @@ export function MobileStickyCta() {
       <div
         className={cn(
           "border-t border-border-subtle/60 bg-surface-elevated/95 px-4 py-2.5 backdrop-blur-xl",
-          "shadow-[0_-8px_32px_rgba(0,0,0,0.35)] supports-[backdrop-filter]:bg-surface-elevated/90",
+          "shadow-[0_-8px_32px_rgba(23,55,102,0.12)] supports-[backdrop-filter]:bg-surface-elevated/90",
           isVisible ? "pointer-events-auto" : "pointer-events-none",
         )}
       >
         <Link
           href={shell.cta.href}
           tabIndex={isVisible ? undefined : -1}
-          className="flex h-11 w-full items-center justify-center rounded-sm bg-gold px-6 text-center text-sm font-medium tracking-wide text-charcoal transition-colors hover:bg-gold-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
+          className="flex h-11 w-full items-center justify-center rounded-sm bg-navy px-6 text-center text-sm font-medium tracking-wide text-white transition-colors hover:bg-navy-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-2"
         >
           <span className="sm:hidden">{shell.cta.shortLabel}</span>
           <span className="hidden sm:inline">{shell.cta.label}</span>

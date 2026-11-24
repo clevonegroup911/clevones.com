@@ -1,13 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import { siteConfig } from "@/lib/site";
+import { company } from "@/lib/constants/company";
 import { cn } from "@/lib/utils";
 
-const LOGO_ALT = "CLEVONES logo";
-const MARK_SRC = "/brand/clevones-mark.svg";
+/**
+ * Official CLEVONE SARL identity — files supplied by management
+ * (public/brand/official). Never recolor, distort or crop them: only the
+ * supplied symbol / full logo files are used, at their native aspect ratio.
+ */
+const LOGO_ALT = "CLEVONE SARL — clevones.com";
+const SYMBOL_SRC = "/brand/official/clevone-sarl-symbol.png"; // 978×978
+const FULL_LOGO_SRC = "/brand/official/clevone-sarl-logo.png"; // 1637×1321
 
 const brandLinkClassName =
-  "group relative inline-flex min-w-0 shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
+  "group relative inline-flex min-w-0 shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 type BrandLogoProps = {
   variant?: "header" | "footer";
@@ -20,72 +27,45 @@ export function BrandLogo({
   className,
   href = "/",
 }: BrandLogoProps) {
-  const isHeader = variant === "header";
-
-  const iconFrameClass = isHeader
-    ? "h-8 w-8 sm:h-[38px] sm:w-[38px]"
-    : "h-12 w-12";
-
-  const iconSize = isHeader ? 38 : 48;
-
-  const mark = (
-    <span
-      className={cn(
-        "inline-flex min-w-0 items-center",
-        isHeader ? "gap-2.5 sm:gap-3" : "gap-3",
-        className,
-      )}
-    >
-      <span
-        className={cn(
-          "relative inline-flex shrink-0 items-center justify-center",
-          iconFrameClass,
-        )}
+  if (variant === "footer") {
+    return (
+      <Link
+        href={href}
+        className={cn(brandLinkClassName, className)}
+        aria-label={`${company.brandName} — home`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={MARK_SRC}
+        <Image
+          src={FULL_LOGO_SRC}
           alt={LOGO_ALT}
-          width={iconSize}
-          height={iconSize}
-          className={cn(
-            "h-full w-full object-contain",
-            isHeader && "-translate-y-px",
-          )}
-          decoding="async"
-          fetchPriority={isHeader ? "high" : undefined}
+          width={1637}
+          height={1321}
+          sizes="160px"
+          className="h-auto w-36 sm:w-40"
         />
-      </span>
-      <span className="inline-flex min-w-0 flex-col justify-center">
-        <span
-          className={cn(
-            "block font-heading font-semibold tracking-tight text-white",
-            isHeader ? "text-[20px] leading-none sm:text-[22px]" : "text-lg leading-tight sm:text-xl",
-          )}
-        >
-          {siteConfig.name}
-        </span>
-        {isHeader ? (
-          <span
-            className="mt-1.5 block h-px w-full bg-gradient-to-r from-gold via-gold/50 to-transparent transition-all duration-300 group-hover:via-gold/70"
-            aria-hidden
-          />
-        ) : (
-          <span className="mt-1 block text-xs font-medium tracking-[0.12em] text-gold-muted uppercase sm:tracking-[0.15em]">
-            {siteConfig.tagline}
-          </span>
-        )}
-      </span>
-    </span>
-  );
+      </Link>
+    );
+  }
 
   return (
     <Link
       href={href}
-      className={brandLinkClassName}
-      aria-label={`${siteConfig.name} — home`}
+      className={cn(brandLinkClassName, className)}
+      aria-label={`${company.brandName} — home`}
     >
-      {mark}
+      <span className="inline-flex min-w-0 items-center gap-2.5 sm:gap-3">
+        <Image
+          src={SYMBOL_SRC}
+          alt={LOGO_ALT}
+          width={978}
+          height={978}
+          sizes="44px"
+          priority
+          className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
+        />
+        <span className="block font-heading text-[20px] leading-none font-semibold tracking-tight text-navy sm:text-[22px]">
+          {company.brandName}
+        </span>
+      </span>
     </Link>
   );
 }

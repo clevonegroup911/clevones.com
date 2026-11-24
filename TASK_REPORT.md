@@ -6,39 +6,41 @@
 
 ## ID
 
-T047
+T084
 
 ## Statut
 
-TERMINÉE
+EN_COURS
 
 ## Objectif
 
-Faire de /admin/x200 le cockpit opérationnel principal (Operational Mirror + Universal Action Console) avec faits vérifiés, sources, freshness, inspecteurs, operator view, next-safe-action et Human Gates — sans données inventées, faux SUCCESS, shell libre ni bypass.
+Refonte éditoriale et fonctionnelle du site public sur demande du propriétaire : identité légale alignée sur les statuts et le RCCM (RCCM et ID Nat. visibles, capital retiré), neutralité limitée aux missions de coordination, parcours « Demande produit / devis », menu réduit à 5 entrées, cohérence de marque, logo et palette officiels en thème clair.
 
 ## Résultat
 
-Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart automatique restant vs PRODUCT_GOAL.md ; `.x200/PRODUCT_COMPLETE.json` régénéré pour HEAD courant (gitignore local). MERGED=NO DEPLOYED=NO.
+Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases, un commit par phase, détail dans `reports/tasks/T084.md`). Poussé sur la PR brouillon #16 ; CI `quality` FULL SUCCESS sur `7136394` ; MERGED=NO, DEPLOYED=NO.
 
 ## Fichiers créés
 
-- `lib/x200/mirror/*`
-- `app/admin/x200/operational-mirror-panels.tsx`
-- `app/admin/x200/error.tsx`
-- `app/admin/x200/loading.tsx`
-- `reports/tasks/T047.md`
+- `components/sections/contact-product-form.tsx`
+- `lib/contact-rate-limit.ts` (5 envois / 10 min par IP)
+- `lib/http/initiative-submission-route.test.ts`
+- `lib/validation/initiative-submission.test.ts`
+- `public/brand/official/clevone-sarl-logo.png` / `clevone-sarl-symbol.png` / `clevone-sarl-profile.png` (fichiers fournis par la direction)
+- `reports/tasks/T084.md`
 
 ## Fichiers modifiés
 
-- `lib/x200/control-center.ts` / `types.ts`
-- `app/admin/x200/control-center-client.tsx`
-- `app/admin/x200/human-action-panels.tsx`
-- `app/admin/x200/page.tsx`
-- `tests/e2e/x200-control-center.spec.ts`
-- `tests/e2e/dev-server.ts` / `env.ts`
-- `middleware.ts`
-- `docs/X200_AUTOPILOT.md`
-- `backlog.json` / `BACKLOG.md` / `PROJECT_CONTEXT.md` / `TASK_REPORT.md`
+- `lib/constants/company.ts`, `corporate-purpose.ts`, `brand-positioning.ts`, `contact-form-options.ts`, `mobile-cta.ts`
+- `lib/i18n/content/*` (pages, `en.ts`, `fr.ts`, `types.ts`), `lib/i18n/navigation.ts`
+- `lib/validation/initiative-submission.ts`, `lib/contact-form.ts`, `lib/contact-page.ts`, `lib/initiative-submission-email.ts`, `lib/initiative-submission-log.ts`, `lib/email/templates.ts`
+- `app/api/initiative-submission/route.ts`, `app/globals.css`, `app/layout.tsx`, icônes `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`, `public/og-image.png`
+- `components/layout/*`, `components/sections/*`, `components/ui/*`, `components/seo/organization-json-ld.tsx`
+- `tests/e2e/product-surfaces.spec.ts`, `package.json` (script `test` : ajout de `lib/validation/*.test.ts`)
+
+## Fichiers supprimés
+
+- `lib/{about,ecosystem,faq,governance,methodology,mission,positioning,solutions}-page.ts` (non importés, ancienne doctrine)
 
 ## Commandes
 
@@ -47,7 +49,6 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 - npm run x200:test
 - npm run lint
 - npx tsc --noEmit
-- npx prisma validate
 - npm run build
 - npx playwright test
 - npm run x200:scan-secrets
@@ -55,18 +56,22 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 
 ## Tests réussis
 
-- mirror unit 8 PASS
-- quality-gate local PASS
-- CI FULL quality SUCCESS run 34782004736 (feature close `7de8fd1`)
-- CI FULL quality SUCCESS run 34782911788 (recovery tip `8c873db`)
+- npm test : 201/201 PASS (dont 9 nouveaux tests du schéma de contact)
+- npm run x200:test : 75/75 PASS
+- npx playwright test tests/e2e/product-surfaces.spec.ts : 10/10 PASS (desktop + mobile, base e2e éphémère locale)
+- npx playwright test (suite complète, base vierge) : 37/38 PASS ; 1 échec `x200-control-center` « MARK_READY remote mismatch » (timeout à l'étape de connexion MFA admin), repassé seul : PASS (17,4 s) — intermittent, hors périmètre T084
+- npm run x200:validate : BACKLOG_VALID, TASK_REPORT_VALID
+- npm run x200:scan-secrets : PASS (fixtures e2e connues seulement)
+- git diff --check : PASS
 
 ## Tests échoués
 
-- aucun
+- aucun échec reproductible. Intermittent : x200-control-center « MARK_READY remote mismatch » (connexion MFA) en suite complète, PASS en relance isolée.
+- Environnement local : le port 55432 du script e2e est occupé par `clevones-x200-db` (réseau hôte) et le réseau bridge Docker ne publie pas les ports ; les e2e ont été lancés avec `PLAYWRIGHT_DATABASE_URL` vers un PostgreSQL éphémère en réseau hôte sur 55440 (arrêté ensuite).
 
 ## Lint
 
-- PASS
+- PASS (0 avertissement)
 
 ## Type-check
 
@@ -79,35 +84,49 @@ Livré et prouvé en CI FULL (feature + recovery tip). AUTOPLAN : aucun écart a
 ## Sécurité
 
 - SECRET_VALUES_EXPOSED=NO
-- ARBITRARY_SHELL=NO
+- ENV_MODIFIED=NO
+- PRISMA_MIGRATION=NO
 - HUMAN_GATE_BYPASS=NO
+- PUSHED=YES (branche de travail uniquement, PR #16 brouillon)
 - MERGED=NO
 - DEPLOYED=NO
 
 ## Commit
 
-- feat/x200-operational-mirror @ 8c873db (+ PRODUCT_COMPLETE local after AUTOPLAN)
+- feat/site-identity-contact-nav : d96c07b, 742f618, 2467163, 1940668, ee53c12, 04b587c, be69b73, 5101da4 (D1), a81fbf7, f5d0793, 60fd60b (DEPLOYMENT.md : version PostgreSQL production à vérifier), 7136394 (fusion de `main`)
 
 ## Pull Request
 
-- PR #11 https://github.com/clevonegroup911/clevones.com/pull/11
+- https://github.com/clevonegroup911/clevones.com/pull/16 (brouillon, non fusionnée — relecture propriétaire)
 
 ## Preuves
 
-- reports/tasks/T047.md
-- https://github.com/clevonegroup911/clevones.com/actions/runs/34782911788
-- mode=FULL headSha=8c873db96fd66880feb0e8ecba4bee064b86ff58
-- prior FULL https://github.com/clevonegroup911/clevones.com/actions/runs/34782004736 headSha=7de8fd117d696f92f52da19906a5a1ad8999d674
-- .x200/PRODUCT_COMPLETE.json valid for current HEAD + PRODUCT_GOAL hash
+- reports/tasks/T084.md (commits par phase, tableau des contrastes WCAG)
+- tests/e2e/evidence/*-avant.png et *-apres.png (375 et 1280 px, ignorés par Git)
+
+## CI de la PR #16
+
+- Corrections après relecture : `/api/initiative-submission` protégée par contrôle same-origin (403 sans détail technique) et limitation de débit par IP (5 envois / 10 min, 429 + `Retry-After`) ; sous-titre de l'accueil FR/EN aligné sur la définition de la société. Local : lint 0, `tsc` 0, `npm test` 205/205, build 0.
+- PR #17 (`chore/deps-audit`) fusionnée dans `main` le 2026-11-23 (`59c6b69`) : dépendances, `effect` ^3.22.5, service CI `postgres:18-alpine`.
+- `main` fusionné dans la branche (`7136394`, merge sans rebase) ; conflit `backlog.json` résolu en gardant T084 et T085.
+- Job `quality` sur `7136394`, lane FULL, run 45408187298 :
+  - tentative 1 : échec `playwright` seul (34 PASS, 1 échec, 2 instables, 1 non exécuté) ; erreurs serveur `next dev` « Unexpected end of JSON input » au chargement des manifestes (5 occurrences), non reproduites localement en requêtes concurrentes ;
+  - tentative 2 (relance des jobs échoués, même SHA) : **SUCCESS**, 15/15 étapes requises PASS (classify, doctor, prisma_validate, backlog, x100_tests, task_report, tests, lint, typecheck, db_integration, build, diff_check, secrets, audit, playwright) ; Playwright 37 PASS + 1 instable (x200-control-center « SUPER_ADMIN confirmation modal », PASS au retry).
+- Vérifications locales après fusion de `main` : `npm ci` 0 (462 paquets), `prisma generate` 0, lint 0 (aucun avertissement ESLint), `tsc --noEmit` 0, `npm test` 201/201, `npm run x200:test` 75/75, build 0, `x200:validate` valide. Playwright `product-surfaces` local : non concluant (2 échecs sur la même erreur de manifeste `next dev` après `next build`, puis run interrompu ; Docker local arrêté) — la preuve Playwright retenue est la CI.
 
 ## Risques
 
-- aucun automatique
+- Le sélecteur de langue ne conserve pas `?intent=` lors du passage FR ↔ EN.
+
+## Décisions propriétaire
+
+- D1 tranchée (2026-11-20) : « Éditeur et responsable de la publication : CLEVONE SARL » / « Publisher and publication manager: CLEVONE SARL », suivi du RCCM, de l'ID Nat. et du siège ; aucun nom de personne — commit `5101da4`.
+- D2 (capital non affiché) et D3 (logo et couleurs officiels) : tranchées avant exécution, appliquées.
 
 ## Blocage
 
-- aucun automatique — gates humains/externes seulement
+- aucun
 
 ## Prochaine tâche prête
 
-- aucune (PRODUCT_COMPLETE)
+- aucune automatique ; fusion de la PR #16 soumise à la relecture du propriétaire

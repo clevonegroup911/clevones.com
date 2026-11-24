@@ -1,22 +1,38 @@
+import Link from "next/link";
+
 import { ContactInitiativeForm } from "@/components/sections/contact-initiative-form";
+import { ContactProductForm } from "@/components/sections/contact-product-form";
 import { CompanyContact } from "@/components/layout/company-contact";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { Section } from "@/components/ui/section";
 import { getContent, getLocaleFromHeaders } from "@/lib/i18n";
 import { type ContactIntent } from "@/lib/i18n/content/pages";
+import { cn } from "@/lib/utils";
 import { headers } from "next/headers";
+
+const intentOrder: readonly ContactIntent[] = [
+  "product",
+  "collaboration",
+  "initiative",
+  "eligibility",
+];
 
 type ContactPageContentProps = {
   intent?: ContactIntent;
 };
 
 export async function ContactPageContent({
-  intent = "collaboration",
+  intent,
 }: ContactPageContentProps) {
   const locale = getLocaleFromHeaders(await headers());
-  const page = getContent(locale).pages.contact;
-  const content = page.intents[intent];
+  const { shell, pages } = getContent(locale);
+  const page = pages.contact;
+  // No intent: two-audience header; the form defaults to the governance path.
+  const content = intent ? page.intents[intent] : page.hero;
+  const activeIntent: ContactIntent = intent ?? "collaboration";
+  const isProduct = activeIntent === "product";
+  const guidance = isProduct ? page.productGuidance : page.guidance;
 
   return (
     <>
@@ -37,7 +53,8 @@ export async function ContactPageContent({
               location={page.directory.location}
               phoneLabel={page.directory.phoneLabel}
               emailLabel={page.directory.emailLabel}
-              showAddress
+              addressLines={shell.addressLines}
+              showRegistration
               className="mt-4"
             />
           </div>
@@ -48,13 +65,13 @@ export async function ContactPageContent({
         <Container size="prose">
           <div className="rounded-sm border border-border-subtle/60 bg-surface-muted px-5 py-6 sm:px-7 sm:py-7">
             <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
-              {page.guidance.title}
+              {guidance.title}
             </p>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              {page.guidance.description}
+              {guidance.description}
             </p>
             <ol className="mt-5 space-y-3">
-              {page.guidance.steps.map((step, index) => (
+              {guidance.steps.map((step, index) => (
                 <li
                   key={step}
                   className="flex gap-4 text-sm leading-relaxed text-soft-white"
@@ -75,7 +92,38 @@ export async function ContactPageContent({
 
       <Section tone="default" spacing="md">
         <Container>
-          <ContactInitiativeForm intent={intent} />
+          <nav aria-label={page.intentSelector.label}>
+            <p className="text-xs font-semibold tracking-[0.15em] text-gold-muted uppercase">
+              {page.intentSelector.label}
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {intentOrder.map((key) => {
+                const item = page.intents[key];
+                const active = key === activeIntent;
+                return (
+                  <li key={key}>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "inline-flex min-h-11 items-center rounded-sm border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
+                        active
+                          ? "border-navy bg-navy text-white"
+                          : "border-border-subtle bg-surface text-foreground hover:border-navy/40",
+                      )}
+                    >
+                      {item.navLabel}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          {isProduct ? (
+            <ContactProductForm />
+          ) : (
+            <ContactInitiativeForm intent={activeIntent as Exclude<ContactIntent, "product">} />
+          )}
         </Container>
       </Section>
     </>

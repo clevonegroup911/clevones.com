@@ -11,8 +11,25 @@ export function logInitiativeSubmissionInDevelopment(
     return;
   }
 
+  if (submission.intent === "product") {
+    // Lengths and flags only: no personal contact data in logs.
+    console.info("[initiative-submission] Received product inquiry:", {
+      receivedAt: new Date().toISOString(),
+      intent: submission.intent,
+      product: submission.product,
+      organizationNameLength: submission.organizationName.length,
+      estimatedUsersProvided: Boolean(submission.estimatedUsers),
+      needLength: submission.need.length,
+      phoneProvided: Boolean(submission.phone),
+      locationProvided: Boolean(submission.location),
+      privacyConsent: submission.privacyConsent,
+    });
+    return;
+  }
+
   const safeRecord = {
     receivedAt: new Date().toISOString(),
+    intent: submission.intent,
     organizationName: submission.organizationName,
     legalStatus: submission.legalStatus,
     country: submission.country,

@@ -9,12 +9,12 @@ import { formControlResponsive } from "@/lib/ui-classes";
 import { cn } from "@/lib/utils";
 
 export const formControlClassName = cn(
-  "w-full min-w-0 rounded-sm border border-border-subtle bg-surface px-4 text-white outline-none transition-colors placeholder:text-gray-muted/60 focus:border-gold/40 focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-50",
+  "w-full min-w-0 rounded-sm border border-border-subtle bg-surface px-4 text-foreground outline-none transition-colors placeholder:text-gray-muted/60 focus:border-gold/40 focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-50",
   formControlResponsive,
 );
 
 export const formControlErrorClassName =
-  "border-red-500/60 focus:border-red-500/60 focus:ring-red-500/20";
+  "border-danger/60 focus:border-danger/60 focus:ring-danger/20";
 
 function buildDescribedBy(errorId?: string, hintId?: string) {
   return [errorId, hintId].filter(Boolean).join(" ") || undefined;
@@ -79,7 +79,7 @@ export function FormField({
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="mt-1.5 text-xs text-red-400" role="alert">
+        <p id={errorId} className="mt-1.5 text-xs text-danger" role="alert">
           {error}
         </p>
       ) : null}
@@ -129,7 +129,7 @@ export function FormFieldset({
       ) : null}
       {children}
       {error ? (
-        <p id={errorId} className="mt-3 text-xs text-red-400" role="alert">
+        <p id={errorId} className="mt-3 text-xs text-danger" role="alert">
           {error}
         </p>
       ) : null}

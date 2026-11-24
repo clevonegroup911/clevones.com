@@ -79,7 +79,7 @@ export async function SolutionsPageContent() {
             ? {
                 ...action,
                 className:
-                  "border-border text-white hover:bg-navy-hover w-full sm:w-auto",
+                  "border-border text-foreground hover:bg-navy-hover w-full sm:w-auto",
               }
             : action,
         )}

@@ -6,8 +6,10 @@ const toneStyles = {
   default: "bg-background text-foreground",
   elevated: "bg-surface-elevated text-foreground",
   muted: "bg-surface-muted text-foreground",
-  navy: "bg-navy text-white",
-  charcoal: "bg-charcoal text-white",
+  /** Navy flat section: `.site-navy` re-scopes semantic colors to light-on-navy. */
+  navy: "site-navy bg-navy text-foreground",
+  /** Legacy dark band — rendered as a cream band in the light theme. */
+  charcoal: "bg-surface-muted text-foreground",
 } as const;
 
 const spacingStyles = {
