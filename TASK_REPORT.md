@@ -23,6 +23,8 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 ## Fichiers créés
 
 - `components/sections/contact-product-form.tsx`
+- `lib/contact-rate-limit.ts` (5 envois / 10 min par IP)
+- `lib/http/initiative-submission-route.test.ts`
 - `lib/validation/initiative-submission.test.ts`
 - `public/brand/official/clevone-sarl-logo.png` / `clevone-sarl-symbol.png` / `clevone-sarl-profile.png` (fichiers fournis par la direction)
 - `reports/tasks/T084.md`
@@ -104,6 +106,7 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 
 ## CI de la PR #16
 
+- Corrections après relecture : `/api/initiative-submission` protégée par contrôle same-origin (403 sans détail technique) et limitation de débit par IP (5 envois / 10 min, 429 + `Retry-After`) ; sous-titre de l'accueil FR/EN aligné sur la définition de la société. Local : lint 0, `tsc` 0, `npm test` 205/205, build 0.
 - PR #17 (`chore/deps-audit`) fusionnée dans `main` le 2026-11-23 (`59c6b69`) : dépendances, `effect` ^3.22.5, service CI `postgres:18-alpine`.
 - `main` fusionné dans la branche (`7136394`, merge sans rebase) ; conflit `backlog.json` résolu en gardant T084 et T085.
 - Job `quality` sur `7136394`, lane FULL, run 45408187298 :
@@ -113,7 +116,6 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 
 ## Risques
 
-- La route publique `/api/initiative-submission` n'a ni limitation de débit ni contrôle d'origine (état antérieur conservé) : à traiter séparément.
 - Le sélecteur de langue ne conserve pas `?intent=` lors du passage FR ↔ EN.
 
 ## Décisions propriétaire

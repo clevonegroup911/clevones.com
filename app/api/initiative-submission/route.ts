@@ -3,7 +3,12 @@ import { NextResponse } from "next/server";
 import { trackAnalyticsEvent } from "@/lib/analytics/track";
 import { resolveEmailProviderFromEnv, sendEmail } from "@/lib/email/send";
 import { initiativeEmailTemplate } from "@/lib/email/templates";
+import {
+  consumeContactSubmission,
+  getContactClientIp,
+} from "@/lib/contact-rate-limit";
 import { readJsonBody } from "@/lib/http/read-json-body";
+import { assertSameOriginMutation } from "@/lib/http/same-origin";
 import { prepareInitiativeSubmissionEmail } from "@/lib/initiative-submission-email";
 import { logInitiativeSubmissionInDevelopment } from "@/lib/initiative-submission-log";
 import {
@@ -12,6 +17,30 @@ import {
 } from "@/lib/validation/initiative-submission";
 
 export async function POST(request: Request) {
+  if (!assertSameOriginMutation(request).ok) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "This submission was refused. Please use the form on clevones.com.",
+      },
+      { status: 403 },
+    );
+  }
+
+  const rateLimit = consumeContactSubmission(getContactClientIp(request));
+  if (rateLimit.limited) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Too many submissions. Please try again in a few minutes.",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
   const json = await readJsonBody(request);
 
   if (!json.ok) {

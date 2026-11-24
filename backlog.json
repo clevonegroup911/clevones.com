@@ -3345,6 +3345,8 @@
         "lib/seo",
         "lib/ui-classes.ts",
         "lib/validation",
+        "lib/contact-rate-limit.ts",
+        "lib/http/initiative-submission-route.test.ts",
         "lib/contact-form.ts",
         "lib/initiative-submission-email.ts",
         "lib/initiative-submission-log.ts",
