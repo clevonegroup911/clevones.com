@@ -3352,6 +3352,7 @@
         "lib/initiative-submission-log.ts",
         "lib/positionnement-page.ts",
         "lib/positioning-page.ts",
+        "next.config.ts",
         "public/brand/official",
         "public/og-image.png",
         "tests/e2e/product-surfaces.spec.ts",
