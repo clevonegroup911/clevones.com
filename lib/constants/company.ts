@@ -58,11 +58,17 @@ export const company = {
 } as const;
 
 /** Primary public definition of the company — not a single-activity slogan. */
+/** Activity list shared by the company definition and the home subtitle. */
+export const companyActivitiesFr =
+  "technologie et logiciels, commerce et distribution, logistique, industrie, énergie, médias, éducation, conseil et événementiel" as const;
+export const companyActivitiesEn =
+  "technology and software, trade and distribution, logistics, industry, energy, media, education, advisory and events" as const;
+
 export const companyDefinitionFr =
-  "CLEVONE SARL est une société commerciale congolaise multisectorielle : technologie et logiciels, commerce et distribution, logistique, industrie, énergie, médias, éducation, conseil et événementiel." as const;
+  `CLEVONE SARL est une société commerciale congolaise multisectorielle : ${companyActivitiesFr}.` as const;
 
 export const companyDefinitionEn =
-  "CLEVONE SARL is a Congolese multi-sector commercial company: technology and software, trade and distribution, logistics, industry, energy, media, education, advisory and events." as const;
+  `CLEVONE SARL is a Congolese multi-sector commercial company: ${companyActivitiesEn}.` as const;
 
 /** Brand vs legal entity — the statutes institute no acronym. */
 export const companyBrandStatementFr =

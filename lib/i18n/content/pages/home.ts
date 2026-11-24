@@ -5,6 +5,8 @@ import {
   clevonesIsNotLabels,
 } from "@/lib/constants/brand-positioning";
 import {
+  companyActivitiesEn,
+  companyActivitiesFr,
   companyDefinitionEn,
   companyDefinitionFr,
 } from "@/lib/constants/company";
@@ -306,7 +308,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       badge: "DRC & Africa",
       title: "Building digital, commercial and institutional infrastructure for Africa.",
       subtitle:
-        "A multi-sector Congolese company based in Kisangani: technology, business software, logistics, industry, energy, media, education and advisory.",
+        `A Congolese multi-sector commercial company based in Kisangani: ${companyActivitiesEn}.`,
       valueProposition:
         "Featured product: CLEVONE DMS — sales, stock, invoicing and reporting in one system.",
       primaryCta: { label: "Our solutions", href: "/solutions" },
@@ -600,7 +602,7 @@ export const homePageContent: { en: HomePageContent; fr: HomePageContent } = {
       title:
         "Construire les infrastructures numériques, commerciales et institutionnelles de l'Afrique.",
       subtitle:
-        "Société congolaise multisectorielle basée à Kisangani : technologie, logiciels de gestion, logistique, industrie, énergie, médias, éducation et conseil.",
+        `Société commerciale congolaise multisectorielle basée à Kisangani : ${companyActivitiesFr}.`,
       valueProposition:
         "Produit phare : CLEVONE DMS — ventes, stocks, facturation et rapports dans un seul système.",
       primaryCta: {
