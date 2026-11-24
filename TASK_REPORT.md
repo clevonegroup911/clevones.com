@@ -18,7 +18,7 @@ Refonte éditoriale et fonctionnelle du site public sur demande du propriétaire
 
 ## Résultat
 
-Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases, un commit par phase, détail dans `reports/tasks/T084.md`). Non poussé, pas de PR, pas de CI, MERGED=NO, DEPLOYED=NO.
+Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases, un commit par phase, détail dans `reports/tasks/T084.md`). Poussé sur la PR brouillon #16 ; CI `quality` FULL SUCCESS sur `7136394` ; MERGED=NO, DEPLOYED=NO.
 
 ## Fichiers créés
 
@@ -85,17 +85,17 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 - ENV_MODIFIED=NO
 - PRISMA_MIGRATION=NO
 - HUMAN_GATE_BYPASS=NO
-- PUSHED=NO
+- PUSHED=YES (branche de travail uniquement, PR #16 brouillon)
 - MERGED=NO
 - DEPLOYED=NO
 
 ## Commit
 
-- feat/site-identity-contact-nav : d96c07b, 742f618, 2467163, 1940668, ee53c12, 04b587c, be69b73, 5101da4 (D1) + commit de clôture
+- feat/site-identity-contact-nav : d96c07b, 742f618, 2467163, 1940668, ee53c12, 04b587c, be69b73, 5101da4 (D1), a81fbf7, f5d0793, 60fd60b (DEPLOYMENT.md : version PostgreSQL production à vérifier), 7136394 (fusion de `main`)
 
 ## Pull Request
 
-- aucune (push non autorisé à ce stade)
+- https://github.com/clevonegroup911/clevones.com/pull/16 (brouillon, non fusionnée — relecture propriétaire)
 
 ## Preuves
 
@@ -104,9 +104,12 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 
 ## CI de la PR #16
 
-- Job `quality` en échec sur `a81fbf7` pour deux causes hors du code de la PR :
-  - `audit` : avis de sécurité sur des dépendances existantes → corrigé sur la branche séparée `chore/deps-audit` (commits `362f497`, `46f6992`, non poussés ; rapport `reports/deps-audit-2026-11-23.md`) ; migration Prisma 7 reportée en tâche T085 (non exécutée).
-  - `x100_tests` : test de sauvegarde PostgreSQL (clients 18 du runner ubuntu-26.04 contre service `postgres:16-alpine`, `SET transaction_timeout` refusé) — cause confirmée localement, correctif CI à choisir.
+- PR #17 (`chore/deps-audit`) fusionnée dans `main` le 2026-11-23 (`59c6b69`) : dépendances, `effect` ^3.22.5, service CI `postgres:18-alpine`.
+- `main` fusionné dans la branche (`7136394`, merge sans rebase) ; conflit `backlog.json` résolu en gardant T084 et T085.
+- Job `quality` sur `7136394`, lane FULL, run 45408187298 :
+  - tentative 1 : échec `playwright` seul (34 PASS, 1 échec, 2 instables, 1 non exécuté) ; erreurs serveur `next dev` « Unexpected end of JSON input » au chargement des manifestes (5 occurrences), non reproduites localement en requêtes concurrentes ;
+  - tentative 2 (relance des jobs échoués, même SHA) : **SUCCESS**, 15/15 étapes requises PASS (classify, doctor, prisma_validate, backlog, x100_tests, task_report, tests, lint, typecheck, db_integration, build, diff_check, secrets, audit, playwright) ; Playwright 37 PASS + 1 instable (x200-control-center « SUPER_ADMIN confirmation modal », PASS au retry).
+- Vérifications locales après fusion de `main` : `npm ci` 0 (462 paquets), `prisma generate` 0, lint 0 (aucun avertissement ESLint), `tsc --noEmit` 0, `npm test` 201/201, `npm run x200:test` 75/75, build 0, `x200:validate` valide. Playwright `product-surfaces` local : non concluant (2 échecs sur la même erreur de manifeste `next dev` après `next build`, puis run interrompu ; Docker local arrêté) — la preuve Playwright retenue est la CI.
 
 ## Risques
 
@@ -124,4 +127,4 @@ Implémenté et testé localement sur `feat/site-identity-contact-nav` (7 phases
 
 ## Prochaine tâche prête
 
-- aucune automatique ; push / PR soumis à l'accord du propriétaire
+- aucune automatique ; fusion de la PR #16 soumise à la relecture du propriétaire
